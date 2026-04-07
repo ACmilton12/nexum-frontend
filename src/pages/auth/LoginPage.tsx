@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { loginService } from "../../services/auth.service";
+import logoUmss from "../../assets/logoUmss.png";
+import heroImage from "../../assets/prueba11.png";
 
 
 const LoginPage = () => {
@@ -54,7 +56,7 @@ const LoginPage = () => {
       <nav className="w-full bg-navbar px-6 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <img
-            src="/src/assets/logoUmss.png"
+            src={logoUmss}
             alt="Logo UMSS"
             className="w-8 h-8 object-contain"
           />
@@ -71,7 +73,7 @@ const LoginPage = () => {
           {/* Panel izquierdo azul */}
           <div className="hidden md:flex w-1/2 bg-primary flex-col items-center justify-center p-10 text-white">
             <img
-              src="/src/assets/prueba11.png"
+              src={heroImage}
               alt="Ilustración Nexum"
               className="w-64 h-64 object-contain mb-8"
             />

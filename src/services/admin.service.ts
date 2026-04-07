@@ -89,7 +89,6 @@ export const getActivityLogs = async (params: { user_id?: number; per_page?: num
   }
 
   const data = await response.json();
-  console.log("Activity logs data:", data);
 
   if (!response.ok) {
 
