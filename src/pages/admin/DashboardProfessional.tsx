@@ -51,7 +51,7 @@ const DashboardProfessional = () => {
           </p>
 
           {/* Cards de estadísticas */}
-          <div className="grid grid-cols-3 gap-4 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
             <div className="bg-white rounded-lg p-5 shadow-sm border border-gray-100">
               <p className="text-sm text-gray-500 mb-1">Visitas al Perfil</p>
               <p className="text-3xl font-bold text-action">{viewsCount}</p>
@@ -70,7 +70,7 @@ const DashboardProfessional = () => {
           </div>
 
           {/* Cards de acciones */}
-          <div className="grid grid-cols-2 gap-4 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
             <div className="bg-white rounded-lg p-5 shadow-sm border border-gray-100">
               <div className="flex items-center gap-2 mb-2">
                 <FolderOpen size={18} className="text-textMain" />
@@ -111,7 +111,7 @@ const DashboardProfessional = () => {
             <h2 className="font-semibold text-textMain mb-4">
               Tus secciones disponibles
             </h2>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="bg-background rounded-lg p-4">
                 <h3 className="font-medium text-textMain mb-3">
                   Puedes acceder a:
@@ -139,7 +139,7 @@ const DashboardProfessional = () => {
         </div>
 
         {/* Panel derecho */}
-        <div className="w-56 p-4 bg-white border-l border-gray-200 overflow-y-auto">
+        <div className="hidden lg:block w-56 p-4 bg-white border-l border-gray-200 overflow-y-auto">
           {/* Calendario */}
           <Calendar />
 

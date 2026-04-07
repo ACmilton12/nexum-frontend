@@ -114,7 +114,7 @@ function LinksPrivacy() {
       <Sidebar activeItem="Enlaces" />
       <div style={{ flex: 1, padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px', overflowY: 'auto' }}>
         <h2 style={{ fontSize: '24px', fontWeight: '700', color: '#1a1a2e', margin: 0 }}>Enlaces y Privacidad</h2>
-        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '24px', width: '100%', maxWidth: '1100px' }}>
+        <div className="links-privacy-grid" style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '24px', width: '100%', maxWidth: '1100px' }}>
           
           <div style={{ backgroundColor: '#fff', padding: '32px', borderRadius: '12px', boxShadow: '0 6px 18px rgba(0, 26, 94, 0.06)', display: 'flex', flexDirection: 'column', gap: '20px' }}>
             <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#1a1a2e', margin: 0 }}>Redes Profesionales</h3>

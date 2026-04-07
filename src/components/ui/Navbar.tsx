@@ -1,12 +1,14 @@
 import { Link } from "react-router-dom";
 import logoUmss from "../../assets/logoUmss.png";
-import { User } from "lucide-react";
+import { User, Menu } from "lucide-react";
 import { useState, useEffect } from "react";
 import UserMenuModal from "./UserMenuModal";
 import useAuth from "../../hooks/useAuth";
 import { getPersonalData } from "../../services/datapersonal.service";
+import { useSidebar } from "../../contexts/SidebarContext";
 
 const Navbar = () => {
+  const { openMobile } = useSidebar();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userProfession, setUserProfession] = useState("");
   const [userPhoto, setUserPhoto] = useState("");
@@ -29,23 +31,32 @@ const Navbar = () => {
   }, [token]);
 
   return (
-    <nav className="w-full bg-[#001A5E] px-6 py-3 flex items-center justify-between"> {/* Azul marino profundo */}
-      {/* Logo y nombre de Nexum */}
-      <Link to="/" className="flex items-center gap-2 cursor-pointer">
-        <div className="flex items-center gap-2">
+    <nav className="w-full bg-[#001A5E] px-4 py-3 flex items-center justify-between">
+      {/* Lado izquierdo: hamburguesa (mobile) + logo */}
+      <div className="flex items-center gap-2">
+        {isAuthenticated && (
+          <button
+            className="lg:hidden p-1.5 text-white rounded hover:bg-white/10 transition-colors"
+            onClick={openMobile}
+            aria-label="Abrir menú de navegación"
+          >
+            <Menu size={22} />
+          </button>
+        )}
+        <Link to="/" className="flex items-center gap-2 cursor-pointer">
           <img
-                src={logoUmss}
-                alt="Logo UMSS"
-                 className="w-8 h-8 object-contain rounded-full" // Añadido rounded-full para intentar hacerlo circular
-               />
+            src={logoUmss}
+            alt="Logo UMSS"
+            className="w-8 h-8 object-contain rounded-full"
+          />
           <span className="text-white font-bold text-lg tracking-wide">
             NEXUM
           </span>
-        </div>
-      </Link>
+        </Link>
+      </div>
 
-      {/* Lógica de Usuario */}
-      <div className="flex items-center gap-3"> {/* Contenedor para ambos elementos */}
+      {/* Lado derecho: menú de usuario */}
+      <div className="flex items-center gap-3">
         {isAuthenticated && (
           <div className="relative">
             {isModalOpen && (
@@ -75,14 +86,6 @@ const Navbar = () => {
             />
           </div>
         )}
-
-        {/* Botones de Iniciar Sesión y Registrarse (siempre visibles por ahora) */}
-        {/*<Link to="/login" className="text-white border border-white px-4 py-1.5 rounded text-sm hover:bg-white hover:text-[#001A5E] transition-colors">
-          Iniciar Sesión
-        </Link>
-        <Link to="/register" className="bg-[#C8102E] text-white px-4 py-1.5 rounded text-sm hover:opacity-90 transition-opacity">
-          Registrarse
-        </Link>*/}
       </div>
     </nav>
   );

@@ -7,7 +7,7 @@ interface RightWidgetsProps {
 
 const RightWidgets = ({ type = 'profile' }: RightWidgetsProps) => {
   return (
-    <aside className="w-[292px] bg-white p-6 flex flex-col gap-6 border-l border-gray-200 overflow-y-auto">
+    <aside className="hidden lg:flex w-[292px] bg-white p-6 flex-col gap-6 border-l border-gray-200 overflow-y-auto">
       {/* Calendario del Milton*/}
       <div className="flex flex-col gap-3">
         <Calendar />

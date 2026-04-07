@@ -24,7 +24,7 @@ const DashboardAdmin = () => {
           </p>
 
           {/* Cards de estadísticas */}
-          <div className="grid grid-cols-3 gap-4 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
             <div className="bg-white rounded-lg p-5 shadow-sm border border-gray-100">
               <p className="text-sm text-gray-500 mb-1">Total Usuarios Registrados</p>
               <p className="text-3xl font-bold text-primary">148</p>
@@ -43,7 +43,7 @@ const DashboardAdmin = () => {
           </div>
 
           {/* Cards de acciones */}
-          <div className="grid grid-cols-2 gap-4 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
             <div className="bg-white rounded-lg p-5 shadow-sm border border-gray-100">
               <div className="flex items-center gap-2 mb-2">
                 <Users size={18} className="text-textMain" />
@@ -84,7 +84,7 @@ const DashboardAdmin = () => {
             <h2 className="font-semibold text-textMain mb-4">
               Control de acceso por roles en la plataforma
             </h2>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="bg-background rounded-lg p-4">
                 <h3 className="font-medium text-textMain mb-3">
                   Rutas del Administrador
@@ -112,7 +112,7 @@ const DashboardAdmin = () => {
         </div>
 
         {/* Panel derecho */}
-        <div className="w-56 p-4 bg-white border-l border-gray-200">
+        <div className="hidden lg:block w-56 p-4 bg-white border-l border-gray-200">
           {/* Calendario */}
           <Calendar />
 

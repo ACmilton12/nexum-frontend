@@ -255,6 +255,7 @@ function PersonalData() {
         </h2>
 
         <div
+          className="personal-data-card"
           style={{
             width: '100%',
             maxWidth: '1000px',
@@ -327,7 +328,7 @@ function PersonalData() {
             onSubmit={handleSubmit}
             style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '20px' }}
           >
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            <div className="personal-data-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 <label style={{ fontSize: '13px', fontWeight: '600' }}>Nombre</label>
                 <input
@@ -348,7 +349,7 @@ function PersonalData() {
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            <div className="personal-data-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 <label style={{ fontSize: '13px', fontWeight: '600' }}>Título Profesional</label>
                 <input
@@ -376,7 +377,7 @@ function PersonalData() {
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            <div className="personal-data-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 <label style={{ fontSize: '13px', fontWeight: '600' }}>Teléfono</label>
                 <input

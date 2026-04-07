@@ -190,13 +190,13 @@ const AuditPage = () => {
 
 
           {/* Tabla */}
-          <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
+          <div className="bg-white rounded-xl shadow-sm overflow-x-auto border border-gray-100">
             {loading ? (
               <div className="p-8 text-center text-gray-500">Cargando historial...</div>
             ) : error ? (
               <div className="p-8 text-center text-action">{error}</div>
             ) : (
-              <table className="w-full text-sm">
+              <table className="w-full text-sm min-w-[560px]">
                 <thead>
                   <tr className="bg-gray-50 border-b border-gray-100">
                     <th className="text-left px-6 py-4 text-textMain font-semibold">Usuario</th>
@@ -233,7 +233,7 @@ const AuditPage = () => {
         </div>
 
         {/* Panel derecho */}
-        <div className="w-72 p-6 bg-white border-l border-gray-200">
+        <div className="hidden lg:block w-72 p-6 bg-white border-l border-gray-200">
           <div className="mb-8">
             <h3 className="font-bold text-textMain mb-4">Calendario</h3>
             <Calendar />

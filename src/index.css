@@ -6,3 +6,30 @@ body {
   background-color: #C9D1D9;
   color: #1A1A2E;
 }
+
+/* ── Responsive: formulario de Datos Personales ── */
+@media (max-width: 1023px) {
+  .personal-data-card {
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+
+  .personal-data-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── Responsive: grid de Links y Privacidad ── */
+@media (max-width: 1023px) {
+  .links-privacy-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── Responsive: breadcrumbs en pantallas pequeñas ── */
+@media (max-width: 640px) {
+  .breadcrumb-container {
+    padding: 8px 16px !important;
+    font-size: 12px !important;
+  }
+}

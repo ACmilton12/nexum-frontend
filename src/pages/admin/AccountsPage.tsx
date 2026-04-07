@@ -121,8 +121,8 @@ const AccountsPage = () => {
 
           {/* Tabla */}
           {!loading && !error && (
-            <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
-              <table className="w-full text-sm">
+            <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-x-auto">
+              <table className="w-full text-sm min-w-[640px]">
                 <thead>
                   <tr className="border-b border-gray-100">
                     <th className="text-left px-4 py-3 text-textMain font-semibold">Usuario</th>
@@ -185,7 +185,7 @@ const AccountsPage = () => {
         </div>
 
         {/* Panel derecho */}
-        <div className="w-56 p-4 bg-white border-l border-gray-200">
+        <div className="hidden lg:block w-56 p-4 bg-white border-l border-gray-200">
          
             <Calendar />
 

@@ -12,6 +12,7 @@ import AuditPage from "../pages/admin/AuditPage";
 import PersonalData from "../pages/professional/profile-settings/PersonalData";
 import LinksPrivacy from "../pages/professional/profile-settings/LinksPrivacy";
 import ProtectedRoute from "./ProtectedRoute";
+import { SidebarProvider } from "../contexts/SidebarContext";
 
 const HomePage = () => (
   <div style={{ textAlign: "center", padding: "50px" }}>
@@ -122,6 +123,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 const AppRouter = () => {
   return (
     <BrowserRouter>
+      <SidebarProvider>
       <Layout>
         <Routes>
           {/* Rutas públicas */}
@@ -186,6 +188,7 @@ const AppRouter = () => {
           <Route path="*" element={<HomePage />} />
         </Routes>
       </Layout>
+      </SidebarProvider>
     </BrowserRouter>
   );
 };
