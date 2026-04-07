@@ -46,11 +46,17 @@ const Navbar = () => {
 
       {/* Lógica de Usuario */}
       <div className="flex items-center gap-3"> {/* Contenedor para ambos elementos */}
-        {isAuthenticated && ( // Renderiza el icono de usuario y modal si está autenticado
+        {isAuthenticated && (
           <div className="relative">
+            {isModalOpen && (
+              <div
+                className="fixed inset-0 z-40"
+                onClick={() => setIsModalOpen(false)}
+              />
+            )}
             <button
-              onClick={() => setIsModalOpen(true)}
-              className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-300 text-gray-700 cursor-pointer hover:bg-gray-400 transition-colors overflow-hidden"
+              onClick={() => setIsModalOpen((prev) => !prev)}
+              className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-300 text-gray-700 cursor-pointer hover:bg-gray-400 transition-colors overflow-hidden relative z-50"
               aria-label="Abrir menú de usuario"
             >
               {userPhoto ? (

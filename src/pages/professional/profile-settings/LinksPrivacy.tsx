@@ -57,19 +57,24 @@ function LinksPrivacy() {
     loadData();
   }, []);
 
+  const normalizeUrl = (url: string) => {
+    if (!url.trim()) return '';
+    if (!/^https?:\/\//i.test(url)) return `https://${url}`;
+    return url;
+  };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setIsSaving(true);
 
     try {
-      // Enviamos 'public' o 'private' según el estado actual de isPublic
       const privacyValue = isPublic ? 'public' : 'private';
 
       await updateLinksPrivacyData({
         nombre,
         apellido,
-        linkedin,
-        github,
+        linkedin: normalizeUrl(linkedin),
+        github: normalizeUrl(github),
         global_privacy: privacyValue
       });
       setToast({ message: 'Enlaces y Privacidad actualizados con éxito', type: 'success' });

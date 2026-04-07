@@ -29,7 +29,7 @@ const UserMenuModal = ({ isOpen, onClose, userName, userProfession, userPhoto, u
   };
 
   return (
-    <div className="absolute top-14 right-0 w-72 bg-white rounded-xl shadow-2xl border border-gray-200 z-50 text-[#1a1a2e] animate-in fade-in zoom-in duration-200">
+    <div className="absolute top-14 right-0 w-72 bg-white rounded-xl shadow-2xl border border-gray-200 z-50 text-[#1a1a2e]">
       {/* Cabecera: Info del usuario */}
       <div className="p-5 border-b border-gray-100 flex flex-col items-center gap-3">
         <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-[#003087]">
