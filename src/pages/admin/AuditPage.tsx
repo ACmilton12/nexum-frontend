@@ -150,7 +150,7 @@ const AuditPage = () => {
       last_name: "Apellido",
       email: "Email",
       role: "Rol",
-      is_active: "Estado",
+      is_active: "Estado de Cuenta",
       password: "Contraseña",
       biography: "Biografía",
       phone: "Teléfono",
@@ -159,9 +159,57 @@ const AuditPage = () => {
       linkedin_url: "LinkedIn",
       global_privacy: "Privacidad",
       name: "Nombre del Proyecto",
-      description: "Descripción"
+      description: "Descripción",
+      deactivated_by_admin: "Estado de Cuenta",
+      title: "Título",
+      company: "Empresa",
+      start_date: "Fecha de Inicio",
+      end_date: "Fecha de Fin",
+      is_current: "Trabajo Actual",
+      issuing_entity: "Entidad Emisora",
+      issue_date: "Fecha de Emisión",
+      expiration_date: "Fecha de Expiración",
+      image_url: "URL de Imagen",
+      url: "Enlace URL",
+      avatar_path: "Ruta de Avatar",
+      design_pattern: "Patrón de Diseño",
+      portfolio_id: "ID Portafolio",
+      category_id: "ID Categoría",
+      user_id: "ID Usuario"
     };
     return map[key] || key;
+  };
+
+  const formatValue = (key: string, value: any) => {
+    if (value === undefined || value === null || value === "null") return "No especificado";
+
+    // Si el valor es booleano o string 'true'/'false'
+    if (typeof value === "boolean" || value === "true" || value === "false" || value === 1 || value === 0 || value === "1" || value === "0") {
+      const isTrue = value === true || value === "true" || value === 1 || value === "1";
+
+      if (key === "is_active") return isTrue ? "Activo" : "Suspendido";
+      if (key === "deactivated_by_admin") return isTrue ? "Suspendido" : "Activo";
+      if (key === "global_privacy") return isTrue ? "Privado" : "Público";
+      if (key === "is_current") return isTrue ? "Sí" : "No";
+
+      return isTrue ? "Sí" : "No";
+    }
+
+    // Detectar y formatear fechas ISO (ej. 2026-02-01T00:00:00.000000Z)
+    if (typeof value === "string" && /^\d{4}-\d{2}-\d{2}T/.test(value)) {
+      try {
+        const date = new Date(value);
+        return date.toLocaleDateString("es-ES", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric"
+        });
+      } catch (e) {
+        // Si falla, retornamos el string original
+      }
+    }
+
+    return String(value);
   };
 
   const renderChangesTable = (log: AuditLog) => {
@@ -181,8 +229,13 @@ const AuditPage = () => {
 
     if (isUpdate) {
       const keys = Array.from(new Set([...Object.keys(attributes), ...Object.keys(old)]))
-        .filter(k => k !== 'updated_at' && k !== 'created_at' && k !== 'id');
-        
+        .filter(k => {
+          const isInternal = k === 'updated_at' || k === 'created_at' || k === 'id';
+          // Si quieres que solo aparezca uno cuando ambos están presentes:
+          // (Priorizamos 'is_active' y descartamos 'deactivated_by_admin' si ambos existen)
+          const isDuplicateStatus = k === 'deactivated_by_admin' && (attributes['is_active'] !== undefined || old['is_active'] !== undefined);
+          return !isInternal && !isDuplicateStatus;
+        });
       if (keys.length === 0) return <p className="text-sm text-gray-500 text-center py-4 bg-gray-50 rounded-xl">Sin cambios detectables.</p>;
 
       return (
@@ -197,8 +250,8 @@ const AuditPage = () => {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {keys.map((key) => {
-                const oldVal = old[key] !== undefined && old[key] !== null ? String(old[key]) : "Ø";
-                const newVal = attributes[key] !== undefined && attributes[key] !== null ? String(attributes[key]) : "Ø";
+                const oldVal = old[key] !== undefined && old[key] !== null ? formatValue(key, old[key]) : "Ø";
+                const newVal = attributes[key] !== undefined && attributes[key] !== null ? formatValue(key, attributes[key]) : "Ø";
                 const isChanged = oldVal !== newVal;
                 return (
                   <tr key={key} className={`transition-colors hover:bg-gray-50 ${isChanged ? 'bg-white' : 'opacity-60 bg-gray-50'}`}>
@@ -206,8 +259,8 @@ const AuditPage = () => {
                     <td className="px-5 py-4 text-red-900 bg-red-50/20 font-mono text-xs break-all 
                                    line-through decoration-red-300/80 opacity-80">{oldVal}</td>
                     <td className="px-5 py-4 text-green-900 bg-green-50/20 font-mono text-xs break-all font-medium flex items-center gap-2">
-                       {isChanged && <span className="text-green-500"><ArrowRight size={14}/></span>}
-                       {newVal}
+                      {isChanged && <span className="text-green-500"><ArrowRight size={14} /></span>}
+                      {newVal}
                     </td>
                   </tr>
                 )
@@ -216,7 +269,7 @@ const AuditPage = () => {
           </table>
         </div>
       );
-    } 
+    }
 
     const keys = Object.keys(attributes).filter(k => k !== 'created_at' && k !== 'updated_at' && k !== 'id');
     if (keys.length === 0) return null;
@@ -234,7 +287,7 @@ const AuditPage = () => {
             {keys.map((key) => (
               <tr key={key} className="bg-white hover:bg-blue-50/30 transition-colors">
                 <td className="px-5 py-4 font-medium text-gray-900 border-r border-gray-50 bg-gray-50/10">{translateKey(key)}</td>
-                <td className="px-5 py-4 text-blue-900 font-mono text-xs break-all bg-blue-50/10">{String(attributes[key])}</td>
+                <td className="px-5 py-4 text-blue-900 font-mono text-xs break-all bg-blue-50/10">{formatValue(key, attributes[key])}</td>
               </tr>
             ))}
           </tbody>
@@ -419,8 +472,8 @@ const AuditPage = () => {
                   </span>
                 </div>
               </div>
-              <button 
-                onClick={() => setSelectedLog(null)} 
+              <button
+                onClick={() => setSelectedLog(null)}
                 className="p-2.5 text-gray-400 bg-gray-50 hover:bg-red-50 hover:text-red-500 rounded-full transition-all"
               >
                 <X size={20} />
@@ -428,7 +481,7 @@ const AuditPage = () => {
             </div>
 
             <div className="p-6 sm:p-8 overflow-y-auto flex-1 bg-gray-50/30">
-              
+
               <div className="mb-8 flex flex-col sm:flex-row items-start sm:items-center gap-4 p-5 bg-white rounded-2xl border border-gray-200 shadow-sm">
                 <div className={`p-4 rounded-xl shrink-0 shadow-inner ${getEventBadgeClass(selectedLog.event)}`}>
                   <ShieldCheck size={28} />
@@ -445,16 +498,16 @@ const AuditPage = () => {
               </div>
 
               <div className="mb-4">
-                 <h4 className="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2 uppercase tracking-wide">
-                    Datos y Estados
-                 </h4>
-                 {renderChangesTable(selectedLog)}
+                <h4 className="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2 uppercase tracking-wide">
+                  Datos y Estados
+                </h4>
+                {renderChangesTable(selectedLog)}
               </div>
             </div>
 
             <div className="px-6 py-5 sm:px-8 border-t border-gray-100 bg-white flex justify-end">
-              <button 
-                onClick={() => setSelectedLog(null)} 
+              <button
+                onClick={() => setSelectedLog(null)}
                 className="px-8 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-xl hover:bg-gray-800 transition-colors shadow-md hover:shadow-lg focus:ring-4 focus:ring-gray-200"
               >
                 Cerrar Detalles

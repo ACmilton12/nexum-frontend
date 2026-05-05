@@ -19,6 +19,8 @@ import Certifications from "../pages/professional/certifications/Certifications"
 import ProtectedRoute from "./ProtectedRoute";
 import Home from "../pages/Home";
 import ProjectsPage from "../pages/professional/projects/ProjectsPage";
+import HomeDirectory from "../pages/professional/HomeDirectory";
+import PublicProfile from "../pages/professional/PublicProfile";
 
 const Breadcrumbs = () => {
   const { pathname } = useLocation();
@@ -206,6 +208,16 @@ const AppRouter = () => {
           <Route path="/dashboard" element={
             <ProtectedRoute allowedRole="professional">
               <RolesPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/directorio" element={
+            <ProtectedRoute allowedRole="professional">
+              <HomeDirectory />
+            </ProtectedRoute>
+          } />
+          <Route path="/directorio/perfil/:id" element={
+            <ProtectedRoute allowedRole="professional">
+              <PublicProfile />
             </ProtectedRoute>
           } />
           <Route path="/experiencia" element={
