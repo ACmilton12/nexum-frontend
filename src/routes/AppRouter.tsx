@@ -103,6 +103,8 @@ const Breadcrumbs = () => {
   );
 };
 
+import PrintPortfolio from "../pages/professional/PrintPortfolio";
+
 // Rutas que NO usan el Navbar/Footer/Breadcrumbs del layout
 // porque tienen sus propios componentes integrados.
 const ROUTES_WITHOUT_LAYOUT = [
@@ -227,6 +229,11 @@ const AppRouter = () => {
           <Route path="/profile/habilidades" element={
             <ProtectedRoute allowedRole="professional">
               <HabilidadesPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/imprimir" element={
+            <ProtectedRoute allowedRole="professional">
+              <PrintPortfolio />
             </ProtectedRoute>
           } />
 

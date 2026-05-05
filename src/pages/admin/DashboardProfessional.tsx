@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Eye, FolderOpen, CheckCircle, AlertTriangle, ShieldAlert, ExternalLink } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Eye, FolderOpen, CheckCircle, AlertTriangle, ShieldAlert, ExternalLink, FileText } from "lucide-react";
 import Sidebar from "./components/Sidebar";
 import Calendar from "../../components/ui/Calendar";
 
@@ -118,12 +119,17 @@ const DashboardProfessional = () => {
                   Gestiona tus proyectos, habilidades y experiencia laboral.
                 </p>
                 <div className="bg-green-50 text-green-700 text-[11px] px-3 py-1.5 rounded-lg mb-4 inline-block font-medium border border-green-100">
-                  Acceso permitido a tus rutas.
+                  
                 </div>
                 <br />
-                <button className="bg-action text-white text-sm px-4 py-2 rounded-lg hover:opacity-90 transition-all shadow-md">
-                  Ver mi portafolio
-                </button>
+                <div className="flex flex-wrap gap-3">
+                  <button className="bg-action text-white text-sm px-4 py-2 rounded-lg hover:opacity-90 transition-all shadow-md flex items-center gap-2">
+                    <ExternalLink size={14} /> Ver Online
+                  </button>
+                  <Link to="/imprimir" className="bg-white text-gray-700 border border-gray-200 text-sm px-4 py-2 rounded-lg hover:bg-gray-50 transition-all shadow-sm flex items-center gap-2 no-underline font-medium">
+                    <FileText size={14} className="text-action" /> Exportar PDF
+                  </Link>
+                </div>
               </div>
 
               <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">

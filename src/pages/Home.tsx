@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logoUmss from "../assets/logoUmss.png";
-import React from "react";
 import useAuth from "../hooks/useAuth";
 import { API_BASE_URL } from "../utils/constants";
+import { MOCK_PORTFOLIOS, type PublicPortfolio } from "../utils/mockPortfolios";
+import { Search, ChevronLeft, ChevronRight, Filter, SlidersHorizontal, ArrowUpDown, Globe, ChevronDown, CheckCircle } from "lucide-react";
 // ── Interfaces ─────────────────────────────────────────────────────────────
 
 interface Feature {
@@ -273,248 +274,191 @@ function Navbar() {
   );
 }
 
-// ── Hero ───────────────────────────────────────────────────────────────────
-function Hero({ stats }: { stats: GlobalStats }) {
-  const { user } = useAuth();
+// ── Hero / Banner Carousel ────────────────────────────────────────────────
+function Hero({ onSearch }: { onSearch: (results: PublicPortfolio[]) => void }) {
   const [current, setCurrent] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedArea, setSelectedArea] = useState("");
+  const [selectedSkill, setSelectedSkill] = useState("");
+  const [sortBy, setSortBy] = useState("relevance");
 
-  const slides = [
+  const AREAS = ["Todas las áreas", "Desarrollo de Software", "Diseño UX/UI", "Data Science", "Gestión de Proyectos"];
+  const SKILLS = ["Todas las habilidades", "React", "Node.js", "Python", "Figma", "Go", "Flutter", "TypeScript", "SQL"];
+
+  const handleSearch = () => {
+    let filtered = [...MOCK_PORTFOLIOS];
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      filtered = filtered.filter(p => 
+        p.first_name.toLowerCase().includes(term) || 
+        p.last_name.toLowerCase().includes(term) || 
+        p.profession.toLowerCase().includes(term) ||
+        p.skills.some(s => s.toLowerCase().includes(term))
+      );
+    }
+    if (selectedArea && selectedArea !== "Todas las áreas") {
+      filtered = filtered.filter(p => p.area === selectedArea);
+    }
+    if (selectedSkill && selectedSkill !== "Todas las habilidades") {
+      filtered = filtered.filter(p => p.skills.includes(selectedSkill));
+    }
+    // Sorting logic (mocked)
+    if (sortBy === "date") {
+      filtered.sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime());
+    }
+
+    onSearch(filtered);
+    // Scroll to results
+    const resultsElement = document.getElementById("search-results");
+    if (resultsElement) {
+      resultsElement.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  const banners = [
     {
-      title: "Dashboard Principal",
-      description: "Vista general de tu portafolio",
-      content: (
-        <div className="w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl" style={{ backgroundColor: "#4a6b7a" }}>
-          <div className="flex items-center justify-between px-5 py-3 border-b" style={{ backgroundColor: "#3d5a67", borderColor: "rgba(255,255,255,0.15)" }}>
-            <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-white text-xs">⚙</div>
-            <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-white text-xs">👤</div>
-          </div>
-          <div className="p-5 flex gap-3">
-            <div className="w-32 flex-shrink-0 rounded-xl p-3 flex flex-col gap-3" style={{ backgroundColor: "rgba(255,255,255,0.12)" }}>
-              {[{ label: "Dashboard", icon: "🏠" }, { label: "Settings", icon: "⚙️" }, { label: "Profile", icon: "👤" }, { label: "Documentation", icon: "📄" }].map((item) => (
-                <div key={item.label} className="text-white/70 text-xs py-1.5 px-2 rounded-lg flex items-center gap-2">
-                  <span>{item.icon}</span>{item.label}
-                </div>
-              ))}
-            </div>
-            <div className="flex-1 flex flex-col gap-3">
-              <div className="bg-white rounded-xl p-4">
-                <div className="font-bold text-sm mb-1" style={{ color: "#1A1A2E" }}>Project Progress</div>
-                <div className="text-gray-400 text-xs mb-3">Q4 Performance</div>
-                <div className="flex items-center gap-4">
-                  <div className="relative w-14 h-14 flex-shrink-0">
-                    <svg viewBox="0 0 36 36" className="w-full h-full -rotate-90">
-                      <circle cx="18" cy="18" r="14" fill="none" stroke="#e5e7eb" strokeWidth="4" />
-                      <circle cx="18" cy="18" r="14" fill="none" stroke="#003087" strokeWidth="4" strokeDasharray="75 25" strokeLinecap="round" />
-                    </svg>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-xs font-bold" style={{ color: "#1A1A2E" }}>85%</span>
-                    </div>
-                  </div>
-                  <svg viewBox="0 0 100 40" className="flex-1 h-10">
-                    <polyline points="0,35 15,28 30,32 45,18 60,22 75,10 90,14 100,8" fill="none" stroke="#003087" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="bg-white rounded-xl p-3">
-                  <div className="font-bold text-xs mb-2" style={{ color: "#1A1A2E" }}>Analytics</div>
-                  <div className="flex items-center justify-center py-1">
-                    <svg viewBox="0 0 36 36" className="w-12 h-12 -rotate-90">
-                      <circle cx="18" cy="18" r="14" fill="none" stroke="#e5e7eb" strokeWidth="4" />
-                      <circle cx="18" cy="18" r="14" fill="none" stroke="#003087" strokeWidth="4" strokeDasharray="55 45" strokeLinecap="round" />
-                      <circle cx="18" cy="18" r="14" fill="none" stroke="#C8102E" strokeWidth="4" strokeDasharray="25 75" strokeDashoffset="-55" strokeLinecap="round" />
-                    </svg>
-                  </div>
-                  <div className="text-gray-400 text-xs text-center">Traffic Sources</div>
-                </div>
-                <div className="bg-white rounded-xl p-3">
-                  <div className="font-bold text-xs mb-2" style={{ color: "#1A1A2E" }}>Reports</div>
-                  <div className="flex items-end justify-center gap-1 h-12 py-1">
-                    {[40, 70, 50, 80, 60, 90].map((h, i) => (
-                      <div key={i} className="flex-1 rounded-sm" style={{ height: `${h}%`, backgroundColor: i % 2 === 0 ? "#003087" : "#C9D1D9" }} />
-                    ))}
-                  </div>
-                  <div className="text-gray-400 text-xs text-center">Monthly Summary</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      ),
+      id: "search",
+      title: "Encuentra el talento profesional de la UMSS",
+      subtitle: "Explora portafolios públicos de desarrolladores, ingenieros y especialistas.",
+      bg: "#C8102E", // UMSS Red
     },
     {
-      title: "Exportación PDF",
-      description: "Descarga tu portafolio listo para empleadores",
-      content: (() => {
-        const [innerCurrent, setInnerCurrent] = React.useState(0);
-        const innerSlides = [
-          { title: "Crea tu portafolio", desc: "Sube tus proyectos, habilidades y experiencia en minutos." },
-          { title: "Comparte con empleadores", desc: "Genera un enlace único o exporta tu PDF verificado por UMSS." },
-          { title: "Destaca como profesional TIS", desc: "Tu perfil validado por la FCyT te diferencia en el mercado." },
-        ];
-        return (
-          <div className="w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl" style={{ backgroundColor: "#FFFFFF" }}>
-            <div className="px-5 py-4 flex items-center justify-between border-b" style={{ borderColor: "#C9D1D9" }}>
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg flex items-center justify-center text-white text-xs font-bold" style={{ backgroundColor: "#C8102E" }}>PDF</div>
-                <div>
-                  <div className="font-bold text-xs" style={{ color: "#1A1A2E" }}>portafolio_cmendoza.pdf</div>
-                  <div className="text-gray-400 text-xs">Generado hoy · 2.4 MB</div>
-                </div>
-              </div>
-              <button className="text-xs font-bold px-3 py-1.5 rounded-lg text-white flex-shrink-0" style={{ backgroundColor: "#003087" }}>↓ Descargar</button>
-            </div>
-            <div className="mx-4 my-4 rounded-xl border overflow-hidden" style={{ borderColor: "#C9D1D9" }}>
-              <div className="px-5 py-6 flex flex-col items-center text-center" style={{ backgroundColor: "#fafafa", minHeight: "120px" }}>
-                <div className="font-bold text-sm mb-1" style={{ color: "#003087" }}>{innerSlides[innerCurrent].title}</div>
-                <div className="text-xs text-gray-500">{innerSlides[innerCurrent].desc}</div>
-              </div>
-              <div className="flex items-center justify-center gap-2 py-3 border-t" style={{ borderColor: "#C9D1D9", backgroundColor: "#fafafa" }}>
-                {innerSlides.map((_, i) => (
-                  <button key={i} onClick={() => setInnerCurrent(i)}
-                    style={{ width: i === innerCurrent ? "20px" : "7px", height: "7px", borderRadius: i === innerCurrent ? "4px" : "50%", backgroundColor: i === innerCurrent ? "#003087" : "#C9D1D9", transition: "all 0.2s", border: "none", padding: 0, cursor: "pointer" }} />
-                ))}
-              </div>
-            </div>
-            <div className="px-4 pb-4 grid grid-cols-3 gap-2">
-              {[{ label: "PDF Completo", icon: "📄", active: true }, { label: "Solo CV", icon: "📋", active: false }, { label: "Compartir link", icon: "🔗", active: false }].map((opt) => (
-                <button key={opt.label} className="flex flex-col items-center gap-1 py-2 rounded-xl border text-xs font-bold transition-all"
-                  style={{ borderColor: opt.active ? "#003087" : "#C9D1D9", color: opt.active ? "#003087" : "#9ca3af", backgroundColor: opt.active ? "#f0f4ff" : "transparent" }}>
-                  <span style={{ fontSize: "16px" }}>{opt.icon}</span>{opt.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        );
-      })(),
+      id: "platform",
+      title: "Plataforma de Portafolios Digitales",
+      subtitle: "Crea, gestiona y comparte tu perfil profesional validado por la institución.",
+      bg: "#003087", // UMSS Blue
     },
     {
-      title: "Gestión de Proyectos",
-      description: "Administra tu portafolio académico",
-      content: (
-        <div className="w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl bg-white">
-          <div className="px-5 py-4 border-b flex items-center justify-between" style={{ borderColor: "#C9D1D9" }}>
-            <div className="font-bold text-sm" style={{ color: "#1A1A2E" }}>Mis Proyectos</div>
-            <span className="text-xs font-bold px-3 py-1 rounded-full text-white" style={{ backgroundColor: "#003087" }}>+ Nuevo</span>
-          </div>
-          <div className="divide-y" style={{ borderColor: "#C9D1D9" }}>
-            {[
-              { name: "Sistema de Inventario", tech: "React · Laravel", status: "Completado", color: "#16a34a" },
-              { name: "App Gestión Académica", tech: "Vue · Node.js", status: "En progreso", color: "#d97706" },
-              { name: "API REST Portafolio", tech: "PHP · PostgreSQL", status: "Completado", color: "#16a34a" },
-              { name: "Dashboard Analytics", tech: "React · Python", status: "Borrador", color: "#6b7280" },
-            ].map((proj) => (
-              <div key={proj.name} className="px-5 py-3 flex items-center justify-between">
-                <div>
-                  <div className="font-bold text-sm" style={{ color: "#1A1A2E" }}>{proj.name}</div>
-                  <div className="text-gray-400 text-xs">{proj.tech}</div>
-                </div>
-                <span className="text-xs font-bold px-2 py-1 rounded-full" style={{ color: proj.color, backgroundColor: `${proj.color}18` }}>{proj.status}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      ),
-    },
+      id: "pdf",
+      title: "Exportación PDF Profesional",
+      subtitle: "Genera tu currículum en formato PDF listo para compartir con empleadores en un clic.",
+      bg: "#1e293b", // Dark
+    }
   ];
 
   useEffect(() => {
-    const timer = setInterval(() => setCurrent((prev) => (prev + 1) % slides.length), 4000);
+    const timer = setInterval(() => setCurrent((prev) => (prev + 1) % banners.length), 6000);
     return () => clearInterval(timer);
-  }, [slides.length]);
+  }, [banners.length]);
 
-  const prev = () => setCurrent((c) => (c - 1 + slides.length) % slides.length);
-  const next = () => setCurrent((c) => (c + 1) % slides.length);
+  const prev = () => setCurrent((c) => (c - 1 + banners.length) % banners.length);
+  const next = () => setCurrent((c) => (c + 1) % banners.length);
 
   return (
-    <section className="flex flex-col lg:flex-row min-h-screen pt-16">
-      {/* Left — Azul UMSS */}
-      <div className="flex-1 flex flex-col justify-center px-10 lg:px-20 py-20" style={{ backgroundColor: "#003087" }}>
-        <div className="inline-flex items-center gap-2 border border-white/30 rounded-full px-4 py-2 mb-8 w-fit" style={{ backgroundColor: "rgba(255,255,255,0.08)" }}>
-          <span className="text-white text-xs">🛡️</span>
-          <span className="text-white text-xs font-bold tracking-widest uppercase">Plataforma No Oficial</span>
-        </div>
-
-        <h1 className="font-extrabold text-4xl lg:text-5xl xl:text-6xl leading-tight mb-8 text-white">
-          {user
-            ? `Bienvenido de vuelta, ${user.first_name || user.name || "profesional"} 👋`
-            : "Plataforma de Portafolios Digitales para Profesionales"}
-        </h1>
-
-        <p className="text-blue-200 text-base leading-relaxed mb-10 max-w-lg">
-          {user
-            ? "Accedé a tu perfil, actualizá tus proyectos y compartí tu portafolio profesional."
-            : "Crea, gestiona y comparte tu perfil profesional."}
-        </p>
-
-        <div>
-          {user ? (
-            <Link
-              to="/profile/personal-data"
-              className="text-white font-bold text-base px-8 py-4 rounded transition-all duration-200 shadow-xl no-underline inline-block"
-              style={{ backgroundColor: "#C8102E" }}
-              onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.backgroundColor = "#a50d25")}
-              onMouseLeave={(e) => ((e.currentTarget as HTMLAnchorElement).style.backgroundColor = "#C8102E")}
-            >
-              Ir a mi perfil →
-            </Link>
-          ) : (
-            <Link
-              to="/register"
-              className="text-white font-bold text-base px-8 py-4 rounded transition-all duration-200 shadow-xl no-underline inline-block"
-              style={{ backgroundColor: "#C8102E" }}
-              onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.backgroundColor = "#a50d25")}
-              onMouseLeave={(e) => ((e.currentTarget as HTMLAnchorElement).style.backgroundColor = "#C8102E")}
-            >
-              Registrarse ahora
-            </Link>
-          )}
-        </div>
-
-        {/* Estadísticas del backend */}
-        <div className="border-t border-white/20 mt-12 pt-10 flex gap-12">
-          {[
-            { value: formatNumber(stats.total_users), label: "USUARIOS" },
-            { value: formatNumber(stats.total_projects), label: "PROYECTOS" },
-            { value: formatNumber(stats.total_views), label: "VISITAS" },
-          ].map((stat) => (
-            <div key={stat.label}>
-              <div className="text-white font-extrabold text-3xl">{stat.value || "—"}</div>
-              <div className="text-blue-300 text-xs font-bold tracking-widest mt-1">{stat.label}</div>
+    <section className="relative h-[650px] overflow-hidden mt-16">
+      {/* Slides (Background and Text) */}
+      <div className="absolute inset-0 transition-all duration-700 ease-in-out flex"
+           style={{ transform: `translateX(-${current * 100}%)` }}>
+        {banners.map((banner) => (
+          <div 
+            key={banner.id}
+            className="w-full h-full flex-shrink-0 flex flex-col items-center justify-start pt-24 relative"
+            style={{ backgroundColor: banner.bg }}
+          >
+            {/* Background Pattern */}
+            <div className="absolute inset-0 opacity-10 pointer-events-none">
+              <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <path d="M0 0 L100 0 L100 100 Z" fill="white" />
+              </svg>
             </div>
-          ))}
+
+            {/* Content (Title & Subtitle) */}
+            <div className="w-full max-w-5xl mx-auto text-center text-white px-6 relative z-10">
+              <h1 className="text-4xl lg:text-5xl font-extrabold mb-4 animate-fadeIn">
+                {banner.title}
+              </h1>
+              <p className="text-blue-100 text-lg mb-10 opacity-90">
+                {banner.subtitle}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Fixed Search Bar Overlay (Visible in all banners) */}
+      <div className="absolute inset-0 flex items-center justify-center pt-32 pointer-events-none z-20">
+        <div className="w-full max-w-5xl mx-auto text-center px-6 pointer-events-auto">
+          <div className="bg-white rounded-2xl p-2 shadow-2xl flex flex-col md:flex-row items-center gap-2 mb-6 max-w-4xl mx-auto">
+            <div className="flex-1 flex items-center px-4 w-full">
+              <Search className="text-gray-400 mr-3" size={24} />
+              <input 
+                type="text" 
+                placeholder="Buscar por nombre, especialidad o habilidades..."
+                className="w-full py-4 text-gray-800 outline-none text-lg"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+              />
+            </div>
+            <button 
+              onClick={handleSearch}
+              className="bg-[#C8102E] text-white px-10 py-4 rounded-xl font-bold text-lg hover:bg-[#a50d25] transition-all w-full md:w-auto"
+            >
+              Buscar
+            </button>
+          </div>
+
+          <div className="flex flex-wrap justify-center gap-4">
+            <div className="relative group">
+              <select 
+                className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-6 py-2.5 rounded-full text-sm font-medium outline-none cursor-pointer hover:bg-white/20 transition-all appearance-none pr-10"
+                value={selectedArea}
+                onChange={(e) => setSelectedArea(e.target.value)}
+              >
+                {AREAS.map(a => <option key={a} value={a} className="text-gray-800">{a === "Todas las áreas" ? "Área" : a}</option>)}
+              </select>
+              <Filter className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-70" size={14} />
+            </div>
+
+            <div className="relative group">
+              <select 
+                className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-6 py-2.5 rounded-full text-sm font-medium outline-none cursor-pointer hover:bg-white/20 transition-all appearance-none pr-10"
+                value={selectedSkill}
+                onChange={(e) => setSelectedSkill(e.target.value)}
+              >
+                {SKILLS.map(s => <option key={s} value={s} className="text-gray-800">{s === "Todas las habilidades" ? "Habilidades" : s}</option>)}
+              </select>
+              <SlidersHorizontal className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-70" size={14} />
+            </div>
+
+            <div className="relative group">
+              <select 
+                className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-6 py-2.5 rounded-full text-sm font-medium outline-none cursor-pointer hover:bg-white/20 transition-all appearance-none pr-10"
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+              >
+                <option value="relevance" className="text-gray-800">Ordenar: Relevancia</option>
+                <option value="date" className="text-gray-800">Ordenar: Fecha</option>
+              </select>
+              <ArrowUpDown className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-70" size={14} />
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Right — Carrusel */}
-      <div className="flex-1 flex flex-col items-center justify-center px-8 py-20 relative" style={{ backgroundColor: "#C9D1D9" }}>
-        <div className="w-full flex items-center justify-center" style={{ minHeight: "340px" }}>
-          {slides[current].content}
-        </div>
-        <div className="mt-6 text-center">
-          <div className="font-bold text-sm" style={{ color: "#1A1A2E" }}>{slides[current].title}</div>
-          <div className="text-gray-500 text-xs mt-1">{slides[current].description}</div>
-        </div>
-        <div className="flex items-center gap-6 mt-6">
-          <button onClick={prev} className="w-9 h-9 rounded-full border-2 flex items-center justify-center transition-all duration-200 cursor-pointer"
-            style={{ borderColor: "#003087", color: "#003087", backgroundColor: "transparent" }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#003087"; (e.currentTarget as HTMLButtonElement).style.color = "white"; }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "transparent"; (e.currentTarget as HTMLButtonElement).style.color = "#003087"; }}>
-            ‹
-          </button>
-          <div className="flex gap-2">
-            {slides.map((_, i) => (
-              <button key={i} onClick={() => setCurrent(i)} className="rounded-full transition-all duration-300 cursor-pointer border-0"
-                style={{ width: i === current ? "24px" : "8px", height: "8px", backgroundColor: i === current ? "#003087" : "#94a3b8" }} />
-            ))}
-          </div>
-          <button onClick={next} className="w-9 h-9 rounded-full border-2 flex items-center justify-center transition-all duration-200 cursor-pointer"
-            style={{ borderColor: "#003087", color: "#003087", backgroundColor: "transparent" }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#003087"; (e.currentTarget as HTMLButtonElement).style.color = "white"; }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "transparent"; (e.currentTarget as HTMLButtonElement).style.color = "#003087"; }}>
-            ›
-          </button>
-        </div>
+      {/* Navigation arrows */}
+      <button 
+        onClick={prev}
+        className="absolute left-6 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-black/20 text-white flex items-center justify-center hover:bg-black/40 transition-all z-30"
+      >
+        <ChevronLeft size={32} />
+      </button>
+      <button 
+        onClick={next}
+        className="absolute right-6 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-black/20 text-white flex items-center justify-center hover:bg-black/40 transition-all z-30"
+      >
+        <ChevronRight size={32} />
+      </button>
+
+      {/* Dots */}
+      <div className="absolute bottom-10 left-1/2 -translate-y-1/2 flex gap-3 z-30">
+        {banners.map((_, i) => (
+          <button 
+            key={i} 
+            onClick={() => setCurrent(i)}
+            className={`transition-all duration-300 rounded-full ${i === current ? 'w-10 h-3 bg-white' : 'w-3 h-3 bg-white/40'}`}
+          />
+        ))}
       </div>
     </section>
   );
@@ -606,7 +550,109 @@ function CTA() {
   );
 }
 
-// ── Portfolio Card — ahora usa datos del backend ───────────────────────────
+// ── Public Profile Card ──────────────────────────────────────────────────
+function PublicProfileCard({ profile }: { profile: PublicPortfolio }) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <div
+      className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-2xl transition-all duration-500 group flex flex-col items-center text-center"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <div className="relative mb-6">
+        <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-gray-50 shadow-inner group-hover:scale-110 transition-transform duration-500">
+          {profile.avatar_url ? (
+            <img src={profile.avatar_url} alt={profile.first_name} className="w-full h-full object-cover" />
+          ) : (
+            <div className="w-full h-full bg-red-600 flex items-center justify-center text-white text-3xl font-bold">
+              {profile.first_name[0]}
+            </div>
+          )}
+        </div>
+        <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 border-4 border-white rounded-full"></div>
+      </div>
+
+      <h3 className="text-xl font-bold text-gray-900 mb-1">{profile.first_name} {profile.last_name}</h3>
+      <p className="text-sm text-gray-500 mb-4">{profile.profession} • {profile.location}</p>
+
+      <div className="flex flex-wrap justify-center gap-2 mb-8 h-16 overflow-hidden">
+        {profile.skills.map(skill => (
+          <span key={skill} className="bg-blue-50 text-blue-600 px-3 py-1 rounded-lg text-xs font-bold border border-blue-100">
+            {skill}
+          </span>
+        ))}
+      </div>
+
+      <Link
+        to={`/portfolio/${profile.id}`}
+        className="w-full py-3 rounded-xl border-2 border-gray-100 text-gray-800 font-bold hover:bg-[#C8102E] hover:text-white hover:border-[#C8102E] transition-all no-underline"
+      >
+        Ver Portafolio
+      </Link>
+    </div>
+  );
+}
+
+// ── Search Results Section ───────────────────────────────────────────────
+function SearchResults({ results }: { results: PublicPortfolio[] }) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 3;
+  const totalPages = Math.ceil(results.length / itemsPerPage);
+
+  const currentResults = results.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  if (results.length === 0) return null;
+
+  return (
+    <section id="search-results" className="py-20 bg-[#C9D1D9]/30">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="mb-12">
+          <h2 className="text-3xl font-extrabold text-gray-900">Resultados de búsqueda ({results.length})</h2>
+          <p className="text-gray-500">Excluyendo perfiles privados y secciones ocultas.</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {currentResults.map(p => (
+            <PublicProfileCard key={p.id} profile={p} />
+          ))}
+        </div>
+
+        {totalPages > 1 && (
+          <div className="flex justify-center items-center gap-2 mt-16">
+            <button
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              className="p-2 rounded-lg bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-50"
+              disabled={currentPage === 1}
+            >
+              <ChevronLeft size={20} />
+            </button>
+
+            {Array.from({ length: totalPages }).map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrentPage(i + 1)}
+                className={`w-10 h-10 rounded-lg font-bold transition-all ${currentPage === i + 1 ? 'bg-[#C8102E] text-white' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'}`}
+              >
+                {i + 1}
+              </button>
+            ))}
+
+            <button
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              className="p-2 rounded-lg bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-50"
+              disabled={currentPage === totalPages}
+            >
+              <ChevronRight size={20} />
+            </button>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+// ── Portfolio Card ──────────────────────────────────────────────────────────
 const accentColors = ["#003087", "#C8102E", "#001A5E"];
 
 function PortfolioCard({ profile, index }: { profile: FeaturedProfile; index: number }) {
@@ -653,18 +699,17 @@ function PortfolioCard({ profile, index }: { profile: FeaturedProfile; index: nu
   );
 }
 
-// ── Recent Portfolios — datos del backend ──────────────────────────────────
+// ── Recent Portfolios ──────────────────────────────────────────────────────
 function RecentPortfolios({ profiles, loading }: { profiles: FeaturedProfile[]; loading: boolean }) {
   return (
     <section className="py-24" style={{ backgroundColor: "#FFFFFF" }}>
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
           <h2 className="font-extrabold text-3xl lg:text-4xl mb-4" style={{ color: "#1A1A2E" }}>Portafolios recientes</h2>
-          <p className="text-gray-500 max-w-xl mx-auto text-base">Conoce el trabajo de los profesionales.</p>
+          <p className="text-gray-500 max-w-xl mx-auto text-base">Conoce el trabajo de los profesionales destacados.</p>
         </div>
 
         {loading ? (
-          // Skeleton de carga
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[1, 2, 3].map((i) => (
               <div key={i} className="rounded-2xl p-6 border-2 animate-pulse" style={{ borderColor: "#C9D1D9" }}>
@@ -682,7 +727,7 @@ function RecentPortfolios({ profiles, loading }: { profiles: FeaturedProfile[]; 
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {profiles.map((p, i) => (
+            {profiles.slice(0, 3).map((p, i) => (
               <PortfolioCard key={`${p.first_name}-${p.last_name}`} profile={p} index={i} />
             ))}
           </div>
@@ -750,11 +795,13 @@ function Footer() {
 export default function Home() {
   const { user } = useAuth();
   const { profiles, stats, loading } = useFeaturedProfiles();
+  const [searchResults, setSearchResults] = useState<PublicPortfolio[]>(MOCK_PORTFOLIOS);
 
   return (
-    <div className="min-h-screen font-sans antialiased">
+    <div className="min-h-screen font-sans antialiased bg-white">
       <Navbar />
-      <Hero stats={stats} />
+      <Hero onSearch={setSearchResults} />
+      <SearchResults results={searchResults} />
       <UniversityStrip />
       <Features />
       {!user && <CTA />}
