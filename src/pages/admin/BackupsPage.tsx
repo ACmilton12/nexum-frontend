@@ -204,7 +204,7 @@ export default function BackupsPage() {
                           <td className="px-6 py-4 text-right">
                             <div className="flex items-center justify-end gap-2">
                               <button
-                                onClick={() => handleDownload(backup.name)}
+                                onClick={() => handleDownload()}
                                 className="p-1.5 text-gray-400 hover:text-primary hover:bg-primary/10 rounded transition-colors"
                                 title="Descargar"
                               >
