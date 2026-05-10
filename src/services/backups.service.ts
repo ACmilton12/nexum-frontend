@@ -10,7 +10,7 @@ const handleUnauthorized = () => {
   window.location.href = "/login";
 };
 
-/**prueba
+/**PRUEBA
  * Genera un backup de la base de datos y lo descarga automáticamente.
  * El backend devuelve el archivo SQL directamente.
  */
