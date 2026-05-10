@@ -90,16 +90,6 @@ const Sidebar = ({ activeItem = "Dashboard" }: SidebarProps) => {
       ) : (
         <div className="flex flex-col">
           <Link
-            to="/directorio"
-            className={`flex items-center gap-3 px-4 py-3 text-sm ${
-              activeItem === "Home"
-                ? "bg-primary text-white font-medium"
-                : "text-textMain hover:bg-gray-100"
-            }`}
-          >
-            <User size={18} /> Home
-          </Link>
-          <Link
             to="/dashboard"
             className={`flex items-center gap-3 px-4 py-3 text-sm ${
               activeItem === "Dashboard"
