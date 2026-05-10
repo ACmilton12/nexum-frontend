@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Mail, Phone, MapPin, ExternalLink, ShieldAlert, Clock, Eye, Edit3, User as UserIcon, Plus, Briefcase, FolderOpen, CheckCircle } from "lucide-react";
+import { Mail, Phone, MapPin, ShieldAlert, Clock, Eye, Edit3, User as UserIcon, Briefcase, FolderOpen, CheckCircle } from "lucide-react";
 import Sidebar from "../../admin/components/Sidebar";
 import Calendar from "../../../components/ui/Calendar";
 import { getPersonalData } from "../../../services/datapersonal.service";
@@ -377,7 +377,7 @@ const PortfolioView = () => {
                     projects.map((project, idx) => (
                       <div key={idx} className="bg-white rounded-xl border-l-4 border-blue-500 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-6 flex flex-col group">
                         <div className="flex gap-2 mb-4">
-                          {project.tags.map((tag, tIdx) => (
+                          {project.tags.map((tag: string, tIdx: number) => (
                             <span key={tIdx} className={`text-[9px] font-black px-2 py-1 rounded-md uppercase ${tag === "PUBLICADO" ? "bg-green-100 text-green-700" : "bg-blue-100 text-blue-700"}`}>
                               {tag}
                             </span>
@@ -387,7 +387,7 @@ const PortfolioView = () => {
                         <p className="text-[#64748b] text-[11px] leading-relaxed mb-4 flex-1">{project.description}</p>
                         
                         <div className="flex flex-wrap gap-2 mb-6">
-                          {project.tech.map((t, tIdx) => (
+                          {project.tech.map((t: string, tIdx: number) => (
                             <span key={tIdx} className="bg-slate-50 text-blue-600 text-[10px] font-bold px-2 py-1 rounded border border-blue-50">
                               {t}
                             </span>
@@ -430,7 +430,7 @@ const PortfolioView = () => {
                     certifications.map((cert, idx) => (
                       <div key={idx} className="bg-white rounded-xl border-l-4 border-violet-600 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-6 flex flex-col group">
                         <div className="flex gap-2 mb-4">
-                          {cert.tags.map((tag, tIdx) => (
+                          {cert.tags.map((tag: string, tIdx: number) => (
                             <span key={tIdx} className={`text-[9px] font-black px-2 py-1 rounded-md uppercase ${tag === "VERIFICADO" ? "bg-green-100 text-green-700" : "bg-violet-100 text-violet-700"}`}>
                               {tag}
                             </span>
@@ -440,7 +440,7 @@ const PortfolioView = () => {
                         <p className="text-[#64748b] text-[11px] leading-relaxed mb-6 flex-1">{cert.description}</p>
                         
                         <div className="flex flex-wrap gap-2">
-                          {cert.tech.map((t, tIdx) => (
+                          {cert.tech.map((t: string, tIdx: number) => (
                             <span key={tIdx} className="bg-slate-50 text-violet-600 text-[10px] font-bold px-2 py-1 rounded border border-violet-50">
                               {t}
                             </span>

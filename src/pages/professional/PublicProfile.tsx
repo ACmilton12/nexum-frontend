@@ -1,4 +1,3 @@
-import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Building2, GraduationCap, Award, ExternalLink, Mail } from 'lucide-react';
 
@@ -88,7 +87,7 @@ const MOCK_PROFILE = {
 };
 
 const PublicProfile = () => {
-  const { id } = useParams();
+  useParams();
   const navigate = useNavigate();
 
   // En un entorno real, haríamos un fetch aquí usando el ID.
