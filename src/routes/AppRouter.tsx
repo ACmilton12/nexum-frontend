@@ -21,6 +21,7 @@ import Home from "../pages/Home";
 import ProjectsPage from "../pages/professional/projects/ProjectsPage";
 import HomeDirectory from "../pages/professional/HomeDirectory";
 import PublicProfile from "../pages/professional/PublicProfile";
+import PortfolioView from "../pages/professional/portfolio/PortfolioView";
 
 const Breadcrumbs = () => {
   const { pathname } = useLocation();
@@ -115,9 +116,7 @@ const ROUTES_WITHOUT_LAYOUT = [
   "/register",
   "/forgot-password",
   "/reset-password",
-  "/portfolio",
   "/habilidades",
-  "/profolio",
 ];
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
@@ -157,7 +156,11 @@ const AppRouter = () => {
 
           {/* ── Rutas públicas ───────────────────────────────── */}
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/portfolio" element={<RolesPage />} />
+          <Route path="/portfolio" element={
+            <ProtectedRoute allowedRole="professional">
+              <PortfolioView />
+            </ProtectedRoute>
+          } />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/login" element={<LoginPage />} />

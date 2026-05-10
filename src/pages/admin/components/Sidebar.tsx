@@ -19,6 +19,7 @@ import {
   BellRing,
   Menu,
   X,
+  Eye,
 } from "lucide-react";
 import useAuth from "../../../hooks/useAuth";
 
@@ -147,6 +148,17 @@ const Sidebar = ({ activeItem = "Dashboard" }: SidebarProps) => {
             }`}
           >
             <CheckCircle size={18} /> Certificaciones
+          </Link>
+
+          <Link
+            to="/portfolio"
+            className={`flex items-center gap-3 px-4 py-3 text-sm ${
+              activeItem === "Vista Portafolio"
+                ? "bg-primary text-white font-medium"
+                : "text-textMain hover:bg-gray-100"
+            }`}
+          >
+            <Eye size={18} /> Vista Portafolio
           </Link>
 
           {/* PERFIL CON DESPLEGABLE */}
