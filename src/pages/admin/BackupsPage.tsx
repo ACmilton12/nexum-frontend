@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Database, Download, Trash2, Plus, Clock, FileArchive, CheckCircle } from "lucide-react";
 import Sidebar from "./components/Sidebar";
 import Toast from "../../components/ui/Toast";
+import { generateBackup } from "../../services/backups.service";
+import { getActivityLogs } from "../../services/admin.service";
 
 interface Backup {
   id: string;
@@ -11,43 +13,42 @@ interface Backup {
   type: "Automático" | "Manual";
 }
 
-const mockBackups: Backup[] = [
-  {
-    id: "bkp-001",
-    name: "backup_nexum_db_2026-04-26.sql",
-    size: "45.2 MB",
-    date: "26 abr 2026, 03:00",
-    type: "Automático",
-  },
-  {
-    id: "bkp-002",
-    name: "backup_nexum_db_2026-04-25.sql",
-    size: "44.8 MB",
-    date: "25 abr 2026, 03:00",
-    type: "Automático",
-  },
-  {
-    id: "bkp-003",
-    name: "backup_manual_pre_update.sql",
-    size: "44.5 MB",
-    date: "24 abr 2026, 15:45",
-    type: "Manual",
-  },
-];
-
 export default function BackupsPage() {
-  const [backups, setBackups] = useState<Backup[]>(mockBackups);
+  const [backups, setBackups] = useState<Backup[]>([]);
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState<{ mensaje: string; tipo: "success" | "error" } | null>(null);
 
-  const handleGenerateBackup = () => {
+  useEffect(() => {
+    const fetchHistory = async () => {
+      try {
+        const logs = await getActivityLogs();
+        // Filtrar logs de eventos de backup
+        const backupLogs = logs.data
+          .filter((log: any) => log.event === "backup.generated")
+          .map((log: any) => ({
+            id: log.id.toString(),
+            name: log.properties?.filename || "backup_db.sql",
+            size: "N/A",
+            date: log.timestamp,
+            type: "Manual" as const
+          }));
+        setBackups(backupLogs);
+      } catch (error) {
+        console.error("Error al cargar historial de backups:", error);
+      }
+    };
+    fetchHistory();
+  }, []);
+
+  const handleGenerateBackup = async () => {
     setLoading(true);
-    // Simulación de creación de backup (hasta que el backend esté listo)
-    setTimeout(() => {
+    try {
+      const result = await generateBackup();
+      
       const newBackup: Backup = {
         id: `bkp-${Date.now()}`,
-        name: `backup_manual_nexum_${new Date().toISOString().split("T")[0]}.sql`,
-        size: "45.3 MB",
+        name: result.filename,
+        size: result.size,
         date: new Date().toLocaleString("es-ES", {
           day: "2-digit",
           month: "short",
@@ -57,22 +58,23 @@ export default function BackupsPage() {
         }),
         type: "Manual",
       };
-      setBackups([newBackup, ...backups]);
-      setLoading(false);
-      setToast({ mensaje: "Copia de seguridad generada con éxito.", tipo: "success" });
-    }, 2000);
-  };
 
-  const handleDelete = (id: string) => {
-    if (confirm("¿Estás seguro de que deseas eliminar este backup? Esta acción no se puede deshacer.")) {
-      setBackups(backups.filter((b) => b.id !== id));
-      setToast({ mensaje: "Copia de seguridad eliminada.", tipo: "success" });
+      setBackups([newBackup, ...backups]);
+      setToast({ mensaje: "Copia de seguridad generada y descargada con éxito.", tipo: "success" });
+    } catch (error: any) {
+      setToast({ mensaje: error.message || "Error al generar el backup.", tipo: "error" });
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleDownload = (name: string) => {
-    setToast({ mensaje: `Descargando ${name}...`, tipo: "success" });
-    // Aquí iría la lógica real de descarga (window.open(url) o crear blob)
+  const handleDelete = (id: string) => {
+    setBackups(backups.filter((b) => b.id !== id));
+    setToast({ mensaje: "Entrada eliminada del historial local.", tipo: "success" });
+  };
+
+  const handleDownload = () => {
+    setToast({ mensaje: "El archivo ya fue descargado al generarse.", tipo: "success" });
   };
 
   return (
@@ -94,23 +96,35 @@ export default function BackupsPage() {
                 </p>
               </div>
 
-              <button
-                onClick={handleGenerateBackup}
-                disabled={loading}
-                className="bg-action text-white text-sm px-5 py-2.5 rounded-xl hover:opacity-90 transition-all shadow-md flex items-center gap-2 font-semibold disabled:opacity-70 disabled:cursor-not-allowed"
-              >
-                {loading ? (
-                  <>
-                    <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
-                    Generando...
-                  </>
-                ) : (
-                  <>
-                    <Plus size={18} />
-                    Generar Backup Manual
-                  </>
-                )}
-              </button>
+              <div className="flex flex-wrap gap-3">
+                {/* Botón de Restaurar (Estático) */}
+                <button
+                  onClick={() => setToast({ mensaje: "La restauración debe ser realizada manualmente por un administrador de base de datos por seguridad.", tipo: "error" })}
+                  className="bg-white border border-gray-200 text-gray-600 text-sm px-5 py-2.5 rounded-xl hover:bg-gray-50 transition-all shadow-sm flex items-center gap-2 font-semibold"
+                >
+                  <Download className="rotate-180" size={18} />
+                  Restaurar Backup
+                </button>
+
+                {/* Botón de Generar */}
+                <button
+                  onClick={handleGenerateBackup}
+                  disabled={loading}
+                  className="bg-action text-white text-sm px-5 py-2.5 rounded-xl hover:opacity-90 transition-all shadow-md flex items-center gap-2 font-semibold disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  {loading ? (
+                    <>
+                      <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
+                      Generando...
+                    </>
+                  ) : (
+                    <>
+                      <Plus size={18} />
+                      Generar Backup Manual
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
 
             {/* Info Cards */}
