@@ -1,21 +1,21 @@
-import React from 'react';
-import Modal from './Modal';
-import { Edit3 } from 'lucide-react';
+import React from 'react'
+import Modal from './Modal'
+import { Edit3 } from 'lucide-react'
 
 interface ConfirmEditModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-  title?: string;
-  projectName?: string;
+  isOpen: boolean
+  onClose: () => void
+  onConfirm: () => void
+  title?: string
+  projectName?: string
 }
 
 const ConfirmEditModal: React.FC<ConfirmEditModalProps> = ({
   isOpen,
   onClose,
   onConfirm,
-  title = "Editar proyecto",
-  projectName,
+  title = 'Editar proyecto',
+  projectName
 }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} maxWidth="max-w-[450px]">
@@ -28,14 +28,13 @@ const ConfirmEditModal: React.FC<ConfirmEditModalProps> = ({
         </div>
 
         {/* Title */}
-        <h2 className="text-[20px] font-bold text-[#1a1a2e] mb-3">
-          {title}
-        </h2>
+        <h2 className="text-[20px] font-bold text-[#1a1a2e] mb-3">{title}</h2>
 
         {/* Description */}
         <p className="text-[14px] text-[#5b6472] leading-relaxed mb-8">
-          ¿Estás seguro de que deseas editar el proyecto <span className="font-bold text-[#1a1a2e]">"{projectName}"</span>? 
-          Esto abrirá el formulario de edición para que puedas modificar sus detalles.
+          ¿Estás seguro de que deseas editar el proyecto{' '}
+          <span className="font-bold text-[#1a1a2e]">"{projectName}"</span>? Esto abrirá el
+          formulario de edición para que puedas modificar sus detalles.
         </p>
 
         {/* Buttons */}
@@ -55,7 +54,7 @@ const ConfirmEditModal: React.FC<ConfirmEditModalProps> = ({
         </div>
       </div>
     </Modal>
-  );
-};
+  )
+}
 
-export default ConfirmEditModal;
+export default ConfirmEditModal

@@ -68,12 +68,19 @@ function PersonalData() {
   const [ubicacion, setUbicacion] = useState('')
   const [biografia, setBiografia] = useState('')
   const [avatarUrl, setAvatarUrl] = useState('')
-  const [initialData, setInitialData] = useState<any>(null)
+  const [initialData, setInitialData] = useState<{
+    nombre: string
+    apellido: string
+    tituloProfesional: string
+    telefono: string
+    ubicacion: string
+    biografia: string
+  } | null>(null)
 
   const [loading, setLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
   const [showConfirmModal, setShowConfirmModal] = useState(false)
-  
+
   // Estados para el Cropper
   const [isCropperOpen, setIsCropperOpen] = useState(false)
   const [selectedImageSrc, setSelectedImageSrc] = useState<string>('')
@@ -83,7 +90,6 @@ function PersonalData() {
     message: string
     type: 'success' | 'error' | 'info'
   } | null>(null)
-
 
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -165,7 +171,8 @@ function PersonalData() {
       })
       setInitialData({ nombre, apellido, tituloProfesional, telefono, ubicacion, biografia })
       setToast({ message: 'Tus datos se actualizaron correctamente.', type: 'success' })
-    } catch (error: any) {
+    } catch (err: unknown) {
+      const error = err as { message?: string }
       setToast({ message: error.message || 'Error al guardar cambios.', type: 'error' })
     } finally {
       setIsSaving(false)
@@ -204,18 +211,18 @@ function PersonalData() {
     try {
       // 1. Convertir el Blob recortado a File para la compresión
       const fileToCompress = new File([croppedBlob], selectedFileName, { type: 'image/jpeg' })
-      
+
       // 2. Comprimir y convertir a WebP
       const compressedBlob = await compressAndConvertToWebP(fileToCompress, 0.8)
       const webpFile = new File([compressedBlob], `${selectedFileName.split('.')[0]}.webp`, {
         type: 'image/webp'
       })
-      
+
       // 3. Subir el WebP
       const result = await uploadAvatar(webpFile)
       setAvatarUrl(result.data.avatar_url)
       setToast({ message: 'Foto de perfil actualizada y comprimida con éxito.', type: 'success' })
-    } catch (error: any) {
+    } catch {
       setToast({ message: 'Error al procesar o subir la imagen.', type: 'error' })
     }
   }
@@ -450,10 +457,11 @@ function PersonalData() {
                     <button
                       type="submit"
                       disabled={isSaving || !hasChanges}
-                      className={`flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm text-white shadow-lg transition-all ${isSaving || !hasChanges
-                        ? 'bg-gray-300 cursor-not-allowed'
-                        : 'bg-action hover:brightness-110 shadow-red-100'
-                        }`}
+                      className={`flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm text-white shadow-lg transition-all ${
+                        isSaving || !hasChanges
+                          ? 'bg-gray-300 cursor-not-allowed'
+                          : 'bg-action hover:brightness-110 shadow-red-100'
+                      }`}
                     >
                       <Save size={16} /> {isSaving ? 'Guardando...' : 'Guardar cambios'}
                     </button>
@@ -461,7 +469,6 @@ function PersonalData() {
                 </form>
               </div>
             </div>
-
           </div>
 
           {/* ASIDE DERECHO (ESTILO DASHBOARD ADMIN) */}

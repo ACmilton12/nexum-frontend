@@ -1,76 +1,92 @@
-import { useState, useRef, useCallback, useEffect } from "react";
-import { Upload, FileImage, FileText, Trash2, AlertCircle, CheckCircle, Loader2, HardDrive, ChevronLeft, Check, Eye, X } from "lucide-react";
-import { uploadProjectFiles, deleteProjectFile } from "../../../services/File.service";
+import { useState, useRef, useCallback, useEffect } from 'react'
+import {
+  Upload,
+  FileImage,
+  FileText,
+  Trash2,
+  AlertCircle,
+  CheckCircle,
+  Loader2,
+  HardDrive,
+  ChevronLeft,
+  Check,
+  Eye,
+  X
+} from 'lucide-react'
+import { uploadProjectFiles, deleteProjectFile } from '../../../services/File.service'
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const MAX_STORAGE_MB = 700;
-const MAX_FILES = 10;
-const MAX_IMAGE_MB = 2;
-const MAX_PDF_MB = 16;
+const MAX_STORAGE_MB = 700
+const MAX_FILES = 10
+const MAX_IMAGE_MB = 2
+const MAX_PDF_MB = 16
 
-const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp", "application/pdf"];
-const ALLOWED_LABEL = "JPG, PNG, WEBP, PDF";
+const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf']
+const ALLOWED_LABEL = 'JPG, PNG, WEBP, PDF'
 
 function toMB(bytes: number) {
-  return bytes / (1024 * 1024);
+  return bytes / (1024 * 1024)
 }
 function formatMB(bytes: number) {
-  return toMB(bytes).toFixed(1);
+  return toMB(bytes).toFixed(1)
 }
 
 function getFileIcon(mimeType: string) {
-  if (mimeType === "application/pdf") return <FileText size={18} className="text-[#C8102E]" />;
-  return <FileImage size={18} className="text-[#003087]" />;
+  if (mimeType === 'application/pdf') return <FileText size={18} className="text-[#C8102E]" />
+  return <FileImage size={18} className="text-[#003087]" />
 }
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type FileStatus = "uploading" | "success" | "error";
+type FileStatus = 'uploading' | 'success' | 'error'
 
 export interface UploadedFile {
-  id: string;
-  backendId?: number;
-  file: File;
-  name: string;
-  size: number;
-  mimeType: string;
-  status: FileStatus;
-  progress: number;
-  errorMessage?: string;
-  url?: string;
+  id: string
+  backendId?: number
+  file?: File
+  name: string
+  size: number
+  mimeType: string
+  status: FileStatus
+  progress: number
+  errorMessage?: string
+  url?: string
 }
 
 interface Step2FilesProps {
-  projectId: number;
-  uploadedFiles: UploadedFile[];
-  onFilesChange: (files: UploadedFile[]) => void;
-  onBack: () => void;
-  onSave: () => void;
-  showFormatError: boolean;
-  onShowFormatError: () => void;
-  onFormatErrorClose: () => void;
-  showConfirmNoFiles: boolean;
-  onConfirmNoFilesConfirm: () => void;
-  onConfirmNoFilesCancel: () => void;
-  onToast: (msg: string, type: "success" | "error" | "info") => void;
+  projectId: number
+  uploadedFiles: UploadedFile[]
+  onFilesChange: (files: UploadedFile[]) => void
+  onBack: () => void
+  onSave: () => void
+  showFormatError: boolean
+  onShowFormatError: () => void
+  onFormatErrorClose: () => void
+  showConfirmNoFiles: boolean
+  onConfirmNoFilesConfirm: () => void
+  onConfirmNoFilesCancel: () => void
+  onToast: (msg: string, type: 'success' | 'error' | 'info') => void
 }
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
 const StorageIndicator = ({ usedBytes }: { usedBytes: number }) => {
-  const usedMB = toMB(usedBytes);
-  const pct = Math.min((usedMB / MAX_STORAGE_MB) * 100, 100);
-  const isWarn = pct >= 80;
-  const isFull = pct >= 100;
-  const color = isFull ? "text-[#C8102E]" : isWarn ? "text-amber-500" : "text-[#5b6472]";
-  const barColor = isFull ? "bg-[#C8102E]" : isWarn ? "bg-amber-500" : "bg-[#003087]";
+  const usedMB = toMB(usedBytes)
+  const pct = Math.min((usedMB / MAX_STORAGE_MB) * 100, 100)
+  const isWarn = pct >= 80
+  const isFull = pct >= 100
+  const color = isFull ? 'text-[#C8102E]' : isWarn ? 'text-amber-500' : 'text-[#5b6472]'
+  const barColor = isFull ? 'bg-[#C8102E]' : isWarn ? 'bg-amber-500' : 'bg-[#003087]'
 
   return (
     <div className="flex flex-col gap-1.5 px-3 py-2.5 bg-[#f4f7fb] rounded-lg border border-gray-100">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1.5">
-          <HardDrive size={13} className={isFull ? "text-[#C8102E]" : isWarn ? "text-amber-500" : "text-[#003087]"} />
+          <HardDrive
+            size={13}
+            className={isFull ? 'text-[#C8102E]' : isWarn ? 'text-amber-500' : 'text-[#003087]'}
+          />
           <span className="text-[12px] font-bold text-[#1a1a2e]">Uso de almacenamiento</span>
         </div>
         <span className={`text-[11px] font-semibold ${color}`}>
@@ -78,32 +94,50 @@ const StorageIndicator = ({ usedBytes }: { usedBytes: number }) => {
         </span>
       </div>
       <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
-        <div className={`h-full rounded-full transition-all duration-500 ${barColor}`} style={{ width: `${pct}%` }} />
+        <div
+          className={`h-full rounded-full transition-all duration-500 ${barColor}`}
+          style={{ width: `${pct}%` }}
+        />
       </div>
     </div>
-  );
-};
+  )
+}
 
-const FileItem = ({ file, onRemove, onPreview, isRemoving }: { file: UploadedFile; onRemove: (f: UploadedFile) => void; onPreview: (f: UploadedFile) => void; isRemoving: boolean }) => (
+const FileItem = ({
+  file,
+  onRemove,
+  onPreview,
+  isRemoving
+}: {
+  file: UploadedFile
+  onRemove: (f: UploadedFile) => void
+  onPreview: (f: UploadedFile) => void
+  isRemoving: boolean
+}) => (
   <div className="flex items-center gap-3 px-3 py-2.5 bg-white border border-gray-100 rounded-lg hover:border-gray-200 transition-all group">
     <div className="flex-shrink-0">{getFileIcon(file.mimeType)}</div>
     <div className="flex-1 min-w-0">
       <div className="flex items-center justify-between gap-2 mb-1">
         <p className="text-[12px] font-semibold text-[#1a1a2e] truncate">{file.name}</p>
-        <span className="text-[10px] text-[#5b6472] flex-shrink-0">{file.size === 0 ? "? MB" : `${formatMB(file.size)} MB`}</span>
+        <span className="text-[10px] text-[#5b6472] flex-shrink-0">
+          {file.size === 0 ? '? MB' : `${formatMB(file.size)} MB`}
+        </span>
       </div>
-      {file.status === "uploading" && (
+      {file.status === 'uploading' && (
         <div className="w-full h-1 bg-gray-100 rounded-full overflow-hidden">
-          <div className="h-full bg-[#003087] rounded-full transition-all duration-300" style={{ width: `${file.progress}%` }} />
+          <div
+            className="h-full bg-[#003087] rounded-full transition-all duration-300"
+            style={{ width: `${file.progress}%` }}
+          />
         </div>
       )}
-      {file.status === "success" && (
+      {file.status === 'success' && (
         <div className="flex items-center gap-1">
           <CheckCircle size={11} className="text-emerald-500" />
           <span className="text-[11px] text-emerald-600 font-medium">Subido correctamente</span>
         </div>
       )}
-      {file.status === "error" && (
+      {file.status === 'error' && (
         <div className="flex items-center gap-1">
           <AlertCircle size={11} className="text-[#C8102E]" />
           <span className="text-[11px] text-[#C8102E] font-medium">{file.errorMessage}</span>
@@ -111,22 +145,22 @@ const FileItem = ({ file, onRemove, onPreview, isRemoving }: { file: UploadedFil
       )}
     </div>
     <div className="flex items-center gap-2 flex-shrink-0">
-      {file.status === "uploading" && (
+      {file.status === 'uploading' && (
         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#eef3f8] text-[#003087] text-[10px] font-bold">
           <Loader2 size={10} className="animate-spin" /> Uploading
         </span>
       )}
-      {file.status === "success" && (
+      {file.status === 'success' && (
         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-50 text-emerald-600 text-[10px] font-bold">
           <Check size={10} /> Success
         </span>
       )}
-      {file.status === "error" && (
+      {file.status === 'error' && (
         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-red-50 text-[#C8102E] text-[10px] font-bold">
           <AlertCircle size={10} /> Error
         </span>
       )}
-      {file.status === "success" && (
+      {file.status === 'success' && (
         <button
           type="button"
           onClick={() => onPreview(file)}
@@ -136,7 +170,7 @@ const FileItem = ({ file, onRemove, onPreview, isRemoving }: { file: UploadedFil
           <Eye size={14} />
         </button>
       )}
-      {file.status !== "uploading" && (
+      {file.status !== 'uploading' && (
         <button
           type="button"
           disabled={isRemoving}
@@ -149,10 +183,10 @@ const FileItem = ({ file, onRemove, onPreview, isRemoving }: { file: UploadedFil
       )}
     </div>
   </div>
-);
+)
 
 const FormatErrorModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
-  if (!isOpen) return null;
+  if (!isOpen) return null
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
@@ -163,7 +197,8 @@ const FormatErrorModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
         <div className="text-center">
           <h3 className="text-[15px] font-bold text-[#1a1a2e] mb-1">Formato no permitido</h3>
           <p className="text-[13px] text-[#5b6472] leading-relaxed">
-            Solo se aceptan archivos <span className="font-semibold text-[#1a1a2e]">{ALLOWED_LABEL}</span>.
+            Solo se aceptan archivos{' '}
+            <span className="font-semibold text-[#1a1a2e]">{ALLOWED_LABEL}</span>.
           </p>
         </div>
         <button
@@ -175,11 +210,19 @@ const FormatErrorModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
         </button>
       </div>
     </div>
-  );
-};
+  )
+}
 
-const ConfirmNoFilesModal = ({ isOpen, onConfirm, onCancel }: { isOpen: boolean; onConfirm: () => void; onCancel: () => void }) => {
-  if (!isOpen) return null;
+const ConfirmNoFilesModal = ({
+  isOpen,
+  onConfirm,
+  onCancel
+}: {
+  isOpen: boolean
+  onConfirm: () => void
+  onCancel: () => void
+}) => {
+  if (!isOpen) return null
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onCancel} />
@@ -190,7 +233,8 @@ const ConfirmNoFilesModal = ({ isOpen, onConfirm, onCancel }: { isOpen: boolean;
         <div className="text-center">
           <h3 className="text-[15px] font-bold text-[#1a1a2e] mb-1">¿Guardar sin archivos?</h3>
           <p className="text-[13px] text-[#5b6472] leading-relaxed">
-            No has subido ninguna imagen o documento. ¿Estás seguro de que deseas guardar sin archivos adjuntos?
+            No has subido ninguna imagen o documento. ¿Estás seguro de que deseas guardar sin
+            archivos adjuntos?
           </p>
         </div>
         <div className="flex gap-3 w-full">
@@ -211,55 +255,61 @@ const ConfirmNoFilesModal = ({ isOpen, onConfirm, onCancel }: { isOpen: boolean;
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-const FilePreviewModal = ({ file, onClose }: { file: UploadedFile | null; onClose: () => void }) => {
-  const [blobUrl, setBlobUrl] = useState<string>("");
-  const [isLoading, setIsLoading] = useState(true);
+const FilePreviewModal = ({
+  file,
+  onClose
+}: {
+  file: UploadedFile | null
+  onClose: () => void
+}) => {
+  const [blobUrl, setBlobUrl] = useState<string>('')
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    if (!file) return;
+    if (!file) return
 
     if (file.file) {
       // Local file
-      setBlobUrl(URL.createObjectURL(file.file));
-      setIsLoading(false);
+      setBlobUrl(URL.createObjectURL(file.file))
+      setIsLoading(false)
     } else if (file.url) {
       // Backend file: Fetch as blob to strip 'Content-Disposition: attachment' headers
-      setIsLoading(true);
+      setIsLoading(true)
       fetch(file.url, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token') || sessionStorage.getItem('token')}`
         }
       })
-        .then(res => res.blob())
-        .then(blob => {
-          const realBlob = new Blob([blob], { type: file.mimeType || blob.type });
-          setBlobUrl(URL.createObjectURL(realBlob));
+        .then((res) => res.blob())
+        .then((blob) => {
+          const realBlob = new Blob([blob], { type: file.mimeType || blob.type })
+          setBlobUrl(URL.createObjectURL(realBlob))
         })
-        .catch(err => {
-          console.error("Error loading preview", err);
+        .catch((err) => {
+          console.error('Error loading preview', err)
           // Fallback
-          setBlobUrl(file.url!);
+          setBlobUrl(file.url!)
         })
         .finally(() => {
-          setIsLoading(false);
-        });
+          setIsLoading(false)
+        })
     }
 
     return () => {
       // Cleanup
       if (blobUrl && blobUrl.startsWith('blob:')) {
-        URL.revokeObjectURL(blobUrl);
+        URL.revokeObjectURL(blobUrl)
       }
-    };
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [file]);
+  }, [file])
 
-  if (!file) return null;
+  if (!file) return null
 
-  const isPdf = file.mimeType === "application/pdf";
+  const isPdf = file.mimeType === 'application/pdf'
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
@@ -267,7 +317,10 @@ const FilePreviewModal = ({ file, onClose }: { file: UploadedFile | null; onClos
       <div className="relative bg-white rounded-xl shadow-2xl flex flex-col w-full max-w-4xl max-h-[90vh] overflow-hidden">
         <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
           <h3 className="text-[14px] font-bold text-[#1a1a2e] truncate pr-4">{file.name}</h3>
-          <button onClick={onClose} className="p-1 text-gray-400 hover:text-[#C8102E] hover:bg-red-50 rounded-lg transition-colors">
+          <button
+            onClick={onClose}
+            className="p-1 text-gray-400 hover:text-[#C8102E] hover:bg-red-50 rounded-lg transition-colors"
+          >
             <X size={18} />
           </button>
         </div>
@@ -278,18 +331,34 @@ const FilePreviewModal = ({ file, onClose }: { file: UploadedFile | null; onClos
               <p className="text-[13px] font-bold text-[#5b6472]">Cargando vista previa...</p>
             </div>
           ) : isPdf ? (
-            <iframe src={blobUrl} className="w-full h-[70vh] rounded border border-gray-200" title={file.name} />
+            <iframe
+              src={blobUrl}
+              className="w-full h-[70vh] rounded border border-gray-200"
+              title={file.name}
+            />
           ) : (
-            <img src={blobUrl} alt={file.name} className="max-w-full max-h-[70vh] object-contain rounded border border-gray-200" />
+            <img
+              src={blobUrl}
+              alt={file.name}
+              className="max-w-full max-h-[70vh] object-contain rounded border border-gray-200"
+            />
           )}
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-const ConfirmDeleteFileModal = ({ file, onConfirm, onCancel }: { file: UploadedFile | null; onConfirm: () => void; onCancel: () => void }) => {
-  if (!file) return null;
+const ConfirmDeleteFileModal = ({
+  file,
+  onConfirm,
+  onCancel
+}: {
+  file: UploadedFile | null
+  onConfirm: () => void
+  onCancel: () => void
+}) => {
+  if (!file) return null
   return (
     <div className="fixed inset-0 z-[70] flex items-center justify-center">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onCancel} />
@@ -300,7 +369,9 @@ const ConfirmDeleteFileModal = ({ file, onConfirm, onCancel }: { file: UploadedF
         <div className="text-center">
           <h3 className="text-[15px] font-bold text-[#1a1a2e] mb-1">¿Eliminar archivo?</h3>
           <p className="text-[13px] text-[#5b6472] leading-relaxed">
-            Estás a punto de eliminar <span className="font-semibold text-[#1a1a2e]">{file.name}</span>. Esta acción es inmediata y no se puede deshacer.
+            Estás a punto de eliminar{' '}
+            <span className="font-semibold text-[#1a1a2e]">{file.name}</span>. Esta acción es
+            inmediata y no se puede deshacer.
           </p>
         </div>
         <div className="flex gap-3 w-full">
@@ -321,8 +392,8 @@ const ConfirmDeleteFileModal = ({ file, onConfirm, onCancel }: { file: UploadedF
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 
@@ -338,61 +409,61 @@ const Step2Files = ({
   showConfirmNoFiles,
   onConfirmNoFilesConfirm,
   onConfirmNoFilesCancel,
-  onToast,
+  onToast
 }: Step2FilesProps) => {
-  const [isDragOver, setIsDragOver] = useState(false);
-  const [removingId, setRemovingId] = useState<string | null>(null);
-  const [previewFile, setPreviewFile] = useState<UploadedFile | null>(null);
-  const [fileToDelete, setFileToDelete] = useState<UploadedFile | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const filesRef = useRef<UploadedFile[]>(uploadedFiles);
+  const [isDragOver, setIsDragOver] = useState(false)
+  const [removingId, setRemovingId] = useState<string | null>(null)
+  const [previewFile, setPreviewFile] = useState<UploadedFile | null>(null)
+  const [fileToDelete, setFileToDelete] = useState<UploadedFile | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const filesRef = useRef<UploadedFile[]>(uploadedFiles)
 
   useEffect(() => {
-    filesRef.current = uploadedFiles;
-  }, [uploadedFiles]);
+    filesRef.current = uploadedFiles
+  }, [uploadedFiles])
 
   // ── Derived ────────────────────────────────────────────────────────────────
   const usedBytes = uploadedFiles
-    .filter((f) => f.status === "success" && f.size > 0)
-    .reduce((acc, f) => acc + f.size, 0);
+    .filter((f) => f.status === 'success' && f.size > 0)
+    .reduce((acc, f) => acc + f.size, 0)
 
-  const storageFull = toMB(usedBytes) >= MAX_STORAGE_MB;
-  const maxFilesReached = uploadedFiles.filter((f) => f.status !== "error").length >= MAX_FILES;
-  const hasUploading = uploadedFiles.some((f) => f.status === "uploading");
-  const dropZoneDisabled = storageFull || maxFilesReached;
-  const successFiles = uploadedFiles.filter((f) => f.status === "success");
+  const storageFull = toMB(usedBytes) >= MAX_STORAGE_MB
+  const maxFilesReached = uploadedFiles.filter((f) => f.status !== 'error').length >= MAX_FILES
+  const hasUploading = uploadedFiles.some((f) => f.status === 'uploading')
+  const dropZoneDisabled = storageFull || maxFilesReached
+  const successFiles = uploadedFiles.filter((f) => f.status === 'success')
 
   // ── File handlers ──────────────────────────────────────────────────────────
   const enqueueFile = useCallback(
     (file: File) => {
       if (!ALLOWED_MIME_TYPES.includes(file.type)) {
-        onShowFormatError();
-        return;
+        onShowFormatError()
+        return
       }
-      if (storageFull || maxFilesReached) return;
+      if (storageFull || maxFilesReached) return
 
-      const sizeMB = toMB(file.size);
-      let errorMessage: string | undefined;
+      const sizeMB = toMB(file.size)
+      let errorMessage: string | undefined
 
-      if (file.type === "application/pdf" && sizeMB > MAX_PDF_MB) {
-        errorMessage = `Excede el límite de ${MAX_PDF_MB} MB para PDF`;
-      } else if (file.type !== "application/pdf" && sizeMB > MAX_IMAGE_MB) {
-        errorMessage = `Excede el límite de ${MAX_IMAGE_MB} MB para imágenes`;
+      if (file.type === 'application/pdf' && sizeMB > MAX_PDF_MB) {
+        errorMessage = `Excede el límite de ${MAX_PDF_MB} MB para PDF`
+      } else if (file.type !== 'application/pdf' && sizeMB > MAX_IMAGE_MB) {
+        errorMessage = `Excede el límite de ${MAX_IMAGE_MB} MB para imágenes`
       }
 
-      const localId = `${Date.now()}-${Math.random()}`;
+      const localId = `${Date.now()}-${Math.random()}`
       const entry: UploadedFile = {
         id: localId,
         file,
         name: file.name,
         size: file.size,
         mimeType: file.type,
-        status: errorMessage ? "error" : "uploading",
+        status: errorMessage ? 'error' : 'uploading',
         progress: 0,
-        errorMessage,
-      };
+        errorMessage
+      }
 
-      onFilesChange([...filesRef.current, entry]);
+      onFilesChange([...filesRef.current, entry])
 
       // Upload immediately
       if (!errorMessage) {
@@ -402,76 +473,86 @@ const Step2Files = ({
           )
         )
           .then((res) => {
-            const saved = res.data[0];
+            const saved = res.data[0]
             onFilesChange(
               filesRef.current.map((f) =>
-                f.id === localId ? { ...f, status: "success", progress: 100, backendId: saved.id } : f
+                f.id === localId
+                  ? { ...f, status: 'success', progress: 100, backendId: saved.id }
+                  : f
               )
-            );
+            )
           })
           .catch((err: Error) => {
             onFilesChange(
               filesRef.current.map((f) =>
-                f.id === localId ? { ...f, status: "error", progress: 0, errorMessage: err.message || "Error al subir" } : f
+                f.id === localId
+                  ? {
+                      ...f,
+                      status: 'error',
+                      progress: 0,
+                      errorMessage: err.message || 'Error al subir'
+                    }
+                  : f
               )
-            );
-          });
+            )
+          })
       }
     },
     [projectId, onFilesChange, storageFull, maxFilesReached, onShowFormatError]
-  );
+  )
 
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
-      e.preventDefault();
-      setIsDragOver(false);
-      Array.from(e.dataTransfer.files).forEach(enqueueFile);
+      e.preventDefault()
+      setIsDragOver(false)
+      Array.from(e.dataTransfer.files).forEach(enqueueFile)
     },
     [enqueueFile]
-  );
+  )
 
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      Array.from(e.target.files).forEach(enqueueFile);
-      e.target.value = "";
+      Array.from(e.target.files).forEach(enqueueFile)
+      e.target.value = ''
     }
-  };
+  }
 
   const requestRemoveFile = (file: UploadedFile) => {
-    setFileToDelete(file);
-  };
+    setFileToDelete(file)
+  }
 
   const confirmRemoveFile = async () => {
-    if (!fileToDelete) return;
+    if (!fileToDelete) return
     if (fileToDelete.backendId) {
       try {
-        setRemovingId(fileToDelete.id);
-        await deleteProjectFile(projectId, fileToDelete.backendId);
-        onToast("Archivo eliminado exitosamente.", "success");
-      } catch (err: any) {
-        onToast(err.message || "Error al eliminar el archivo.", "error");
-        setRemovingId(null);
-        setFileToDelete(null);
-        return;
+        setRemovingId(fileToDelete.id)
+        await deleteProjectFile(projectId, fileToDelete.backendId)
+        onToast('Archivo eliminado exitosamente.', 'success')
+      } catch (err: unknown) {
+        const error = err as { message?: string }
+        onToast(error.message || 'Error al eliminar el archivo.', 'error')
+        setRemovingId(null)
+        setFileToDelete(null)
+        return
       } finally {
-        setRemovingId(null);
+        setRemovingId(null)
       }
     }
-    onFilesChange(uploadedFiles.filter((f) => f.id !== fileToDelete.id));
-    setFileToDelete(null);
-  };
+    onFilesChange(uploadedFiles.filter((f) => f.id !== fileToDelete.id))
+    setFileToDelete(null)
+  }
 
   const handleSave = () => {
     if (hasUploading) {
-      onToast("Espera a que terminen de subir todos los archivos.", "error");
-      return;
+      onToast('Espera a que terminen de subir todos los archivos.', 'error')
+      return
     }
     if (successFiles.length === 0) {
-      onConfirmNoFilesConfirm();
-      return;
+      onConfirmNoFilesConfirm()
+      return
     }
-    onSave();
-  };
+    onSave()
+  }
 
   return (
     <>
@@ -486,43 +567,55 @@ const Step2Files = ({
         </div>
 
         <div className="flex justify-end">
-          <span className={`text-[11px] font-semibold ${maxFilesReached ? "text-[#C8102E]" : "text-[#5b6472]"}`}>
-            {uploadedFiles.filter((f) => f.status !== "error").length} / {MAX_FILES} archivos
+          <span
+            className={`text-[11px] font-semibold ${maxFilesReached ? 'text-[#C8102E]' : 'text-[#5b6472]'}`}
+          >
+            {uploadedFiles.filter((f) => f.status !== 'error').length} / {MAX_FILES} archivos
           </span>
         </div>
 
         <div
           onDragOver={(e) => {
-            e.preventDefault();
-            if (!dropZoneDisabled) setIsDragOver(true);
+            e.preventDefault()
+            if (!dropZoneDisabled) setIsDragOver(true)
           }}
           onDragLeave={() => setIsDragOver(false)}
           onDrop={handleDrop}
           onClick={() => !dropZoneDisabled && fileInputRef.current?.click()}
           className={`relative flex flex-col items-center justify-center gap-2 p-6 border-2 border-dashed rounded-xl transition-all
-            ${dropZoneDisabled
-              ? "border-gray-200 bg-gray-50 cursor-not-allowed opacity-60"
-              : isDragOver
-                ? "border-[#003087] bg-[#eef3f8] cursor-copy"
-                : "border-gray-200 bg-[#fafbfc] hover:border-[#003087] hover:bg-[#eef3f8] cursor-pointer"
+            ${
+              dropZoneDisabled
+                ? 'border-gray-200 bg-gray-50 cursor-not-allowed opacity-60'
+                : isDragOver
+                  ? 'border-[#003087] bg-[#eef3f8] cursor-copy'
+                  : 'border-gray-200 bg-[#fafbfc] hover:border-[#003087] hover:bg-[#eef3f8] cursor-pointer'
             }`}
         >
-          <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${isDragOver ? "bg-[#003087]" : "bg-[#eef3f8]"}`}>
-            <Upload size={18} className={isDragOver ? "text-white" : "text-[#003087]"} />
+          <div
+            className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${isDragOver ? 'bg-[#003087]' : 'bg-[#eef3f8]'}`}
+          >
+            <Upload size={18} className={isDragOver ? 'text-white' : 'text-[#003087]'} />
           </div>
           <div className="text-center">
             <p className="text-[13px] font-semibold text-[#1a1a2e]">
               {storageFull
-                ? "Almacenamiento lleno"
+                ? 'Almacenamiento lleno'
                 : maxFilesReached
                   ? `Máximo de ${MAX_FILES} archivos alcanzado`
-                  : "Arrastra archivos o haz clic para seleccionar"}
+                  : 'Arrastra archivos o haz clic para seleccionar'}
             </p>
             <p className="text-[11px] text-[#5b6472] mt-0.5">
               Formatos: {ALLOWED_LABEL} · Imágenes ≤ {MAX_IMAGE_MB} MB · PDF ≤ {MAX_PDF_MB} MB
             </p>
           </div>
-          <input ref={fileInputRef} type="file" multiple accept=".jpg,.jpeg,.png,.webp,.pdf" className="hidden" onChange={handleFileInput} />
+          <input
+            ref={fileInputRef}
+            type="file"
+            multiple
+            accept=".jpg,.jpeg,.png,.webp,.pdf"
+            className="hidden"
+            onChange={handleFileInput}
+          />
         </div>
 
         {storageFull && (
@@ -537,7 +630,13 @@ const Step2Files = ({
         {uploadedFiles.length > 0 && (
           <div className="flex flex-col gap-2 max-h-[200px] overflow-y-auto pr-0.5">
             {uploadedFiles.map((f) => (
-              <FileItem key={f.id} file={f} onRemove={requestRemoveFile} onPreview={setPreviewFile} isRemoving={removingId === f.id} />
+              <FileItem
+                key={f.id}
+                file={f}
+                onRemove={requestRemoveFile}
+                onPreview={setPreviewFile}
+                isRemoving={removingId === f.id}
+              />
             ))}
           </div>
         )}
@@ -556,15 +655,16 @@ const Step2Files = ({
             type="button"
             onClick={handleSave}
             disabled={hasUploading}
-            className={`w-full sm:w-auto h-10 px-6 text-[14px] font-bold text-white rounded-lg transition-all flex items-center justify-center gap-2 ${hasUploading ? "bg-gray-400 cursor-not-allowed" : "bg-[#c8102e] hover:brightness-110"
-              }`}
+            className={`w-full sm:w-auto h-10 px-6 text-[14px] font-bold text-white rounded-lg transition-all flex items-center justify-center gap-2 ${
+              hasUploading ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#c8102e] hover:brightness-110'
+            }`}
           >
             {hasUploading ? (
               <>
                 <Loader2 size={14} className="animate-spin" /> Subiendo...
               </>
             ) : (
-              "Guardar Proyecto"
+              'Guardar Proyecto'
             )}
           </button>
         </div>
@@ -583,7 +683,7 @@ const Step2Files = ({
         onCancel={() => setFileToDelete(null)}
       />
     </>
-  );
-};
+  )
+}
 
-export default Step2Files;
+export default Step2Files

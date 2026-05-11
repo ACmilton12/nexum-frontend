@@ -1,79 +1,81 @@
-import { useState } from "react";
-import { Database, Download, Trash2, Plus, Clock, FileArchive, CheckCircle } from "lucide-react";
-import Sidebar from "./components/Sidebar";
-import Toast from "../../components/ui/Toast";
+import { useState } from 'react'
+import { Database, Download, Trash2, Plus, Clock, FileArchive, CheckCircle } from 'lucide-react'
+import Sidebar from './components/Sidebar'
+import Toast from '../../components/ui/Toast'
 
 interface Backup {
-  id: string;
-  name: string;
-  size: string;
-  date: string;
-  type: "Automático" | "Manual";
+  id: string
+  name: string
+  size: string
+  date: string
+  type: 'Automático' | 'Manual'
 }
 
 const mockBackups: Backup[] = [
   {
-    id: "bkp-001",
-    name: "backup_nexum_db_2026-04-26.sql",
-    size: "45.2 MB",
-    date: "26 abr 2026, 03:00",
-    type: "Automático",
+    id: 'bkp-001',
+    name: 'backup_nexum_db_2026-04-26.sql',
+    size: '45.2 MB',
+    date: '26 abr 2026, 03:00',
+    type: 'Automático'
   },
   {
-    id: "bkp-002",
-    name: "backup_nexum_db_2026-04-25.sql",
-    size: "44.8 MB",
-    date: "25 abr 2026, 03:00",
-    type: "Automático",
+    id: 'bkp-002',
+    name: 'backup_nexum_db_2026-04-25.sql',
+    size: '44.8 MB',
+    date: '25 abr 2026, 03:00',
+    type: 'Automático'
   },
   {
-    id: "bkp-003",
-    name: "backup_manual_pre_update.sql",
-    size: "44.5 MB",
-    date: "24 abr 2026, 15:45",
-    type: "Manual",
-  },
-];
+    id: 'bkp-003',
+    name: 'backup_manual_pre_update.sql',
+    size: '44.5 MB',
+    date: '24 abr 2026, 15:45',
+    type: 'Manual'
+  }
+]
 
 export default function BackupsPage() {
-  const [backups, setBackups] = useState<Backup[]>(mockBackups);
-  const [loading, setLoading] = useState(false);
-  const [toast, setToast] = useState<{ mensaje: string; tipo: "success" | "error" } | null>(null);
+  const [backups, setBackups] = useState<Backup[]>(mockBackups)
+  const [loading, setLoading] = useState(false)
+  const [toast, setToast] = useState<{ mensaje: string; tipo: 'success' | 'error' } | null>(null)
 
   const handleGenerateBackup = () => {
-    setLoading(true);
+    setLoading(true)
     // Simulación de creación de backup (hasta que el backend esté listo)
     setTimeout(() => {
       const newBackup: Backup = {
         id: `bkp-${Date.now()}`,
-        name: `backup_manual_nexum_${new Date().toISOString().split("T")[0]}.sql`,
-        size: "45.3 MB",
-        date: new Date().toLocaleString("es-ES", {
-          day: "2-digit",
-          month: "short",
-          year: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
+        name: `backup_manual_nexum_${new Date().toISOString().split('T')[0]}.sql`,
+        size: '45.3 MB',
+        date: new Date().toLocaleString('es-ES', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
         }),
-        type: "Manual",
-      };
-      setBackups([newBackup, ...backups]);
-      setLoading(false);
-      setToast({ mensaje: "Copia de seguridad generada con éxito.", tipo: "success" });
-    }, 2000);
-  };
+        type: 'Manual'
+      }
+      setBackups([newBackup, ...backups])
+      setLoading(false)
+      setToast({ mensaje: 'Copia de seguridad generada con éxito.', tipo: 'success' })
+    }, 2000)
+  }
 
   const handleDelete = (id: string) => {
-    if (confirm("¿Estás seguro de que deseas eliminar este backup? Esta acción no se puede deshacer.")) {
-      setBackups(backups.filter((b) => b.id !== id));
-      setToast({ mensaje: "Copia de seguridad eliminada.", tipo: "success" });
+    if (
+      confirm('¿Estás seguro de que deseas eliminar este backup? Esta acción no se puede deshacer.')
+    ) {
+      setBackups(backups.filter((b) => b.id !== id))
+      setToast({ mensaje: 'Copia de seguridad eliminada.', tipo: 'success' })
     }
-  };
+  }
 
   const handleDownload = (name: string) => {
-    setToast({ mensaje: `Descargando ${name}...`, tipo: "success" });
+    setToast({ mensaje: `Descargando ${name}...`, tipo: 'success' })
     // Aquí iría la lógica real de descarga (window.open(url) o crear blob)
-  };
+  }
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -120,7 +122,9 @@ export default function BackupsPage() {
                   <FileArchive className="text-primary" size={24} />
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 font-medium uppercase tracking-wide mb-0.5">Total Backups</p>
+                  <p className="text-xs text-gray-500 font-medium uppercase tracking-wide mb-0.5">
+                    Total Backups
+                  </p>
                   <p className="text-2xl font-bold text-textMain">{backups.length}</p>
                 </div>
               </div>
@@ -130,8 +134,10 @@ export default function BackupsPage() {
                   <Clock className="text-primary" size={24} />
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 font-medium uppercase tracking-wide mb-0.5">Último Backup</p>
-                  <p className="text-sm font-bold text-textMain">{backups[0]?.date || "Ninguno"}</p>
+                  <p className="text-xs text-gray-500 font-medium uppercase tracking-wide mb-0.5">
+                    Último Backup
+                  </p>
+                  <p className="text-sm font-bold text-textMain">{backups[0]?.date || 'Ninguno'}</p>
                 </div>
               </div>
 
@@ -140,7 +146,9 @@ export default function BackupsPage() {
                   <CheckCircle className="text-primary" size={24} />
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 font-medium uppercase tracking-wide mb-0.5">Estado</p>
+                  <p className="text-xs text-gray-500 font-medium uppercase tracking-wide mb-0.5">
+                    Estado
+                  </p>
                   <p className="text-sm font-bold text-textMain">Automatizado activo</p>
                 </div>
               </div>
@@ -171,17 +179,22 @@ export default function BackupsPage() {
                       </tr>
                     ) : (
                       backups.map((backup) => (
-                        <tr key={backup.id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
+                        <tr
+                          key={backup.id}
+                          className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors"
+                        >
                           <td className="px-6 py-4 font-medium text-textMain flex items-center gap-2">
                             <Database size={14} className="text-gray-400" />
                             {backup.name}
                           </td>
                           <td className="px-6 py-4">
-                            <span className={`px-2.5 py-1 text-[11px] font-bold rounded-full ${
-                              backup.type === "Automático" 
-                                ? "bg-primary/10 text-primary" 
-                                : "bg-navbar/10 text-navbar"
-                            }`}>
+                            <span
+                              className={`px-2.5 py-1 text-[11px] font-bold rounded-full ${
+                                backup.type === 'Automático'
+                                  ? 'bg-primary/10 text-primary'
+                                  : 'bg-navbar/10 text-navbar'
+                              }`}
+                            >
                               {backup.type}
                             </span>
                           </td>
@@ -217,5 +230,5 @@ export default function BackupsPage() {
       </div>
       {toast && <Toast message={toast.mensaje} type={toast.tipo} onClose={() => setToast(null)} />}
     </div>
-  );
+  )
 }
