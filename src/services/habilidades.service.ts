@@ -1,5 +1,5 @@
 /// habilidades.service.ts
-import { API_BASE_URL } from "../utils/constants";
+import { API_BASE_URL } from '../utils/constants'
 
 function getAuthToken(): string {
   const token = localStorage.getItem('token') || sessionStorage.getItem('token')
@@ -135,7 +135,7 @@ export async function addPortfolioSkill(
 /** PUT /portfolio/skills/{id} — actualiza nivel y/o status */
 export async function updatePortfolioSkill(
   portfolioSkillId: number,
-  level: ApiNivel  // solo level, sin isActive
+  level: ApiNivel // solo level, sin isActive
 ): Promise<ApiPortfolioSkill> {
   const res = await apiFetch<ApiPortfolioSkillResponse>(`/portfolio/skills/${portfolioSkillId}`, {
     method: 'PUT',

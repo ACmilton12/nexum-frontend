@@ -23,7 +23,15 @@ export const getLinksPrivacyData = async () => {
   return result.data
 }
 
-export const updateLinksPrivacyData = async (payload: any) => {
+interface LinksPrivacyPayload {
+  nombre: string
+  apellido: string
+  linkedin?: string | null
+  github?: string | null
+  global_privacy: string
+}
+
+export const updateLinksPrivacyData = async (payload: LinksPrivacyPayload) => {
   const token = getToken()
 
   // Recuperar datos actuales para preservar datos personales
