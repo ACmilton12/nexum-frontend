@@ -8,7 +8,8 @@ import {
   Upload,
   Loader2,
   AlertCircle,
-  CheckCircle2
+  CheckCircle2,
+  Calendar as CalendarIcon
 } from 'lucide-react'
 import {
   createCertification,
@@ -82,21 +83,32 @@ function Certifications() {
     setEntidad(e.target.value)
   }
 
-  const formatMonthYear = (val: string) => {
-    let curr = val.replace(/\D/g, '')
-    if (curr.length > 6) curr = curr.slice(0, 6)
-    if (curr.length >= 3) {
-      return curr.slice(0, 2) + '/' + curr.slice(2)
-    }
-    return curr
+  const formatToLongDate = (val: string) => {
+    if (!val) return ''
+    const [y, m] = val.split('-')
+    const months = [
+      'Enero',
+      'Febrero',
+      'Marzo',
+      'Abril',
+      'Mayo',
+      'Junio',
+      'Julio',
+      'Agosto',
+      'Septiembre',
+      'Octubre',
+      'Noviembre',
+      'Diciembre'
+    ]
+    return `${months[parseInt(m) - 1]} de ${y}`
   }
 
   const handleFechaDesdeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFechaDesde(formatMonthYear(e.target.value))
+    setFechaDesde(e.target.value)
   }
 
   const handleFechaHastaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFechaHasta(formatMonthYear(e.target.value))
+    setFechaHasta(e.target.value)
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -119,15 +131,6 @@ function Certifications() {
     }
   }
 
-  const isValidUrl = (string: string) => {
-    try {
-      new URL(string)
-      return true
-    } catch {
-      return false
-    }
-  }
-
   const handleSave = async () => {
     setGlobalError(null)
     setSuccess(null)
@@ -136,10 +139,15 @@ function Certifications() {
     if (!titulo.trim()) errors.titulo = 'Este campo es obligatorio'
     if (!entidad.trim()) {
       errors.entidad = 'Este campo es obligatorio'
-    } else if (!isValidUrl(entidad)) {
-      errors.entidad = 'URL inválida (ej: https://entidad.com/certificado)'
+    } else if (!/^https?:\/\/.+/.test(entidad)) {
+      errors.entidad = 'URL inválida (debe iniciar con http:// o https://)'
     }
-    if (!fechaDesde) errors.fechaDesde = 'Este campo es obligatorio'
+    if (!fechaDesde) errors.fechaDesde = 'La fecha de inicio es obligatoria'
+    if (!fechaHasta) errors.fechaHasta = 'La fecha de fin es obligatoria'
+
+    if (fechaDesde && fechaHasta && fechaHasta < fechaDesde) {
+      errors.fechaHasta = 'La fecha de fin debe ser posterior a la de inicio'
+    }
 
     if (Object.keys(errors).length > 0) {
       setValidationErrors(errors)
@@ -155,6 +163,12 @@ function Certifications() {
     setGlobalError(null)
     setSuccess(null)
 
+    const formatToBackend = (val: string) => {
+      if (!val) return null
+      const [y, m] = val.split('-')
+      return `${m}/${y}`
+    }
+
     try {
       setActionLoading(true)
 
@@ -162,8 +176,8 @@ function Certifications() {
         name: titulo,
         description: descripcion || null,
         issuing_entity: entidad,
-        issue_date: fechaDesde,
-        expiration_date: fechaHasta || null
+        issue_date: formatToBackend(fechaDesde),
+        expiration_date: formatToBackend(fechaHasta)
       }
 
       const newCert = await createCertification(payload)
@@ -295,34 +309,65 @@ function Certifications() {
                       Fecha: <span className="text-red-500">*</span>
                     </label>
                     <div className="flex flex-col w-full">
-                      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full">
-                        <input
-                          type="text"
-                          placeholder="Desde (MM/YYYY) *"
-                          value={fechaDesde}
-                          onChange={(e) => {
-                            handleFechaDesdeChange(e)
-                            if (validationErrors.fechaDesde)
-                              setValidationErrors({ ...validationErrors, fechaDesde: '' })
-                          }}
-                          disabled={actionLoading}
-                          className={`w-full sm:flex-1 min-w-0 p-2.5 rounded border bg-white outline-none focus:border-action transition-all text-sm ${validationErrors.fechaDesde ? 'border-red-500 ring-1 ring-red-500/20' : 'border-gray-200'}`}
-                        />
-                        <span className="text-gray-400 hidden sm:block">-</span>
-                        <input
-                          type="text"
-                          placeholder="Hasta (MM/YYYY)"
-                          value={fechaHasta}
-                          onChange={handleFechaHastaChange}
-                          disabled={actionLoading}
-                          className="w-full sm:flex-1 min-w-0 p-2.5 rounded border border-gray-200 bg-white outline-none focus:border-action transition-all text-sm"
-                        />
+                      <div className="flex flex-col sm:flex-row items-start gap-3 w-full">
+                        {/* Fecha Inicio */}
+                        <div className="relative w-full sm:flex-1 min-w-0 group">
+                          <input
+                            type="month"
+                            value={fechaDesde}
+                            onChange={(e) => {
+                              handleFechaDesdeChange(e)
+                              if (validationErrors.fechaDesde)
+                                setValidationErrors({ ...validationErrors, fechaDesde: '' })
+                            }}
+                            disabled={actionLoading}
+                            className={`absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10 ${actionLoading ? 'pointer-events-none' : ''}`}
+                          />
+                          <div
+                            className={`w-full p-2.5 rounded border bg-white flex items-center justify-between text-sm transition-all ${validationErrors.fechaDesde ? 'border-red-500 ring-1 ring-red-500/20' : 'border-gray-200 group-hover:border-action'}`}
+                          >
+                            <span className={fechaDesde ? 'text-gray-700' : 'text-gray-400'}>
+                              {fechaDesde ? formatToLongDate(fechaDesde) : 'Mes de año'}
+                            </span>
+                            <CalendarIcon size={14} className="text-gray-400" />
+                          </div>
+                          {validationErrors.fechaDesde && (
+                            <span className="text-red-500 text-[11px] mt-1 block text-center w-full">
+                              {validationErrors.fechaDesde}
+                            </span>
+                          )}
+                        </div>
+
+                        <span className="text-gray-400 hidden sm:block mt-3">-</span>
+
+                        {/* Fecha Fin */}
+                        <div className="relative w-full sm:flex-1 min-w-0 group">
+                          <input
+                            type="month"
+                            value={fechaHasta}
+                            onChange={(e) => {
+                              handleFechaHastaChange(e)
+                              if (validationErrors.fechaHasta)
+                                setValidationErrors({ ...validationErrors, fechaHasta: '' })
+                            }}
+                            disabled={actionLoading}
+                            className={`absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10 ${actionLoading ? 'pointer-events-none' : ''}`}
+                          />
+                          <div
+                            className={`w-full p-2.5 rounded border bg-white flex items-center justify-between text-sm transition-all ${validationErrors.fechaHasta ? 'border-red-500 ring-1 ring-red-500/20' : 'border-gray-200 group-hover:border-action'}`}
+                          >
+                            <span className={fechaHasta ? 'text-gray-700' : 'text-gray-400'}>
+                              {fechaHasta ? formatToLongDate(fechaHasta) : 'Mes de año'}
+                            </span>
+                            <CalendarIcon size={14} className="text-gray-400" />
+                          </div>
+                          {validationErrors.fechaHasta && (
+                            <span className="text-red-500 text-[11px] mt-1 block text-center w-full">
+                              {validationErrors.fechaHasta}
+                            </span>
+                          )}
+                        </div>
                       </div>
-                      {validationErrors.fechaDesde && (
-                        <span className="text-red-500 text-[11px] mt-1">
-                          {validationErrors.fechaDesde}
-                        </span>
-                      )}
                     </div>
                   </div>
 
