@@ -1,159 +1,179 @@
-import { useState, useEffect, useMemo } from 'react';
-import Sidebar from '../../admin/components/Sidebar';
-import RightWidgets from '../../../components/ui/RightWidgets';
-import CreateProjectModal from './CreateProjectModal';
-import ConfirmDeleteModal from '../../../components/ui/ConfirmDeleteModal';
-import ConfirmEditModal from '../../../components/ui/ConfirmEditModal';
-import Toast from '../../../components/ui/Toast';
-import { getProjects, deleteProject, getCategories, type Project, type ProjectCategory } from '../../../services/project.service';
-import { getPersonalData } from '../../../services/datapersonal.service';
+import { useState, useEffect, useMemo } from 'react'
+import Sidebar from '../../admin/components/Sidebar'
+import RightWidgets from '../../../components/ui/RightWidgets'
+import CreateProjectModal from './CreateProjectModal'
+import ConfirmDeleteModal from '../../../components/ui/ConfirmDeleteModal'
+import ConfirmEditModal from '../../../components/ui/ConfirmEditModal'
+import Toast from '../../../components/ui/Toast'
 import {
-  FolderOpen, ChevronDown, Search, ArrowDownAZ, CalendarDays, Loader2, AlertCircle
-} from 'lucide-react';
+  getProjects,
+  deleteProject,
+  getCategories,
+  type Project,
+  type ProjectCategory
+} from '../../../services/project.service'
+import { getPersonalData } from '../../../services/datapersonal.service'
+import {
+  FolderOpen,
+  ChevronDown,
+  Search,
+  ArrowDownAZ,
+  CalendarDays,
+  Loader2,
+  AlertCircle
+} from 'lucide-react'
 
 const ProjectsPage = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [projectToEdit, setProjectToEdit] = useState<Project | null>(null);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
-  const [isEditConfirmModalOpen, setIsEditConfirmModalOpen] = useState(false);
-  const [projectToConfirmEdit, setProjectToConfirmEdit] = useState<Project | null>(null);
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [categories, setCategories] = useState<ProjectCategory[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [hasPortfolio, setHasPortfolio] = useState<boolean | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [projectToEdit, setProjectToEdit] = useState<Project | null>(null)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [projectToDelete, setProjectToDelete] = useState<Project | null>(null)
+  const [isEditConfirmModalOpen, setIsEditConfirmModalOpen] = useState(false)
+  const [projectToConfirmEdit, setProjectToConfirmEdit] = useState<Project | null>(null)
+  const [projects, setProjects] = useState<Project[]>([])
+  const [categories, setCategories] = useState<ProjectCategory[]>([])
+  const [loading, setLoading] = useState(true)
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [hasPortfolio, setHasPortfolio] = useState<boolean | null>(null)
   const [toast, setToast] = useState<{
-    message: string;
-    type: 'success' | 'error' | 'info';
-  } | null>(null);
+    message: string
+    type: 'success' | 'error' | 'info'
+  } | null>(null)
 
   // Filter states
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<number | 'ALL'>('ALL');
-  const [sortDate, setSortDate] = useState<'NEWEST' | 'OLDEST'>('NEWEST');
-  const [sortAlpha, setSortAlpha] = useState<'A-Z' | 'Z-A' | 'NONE'>('NONE');
+  const [searchTerm, setSearchTerm] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState<number | 'ALL'>('ALL')
+  const [sortDate, setSortDate] = useState<'NEWEST' | 'OLDEST'>('NEWEST')
+  const [sortAlpha, setSortAlpha] = useState<'A-Z' | 'Z-A' | 'NONE'>('NONE')
 
   const fetchProjects = async () => {
     try {
-      setLoading(true);
-      const data = await getProjects();
-      setProjects(data);
+      setLoading(true)
+      const data = await getProjects()
+      setProjects(data)
     } catch (error) {
-      console.error('Error al cargar proyectos:', error);
+      console.error('Error al cargar proyectos:', error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   useEffect(() => {
-    getPersonalData().then(data => setHasPortfolio(!!data)).catch(() => setHasPortfolio(false));
-    getCategories().then(setCategories).catch(console.error);
-    fetchProjects();
-  }, []);
+    getPersonalData()
+      .then((data) => setHasPortfolio(!!data))
+      .catch(() => setHasPortfolio(false))
+    getCategories().then(setCategories).catch(console.error)
+    fetchProjects()
+  }, [])
 
   const filteredProjects = useMemo(() => {
     return projects
-      .filter(project => {
+      .filter((project) => {
         // Filtro por categoría
         if (selectedCategory !== 'ALL' && project.category?.id !== selectedCategory) {
-          return false;
+          return false
         }
 
         // Filtro por búsqueda (mínimo 3 caracteres)
         if (searchTerm.trim().length >= 3) {
-          const term = searchTerm.toLowerCase();
-          const matchTitle = project.title.toLowerCase().includes(term);
-          const matchCategory = project.category?.name?.toLowerCase().includes(term) || false;
-          const matchSkills = project.skills?.some(s => s.name.toLowerCase().includes(term)) || false;
+          const term = searchTerm.toLowerCase()
+          const matchTitle = project.title.toLowerCase().includes(term)
+          const matchCategory = project.category?.name?.toLowerCase().includes(term) || false
+          const matchSkills =
+            project.skills?.some((s) => s.name.toLowerCase().includes(term)) || false
 
           if (!matchTitle && !matchCategory && !matchSkills) {
-            return false;
+            return false
           }
         }
-        return true;
+        return true
       })
       .sort((a, b) => {
         // Orden alfabético tiene prioridad si está activo
         if (sortAlpha !== 'NONE') {
-          const cmp = a.title.localeCompare(b.title);
-          return sortAlpha === 'A-Z' ? cmp : -cmp;
+          const cmp = a.title.localeCompare(b.title)
+          return sortAlpha === 'A-Z' ? cmp : -cmp
         }
         // Si no, ordena por fecha
-        const dateA = new Date(a.created_at || 0).getTime();
-        const dateB = new Date(b.created_at || 0).getTime();
-        return sortDate === 'NEWEST' ? dateB - dateA : dateA - dateB;
-      });
-  }, [projects, selectedCategory, searchTerm, sortDate, sortAlpha]);
+        const dateA = new Date(a.created_at || 0).getTime()
+        const dateB = new Date(b.created_at || 0).getTime()
+        return sortDate === 'NEWEST' ? dateB - dateA : dateA - dateB
+      })
+  }, [projects, selectedCategory, searchTerm, sortDate, sortAlpha])
 
   const handleDelete = (id: number) => {
-    const project = projects.find(p => p.id === id);
+    const project = projects.find((p) => p.id === id)
     if (project) {
-      setProjectToDelete(project);
-      setIsDeleteModalOpen(true);
+      setProjectToDelete(project)
+      setIsDeleteModalOpen(true)
     }
-  };
+  }
 
   const handleConfirmDelete = async () => {
-    if (!projectToDelete) return;
+    if (!projectToDelete) return
 
     try {
-      setIsDeleting(true);
-      await deleteProject(projectToDelete.id);
-      setProjects(projects.filter(p => p.id !== projectToDelete.id));
-      setIsDeleteModalOpen(false);
-      setProjectToDelete(null);
-      setToast({ message: 'Proyecto eliminado con éxito.', type: 'success' });
+      setIsDeleting(true)
+      await deleteProject(projectToDelete.id)
+      setProjects(projects.filter((p) => p.id !== projectToDelete.id))
+      setIsDeleteModalOpen(false)
+      setProjectToDelete(null)
+      setToast({ message: 'Proyecto eliminado con éxito.', type: 'success' })
     } catch (error) {
-      console.error('Error al eliminar proyecto:', error);
-      setToast({ message: 'No se pudo eliminar el proyecto.', type: 'error' });
+      console.error('Error al eliminar proyecto:', error)
+      setToast({ message: 'No se pudo eliminar el proyecto.', type: 'error' })
     } finally {
-      setIsDeleting(false);
+      setIsDeleting(false)
     }
-  };
+  }
 
   const handleEditClick = (project: Project) => {
-    setProjectToConfirmEdit(project);
-    setIsEditConfirmModalOpen(true);
-  };
+    setProjectToConfirmEdit(project)
+    setIsEditConfirmModalOpen(true)
+  }
 
   const handleConfirmEdit = () => {
     if (projectToConfirmEdit) {
-      setProjectToEdit(projectToConfirmEdit);
-      setIsModalOpen(true);
-      setIsEditConfirmModalOpen(false);
-      setProjectToConfirmEdit(null);
+      setProjectToEdit(projectToConfirmEdit)
+      setIsModalOpen(true)
+      setIsEditConfirmModalOpen(false)
+      setProjectToConfirmEdit(null)
     }
-  };
+  }
 
   return (
     <div className="min-h-screen bg-background flex flex-col font-sans">
       <div className="flex flex-1 overflow-hidden relative">
         <Sidebar activeItem="Proyectos" />
 
-        <main className="flex-1 flex flex-col lg:flex-row overflow-y-auto">
-          <div className="flex-1 bg-[#C9D1D9] p-4 pl-14 sm:pl-6 md:p-8">
+        <main className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+          <div className="flex-1 bg-[#C9D1D9] p-4 pl-14 sm:pl-6 md:p-8 overflow-y-auto">
             <div className="max-w-[1200px] mx-auto space-y-8">
-
               {/* Header */}
               <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                  <p className="text-[12px] font-medium text-[#5b6472] mb-1">Portafolio profesional UMSS</p>
-                  <h1 className="text-2xl sm:text-[32px] font-bold text-[#1a1a2e] mb-2">Mis Proyectos</h1>
+                  <p className="text-[12px] font-medium text-[#5b6472] mb-1">
+                    Portafolio profesional UMSS
+                  </p>
+                  <h1 className="text-2xl sm:text-[32px] font-bold text-[#1a1a2e] mb-2">
+                    Mis Proyectos
+                  </h1>
                   <p className="text-[14px] text-[#5b6472] max-w-2xl leading-relaxed">
-                    La gestión y la clasificación por categorías se resuelven dentro de una sola pantalla, con filtros visibles y acciones por proyecto.
+                    La gestión y la clasificación por categorías se resuelven dentro de una sola
+                    pantalla, con filtros visibles y acciones por proyecto.
                   </p>
                 </div>
                 <button
                   onClick={() => {
-                    setProjectToEdit(null);
-                    setIsModalOpen(true);
+                    setProjectToEdit(null)
+                    setIsModalOpen(true)
                   }}
                   disabled={hasPortfolio === false}
-                  className={`${hasPortfolio === false
+                  className={`${
+                    hasPortfolio === false
                       ? 'bg-gray-400 cursor-not-allowed'
                       : 'bg-[#c8102e] hover:brightness-110'
-                    } text-white font-bold px-6 py-2.5 rounded-lg shadow-sm transition-all text-[14px]`}
+                  } text-white font-bold px-6 py-2.5 rounded-lg shadow-sm transition-all text-[14px]`}
                 >
                   Nuevo proyecto
                 </button>
@@ -163,7 +183,9 @@ const ProjectsPage = () => {
               <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col gap-5">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <h2 className="text-[16px] font-bold text-[#1a1a2e]">Filtros y ordenamiento</h2>
-                  <p className="text-[13px] text-[#5b6472]">Categoría, búsqueda y orden en un solo bloque.</p>
+                  <p className="text-[13px] text-[#5b6472]">
+                    Categoría, búsqueda y orden en un solo bloque.
+                  </p>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-3">
@@ -171,12 +193,18 @@ const ProjectsPage = () => {
                     <FolderOpen size={16} className="absolute left-4 pointer-events-none" />
                     <select
                       value={selectedCategory}
-                      onChange={(e) => setSelectedCategory(e.target.value === 'ALL' ? 'ALL' : Number(e.target.value))}
+                      onChange={(e) =>
+                        setSelectedCategory(
+                          e.target.value === 'ALL' ? 'ALL' : Number(e.target.value)
+                        )
+                      }
                       className="appearance-none bg-transparent pl-11 pr-10 py-2 w-full text-[13px] font-bold cursor-pointer focus:outline-none outline-none border-none"
                     >
                       <option value="ALL">Categoría: Todas</option>
                       {categories.map((c) => (
-                        <option key={c.id} value={c.id}>{c.name}</option>
+                        <option key={c.id} value={c.id}>
+                          {c.name}
+                        </option>
                       ))}
                     </select>
                     <ChevronDown size={16} className="absolute right-4 pointer-events-none" />
@@ -185,29 +213,36 @@ const ProjectsPage = () => {
                   {/* Toggle fecha: botón único que alterna */}
                   <button
                     type="button"
-                    onClick={() => { setSortDate(sortDate === 'NEWEST' ? 'OLDEST' : 'NEWEST'); setSortAlpha('NONE'); }}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] font-bold transition-all ${sortAlpha === 'NONE'
-                      ? 'bg-gray-100 text-[#003087] hover:bg-gray-200'
-                      : 'bg-gray-100 text-[#5b6472] hover:bg-gray-200'
-                      }`}
+                    onClick={() => {
+                      setSortDate(sortDate === 'NEWEST' ? 'OLDEST' : 'NEWEST')
+                      setSortAlpha('NONE')
+                    }}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] font-bold transition-all ${
+                      sortAlpha === 'NONE'
+                        ? 'bg-gray-100 text-[#003087] hover:bg-gray-200'
+                        : 'bg-gray-100 text-[#5b6472] hover:bg-gray-200'
+                    }`}
                   >
                     <CalendarDays size={15} />
                     {sortDate === 'NEWEST' ? 'Más recientes' : 'Más antiguos'}
-                    <span className="text-[11px] opacity-60">{sortDate === 'NEWEST' ? '↓' : '↑'}</span>
+                    <span className="text-[11px] opacity-60">
+                      {sortDate === 'NEWEST' ? '↓' : '↑'}
+                    </span>
                   </button>
 
                   {/* Toggle alfa: botón único que cicla NONE→A-Z→Z-A→NONE */}
                   <button
                     type="button"
                     onClick={() => {
-                      if (sortAlpha === 'NONE') setSortAlpha('A-Z');
-                      else if (sortAlpha === 'A-Z') setSortAlpha('Z-A');
-                      else setSortAlpha('NONE');
+                      if (sortAlpha === 'NONE') setSortAlpha('A-Z')
+                      else if (sortAlpha === 'A-Z') setSortAlpha('Z-A')
+                      else setSortAlpha('NONE')
                     }}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] font-bold transition-all ${sortAlpha !== 'NONE'
-                      ? 'bg-[#eef3f8] text-[#003087] hover:bg-[#e0eaf5]'
-                      : 'bg-gray-100 text-[#5b6472] hover:bg-gray-200'
-                      }`}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] font-bold transition-all ${
+                      sortAlpha !== 'NONE'
+                        ? 'bg-[#eef3f8] text-[#003087] hover:bg-[#e0eaf5]'
+                        : 'bg-gray-100 text-[#5b6472] hover:bg-gray-200'
+                    }`}
                   >
                     <ArrowDownAZ size={15} />
                     {sortAlpha === 'NONE' ? 'A–Z' : sortAlpha === 'A-Z' ? 'A → Z' : 'Z → A'}
@@ -216,7 +251,10 @@ const ProjectsPage = () => {
 
                 <div className="flex flex-wrap items-center gap-3 mt-1">
                   <div className="relative w-full sm:w-96">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                    <Search
+                      className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                      size={16}
+                    />
                     <input
                       type="text"
                       value={searchTerm}
@@ -240,9 +278,13 @@ const ProjectsPage = () => {
                     <AlertCircle className="text-amber-600" size={24} />
                   </div>
                   <div className="flex-1 text-center sm:text-left">
-                    <h3 className="text-[16px] font-bold text-amber-900 mb-1">Información de portafolio requerida</h3>
+                    <h3 className="text-[16px] font-bold text-amber-900 mb-1">
+                      Información de portafolio requerida
+                    </h3>
                     <p className="text-[14px] text-amber-700 leading-relaxed">
-                      Para añadir proyectos a tu portafolio, primero debes completar tus <span className="font-bold">Datos Personales</span>. Esto permitirá que tus proyectos estén vinculados a tu perfil profesional.
+                      Para añadir proyectos a tu portafolio, primero debes completar tus{' '}
+                      <span className="font-bold">Datos Personales</span>. Esto permitirá que tus
+                      proyectos estén vinculados a tu perfil profesional.
                     </p>
                   </div>
                   <a
@@ -260,18 +302,29 @@ const ProjectsPage = () => {
                   <table className="w-full text-left border-collapse min-w-[850px]">
                     <thead>
                       <tr className="bg-[#f8f9fa] border-b border-gray-100">
-                        <th className="p-4 pl-6 text-[13px] font-bold text-[#1a1a2e] w-[25%]">Proyecto</th>
-                        <th className="p-4 text-[13px] font-bold text-[#1a1a2e] w-[15%]">Categoría</th>
-                        <th className="p-4 text-[13px] font-bold text-[#1a1a2e] w-[25%]">Tecnologías</th>
+                        <th className="p-4 pl-6 text-[13px] font-bold text-[#1a1a2e] w-[25%]">
+                          Proyecto
+                        </th>
+                        <th className="p-4 text-[13px] font-bold text-[#1a1a2e] w-[15%]">
+                          Categoría
+                        </th>
+                        <th className="p-4 text-[13px] font-bold text-[#1a1a2e] w-[25%]">
+                          Tecnologías
+                        </th>
                         <th className="p-4 text-[13px] font-bold text-[#1a1a2e] w-[15%]">Fecha</th>
-                        <th className="p-4 pr-6 text-[13px] font-bold text-[#1a1a2e] text-center w-[20%]">Acciones</th>
+                        <th className="p-4 pr-6 text-[13px] font-bold text-[#1a1a2e] text-center w-[20%]">
+                          Acciones
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100">
                       {loading ? (
                         <tr>
                           <td colSpan={5} className="p-8 text-center text-[#5b6472]">
-                            <Loader2 className="animate-spin mx-auto mb-2 text-[#003087]" size={24} />
+                            <Loader2
+                              className="animate-spin mx-auto mb-2 text-[#003087]"
+                              size={24}
+                            />
                             Cargando proyectos...
                           </td>
                         </tr>
@@ -287,24 +340,40 @@ const ProjectsPage = () => {
                         filteredProjects.map((project) => (
                           <tr key={project.id} className="hover:bg-gray-50 transition-colors group">
                             <td className="p-4 pl-6 text-[13px] text-[#5b6472] font-medium">
-                              {project.title.length > 30 ? project.title.substring(0, 30) + '...' : project.title}
+                              {project.title.length > 30
+                                ? project.title.substring(0, 30) + '...'
+                                : project.title}
                             </td>
                             <td className="p-4">
-                              <span className={`px-2.5 py-1.5 rounded-md text-[12px] font-bold inline-block ${project.category?.name?.toLowerCase().includes('data')
-                                ? 'bg-[#e2e8f0] text-[#475569]'
-                                : 'bg-[#eef3f8] text-[#003087]'
-                                }`}>
+                              <span
+                                className={`px-2.5 py-1.5 rounded-md text-[12px] font-bold inline-block ${
+                                  project.category?.name?.toLowerCase().includes('data')
+                                    ? 'bg-[#e2e8f0] text-[#475569]'
+                                    : 'bg-[#eef3f8] text-[#003087]'
+                                }`}
+                              >
                                 {project.category?.name || 'Sin Categoría'}
                               </span>
                             </td>
-                            <td className="p-4 text-[13px] text-[#5b6472] truncate max-w-[200px]" title={project.skills?.map(s => s.name).join(', ')}>
-                              {project.skills?.map(s => s.name).join(', ') || 'No especificadas'}
+                            <td
+                              className="p-4 text-[13px] text-[#5b6472] truncate max-w-[200px]"
+                              title={project.skills?.map((s) => s.name).join(', ')}
+                            >
+                              {project.skills?.map((s) => s.name).join(', ') || 'No especificadas'}
                             </td>
                             <td className="p-4 text-[13px] text-[#5b6472]">
                               {project.updated_at
-                                ? new Date(project.updated_at).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' })
+                                ? new Date(project.updated_at).toLocaleDateString('es-ES', {
+                                    day: '2-digit',
+                                    month: '2-digit',
+                                    year: 'numeric'
+                                  })
                                 : project.created_at
-                                  ? new Date(project.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' })
+                                  ? new Date(project.created_at).toLocaleDateString('es-ES', {
+                                      day: '2-digit',
+                                      month: '2-digit',
+                                      year: 'numeric'
+                                    })
                                   : 'N/A'}
                             </td>
                             <td className="p-4 pr-6">
@@ -341,9 +410,9 @@ const ProjectsPage = () => {
         projectToEdit={projectToEdit}
         onDelete={handleDelete}
         onClose={() => {
-          setIsModalOpen(false);
-          setProjectToEdit(null);
-          fetchProjects(); // Recargar tras cerrar modal por si se creó/editó un proyecto
+          setIsModalOpen(false)
+          setProjectToEdit(null)
+          fetchProjects() // Recargar tras cerrar modal por si se creó/editó un proyecto
         }}
         onSuccess={(msg) => setToast({ message: msg, type: 'success' })}
       />
@@ -351,8 +420,8 @@ const ProjectsPage = () => {
       <ConfirmDeleteModal
         isOpen={isDeleteModalOpen}
         onClose={() => {
-          setIsDeleteModalOpen(false);
-          setProjectToDelete(null);
+          setIsDeleteModalOpen(false)
+          setProjectToDelete(null)
         }}
         onConfirm={handleConfirmDelete}
         projectName={projectToDelete?.title}
@@ -362,22 +431,16 @@ const ProjectsPage = () => {
       <ConfirmEditModal
         isOpen={isEditConfirmModalOpen}
         onClose={() => {
-          setIsEditConfirmModalOpen(false);
-          setProjectToConfirmEdit(null);
+          setIsEditConfirmModalOpen(false)
+          setProjectToConfirmEdit(null)
         }}
         onConfirm={handleConfirmEdit}
         projectName={projectToConfirmEdit?.title}
       />
 
-      {toast && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={() => setToast(null)}
-        />
-      )}
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
     </div>
-  );
-};
+  )
+}
 
-export default ProjectsPage;
+export default ProjectsPage

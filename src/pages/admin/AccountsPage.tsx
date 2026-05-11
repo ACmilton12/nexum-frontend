@@ -1,74 +1,73 @@
-import { useState, useEffect } from "react";
-import { Filter, UserX, UserCheck, ShieldAlert, ExternalLink } from "lucide-react";
-import Sidebar from "./components/Sidebar";
-import useAuth from "../../hooks/useAuth";
-import { getUsers, toggleUserStatus } from "../../services/admin.service";
-import Calendar from "../../components/ui/Calendar";
+import { useState, useEffect } from 'react'
+import { Filter, UserX, UserCheck, ShieldAlert, ExternalLink } from 'lucide-react'
+import Sidebar from './components/Sidebar'
+import useAuth from '../../hooks/useAuth'
+import { getUsers, toggleUserStatus } from '../../services/admin.service'
+import Calendar from '../../components/ui/Calendar'
 
 interface User {
-  id: number;
-  name: string;
-  email: string;
-  role: string;
-  status: "Activo" | "Inactivo";
-  registro: string;
-  portfolio: string;
+  id: number
+  name: string
+  email: string
+  role: string
+  status: 'Activo' | 'Inactivo'
+  registro: string
+  portfolio: string
 }
 
 const AccountsPage = () => {
-  useAuth();
-  const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [filterStatus, setFilterStatus] = useState("Todos");
-  const [showModal, setShowModal] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  useAuth()
+  const [users, setUsers] = useState<User[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [filterStatus, setFilterStatus] = useState('Todos')
+  const [showModal, setShowModal] = useState(false)
+  const [selectedUser, setSelectedUser] = useState<User | null>(null)
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        setLoading(true);
-        const data = await getUsers();
-        setUsers(data);
-      } catch (err: any) {
-        setError(err.message || "Error al cargar usuarios.");
+        setLoading(true)
+        const data = await getUsers()
+        setUsers(data)
+      } catch (err: unknown) {
+        const error = err as { message?: string }
+        setError(error.message || 'Error al cargar usuarios.')
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
-    fetchUsers();
-  }, []);
+    }
+    fetchUsers()
+  }, [])
 
   const handleDesactivar = (u: User) => {
-    setSelectedUser(u);
-    setShowModal(true);
-  };
+    setSelectedUser(u)
+    setShowModal(true)
+  }
 
   const handleConfirmDesactivar = async () => {
     if (selectedUser) {
       try {
-        await toggleUserStatus(selectedUser.id);
-        setUsers(users.map((u) =>
-          u.id === selectedUser.id ? { ...u, status: "Inactivo" } : u
-        ));
-      } catch (err: any) {
-        alert(err.message || "Error al desactivar el usuario.");
+        await toggleUserStatus(selectedUser.id)
+        setUsers(users.map((u) => (u.id === selectedUser.id ? { ...u, status: 'Inactivo' } : u)))
+      } catch (err: unknown) {
+        const error = err as { message?: string }
+        alert(error.message || 'Error al desactivar el usuario.')
       }
     }
-    setShowModal(false);
-    setSelectedUser(null);
-  };
+    setShowModal(false)
+    setSelectedUser(null)
+  }
 
   const handleReactivar = async (id: number) => {
     try {
-      await toggleUserStatus(id);
-      setUsers(users.map((u) =>
-        u.id === id ? { ...u, status: "Activo" } : u
-      ));
-    } catch (err: any) {
-      alert(err.message || "Error al reactivar el usuario.");
+      await toggleUserStatus(id)
+      setUsers(users.map((u) => (u.id === id ? { ...u, status: 'Activo' } : u)))
+    } catch (err: unknown) {
+      const error = err as { message?: string }
+      alert(error.message || 'Error al reactivar el usuario.')
     }
-  };
+  }
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -77,17 +76,13 @@ const AccountsPage = () => {
         <Sidebar activeItem="Gestión Usuarios" />
 
         {/* Layout Principal: Columna en móvil, Fila en Desktop (lg) */}
-        <main className="flex-1 flex flex-col lg:flex-row overflow-x-hidden">
-          
+        <main className="flex-1 flex flex-col lg:flex-row overflow-hidden">
           {/* SECCIÓN IZQUIERDA: Listado y Tabla */}
-          <div className="flex-1 p-4 pl-14 sm:pl-6 md:p-6">
-            
+          <div className="flex-1 p-4 pl-14 sm:pl-6 md:p-6 overflow-y-auto">
             {/* Header: Título y Filtros apilables */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
               <div>
-                <h1 className="text-xl sm:text-2xl font-bold text-textMain">
-                  Gestión de Usuarios
-                </h1>
+                <h1 className="text-xl sm:text-2xl font-bold text-textMain">Gestión de Usuarios</h1>
                 <p className="text-xs text-gray-500">Administración de accesos Nexum</p>
               </div>
 
@@ -109,7 +104,11 @@ const AccountsPage = () => {
             </div>
 
             {/* Estados de carga y error */}
-            {loading && <div className="text-center py-20 text-gray-400 animate-pulse">Cargando base de datos...</div>}
+            {loading && (
+              <div className="text-center py-20 text-gray-400 animate-pulse">
+                Cargando base de datos...
+              </div>
+            )}
             {error && <div className="text-center py-20 text-action font-medium">{error}</div>}
 
             {/* Tabla con contenedor de Scroll Horizontal */}
@@ -122,14 +121,20 @@ const AccountsPage = () => {
                         <th className="text-left px-6 py-4 text-textMain font-semibold">Usuario</th>
                         <th className="text-left px-6 py-4 text-textMain font-semibold">Email</th>
                         <th className="text-left px-6 py-4 text-textMain font-semibold">Rol</th>
-                        <th className="px-6 py-4 text-textMain font-semibold text-center">Estado</th>
-                        <th className="text-left px-6 py-4 text-textMain font-semibold">Registro</th>
-                        <th className="text-center px-6 py-4 text-textMain font-semibold">Acciones</th>
+                        <th className="px-6 py-4 text-textMain font-semibold text-center">
+                          Estado
+                        </th>
+                        <th className="text-left px-6 py-4 text-textMain font-semibold">
+                          Registro
+                        </th>
+                        <th className="text-center px-6 py-4 text-textMain font-semibold">
+                          Acciones
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-50">
                       {users
-                        .filter((u) => filterStatus === "Todos" || u.status === filterStatus)
+                        .filter((u) => filterStatus === 'Todos' || u.status === filterStatus)
                         .map((u) => (
                           <tr key={u.id} className="hover:bg-blue-50/30 transition-colors">
                             <td className="px-6 py-4 font-medium text-textMain">{u.name}</td>
@@ -140,23 +145,28 @@ const AccountsPage = () => {
                               </span>
                             </td>
                             <td className="px-6 py-4 text-center">
-                              <span className={`inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                                u.status === "Activo" 
-                                ? "bg-green-100 text-green-700" 
-                                : "bg-red-50 text-red-600"
-                              }`}>
+                              <span
+                                className={`inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                                  u.status === 'Activo'
+                                    ? 'bg-green-100 text-green-700'
+                                    : 'bg-red-50 text-red-600'
+                                }`}
+                              >
                                 {u.status}
                               </span>
                             </td>
                             <td className="px-6 py-4 text-gray-400 text-xs">{u.registro}</td>
                             <td className="px-6 py-4 text-center">
-                              {u.status === "Activo" ? (
+                              {u.status === 'Activo' ? (
                                 <button
                                   onClick={() => handleDesactivar(u)}
                                   className="text-action hover:bg-red-50 p-2 rounded-lg transition-colors group"
                                   title="Suspender acceso"
                                 >
-                                  <UserX size={18} className="group-hover:scale-110 transition-transform" />
+                                  <UserX
+                                    size={18}
+                                    className="group-hover:scale-110 transition-transform"
+                                  />
                                 </button>
                               ) : (
                                 <button
@@ -164,7 +174,10 @@ const AccountsPage = () => {
                                   className="text-green-600 hover:bg-green-50 p-2 rounded-lg transition-colors group"
                                   title="Reactivar acceso"
                                 >
-                                  <UserCheck size={18} className="group-hover:scale-110 transition-transform" />
+                                  <UserCheck
+                                    size={18}
+                                    className="group-hover:scale-110 transition-transform"
+                                  />
                                 </button>
                               )}
                             </td>
@@ -183,10 +196,10 @@ const AccountsPage = () => {
           </div>
 
           {/* PANEL DERECHO: w-full en móvil, w-64 en Desktop */}
-          <aside className="w-full lg:w-64 p-6 bg-white border-t lg:border-t-0 lg:border-l border-gray-200 shrink-0">
+          <aside className="w-full lg:w-64 p-6 bg-white border-t lg:border-t-0 lg:border-l border-gray-200 shrink-0 overflow-y-auto">
             <div className="sticky top-6">
               <Calendar />
-              
+
               <div className="mt-8">
                 <h3 className="font-bold text-textMain text-sm mb-4 flex items-center gap-2">
                   <ShieldAlert size={16} className="text-yellow-500" />
@@ -194,7 +207,8 @@ const AccountsPage = () => {
                 </h3>
                 <div className="p-4 bg-yellow-50 rounded-xl border border-yellow-100">
                   <p className="text-[11px] text-yellow-800 leading-relaxed">
-                    La desactivación revoca tokens de sesión activos y bloquea el login del usuario seleccionado.
+                    La desactivación revoca tokens de sesión activos y bloquea el login del usuario
+                    seleccionado.
                   </p>
                 </div>
               </div>
@@ -214,7 +228,6 @@ const AccountsPage = () => {
               </div>
             </div>
           </aside>
-
         </main>
       </div>
 
@@ -229,8 +242,9 @@ const AccountsPage = () => {
               Confirmar Suspensión
             </h2>
             <p className="text-sm text-gray-500 text-center mb-6 leading-relaxed">
-              ¿Estás seguro de desactivar a <span className="font-bold text-textMain">{selectedUser.name}</span>? 
-              Perderá acceso inmediato a la plataforma.
+              ¿Estás seguro de desactivar a{' '}
+              <span className="font-bold text-textMain">{selectedUser.name}</span>? Perderá acceso
+              inmediato a la plataforma.
             </p>
             <div className="flex gap-3">
               <button
@@ -250,7 +264,7 @@ const AccountsPage = () => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default AccountsPage;
+export default AccountsPage

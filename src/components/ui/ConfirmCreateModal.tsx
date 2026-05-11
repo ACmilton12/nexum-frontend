@@ -1,23 +1,23 @@
-import React from 'react';
-import Modal from './Modal';
-import { PlusCircle } from 'lucide-react';
+import React from 'react'
+import Modal from './Modal'
+import { PlusCircle } from 'lucide-react'
 
 interface ConfirmCreateModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-  title?: string;
+  isOpen: boolean
+  onClose: () => void
+  onConfirm: () => void
+  title?: string
 }
 
 const ConfirmCreateModal: React.FC<ConfirmCreateModalProps> = ({
   isOpen,
   onClose,
   onConfirm,
-  title = "Nuevo proyecto",
+  title = 'Nuevo proyecto'
 }) => {
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="flex flex-col items-center text-center max-w-[400px]">
+    <Modal isOpen={isOpen} onClose={onClose} maxWidth="max-w-[450px]">
+      <div className="flex flex-col items-center text-center mx-auto">
         {/* Icon with light red background */}
         <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mb-6">
           <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
@@ -26,14 +26,12 @@ const ConfirmCreateModal: React.FC<ConfirmCreateModalProps> = ({
         </div>
 
         {/* Title */}
-        <h2 className="text-[20px] font-bold text-[#1a1a2e] mb-3">
-          {title}
-        </h2>
+        <h2 className="text-[20px] font-bold text-[#1a1a2e] mb-3">{title}</h2>
 
         {/* Description */}
         <p className="text-[14px] text-[#5b6472] leading-relaxed mb-8">
-          ¿Deseas registrar un nuevo proyecto en tu portafolio? 
-          Esto abrirá el formulario para que puedas completar los detalles técnicos y subir evidencias.
+          ¿Deseas registrar un nuevo proyecto en tu portafolio? Esto abrirá el formulario para que
+          puedas completar los detalles técnicos y subir evidencias.
         </p>
 
         {/* Buttons */}
@@ -53,7 +51,7 @@ const ConfirmCreateModal: React.FC<ConfirmCreateModalProps> = ({
         </div>
       </div>
     </Modal>
-  );
-};
+  )
+}
 
-export default ConfirmCreateModal;
+export default ConfirmCreateModal

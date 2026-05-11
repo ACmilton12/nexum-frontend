@@ -1,5 +1,5 @@
-// habilidades.service.ts
-const API_BASE = 'http://localhost:8000/api/v1'
+/// habilidades.service.ts
+import { API_BASE_URL } from '../utils/constants'
 
 function getAuthToken(): string {
   const token = localStorage.getItem('token') || sessionStorage.getItem('token')
@@ -7,7 +7,7 @@ function getAuthToken(): string {
 }
 
 async function apiFetch<T>(path: string, options: RequestInit = {}): Promise<T> {
-  const res = await fetch(`${API_BASE}${path}`, {
+  const res = await fetch(`${API_BASE_URL}${path}`, {
     ...options,
     headers: {
       'Content-Type': 'application/json',
@@ -39,21 +39,28 @@ export interface ApiCatalogSkill {
 }
 
 /**
+ * Niveles técnicos: basico | intermedio | avanzado
+ * Niveles blandos:  en_formacion | desarrollada | fortalecida
+ */
+export type ApiNivelTecnico = 'basico' | 'intermedio' | 'avanzado'
+export type ApiNivelBlanda = 'en_formacion' | 'desarrollada' | 'fortalecida'
+export type ApiNivel = ApiNivelTecnico | ApiNivelBlanda
+
+/**
  * Skill del portfolio del usuario.
- * IMPORTANTE: la respuesta real del backend tiene los campos name/type/category
- * APLANADOS en el objeto — NO hay una relación `skill` anidada.
- *
- * Respuesta real:
- * { id, skill_id, name, type, category, level, is_active, created_at, updated_at }
+ * Los campos name/type/category son APLANADOS (no hay objeto skill anidado).
  */
 export interface ApiPortfolioSkill {
   id: number
-  skill_id: number
+  skill_id: number | null
+  suggestion_id?: number | null
   name: string
   type: 'tecnica' | 'blanda'
   category: string
-  level: 'basico' | 'intermedio' | 'avanzado' | null
+  level: ApiNivel | null
   is_active: boolean
+  status?: 'approved' | 'pending' | 'rejected' | 'disabled'
+  justification?: string | null
   created_at: string
   updated_at: string
 }
@@ -77,15 +84,27 @@ interface ApiCatalogResponse {
   }
 }
 
-interface ApiCatalogSkillResponse {
-  data: ApiCatalogSkill
+interface ApiSuggestResponse {
+  data: {
+    id: number
+    suggestion_id: number
+    name: string
+    type: 'tecnica' | 'blanda'
+    category: string
+    level: ApiNivel | null
+    is_active: boolean
+    status: 'pending' | 'approved' | 'rejected'
+    justification: string | null
+    created_at: string
+    updated_at: string
+  }
 }
 
 // ─── Funciones del servicio ───────────────────────────────────────────────────
 
 /** GET /portfolio/skills → array plano de skills del usuario */
 export async function getPortfolioSkills(): Promise<ApiPortfolioSkill[]> {
-  const res = await apiFetch<ApiPortfolioSkillsResponse>('/portfolio/skills')
+  const res = await apiFetch<ApiPortfolioSkillsResponse>('/portfolio/skills?include_inactive=true')
   const tecnicas = Object.values(res.data?.tecnica ?? {}).flat()
   const blandas = Object.values(res.data?.blanda ?? {}).flat()
   return [...tecnicas, ...blandas]
@@ -102,7 +121,7 @@ export async function getCatalogSkills(): Promise<ApiCatalogSkill[]> {
 /** POST /portfolio/skills */
 export async function addPortfolioSkill(
   skillId: number,
-  level?: 'basico' | 'intermedio' | 'avanzado'
+  level?: ApiNivel
 ): Promise<ApiPortfolioSkill> {
   const body: { skill_id: number; level?: string } = { skill_id: skillId }
   if (level) body.level = level
@@ -113,10 +132,10 @@ export async function addPortfolioSkill(
   return res.data
 }
 
-/** PUT /portfolio/skills/{id} — solo actualiza el nivel */
+/** PUT /portfolio/skills/{id} — actualiza nivel y/o status */
 export async function updatePortfolioSkill(
   portfolioSkillId: number,
-  level: 'basico' | 'intermedio' | 'avanzado'
+  level: ApiNivel // solo level, sin isActive
 ): Promise<ApiPortfolioSkill> {
   const res = await apiFetch<ApiPortfolioSkillResponse>(`/portfolio/skills/${portfolioSkillId}`, {
     method: 'PUT',
@@ -125,25 +144,27 @@ export async function updatePortfolioSkill(
   return res.data
 }
 
-/** DELETE /portfolio/skills/{id} */
-export async function deletePortfolioSkill(portfolioSkillId: number): Promise<void> {
-  return apiFetch<void>(`/portfolio/skills/${portfolioSkillId}`, { method: 'DELETE' })
+/** Deshabilita una skill (soft-delete) */
+export async function disablePortfolioSkill(portfolioSkillId: number): Promise<ApiPortfolioSkill> {
+  const res = await apiFetch<ApiPortfolioSkillResponse>(`/portfolio/skills/${portfolioSkillId}`, {
+    method: 'DELETE'
+  })
+  return res.data
 }
-
-/** POST /admin/skills — sugerencia de nueva habilidad */
+/**
+ * POST /portfolio/skill-suggestions — sugerencia de nueva habilidad
+ * El campo level es OBLIGATORIO según la spec.
+ */
 export async function suggestSkill(
   name: string,
   type: 'tecnica' | 'blanda',
   category: string,
-  description?: string
-): Promise<ApiCatalogSkill> {
-  const body: { name: string; type: string; category: string; description?: string } = {
-    name,
-    type,
-    category
-  }
-  if (description) body.description = description
-  const res = await apiFetch<ApiCatalogSkillResponse>('/admin/skills', {
+  level: ApiNivel,
+  justification?: string
+): Promise<ApiSuggestResponse['data']> {
+  const body: Record<string, string> = { name, type, category, level }
+  if (justification) body.justification = justification
+  const res = await apiFetch<ApiSuggestResponse>('/portfolio/skill-suggestions', {
     method: 'POST',
     body: JSON.stringify(body)
   })

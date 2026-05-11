@@ -1,27 +1,27 @@
-import React from 'react';
-import Modal from './Modal';
-import { AlertTriangle } from 'lucide-react';
+import React from 'react'
+import Modal from './Modal'
+import { AlertTriangle } from 'lucide-react'
 
 interface ConfirmDeleteModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-  title?: string;
-  projectName?: string;
-  loading?: boolean;
+  isOpen: boolean
+  onClose: () => void
+  onConfirm: () => void
+  title?: string
+  projectName?: string
+  loading?: boolean
 }
 
 const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
   isOpen,
   onClose,
   onConfirm,
-  title = "Eliminar proyecto",
+  title = 'Eliminar proyecto',
   projectName,
-  loading = false,
+  loading = false
 }) => {
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="flex flex-col items-center text-center max-w-[400px]">
+    <Modal isOpen={isOpen} onClose={onClose} maxWidth="max-w-[450px]">
+      <div className="flex flex-col items-center text-center mx-auto">
         {/* Icon with light red background */}
         <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mb-6">
           <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
@@ -30,14 +30,13 @@ const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
         </div>
 
         {/* Title */}
-        <h2 className="text-[20px] font-bold text-[#1a1a2e] mb-3">
-          {title}
-        </h2>
+        <h2 className="text-[20px] font-bold text-[#1a1a2e] mb-3">{title}</h2>
 
         {/* Description */}
         <p className="text-[14px] text-[#5b6472] leading-relaxed mb-8">
-          ¿Estás seguro de que deseas eliminar el proyecto <span className="font-bold text-[#1a1a2e]">"{projectName}"</span>? 
-          Esta acción no se puede deshacer y eliminará permanentemente todos los datos asociados al mismo.
+          ¿Estás seguro de que deseas eliminar el proyecto{' '}
+          <span className="font-bold text-[#1a1a2e]">"{projectName}"</span>? Esta acción no se puede
+          deshacer y eliminará permanentemente todos los datos asociados al mismo.
         </p>
 
         {/* Buttons */}
@@ -60,7 +59,7 @@ const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
         </div>
       </div>
     </Modal>
-  );
-};
+  )
+}
 
-export default ConfirmDeleteModal;
+export default ConfirmDeleteModal

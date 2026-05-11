@@ -1,26 +1,27 @@
-import React, { useState, useCallback } from 'react';
-import Cropper from 'react-easy-crop';
-import Modal from './Modal';
-import { Loader2 } from 'lucide-react';
+import React, { useState, useCallback } from 'react'
+import Cropper, { type Area, type Point } from 'react-easy-crop'
+import Modal from './Modal'
+import { Loader2 } from 'lucide-react'
 
 // Helper para extraer la parte recortada de la imagen original usando Canvas
-export const getCroppedImg = async (imageSrc: string, pixelCrop: any): Promise<Blob> => {
+// Se quita el export para que Fast Refresh funcione correctamente en este archivo
+const getCroppedImg = async (imageSrc: string, pixelCrop: Area): Promise<Blob> => {
   const image = await new Promise<HTMLImageElement>((resolve, reject) => {
-    const img = new Image();
-    img.addEventListener('load', () => resolve(img));
-    img.addEventListener('error', (err) => reject(err));
-    img.src = imageSrc;
-  });
+    const img = new Image()
+    img.addEventListener('load', () => resolve(img))
+    img.addEventListener('error', (err) => reject(err))
+    img.src = imageSrc
+  })
 
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
+  const canvas = document.createElement('canvas')
+  const ctx = canvas.getContext('2d')
 
   if (!ctx) {
-    throw new Error('No 2d context');
+    throw new Error('No 2d context')
   }
 
-  canvas.width = pixelCrop.width;
-  canvas.height = pixelCrop.height;
+  canvas.width = pixelCrop.width
+  canvas.height = pixelCrop.height
 
   ctx.drawImage(
     image,
@@ -32,50 +33,55 @@ export const getCroppedImg = async (imageSrc: string, pixelCrop: any): Promise<B
     0,
     pixelCrop.width,
     pixelCrop.height
-  );
+  )
 
   return new Promise((resolve, reject) => {
     canvas.toBlob((blob) => {
       if (!blob) {
-        reject(new Error('Canvas is empty'));
-        return;
+        reject(new Error('Canvas is empty'))
+        return
       }
-      resolve(blob);
-    }, 'image/jpeg'); // Formato temporal, luego se comprime a WebP en PersonalData
-  });
-};
-
-interface ImageCropperModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  imageSrc: string;
-  onCropComplete: (croppedBlob: Blob) => void;
+      resolve(blob)
+    }, 'image/jpeg') // Formato temporal, luego se comprime a WebP en PersonalData
+  })
 }
 
-const ImageCropperModal: React.FC<ImageCropperModalProps> = ({ isOpen, onClose, imageSrc, onCropComplete }) => {
-  const [crop, setCrop] = useState({ x: 0, y: 0 });
-  const [zoom, setZoom] = useState(1);
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
+interface ImageCropperModalProps {
+  isOpen: boolean
+  onClose: () => void
+  imageSrc: string
+  onCropComplete: (croppedBlob: Blob) => void
+}
 
-  const onCropChange = (crop: any) => setCrop(crop);
-  const onZoomChange = (zoom: any) => setZoom(zoom);
-  const onCropCompleteHandler = useCallback((_croppedArea: any, croppedAreaPixels: any) => {
-    setCroppedAreaPixels(croppedAreaPixels);
-  }, []);
+const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
+  isOpen,
+  onClose,
+  imageSrc,
+  onCropComplete
+}) => {
+  const [crop, setCrop] = useState<Point>({ x: 0, y: 0 })
+  const [zoom, setZoom] = useState(1)
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null)
+  const [isProcessing, setIsProcessing] = useState(false)
+
+  const onCropChange = (crop: Point) => setCrop(crop)
+  const onZoomChange = (zoom: number) => setZoom(zoom)
+  const onCropCompleteHandler = useCallback((_croppedArea: Area, croppedAreaPixels: Area) => {
+    setCroppedAreaPixels(croppedAreaPixels)
+  }, [])
 
   const handleSave = async () => {
-    if (!croppedAreaPixels) return;
+    if (!croppedAreaPixels) return
     try {
-      setIsProcessing(true);
-      const croppedBlob = await getCroppedImg(imageSrc, croppedAreaPixels);
-      onCropComplete(croppedBlob);
+      setIsProcessing(true)
+      const croppedBlob = await getCroppedImg(imageSrc, croppedAreaPixels)
+      onCropComplete(croppedBlob)
     } catch (e) {
-      console.error(e);
+      console.error(e)
     } finally {
-      setIsProcessing(false);
+      setIsProcessing(false)
     }
-  };
+  }
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Recortar foto de perfil">
@@ -125,7 +131,7 @@ const ImageCropperModal: React.FC<ImageCropperModalProps> = ({ isOpen, onClose, 
         </button>
       </div>
     </Modal>
-  );
-};
+  )
+}
 
-export default ImageCropperModal;
+export default ImageCropperModal

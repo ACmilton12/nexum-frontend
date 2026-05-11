@@ -1,48 +1,48 @@
-import React, { useEffect } from 'react';
-import { CheckCircle, AlertCircle, X } from 'lucide-react';
+import React, { useEffect } from 'react'
+import { CheckCircle, AlertCircle, X } from 'lucide-react'
 
 interface ToastProps {
-  message: string;
-  type: 'success' | 'info' | 'error';
-  onClose: () => void;
-  duration?: number;
+  message: string
+  type: 'success' | 'info' | 'error'
+  onClose: () => void
+  duration?: number
 }
 
 const Toast: React.FC<ToastProps> = ({ message, type, onClose, duration = 3000 }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
-      onClose();
-    }, duration);
+      onClose()
+    }, duration)
 
-    return () => clearTimeout(timer);
-  }, [onClose, duration]);
+    return () => clearTimeout(timer)
+  }, [onClose, duration])
 
   const config = {
     success: {
       bgColor: 'bg-[#E6F4EA]',
       textColor: 'text-[#2E7D32]',
       icon: <CheckCircle size={20} className="text-[#2E7D32]" />,
-      title: '¡Éxito!',
+      title: '¡Éxito!'
     },
     info: {
-      bgColor: 'bg-blue-50',
-      textColor: 'text-blue-700',
-      icon: <AlertCircle size={20} className="text-blue-700" />,
-      title: 'Aviso',
+      bgColor: 'bg-primary/5',
+      textColor: 'text-primary',
+      icon: <AlertCircle size={20} className="text-primary" />,
+      title: 'Aviso'
     },
     error: {
       bgColor: 'bg-red-50',
       textColor: 'text-[#c8102e]',
       icon: <AlertCircle size={20} className="text-[#c8102e]" />,
-      title: 'Error',
-    },
-  };
+      title: 'Error'
+    }
+  }
 
-  const { bgColor, textColor, icon, title } = config[type];
+  const { bgColor, textColor, icon, title } = config[type]
 
   return (
     <div className={`fixed top-6 right-6 z-[2000] animate-in slide-in-from-right duration-300`}>
-      <div 
+      <div
         className={`${bgColor} ${textColor} shadow-lg border-l-4 border-current rounded-lg p-4 flex items-start gap-3 min-w-[320px]`}
         style={{ boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }}
       >
@@ -51,15 +51,12 @@ const Toast: React.FC<ToastProps> = ({ message, type, onClose, duration = 3000 }
           <p className="font-bold text-sm leading-none mb-1">{title}</p>
           <p className="text-xs opacity-90">{message}</p>
         </div>
-        <button 
-          onClick={onClose}
-          className="text-gray-400 hover:text-gray-600 transition-colors"
-        >
+        <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
           <X size={16} />
         </button>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Toast;
+export default Toast
