@@ -8,7 +8,7 @@ Este es el repositorio frontend para el proyecto Nexum, construido con React, Vi
 *   **Componentes React**: Construido con la biblioteca React para una interfaz de usuario modular y eficiente.
 *   **Tipado Estático**: Desarrollado con TypeScript para una mayor robustez y mantenimiento del código.
 *   **Gestión de Estado**: Utiliza React Hooks (como `useState`) para la gestión de estado local y puede extenderse con el Context API para estado global.
-*   **Estilos**: Implementado con Tailwind CSS para un desarrollo rápido y utilitario, complementado con CSS tradicional para estilos globales (`App.css`, `index.css`).
+*   **Estilos**: Implementado con Tailwind CSS para un desarrollo rápido y utilitario, complementado con CSS tradicional para estilos globales (`App.csss`, `index.csss`).
 
 ## Tecnologías Utilizadas
 
