@@ -159,14 +159,14 @@ function Certifications() {
       </div>
 
       <div>
-        <h3 className="font-bold text-textMain text-sm mb-4 flex items-center gap-2 uppercase tracking-wider">
+        <h3 className="font-bold text-textMain dark:text-gray-100 text-sm mb-4 flex items-center gap-2 uppercase tracking-wider">
           <ShieldCheck size={18} className="text-action" />
           NOTIFICACIONES
         </h3>
         <div className="space-y-3">
-          <div className="flex items-start gap-2 text-xs text-gray-600 leading-relaxed bg-gray-50 p-3 rounded-lg border border-gray-100">
-            <span className="mt-0.5 shrink-0 bg-white p-1 rounded shadow-sm">
-              <FileText size={14} className="text-gray-600" />
+          <div className="flex items-start gap-2 text-[11px] text-gray-600 dark:text-gray-400 leading-tight bg-gray-50 dark:bg-slate-800 p-3 rounded-lg border border-gray-100 dark:border-gray-700">
+            <span className="mt-0.5 shrink-0 bg-white dark:bg-slate-900 p-1 rounded shadow-sm">
+              <FileText size={14} className="text-gray-600 dark:text-gray-400" />
             </span>
             <span>Las certificaciones ayudan a validar tus conocimientos técnicos.</span>
           </div>
@@ -174,13 +174,13 @@ function Certifications() {
       </div>
 
       <div>
-        <h3 className="font-bold text-textMain text-sm mb-4 uppercase tracking-wider">
+        <h3 className="font-bold text-textMain dark:text-gray-100 text-sm mb-4 uppercase tracking-wider">
           Enlaces rápidos
         </h3>
         <div className="space-y-3">
-          <div className="flex items-center gap-2 text-sm text-primary cursor-pointer hover:underline transition-all">
-            <Settings size={16} className="text-gray-500" />
-            <span className="font-medium text-gray-700">Configurar perfil</span>
+          <div className="flex items-center gap-2 text-sm text-primary dark:text-blue-400 cursor-pointer hover:underline transition-all group">
+            <Settings size={16} className="text-gray-500 dark:text-gray-400" />
+            <span className="font-medium text-gray-700 dark:text-gray-300 group-hover:text-primary dark:group-hover:text-blue-300">Configurar perfil</span>
           </div>
         </div>
       </div>
@@ -188,20 +188,20 @@ function Certifications() {
   );
 
   return (
-    <div className="min-h-screen bg-background flex flex-col font-sans">
+    <div className="min-h-screen bg-background dark:bg-slate-900 flex flex-col font-sans transition-colors duration-300">
       <div className="flex flex-1 overflow-hidden relative">
         <Sidebar activeItem="Certificaciones" />
 
-        <main className="flex-1 flex flex-col lg:flex-row overflow-hidden bg-[#cbd5e1]">
+        <main className="flex-1 flex flex-col lg:flex-row overflow-hidden bg-[#cbd5e1] dark:bg-slate-900 transition-colors duration-300">
 
           <div className="flex-1 p-4 pl-14 sm:pl-6 md:p-8 overflow-y-auto">
             <div className="max-w-4xl mx-auto pt-2">
               <header className="mb-6 flex justify-between items-center">
-                <h1 className="text-2xl font-bold text-textMain">Certificaciones</h1>
+                <h1 className="text-2xl font-bold text-textMain dark:text-white">Certificaciones</h1>
               </header>
 
-              <div className="bg-white rounded-xl shadow-sm p-6 md:p-8 mb-8">
-                <h2 className="text-base font-bold text-textMain mb-6">Añadir Certificación</h2>
+              <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 md:p-8 mb-8 border border-gray-100 dark:border-gray-700 transition-colors duration-300">
+                <h2 className="text-base font-bold text-textMain dark:text-white mb-6">Añadir Certificación</h2>
 
                 {globalError && (
                   <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm flex items-center gap-3 animate-slideIn">
@@ -219,7 +219,7 @@ function Certifications() {
 
                 <div className="space-y-6 text-gray-700">
                   <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] items-start gap-4">
-                    <label className="text-[13px] font-bold mt-2">Título de la Certificación: <span className="text-red-500">*</span></label>
+                    <label className="text-[13px] font-bold mt-2 dark:text-gray-300">Título de la Certificación: <span className="text-red-500">*</span></label>
                     <div className="flex flex-col w-full">
                       <input
                         type="text"
@@ -230,14 +230,14 @@ function Certifications() {
                           if (validationErrors.titulo) setValidationErrors({...validationErrors, titulo: ""})
                         }}
                         disabled={actionLoading}
-                        className={`w-full p-2.5 rounded border bg-white outline-none focus:border-action transition-all text-sm ${validationErrors.titulo ? 'border-red-500 ring-1 ring-red-500/20' : 'border-gray-200'}`}
+                        className={`w-full p-2.5 rounded border bg-white dark:bg-slate-900 dark:text-white outline-none focus:border-action transition-all text-sm placeholder:text-gray-300 dark:placeholder:text-gray-600 ${validationErrors.titulo ? 'border-red-500 ring-1 ring-red-500/20' : 'border-gray-200 dark:border-gray-700'}`}
                       />
                       {validationErrors.titulo && <span className="text-red-500 text-[11px] mt-1">{validationErrors.titulo}</span>}
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] items-start gap-4">
-                    <label className="text-[13px] font-bold mt-2">Descripción (Opcional):</label>
+                    <label className="text-[13px] font-bold mt-2 dark:text-gray-300">Descripción (Opcional):</label>
                     <div className="flex flex-col w-full">
                       <input
                         type="text"
@@ -247,13 +247,13 @@ function Certifications() {
                           handleDescripcionChange(e)
                         }}
                         disabled={actionLoading}
-                        className="w-full p-2.5 rounded border border-gray-200 bg-white outline-none focus:border-action transition-all text-sm"
+                        className="w-full p-2.5 rounded border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-900 dark:text-white outline-none focus:border-action transition-all text-sm"
                       />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] items-start gap-4">
-                    <label className="text-[13px] font-bold mt-2">URL Entidad Emisora: <span className="text-red-500">*</span></label>
+                    <label className="text-[13px] font-bold mt-2 dark:text-gray-300">URL Entidad Emisora: <span className="text-red-500">*</span></label>
                     <div className="flex flex-col w-full">
                       <input
                         type="text"
@@ -264,14 +264,14 @@ function Certifications() {
                           if (validationErrors.entidad) setValidationErrors({...validationErrors, entidad: ""})
                         }}
                         disabled={actionLoading}
-                        className={`w-full p-2.5 rounded border bg-white outline-none focus:border-action transition-all text-sm ${validationErrors.entidad ? 'border-red-500 ring-1 ring-red-500/20' : 'border-gray-200'}`}
+                        className={`w-full p-2.5 rounded border bg-white dark:bg-slate-900 dark:text-white outline-none focus:border-action transition-all text-sm ${validationErrors.entidad ? 'border-red-500 ring-1 ring-red-500/20' : 'border-gray-200 dark:border-gray-700'}`}
                       />
                       {validationErrors.entidad && <span className="text-red-500 text-[11px] mt-1">{validationErrors.entidad}</span>}
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] items-start gap-4">
-                    <label className="text-[13px] font-bold mt-2">Fecha: <span className="text-red-500">*</span></label>
+                    <label className="text-[13px] font-bold mt-2 dark:text-gray-300">Fecha: <span className="text-red-500">*</span></label>
                     <div className="flex flex-col w-full">
                       <div className="flex flex-col sm:flex-row items-start gap-3 w-full">
                         {/* Fecha Inicio */}
@@ -286,7 +286,7 @@ function Certifications() {
                             disabled={actionLoading}
                             className={`absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10 ${actionLoading ? 'pointer-events-none' : ''}`}
                           />
-                          <div className={`w-full p-2.5 rounded border bg-white flex items-center justify-between text-sm transition-all ${validationErrors.fechaDesde ? 'border-red-500 ring-1 ring-red-500/20' : 'border-gray-200 group-hover:border-action'}`}>
+                          <div className={`w-full p-2.5 rounded border bg-white dark:bg-slate-900 flex items-center justify-between text-sm transition-all ${validationErrors.fechaDesde ? 'border-red-500 ring-1 ring-red-500/20' : 'border-gray-200 dark:border-gray-700 group-hover:border-action'}`}>
                             <span className={fechaDesde ? 'text-gray-700' : 'text-gray-400'}>
                               {fechaDesde ? formatToLongDate(fechaDesde) : "Mes de año"}
                             </span>
@@ -309,7 +309,7 @@ function Certifications() {
                             disabled={actionLoading}
                             className={`absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10 ${actionLoading ? 'pointer-events-none' : ''}`}
                           />
-                          <div className={`w-full p-2.5 rounded border bg-white flex items-center justify-between text-sm transition-all ${validationErrors.fechaHasta ? 'border-red-500 ring-1 ring-red-500/20' : 'border-gray-200 group-hover:border-action'}`}>
+                          <div className={`w-full p-2.5 rounded border bg-white dark:bg-slate-900 flex items-center justify-between text-sm transition-all ${validationErrors.fechaHasta ? 'border-red-500 ring-1 ring-red-500/20' : 'border-gray-200 dark:border-gray-700 group-hover:border-action'}`}>
                             <span className={fechaHasta ? 'text-gray-700' : 'text-gray-400'}>
                               {fechaHasta ? formatToLongDate(fechaHasta) : "Mes de año"}
                             </span>
@@ -322,8 +322,8 @@ function Certifications() {
                   </div>
 
                   <div className="pt-4">
-                    <label className="text-[13px] font-bold mb-3 block">Insignia o Imagen (JPG, PNG):</label>
-                    <div className="w-full bg-[#f0f4f8] border border-dashed border-[#d1dce5] rounded-xl p-8 flex flex-col items-center justify-center gap-3">
+                    <label className="text-[13px] font-bold mb-3 block dark:text-white">Insignia o Imagen (JPG, PNG):</label>
+                    <div className="w-full bg-[#f0f4f8] dark:bg-slate-900 border border-dashed border-[#d1dce5] dark:border-gray-700 rounded-xl p-8 flex flex-col items-center justify-center gap-3">
                       {selectedFile ? (
                         <div className="flex flex-col items-center gap-2">
                           <img
@@ -339,7 +339,7 @@ function Certifications() {
                           <button
                             onClick={() => fileInputRef.current?.click()}
                             disabled={actionLoading}
-                            className="bg-white border text-gray-700 border-gray-200 font-medium text-sm py-2 px-4 rounded-lg shadow-sm hover:bg-gray-50 flex items-center gap-2 transition-all disabled:opacity-50"
+                            className="bg-white dark:bg-slate-800 border text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700 font-medium text-sm py-2 px-4 rounded-lg shadow-sm hover:bg-gray-50 dark:hover:bg-slate-700 flex items-center gap-2 transition-all disabled:opacity-50"
                           >
                             <Upload size={16} /> Seleccionar Imagen
                           </button>
@@ -358,7 +358,7 @@ function Certifications() {
                       setTitulo(""); setDescripcion(""); setEntidad(""); setFechaDesde(""); setFechaHasta(""); setSelectedFile(null); setValidationErrors({});
                     }}
                     disabled={actionLoading}
-                    className="px-6 py-2 rounded border border-gray-200 font-medium text-sm text-gray-700 hover:bg-gray-50 transition-all shadow-sm bg-white"
+                    className="px-6 py-2 rounded border border-gray-200 dark:border-gray-700 font-medium text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition-all shadow-sm bg-white dark:bg-transparent"
                   >
                     Limpiar
                   </button>
@@ -375,7 +375,7 @@ function Certifications() {
             </div>
           </div>
 
-          <aside className="w-full lg:w-72 p-6 bg-white border-t lg:border-t-0 lg:border-l border-gray-200 shrink-0 shadow-lg overflow-y-auto">
+          <aside className="w-full lg:w-72 p-6 bg-white dark:bg-slate-900 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-800 shrink-0 shadow-lg overflow-y-auto transition-colors duration-300">
             <RightPanelContent />
           </aside>
         </main>
@@ -384,15 +384,15 @@ function Certifications() {
         {showConfirmModal && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center">
             <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowConfirmModal(false)} />
-            <div className="relative bg-white rounded-xl shadow-2xl p-6 w-full max-w-[340px] mx-4 flex flex-col items-center gap-4 text-center">
-              <h3 className="text-[16px] font-bold text-[#1a1a2e] mb-1">Confirmar Acción</h3>
-              <p className="text-[13px] text-[#5b6472] leading-relaxed">¿Desea guardar la certificación?</p>
+            <div className="relative bg-white dark:bg-slate-900 rounded-xl shadow-2xl p-6 w-full max-w-[340px] mx-4 flex flex-col items-center gap-4 text-center border border-gray-100 dark:border-gray-800">
+              <h3 className="text-[16px] font-bold text-[#1a1a2e] dark:text-white mb-1">Confirmar Acción</h3>
+              <p className="text-[13px] text-[#5b6472] dark:text-gray-400 leading-relaxed">¿Desea guardar la certificación?</p>
               <div className="flex justify-center gap-3 w-full mt-2">
                 <button
                   type="button"
                   onClick={() => setShowConfirmModal(false)}
                   disabled={actionLoading}
-                  className="flex-1 h-10 px-4 text-[13px] font-bold text-[#1a1a2e] bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+                  className="flex-1 h-10 px-4 text-[13px] font-bold text-[#1a1a2e] dark:text-gray-200 bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50"
                 >
                   Cancelar
                 </button>

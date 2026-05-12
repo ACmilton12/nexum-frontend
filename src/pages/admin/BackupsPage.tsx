@@ -78,20 +78,20 @@ export default function BackupsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background dark:bg-slate-900 flex flex-col transition-colors duration-300">
       <div className="flex flex-1 overflow-hidden">
         <Sidebar activeItem="Copias de Seguridad" />
 
-        <main className="flex-1 flex flex-col overflow-y-auto p-4 sm:p-6 md:p-8 pl-16 md:pl-8">
+        <main className="flex-1 flex flex-col overflow-y-auto p-4 sm:p-6 md:p-8 pl-16 md:pl-8 bg-background dark:bg-slate-900 transition-colors duration-300">
           <div className="max-w-6xl w-full mx-auto">
             {/* Header */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
               <div>
-                <h1 className="text-2xl font-bold text-textMain flex items-center gap-2 mb-1">
+                <h1 className="text-2xl font-bold text-textMain dark:text-white flex items-center gap-2 mb-1">
                   <Database className="text-primary" size={24} />
                   Copias de Seguridad
                 </h1>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-500 dark:text-gray-400">
                   Gestiona y genera respaldos de la base de datos del sistema.
                 </p>
               </div>
@@ -100,7 +100,7 @@ export default function BackupsPage() {
                 {/* Botón de Restaurar (Estático) */}
                 <button
                   onClick={() => setToast({ mensaje: "La restauración debe ser realizada manualmente por un administrador de base de datos por seguridad.", tipo: "error" })}
-                  className="bg-white border border-gray-200 text-gray-600 text-sm px-5 py-2.5 rounded-xl hover:bg-gray-50 transition-all shadow-sm flex items-center gap-2 font-semibold"
+                  className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 text-sm px-5 py-2.5 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-700 transition-all shadow-sm flex items-center gap-2 font-semibold"
                 >
                   <Download className="rotate-180" size={18} />
                   Restaurar Backup
@@ -129,45 +129,45 @@ export default function BackupsPage() {
 
             {/* Info Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-              <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm flex items-center gap-4">
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700 shadow-sm flex items-center gap-4 transition-colors">
                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                   <FileArchive className="text-primary" size={24} />
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 font-medium uppercase tracking-wide mb-0.5">Total Backups</p>
-                  <p className="text-2xl font-bold text-textMain">{backups.length}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide mb-0.5">Total Backups</p>
+                  <p className="text-2xl font-bold text-textMain dark:text-white">{backups.length}</p>
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm flex items-center gap-4">
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700 shadow-sm flex items-center gap-4 transition-colors">
                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                   <Clock className="text-primary" size={24} />
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 font-medium uppercase tracking-wide mb-0.5">Último Backup</p>
-                  <p className="text-sm font-bold text-textMain">{backups[0]?.date || "Ninguno"}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide mb-0.5">Último Backup</p>
+                  <p className="text-sm font-bold text-textMain dark:text-white">{backups[0]?.date || "Ninguno"}</p>
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm flex items-center gap-4">
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700 shadow-sm flex items-center gap-4 transition-colors">
                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                   <CheckCircle className="text-primary" size={24} />
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 font-medium uppercase tracking-wide mb-0.5">Estado</p>
-                  <p className="text-sm font-bold text-textMain">Automatizado activo</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide mb-0.5">Estado</p>
+                  <p className="text-sm font-bold text-textMain dark:text-white">Automatizado activo</p>
                 </div>
               </div>
             </div>
 
             {/* Table */}
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
-                <h2 className="font-bold text-textMain text-sm">Historial de Respaldos</h2>
+            <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden transition-colors">
+              <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-slate-900/50">
+                <h2 className="font-bold text-textMain dark:text-white text-sm">Historial de Respaldos</h2>
               </div>
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm text-gray-600">
-                  <thead className="text-xs text-gray-400 uppercase bg-gray-50/50 border-b border-gray-100">
+                <table className="w-full text-left text-sm text-gray-600 dark:text-gray-400">
+                  <thead className="text-xs text-gray-400 dark:text-gray-500 uppercase bg-gray-50/50 dark:bg-slate-900/50 border-b border-gray-100 dark:border-gray-700">
                     <tr>
                       <th className="px-6 py-3 font-semibold">Nombre del Archivo</th>
                       <th className="px-6 py-3 font-semibold">Tipo</th>
@@ -179,15 +179,15 @@ export default function BackupsPage() {
                   <tbody>
                     {backups.length === 0 ? (
                       <tr>
-                        <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
+                        <td colSpan={5} className="px-6 py-8 text-center text-gray-500 dark:text-gray-500">
                           No hay copias de seguridad disponibles.
                         </td>
                       </tr>
                     ) : (
                       backups.map((backup) => (
-                        <tr key={backup.id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
-                          <td className="px-6 py-4 font-medium text-textMain flex items-center gap-2">
-                            <Database size={14} className="text-gray-400" />
+                        <tr key={backup.id} className="border-b border-gray-50 dark:border-gray-700 hover:bg-gray-50/50 dark:hover:bg-slate-900/50 transition-colors">
+                          <td className="px-6 py-4 font-medium text-textMain dark:text-white flex items-center gap-2">
+                            <Database size={14} className="text-gray-400 dark:text-gray-500" />
                             {backup.name}
                           </td>
                           <td className="px-6 py-4">

@@ -101,26 +101,26 @@ const DashboardProfessional = () => {
       <Calendar />
 
       <div className="mt-8">
-        <h3 className="font-bold text-textMain text-sm mb-4 flex items-center gap-2 uppercase tracking-wider">
+        <h3 className="font-bold text-textMain dark:text-white text-sm mb-4 flex items-center gap-2 uppercase tracking-wider">
           <ShieldAlert size={16} className="text-action" />
           Notificaciones
         </h3>
         <div className="space-y-3">
           {viewsCount > 0 && (
-            <div className="flex items-start gap-2 text-[11px] text-gray-600 leading-tight">
+            <div className="flex items-start gap-2 text-[11px] text-gray-600 dark:text-gray-400 leading-tight">
               <AlertTriangle size={14} className="text-action mt-0.5 shrink-0" />
               <span>Tu perfil ha recibido {viewsCount} visita{viewsCount !== 1 ? "s" : ""}.</span>
             </div>
           )}
           {lastProjectName && (
-            <div className="flex items-start gap-2 text-[11px] text-gray-600 leading-tight">
-              <CheckCircle size={14} className="text-primary mt-0.5 shrink-0" />
+            <div className="flex items-start gap-2 text-[11px] text-gray-600 dark:text-gray-400 leading-tight">
+              <CheckCircle size={14} className="text-primary dark:text-blue-400 mt-0.5 shrink-0" />
               <span>Último proyecto actualizado: "{lastProjectName}".</span>
             </div>
           )}
           {skillsCount !== null && skillsCount > 0 && (
-            <div className="flex items-start gap-2 text-[11px] text-gray-600 leading-tight">
-              <CheckCircle size={14} className="text-primary mt-0.5 shrink-0" />
+            <div className="flex items-start gap-2 text-[11px] text-gray-600 dark:text-gray-400 leading-tight">
+              <CheckCircle size={14} className="text-primary dark:text-blue-400 mt-0.5 shrink-0" />
               <span>Tienes {skillsCount} habilidad{skillsCount !== 1 ? "es" : ""} activa{skillsCount !== 1 ? "s" : ""} en tu perfil.</span>
             </div>
           )}
@@ -128,8 +128,8 @@ const DashboardProfessional = () => {
       </div>
 
       <div className="mt-8">
-        <h3 className="font-bold text-textMain text-sm mb-4">Enlaces rápidos</h3>
-        <div className="space-y-3 text-xs text-primary">
+        <h3 className="font-bold text-textMain dark:text-white text-sm mb-4">Enlaces rápidos</h3>
+        <div className="space-y-3 text-xs text-primary dark:text-blue-400">
           <p className="cursor-pointer hover:underline flex items-center justify-between group">
             <span>📋 Guía de Usuario</span>
             <ExternalLink size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -148,41 +148,41 @@ const DashboardProfessional = () => {
   );
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background dark:bg-slate-900 flex flex-col transition-colors duration-300">
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
         <Sidebar activeItem="Dashboard" />
 
         {/* Contenedor Principal Adaptativo */}
-        <main className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+        <main className="flex-1 flex flex-col lg:flex-row overflow-hidden bg-background dark:bg-slate-900 transition-colors duration-300">
 
           {/* SECCIÓN IZQUIERDA: Contenido del Dashboard */}
           <div className="flex-1 p-4 pl-14 sm:pl-6 md:p-6 overflow-y-auto">
-            <h1 className="text-xl sm:text-2xl font-bold text-textMain mb-1">
+            <h1 className="text-xl sm:text-2xl font-bold text-textMain dark:text-white mb-1">
               Dashboard Profesional
             </h1>
-            <p className="text-sm text-gray-500 mb-5">
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-5">
               Bienvenido, aquí está el resumen de tu portafolio
             </p>
 
             {/* Cards de estadísticas */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-              <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:border-action/20 transition-colors">
-                <p className="text-sm text-gray-500 mb-1">Visitas al Perfil</p>
-                <p className="text-3xl font-bold text-primary">{loading ? "—" : viewsCount}</p>
-                <p className="text-xs text-gray-400 mt-1">Total de visitas</p>
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 hover:border-action/20 transition-colors">
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Visitas al Perfil</p>
+                <p className="text-3xl font-bold text-primary dark:text-blue-400">{loading ? "—" : viewsCount}</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Total de visitas</p>
               </div>
-              <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
-                <p className="text-sm text-gray-500 mb-1">Proyectos Activos</p>
-                <p className="text-3xl font-bold text-primary">{loading ? "—" : (projectsCount ?? 0)}</p>
-                <p className="text-xs text-gray-400 mt-1">
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors">
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Proyectos Activos</p>
+                <p className="text-3xl font-bold text-primary dark:text-blue-400">{loading ? "—" : (projectsCount ?? 0)}</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
                   {lastProjectDate ? `Última actualización: ${lastProjectDate}` : "Sin proyectos aún"}
                 </p>
               </div>
-              <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
-                <p className="text-sm text-gray-500 mb-1">Habilidades Registradas</p>
-                <p className="text-3xl font-bold text-primary">{loading ? "—" : (skillsCount ?? 0)}</p>
-                <p className="text-xs text-gray-400 mt-1">
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors">
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Habilidades Registradas</p>
+                <p className="text-3xl font-bold text-primary dark:text-blue-400">{loading ? "—" : (skillsCount ?? 0)}</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
                   {experienceCount !== null && experienceCount > 0
                     ? `${experienceCount} experiencia${experienceCount !== 1 ? "s" : ""} laboral${experienceCount !== 1 ? "es" : ""}`
                     : "Sin experiencia registrada"}
@@ -192,10 +192,10 @@ const DashboardProfessional = () => {
 
             {/* Cards de acciones */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-              <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors">
                 <div className="flex items-center gap-2 mb-2">
-                  <FolderOpen size={18} className="text-textMain" />
-                  <h2 className="font-semibold text-textMain">Mi Portafolio</h2>
+                  <FolderOpen size={18} className="text-textMain dark:text-white" />
+                  <h2 className="font-semibold text-textMain dark:text-white">Mi Portafolio</h2>
                 </div>
                 <p className="text-sm text-gray-500 mb-3 leading-relaxed">
                   Gestiona tus proyectos, habilidades y experiencia laboral.
@@ -212,10 +212,10 @@ const DashboardProfessional = () => {
                 </Link>
               </div>
 
-              <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors">
                 <div className="flex items-center gap-2 mb-2">
-                  <Eye size={18} className="text-textMain" />
-                  <h2 className="font-semibold text-textMain">Configuración de Perfil</h2>
+                  <Eye size={18} className="text-textMain dark:text-white" />
+                  <h2 className="font-semibold text-textMain dark:text-white">Configuración de Perfil</h2>
                 </div>
                 <p className="text-sm text-gray-500 mb-3 leading-relaxed">
                   Actualiza tu información personal, foto y datos de contacto.
@@ -234,33 +234,33 @@ const DashboardProfessional = () => {
             </div>
 
             {/* Secciones disponibles */}
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 mb-6">
-              <h2 className="font-semibold text-textMain mb-4">
+            <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 mb-6 transition-colors">
+              <h2 className="font-semibold text-textMain dark:text-white mb-4">
                 Tus secciones disponibles
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="bg-background rounded-xl p-4 border border-gray-50">
-                  <h3 className="font-medium text-textMain mb-3 text-sm flex items-center gap-2">
-                    <CheckCircle size={14} className="text-primary" />
+                <div className="bg-background dark:bg-slate-900 rounded-xl p-4 border border-gray-50 dark:border-gray-800 transition-colors">
+                  <h3 className="font-medium text-textMain dark:text-white mb-3 text-sm flex items-center gap-2">
+                    <CheckCircle size={14} className="text-primary dark:text-blue-400" />
                     Puedes acceder a:
                   </h3>
                   <div className="space-y-2">
                     {["Dashboard", "Proyectos", "Habilidades", "Experiencia", "Perfil"].map((item) => (
-                      <div key={item} className="flex items-center gap-2 text-[13px] text-gray-600">
+                      <div key={item} className="flex items-center gap-2 text-[13px] text-gray-600 dark:text-gray-400">
                         <div className="w-1 h-1 bg-primary rounded-full"></div>
                         {item}
                       </div>
                     ))}
                   </div>
                 </div>
-                <div className="bg-background rounded-xl p-4 border border-gray-50">
-                  <h3 className="font-medium text-textMain mb-3 text-sm flex items-center gap-2">
+                <div className="bg-background dark:bg-slate-900 rounded-xl p-4 border border-gray-50 dark:border-gray-800 transition-colors">
+                  <h3 className="font-medium text-textMain dark:text-white mb-3 text-sm flex items-center gap-2">
                     <AlertTriangle size={14} className="text-action" />
                     Acceso restringido:
                   </h3>
                   <div className="space-y-2">
                     {["Usuarios", "Auditoría", "Copias de Seguridad", "Configuración"].map((item) => (
-                      <div key={item} className="flex items-center gap-2 text-[13px] text-gray-600 opacity-60">
+                      <div key={item} className="flex items-center gap-2 text-[13px] text-gray-600 dark:text-gray-500 opacity-60">
                         <div className="w-1 h-1 bg-action rounded-full"></div>
                         {item}
                       </div>
@@ -272,7 +272,7 @@ const DashboardProfessional = () => {
           </div>
 
           {/* ASIDE DERECHO (Responsivo) */}
-          <aside className="w-full lg:w-64 p-6 bg-white border-t lg:border-t-0 lg:border-l border-gray-200 shrink-0 overflow-y-auto">
+          <aside className="w-full lg:w-64 p-6 bg-white dark:bg-slate-900 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-800 shrink-0 overflow-y-auto transition-colors duration-300">
             <RightPanelContent />
           </aside>
 

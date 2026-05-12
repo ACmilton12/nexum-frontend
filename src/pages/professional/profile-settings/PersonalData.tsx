@@ -274,17 +274,17 @@ function PersonalData() {
 
   if (loading)
     return (
-      <div className="min-h-screen bg-background flex flex-col font-sans">
+      <div className="min-h-screen bg-background dark:bg-slate-900 flex flex-col font-sans transition-colors duration-300">
         <div className="flex flex-1 overflow-hidden relative">
           <Sidebar activeItem="Datos Personales" />
-          <main className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+          <main className="flex-1 flex flex-col lg:flex-row overflow-hidden bg-background dark:bg-slate-900 transition-colors duration-300">
             <div className="flex-1 p-4 pl-14 sm:pl-6 md:p-8 flex items-center justify-center overflow-y-auto">
-              <div className="flex flex-col items-center gap-3 text-gray-400 font-medium">
+              <div className="flex flex-col items-center gap-3 text-gray-400 dark:text-gray-500 font-medium">
                 <Loader2 className="animate-spin text-primary" size={32} />
                 <span>Cargando perfil...</span>
               </div>
             </div>
-            <aside className="w-full lg:w-72 p-6 bg-white border-t lg:border-t-0 lg:border-l border-gray-200 shrink-0 overflow-y-auto">
+            <aside className="w-full lg:w-72 p-6 bg-white dark:bg-slate-900 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-800 shrink-0 overflow-y-auto transition-colors duration-300">
               <RightPanelContent />
             </aside>
           </main>
@@ -293,30 +293,30 @@ function PersonalData() {
     )
 
   return (
-    <div className="min-h-screen bg-background flex flex-col font-sans">
+    <div className="min-h-screen bg-background dark:bg-slate-900 flex flex-col font-sans transition-colors duration-300">
       <div className="flex flex-1 overflow-hidden relative">
         <Sidebar activeItem="Datos Personales" />
 
-        <main className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+        <main className="flex-1 flex flex-col lg:flex-row overflow-hidden bg-background dark:bg-slate-900 transition-colors duration-300">
           {/* SECCIÓN IZQUIERDA: Formulario */}
           <div className="flex-1 p-4 pl-14 sm:pl-6 md:p-8 overflow-y-auto">
             <header className="mb-8">
-              <h1 className="text-xl sm:text-2xl font-bold text-textMain mb-1">Datos Personales</h1>
-              <p className="text-sm text-gray-400">
+              <h1 className="text-xl sm:text-2xl font-bold text-textMain dark:text-white mb-1">Datos Personales</h1>
+              <p className="text-sm text-gray-400 dark:text-gray-500">
                 Gestiona la información pública de tu cuenta profesional.
               </p>
             </header>
 
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 max-w-5xl">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 md:p-8 max-w-5xl transition-colors duration-300">
               <div className="flex flex-col lg:flex-row gap-10">
                 {/* AVATAR */}
                 <div className="flex flex-col items-center gap-4 shrink-0">
                   <div className="relative group">
-                    <div className="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-white shadow-xl bg-gray-50 flex items-center justify-center">
+                    <div className="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-white dark:border-slate-800 shadow-xl bg-gray-50 dark:bg-slate-900 flex items-center justify-center transition-colors">
                       {avatarUrl ? (
                         <img src={avatarUrl} alt="Profile" className="w-full h-full object-cover" />
                       ) : (
-                        <User size={60} className="text-gray-200" />
+                        <User size={60} className="text-gray-200 dark:text-gray-600" />
                       )}
                     </div>
                     <button
@@ -333,7 +333,7 @@ function PersonalData() {
                       className="hidden"
                     />
                   </div>
-                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                  <p className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest transition-colors">
                     Foto de Perfil
                   </p>
                 </div>
@@ -348,7 +348,7 @@ function PersonalData() {
                 >
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div className="space-y-1.5">
-                      <label className="text-[11px] font-bold text-gray-500 uppercase flex items-center gap-2 italic">
+                      <label className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase flex items-center gap-2 italic">
                         <User size={14} /> Nombre
                       </label>
                       <input
@@ -357,11 +357,11 @@ function PersonalData() {
                         onChange={(e) =>
                           setNombre(e.target.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, ''))
                         }
-                        className="w-full p-3 rounded-xl border border-gray-200 bg-gray-50/30 outline-none focus:border-primary transition-all text-sm"
+                        className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/30 dark:bg-slate-900 dark:text-white outline-none focus:border-primary transition-all text-sm"
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-[11px] font-bold text-gray-500 uppercase flex items-center gap-2 italic">
+                      <label className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase flex items-center gap-2 italic">
                         <User size={14} /> Apellido
                       </label>
                       <input
@@ -377,73 +377,73 @@ function PersonalData() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div className="space-y-1.5">
-                      <label className="text-[11px] font-bold text-gray-500 uppercase flex items-center gap-2 italic">
+                      <label className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase flex items-center gap-2 italic">
                         <Briefcase size={14} /> Título Profesional
                       </label>
                       <input
                         type="text"
                         value={tituloProfesional}
                         onChange={(e) => setTituloProfesional(e.target.value)}
-                        className="w-full p-3 rounded-xl border border-gray-200 bg-gray-50/30 outline-none focus:border-primary transition-all text-sm"
+                        className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/30 dark:bg-slate-900 dark:text-white outline-none focus:border-primary transition-all text-sm"
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-[11px] font-bold text-gray-400 uppercase flex items-center gap-2 italic">
+                      <label className="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase flex items-center gap-2 italic">
                         <Mail size={14} /> Correo Institucional
                       </label>
                       <input
                         type="email"
                         value={correoElectronico}
                         disabled
-                        className="w-full p-3 rounded-xl border border-gray-100 bg-gray-100 text-gray-400 cursor-not-allowed italic text-sm"
+                        className="w-full p-3 rounded-xl border border-gray-100 dark:border-gray-800 bg-gray-100 dark:bg-slate-700 text-gray-400 dark:text-gray-500 cursor-not-allowed italic text-sm transition-colors"
                       />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div className="space-y-1.5">
-                      <label className="text-[11px] font-bold text-gray-500 uppercase flex items-center gap-2 italic">
+                      <label className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase flex items-center gap-2 italic">
                         <Phone size={14} /> Teléfono
                       </label>
                       <input
                         type="tel"
                         value={telefono}
                         onChange={(e) => setTelefono(e.target.value.replace(/[^0-9]/g, ''))}
-                        className="w-full p-3 rounded-xl border border-gray-200 bg-gray-50/30 outline-none focus:border-primary transition-all text-sm tabular-nums"
+                        className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/30 dark:bg-slate-900 dark:text-white outline-none focus:border-primary transition-all text-sm tabular-nums"
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-[11px] font-bold text-gray-500 uppercase flex items-center gap-2 italic">
+                      <label className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase flex items-center gap-2 italic">
                         <MapPin size={14} /> Ubicación
                       </label>
                       <input
                         type="text"
                         value={ubicacion}
                         onChange={(e) => setUbicacion(e.target.value)}
-                        className="w-full p-3 rounded-xl border border-gray-200 bg-gray-50/30 outline-none focus:border-primary transition-all text-sm"
+                        className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/30 dark:bg-slate-900 dark:text-white outline-none focus:border-primary transition-all text-sm"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-[11px] font-bold text-gray-500 uppercase">
+                    <label className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase">
                       Biografía Profesional
                     </label>
                     <textarea
                       value={biografia}
                       onChange={(e) => setBiografia(e.target.value)}
                       rows={4}
-                      className="w-full p-4 rounded-xl border border-gray-200 bg-gray-50/30 outline-none focus:border-primary transition-all resize-none text-sm leading-relaxed"
+                      className="w-full p-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/30 dark:bg-slate-900 dark:text-white outline-none focus:border-primary transition-all resize-none text-sm leading-relaxed"
                       placeholder="Describe brevemente tu perfil académico y profesional..."
                     />
                   </div>
 
-                  <div className="flex flex-col sm:flex-row justify-end gap-3 pt-6 border-t border-gray-50">
+                  <div className="flex flex-col sm:flex-row justify-end gap-3 pt-6 border-t border-gray-50 dark:border-gray-700 transition-colors">
                     <button
                       type="button"
                       onClick={handleCancel}
                       disabled={isSaving}
-                      className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl border border-gray-200 font-bold text-sm text-gray-600 hover:bg-gray-50 transition-all shadow-sm"
+                      className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 font-bold text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition-all shadow-sm"
                     >
                       <X size={16} /> Cancelar
                     </button>
@@ -465,7 +465,7 @@ function PersonalData() {
           </div>
 
           {/* ASIDE DERECHO (ESTILO DASHBOARD ADMIN) */}
-          <aside className="w-full lg:w-72 p-6 bg-white border-t lg:border-t-0 lg:border-l border-gray-200 shrink-0 overflow-y-auto">
+          <aside className="w-full lg:w-72 p-6 bg-white dark:bg-slate-900 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-800 shrink-0 overflow-y-auto transition-colors duration-300">
             <RightPanelContent />
           </aside>
         </main>

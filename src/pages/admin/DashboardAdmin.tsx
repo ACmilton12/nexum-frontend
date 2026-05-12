@@ -136,15 +136,15 @@ function SkillSuggestionsModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl flex flex-col max-h-[85vh]">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl w-full max-w-2xl flex flex-col max-h-[85vh] border border-gray-100 dark:border-gray-800 transition-colors duration-300">
 
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 flex-shrink-0">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800 flex-shrink-0">
           <div>
-            <h2 className="text-base font-semibold text-gray-900">Sugerencias de Habilidades</h2>
-            <p className="text-xs text-gray-400 mt-0.5">Revisa y aprueba o rechaza las sugerencias de los usuarios.</p>
+            <h2 className="text-base font-semibold text-gray-900 dark:text-white">Sugerencias de Habilidades</h2>
+            <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">Revisa y aprueba o rechaza las sugerencias de los usuarios.</p>
           </div>
-          <button onClick={onClose} className="w-7 h-7 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors">
+          <button onClick={onClose} className="w-7 h-7 flex items-center justify-center rounded-full text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -162,25 +162,25 @@ function SkillSuggestionsModal({
               <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
                 <CheckCircle size={24} className="text-primary" />
               </div>
-              <p className="text-sm font-semibold text-gray-700">Sin sugerencias pendientes</p>
-              <p className="text-xs text-gray-400">Todas las sugerencias han sido revisadas.</p>
+              <p className="text-sm font-semibold text-gray-700 dark:text-gray-200">Sin sugerencias pendientes</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500">Todas las sugerencias han sido revisadas.</p>
             </div>
           ) : (
             <div className="space-y-3">
               {suggestions.map(s => (
-                <div key={s.id} className="border border-gray-200 rounded-xl p-4 hover:border-gray-300 transition-colors">
+                <div key={s.id} className="border border-gray-200 dark:border-gray-800 rounded-xl p-4 hover:border-gray-300 dark:hover:border-gray-700 transition-colors">
                   <div className="flex items-start justify-between gap-4">
                     {/* Info de la sugerencia */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap mb-1">
-                        <span className="text-sm font-semibold text-gray-900">{s.name}</span>
+                        <span className="text-sm font-semibold text-gray-900 dark:text-white">{s.name}</span>
                         <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${s.type === "tecnica"
                           ? "bg-primary/10 text-primary border-primary/20"
                           : "bg-navbar/10 text-navbar border-navbar/20"
                           }`}>
                           {s.type === "tecnica" ? "Técnica" : "Blanda"}
                         </span>
-                        <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 border border-gray-200">
+                        <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-gray-100 dark:bg-slate-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700">
                           {NIVEL_LABEL[s.level] ?? s.level}
                         </span>
                       </div>
@@ -192,7 +192,7 @@ function SkillSuggestionsModal({
                         <span className="text-gray-300">·</span> {s.user.email}
                       </p>
                       {s.justification && (
-                        <p className="text-xs text-gray-500 mt-2 bg-gray-50 rounded-lg px-3 py-2 border border-gray-100 italic">
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 bg-gray-50 dark:bg-slate-800/50 rounded-lg px-3 py-2 border border-gray-100 dark:border-gray-700 italic">
                           "{s.justification}"
                         </p>
                       )}
@@ -237,7 +237,7 @@ function SkillSuggestionsModal({
           <p className="text-xs text-gray-400">
             {suggestions.length} sugerencia{suggestions.length !== 1 ? "s" : ""} pendiente{suggestions.length !== 1 ? "s" : ""}
           </p>
-          <button onClick={onClose} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+          <button onClick={onClose} className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-slate-800 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors">
             Cerrar
           </button>
         </div>
@@ -307,13 +307,13 @@ function CategorySuggestionsModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl flex flex-col max-h-[85vh]">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl w-full max-w-2xl flex flex-col max-h-[85vh] border border-gray-100 dark:border-gray-800 transition-colors duration-300">
 
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 flex-shrink-0">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800 flex-shrink-0">
           <div>
-            <h2 className="text-base font-semibold text-gray-900">Sugerencias de Categorías</h2>
-            <p className="text-xs text-gray-400 mt-0.5">Revisa y aprueba o rechaza las sugerencias de nuevas categorías.</p>
+            <h2 className="text-base font-semibold text-gray-900 dark:text-white">Sugerencias de Categorías</h2>
+            <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">Revisa y aprueba o rechaza las sugerencias de nuevas categorías.</p>
           </div>
           <button onClick={onClose} className="w-7 h-7 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -333,17 +333,17 @@ function CategorySuggestionsModal({
               <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
                 <CheckCircle size={24} className="text-primary" />
               </div>
-              <p className="text-sm font-semibold text-gray-700">Sin sugerencias pendientes</p>
-              <p className="text-xs text-gray-400">Todas las sugerencias han sido revisadas.</p>
+              <p className="text-sm font-semibold text-gray-700 dark:text-gray-200">Sin sugerencias pendientes</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500">Todas las sugerencias han sido revisadas.</p>
             </div>
           ) : (
             <div className="space-y-3">
               {suggestions.map(s => (
-                <div key={s.id} className="border border-gray-200 rounded-xl p-4 hover:border-gray-300 transition-colors">
+                <div key={s.id} className="border border-gray-200 dark:border-gray-800 rounded-xl p-4 hover:border-gray-300 dark:hover:border-gray-700 transition-colors">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap mb-1">
-                        <span className="text-sm font-semibold text-gray-900">{s.name}</span>
+                        <span className="text-sm font-semibold text-gray-900 dark:text-white">{s.name}</span>
                         <span className="text-[10px] font-bold px-2 py-0.5 rounded-full border bg-primary/10 text-primary border-primary/20">
                           Nueva Categoría
                         </span>
@@ -356,7 +356,7 @@ function CategorySuggestionsModal({
                         <span className="text-gray-300">·</span> {s.user.email}
                       </p>
                       {s.justification && (
-                        <p className="text-xs text-gray-500 mt-2 bg-gray-50 rounded-lg px-3 py-2 border border-gray-100 italic">
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 bg-gray-50 dark:bg-slate-800/50 rounded-lg px-3 py-2 border border-gray-100 dark:border-gray-700 italic">
                           "{s.justification}"
                         </p>
                       )}
@@ -395,11 +395,11 @@ function CategorySuggestionsModal({
           )}
         </div>
 
-        <div className="px-6 py-3 border-t border-gray-100 flex-shrink-0 flex items-center justify-between">
-          <p className="text-xs text-gray-400">
+        <div className="px-6 py-3 border-t border-gray-100 dark:border-gray-800 flex-shrink-0 flex items-center justify-between">
+          <p className="text-xs text-gray-400 dark:text-gray-500">
             {suggestions.length} sugerencia{suggestions.length !== 1 ? "s" : ""} pendiente{suggestions.length !== 1 ? "s" : ""}
           </p>
-          <button onClick={onClose} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+          <button onClick={onClose} className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-slate-800 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors">
             Cerrar
           </button>
         </div>
@@ -526,19 +526,19 @@ const DashboardAdmin = () => {
     <div className="sticky top-6">
       <Calendar />
       <div className="mt-8">
-        <h3 className="font-bold text-textMain text-sm mb-4 flex items-center gap-2">
+        <h3 className="font-bold text-textMain dark:text-white text-sm mb-4 flex items-center gap-2">
           <ShieldAlert size={16} className="text-action" />
           Notificaciones
         </h3>
         <div className="space-y-3">
           {inactiveUsers > 0 && (
-            <div className="flex items-start gap-2 text-[11px] text-gray-600 leading-tight">
+            <div className="flex items-start gap-2 text-[11px] text-gray-600 dark:text-gray-400 leading-tight">
               <AlertTriangle size={14} className="text-action shrink-0" />
               <span>{inactiveUsers} usuario{inactiveUsers !== 1 ? "s" : ""} inactivo{inactiveUsers !== 1 ? "s" : ""}.</span>
             </div>
           )}
           {failedLogins > 0 && (
-            <div className="flex items-start gap-2 text-[11px] text-gray-600 leading-tight">
+            <div className="flex items-start gap-2 text-[11px] text-gray-600 dark:text-gray-400 leading-tight">
               <AlertTriangle size={14} className="text-action shrink-0" />
               <span>{failedLogins} intento{failedLogins !== 1 ? "s" : ""} de acceso fallido{failedLogins !== 1 ? "s" : ""} reciente{failedLogins !== 1 ? "s" : ""}.</span>
             </div>
@@ -567,8 +567,8 @@ const DashboardAdmin = () => {
       </div>
 
       <div className="mt-8">
-        <h3 className="font-bold text-textMain text-sm mb-4">Enlaces rápidos</h3>
-        <div className="space-y-3 text-xs text-primary">
+        <h3 className="font-bold text-textMain dark:text-white text-sm mb-4">Enlaces rápidos</h3>
+        <div className="space-y-3 text-xs text-primary dark:text-blue-400">
           <p className="cursor-pointer hover:underline flex items-center justify-between group">
             <span>📋 Guía de Usuario</span>
             <ExternalLink size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -587,39 +587,39 @@ const DashboardAdmin = () => {
   );
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background dark:bg-slate-900 flex flex-col transition-colors duration-300">
       <div className="flex flex-1">
         <Sidebar activeItem="Dashboard" />
 
-        <main className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+        <main className="flex-1 flex flex-col lg:flex-row overflow-hidden bg-background dark:bg-slate-900 transition-colors duration-300">
           <div className="flex-1 p-4 pl-14 sm:pl-6 md:p-6 overflow-y-auto">
-            <h1 className="text-xl sm:text-2xl font-bold text-textMain mb-1">
+            <h1 className="text-xl sm:text-2xl font-bold text-textMain dark:text-white mb-1">
               Panel de Administración
             </h1>
-            <p className="text-sm text-gray-500 mb-5">
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-5">
               Control general de la plataforma NEXUM
             </p>
 
             {/* Cards de estadísticas */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-              <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
-                <p className="text-sm text-gray-500 mb-1">Total Usuarios Registrados</p>
-                <p className="text-3xl font-bold text-primary">{loadingStats ? "—" : (totalUsers ?? 0)}</p>
-                <p className="text-xs text-gray-400 mt-1">
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors">
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Total Usuarios Registrados</p>
+                <p className="text-3xl font-bold text-primary dark:text-blue-400">{loadingStats ? "—" : (totalUsers ?? 0)}</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
                   {newUsersThisWeek > 0 ? `+${newUsersThisWeek} esta semana` : "Sin nuevos esta semana"}
                 </p>
               </div>
-              <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
-                <p className="text-sm text-gray-500 mb-1">Usuarios Inactivos</p>
-                <p className="text-3xl font-bold text-primary">{loadingStats ? "—" : inactiveUsers}</p>
-                <p className="text-xs text-gray-400 mt-1">
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors">
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Usuarios Inactivos</p>
+                <p className="text-3xl font-bold text-primary dark:text-blue-400">{loadingStats ? "—" : inactiveUsers}</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
                   {inactiveUsers > 0 ? "Requieren atención" : "Todos activos"}
                 </p>
               </div>
-              <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
-                <p className="text-sm text-gray-500 mb-1">Accesos Fallidos Recientes</p>
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors">
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Accesos Fallidos Recientes</p>
                 <p className="text-3xl font-bold text-action">{loadingStats ? "—" : failedLogins}</p>
-                <p className="text-xs text-gray-400 mt-1">
+                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
                   {failedLogins > 0 ? "Revisar logs de auditoría" : "Sin alertas"}
                 </p>
               </div>
@@ -628,10 +628,10 @@ const DashboardAdmin = () => {
             {/* Cards de acciones */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
               {/* Gestión de Usuarios */}
-              <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors">
                 <div className="flex items-center gap-2 mb-2">
-                  <Users size={18} className="text-textMain" />
-                  <h2 className="font-semibold text-textMain">Gestión de Usuarios</h2>
+                  <Users size={18} className="text-textMain dark:text-white" />
+                  <h2 className="font-semibold text-textMain dark:text-white">Gestión de Usuarios</h2>
                 </div>
                 <p className="text-sm text-gray-500 mb-3 leading-relaxed">
                   Administra cuentas, roles, estados y permisos de los usuarios.
@@ -655,10 +655,10 @@ const DashboardAdmin = () => {
               </div>
 
               {/* Copias de Seguridad */}
-              <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors">
                 <div className="flex items-center gap-2 mb-2">
-                  <Activity size={18} className="text-textMain" />
-                  <h2 className="font-semibold text-textMain">Copias de Seguridad</h2>
+                  <Activity size={18} className="text-textMain dark:text-white" />
+                  <h2 className="font-semibold text-textMain dark:text-white">Copias de Seguridad</h2>
                 </div>
                 <p className="text-sm text-gray-500 mb-3 leading-relaxed">
                   Gestiona y programa los respaldos automáticos de la plataforma.
@@ -675,12 +675,12 @@ const DashboardAdmin = () => {
               </div>
 
               {/* ── NUEVA CARD: Sugerencias de Habilidades ── */}
-              <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 sm:col-span-2">
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 sm:col-span-2 transition-colors">
                 <div className="flex items-center justify-between gap-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
-                      <BookOpen size={18} className="text-textMain" />
-                      <h2 className="font-semibold text-textMain">Sugerencias de Habilidades</h2>
+                      <BookOpen size={18} className="text-textMain dark:text-white" />
+                      <h2 className="font-semibold text-textMain dark:text-white">Sugerencias de Habilidades</h2>
                     </div>
                     <p className="text-sm text-gray-500 mb-3 leading-relaxed">
                       Revisa las habilidades propuestas por los usuarios antes de que aparezcan en el catálogo.
@@ -714,12 +714,12 @@ const DashboardAdmin = () => {
               </div>
 
               {/* ── NUEVA CARD: Sugerencias de Categorías ── */}
-              <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 sm:col-span-2">
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 sm:col-span-2 transition-colors">
                 <div className="flex items-center justify-between gap-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
-                      <BookOpen size={18} className="text-textMain" />
-                      <h2 className="font-semibold text-textMain">Sugerencias de Categorías</h2>
+                      <BookOpen size={18} className="text-textMain dark:text-white" />
+                      <h2 className="font-semibold text-textMain dark:text-white">Sugerencias de Categorías</h2>
                     </div>
                     <p className="text-sm text-gray-500 mb-3 leading-relaxed">
                       Revisa las categorías propuestas por los usuarios para organizar mejor los proyectos.
@@ -754,14 +754,14 @@ const DashboardAdmin = () => {
             </div>
 
             {/* Control de acceso por roles */}
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 mb-6">
-              <h2 className="font-semibold text-textMain mb-4">
+            <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 mb-6 transition-colors">
+              <h2 className="font-semibold text-textMain dark:text-white mb-4">
                 Control de acceso por roles en la plataforma
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="bg-background rounded-xl p-4 border border-gray-50">
-                  <h3 className="font-medium text-textMain mb-3 text-sm flex items-center gap-2">
-                    <CheckCircle size={14} className="text-primary" />
+                <div className="bg-background dark:bg-slate-900 rounded-xl p-4 border border-gray-50 dark:border-gray-800">
+                  <h3 className="font-medium text-textMain dark:text-white mb-3 text-sm flex items-center gap-2">
+                    <CheckCircle size={14} className="text-primary dark:text-blue-400" />
                     Rutas del Administrador
                   </h3>
                   <div className="space-y-2">
@@ -773,8 +773,8 @@ const DashboardAdmin = () => {
                     ))}
                   </div>
                 </div>
-                <div className="bg-background rounded-xl p-4 border border-gray-50">
-                  <h3 className="font-medium text-textMain mb-3 text-sm flex items-center gap-2">
+                <div className="bg-background dark:bg-slate-900 rounded-xl p-4 border border-gray-50 dark:border-gray-800">
+                  <h3 className="font-medium text-textMain dark:text-white mb-3 text-sm flex items-center gap-2">
                     <AlertTriangle size={14} className="text-action" />
                     Rutas restringidas
                   </h3>
@@ -792,7 +792,7 @@ const DashboardAdmin = () => {
           </div>
 
           {/* Aside derecho */}
-          <aside className="w-full lg:w-64 p-6 bg-white border-t lg:border-t-0 lg:border-l border-gray-200 shrink-0 overflow-y-auto">
+          <aside className="w-full lg:w-64 p-6 bg-white dark:bg-slate-900 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-800 shrink-0 overflow-y-auto transition-colors duration-300">
             <RightPanelContent />
           </aside>
         </main>

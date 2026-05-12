@@ -97,25 +97,25 @@ function LinksPrivacy() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex flex-col font-sans">
-        <div className="flex flex-1 overflow-hidden relative">
-          <Sidebar activeItem="Enlaces" />
-          <main className="flex-1 flex flex-col lg:flex-row overflow-hidden">
-            <div className="flex-1 p-4 pl-14 sm:pl-6 md:p-6 flex items-center justify-center overflow-y-auto">
-              <div className="flex flex-col items-center gap-3 text-gray-400 font-medium">
-                <Loader2 className="animate-spin text-primary" size={32} />
-                <span>Cargando...</span>
-              </div>
+    <div className="min-h-screen bg-background dark:bg-slate-900 flex flex-col font-sans transition-colors duration-300">
+      <div className="flex flex-1 overflow-hidden relative">
+        <Sidebar activeItem="Enlaces" />
+        <main className="flex-1 flex flex-col lg:flex-row overflow-hidden bg-background dark:bg-slate-900 transition-colors duration-300">
+          <div className="flex-1 p-4 pl-14 sm:pl-6 md:p-6 flex items-center justify-center overflow-y-auto">
+            <div className="flex flex-col items-center gap-3 text-gray-400 dark:text-gray-500 font-medium">
+              <Loader2 className="animate-spin text-primary" size={32} />
+              <span>Cargando...</span>
             </div>
-            <RightWidgets type="profile" className="w-full lg:w-64 shrink-0" />
-          </main>
-        </div>
+          </div>
+          <RightWidgets type="profile" className="w-full lg:w-64 shrink-0 transition-colors duration-300" />
+        </main>
       </div>
+    </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background dark:bg-slate-900 flex flex-col transition-colors duration-300">
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
         <Sidebar activeItem="Enlaces" />
@@ -128,10 +128,10 @@ function LinksPrivacy() {
 
             {/* Header */}
             <div className="mb-6">
-              <h1 className="text-xl sm:text-2xl font-bold text-textMain mb-1">
+              <h1 className="text-xl sm:text-2xl font-bold text-textMain dark:text-white mb-1">
                 Enlaces y Privacidad
               </h1>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-500 dark:text-gray-400">
                 Gestiona tus redes profesionales y configuración de privacidad
               </p>
             </div>
@@ -140,8 +140,8 @@ function LinksPrivacy() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
               {/* Tarjeta de Redes Profesionales */}
-              <div className="bg-white rounded-xl p-6 sm:p-8 shadow-sm border border-gray-100">
-                <h3 className="text-base font-bold text-textMain mb-5">
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-6 sm:p-8 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-300">
+                <h3 className="text-base font-bold text-textMain dark:text-white mb-5">
                   Redes Profesionales
                 </h3>
 
@@ -209,21 +209,21 @@ function LinksPrivacy() {
               </div>
 
               {/* Tarjeta de Visibilidad */}
-              <div className="bg-white rounded-xl p-6 sm:p-8 shadow-sm border border-gray-100">
-                <h3 className="text-base font-bold text-textMain mb-5">
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-6 sm:p-8 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-300">
+                <h3 className="text-base font-bold text-textMain dark:text-white mb-5">
                   Visibilidad Pública
                 </h3>
 
                 <div className="space-y-4">
 
                   {/* Switch principal */}
-                  <div className="pb-4 border-b border-gray-200">
+                  <div className="pb-4 border-b border-gray-200 dark:border-gray-700 transition-colors">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm font-semibold text-textMain">
+                        <p className="text-sm font-semibold text-textMain dark:text-white">
                           Hacer perfil público
                         </p>
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                           {isPublic ? 'Tu perfil es visible para todos' : 'Tu perfil es privado'}
                         </p>
                       </div>
@@ -238,7 +238,7 @@ function LinksPrivacy() {
                   {/* Opciones de visibilidad individuales */}
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-textMain">Mostrar proyectos</span>
+                      <span className="text-sm font-medium text-textMain dark:text-gray-300">Mostrar proyectos</span>
                       <Toggle
                         active={isPublic}
                         onToggle={handleToggleAll}
@@ -246,7 +246,7 @@ function LinksPrivacy() {
                       />
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-textMain">Mostrar habilidades</span>
+                      <span className="text-sm font-medium text-textMain dark:text-gray-300">Mostrar habilidades</span>
                       <Toggle
                         active={isPublic}
                         onToggle={handleToggleAll}
@@ -254,7 +254,7 @@ function LinksPrivacy() {
                       />
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-textMain">Mostrar experiencia</span>
+                      <span className="text-sm font-medium text-textMain dark:text-gray-300">Mostrar experiencia</span>
                       <Toggle
                         active={isPublic}
                         onToggle={handleToggleAll}
@@ -262,7 +262,7 @@ function LinksPrivacy() {
                       />
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-textMain">Mostrar contacto</span>
+                      <span className="text-sm font-medium text-textMain dark:text-gray-300">Mostrar contacto</span>
                       <Toggle
                         active={isPublic}
                         onToggle={handleToggleAll}
@@ -272,8 +272,8 @@ function LinksPrivacy() {
                   </div>
 
                   {/* Info adicional */}
-                  <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-100">
-                    <p className="text-xs text-blue-700">
+                  <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-100 dark:border-blue-900/30 transition-colors">
+                    <p className="text-xs text-blue-700 dark:text-blue-400">
                       💡 <span className="font-medium">Consejo:</span> Habilita la visibilidad pública para que reclutadores puedan encontrarte más fácilmente.
                     </p>
                   </div>

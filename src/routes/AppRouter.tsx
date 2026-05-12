@@ -46,33 +46,29 @@ const Breadcrumbs = () => {
   const isProfessionalRoute = ["/dashboard", "/proyectos", "/habilidades", "/experiencia", "/certificaciones", "/portfolio"].includes(pathname) || pathname.startsWith("/profile");
 
   return (
-    <div style={{
-      padding: '12px 40px',
-      backgroundColor: '#eef3f8',
-      borderBottom: '1px solid #ddd',
-      fontSize: '13px',
-      color: '#666'
-    }}>
+    <div className="px-10 py-3 bg-[#eef3f8] dark:bg-slate-900 border-b border-[#ddd] dark:border-slate-800 text-[13px] text-[#666] dark:text-gray-400 transition-colors duration-300">
       {pathname === "/" ? (
-        <span style={{ fontWeight: 'bold', color: '#003087' }}>Menú principal</span>
+        <span className="font-bold text-[#003087] dark:text-blue-400">Menú principal</span>
       ) : (
         <>
-          <Link to="/" style={{ color: '#666', textDecoration: 'none' }}>Menú principal</Link>
+          <Link to="/" className="text-[#666] dark:text-gray-400 hover:text-[#003087] dark:hover:text-blue-400 no-underline transition-colors">
+            Menú principal
+          </Link>
           
           {isProfessionalRoute ? (
             <>
-              <span style={{ margin: '0 8px', color: '#999' }}>&gt;</span>
-              <span style={{ color: '#666' }}>Configuración de perfil</span>
+              <span className="mx-2 text-[#999] dark:text-gray-600">&gt;</span>
+              <span className="text-[#666] dark:text-gray-400">Configuración de perfil</span>
               
               {pathname.startsWith("/profile") && (
                 <>
-                  <span style={{ margin: '0 8px', color: '#999' }}>&gt;</span>
-                  <span style={{ color: '#666' }}>Perfil</span>
+                  <span className="mx-2 text-[#999] dark:text-gray-600">&gt;</span>
+                  <span className="text-[#666] dark:text-gray-400">Perfil</span>
                 </>
               )}
               
-              <span style={{ margin: '0 8px', color: '#999' }}>&gt;</span>
-              <span style={{ fontWeight: 'bold', color: '#003087' }}>
+              <span className="mx-2 text-[#999] dark:text-gray-600">&gt;</span>
+              <span className="font-bold text-[#003087] dark:text-blue-400">
                 {pathname.includes("dashboard") ? "Dashboard" :
                  pathname.includes("proyectos") ? "Proyectos" :
                  pathname.includes("habilidades") ? "Habilidades" :
@@ -91,11 +87,13 @@ const Breadcrumbs = () => {
                 name.charAt(0).toUpperCase() + name.slice(1).replace(/-/g, ' ');
               return (
                 <span key={name}>
-                  <span style={{ margin: '0 8px', color: '#999' }}>&gt;</span>
+                  <span className="mx-2 text-[#999] dark:text-gray-600">&gt;</span>
                   {isLast ? (
-                    <span style={{ fontWeight: 'bold', color: '#003087' }}>{displayName}</span>
+                    <span className="font-bold text-[#003087] dark:text-blue-400">{displayName}</span>
                   ) : (
-                    <Link to={routeTo} style={{ color: '#666', textDecoration: 'none' }}>{displayName}</Link>
+                    <Link to={routeTo} className="text-[#666] dark:text-gray-400 hover:text-[#003087] dark:hover:text-blue-400 no-underline transition-colors">
+                      {displayName}
+                    </Link>
                   )}
                 </span>
               );

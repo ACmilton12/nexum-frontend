@@ -162,36 +162,36 @@ export default function HabilidadesPage() {
   const blandas = skillsFiltered.filter(s => s.tipo === "Blanda");
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background dark:bg-slate-900 flex flex-col transition-colors duration-300">
       <div className="flex flex-1 overflow-hidden">
         <Sidebar activeItem="Habilidades" />
-        <main className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+        <main className="flex-1 flex flex-col lg:flex-row overflow-hidden bg-background dark:bg-slate-900 transition-colors duration-300">
           <div className="flex-1 p-4 pl-16 sm:pl-6 md:p-8 overflow-y-auto">
             <header className="mb-4 sm:mb-6">
-              <p className="text-sm sm:text-base text-gray-500 mb-0.5">Portafolio profesional UMSS</p>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-textMain">Mis Habilidades</h1>
-              <p className="text-xs sm:text-sm text-gray-500 mt-1">Administra tus habilidades técnicas y blandas.</p>
+              <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mb-0.5">Portafolio profesional UMSS</p>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-textMain dark:text-white">Mis Habilidades</h1>
+              <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">Administra tus habilidades técnicas y blandas.</p>
             </header>
 
             {/* Filtros */}
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-5">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-0.5 self-start">
+              <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+                <div className="flex gap-1 bg-gray-100 dark:bg-slate-900 rounded-lg p-1 w-full sm:w-auto">
                   {(["Todas", "Técnica", "Blanda"] as const).map(t => (
                     <button key={t} onClick={() => setFiltroTipo(t)}
-                      className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${filtroTipo === t ? "bg-white text-gray-800 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}>
+                      className={`flex-1 sm:flex-none px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${filtroTipo === t ? "bg-white dark:bg-slate-800 text-gray-800 dark:text-white shadow-sm" : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"}`}>
                       {t}
                     </button>
                   ))}
                 </div>
-                <div className="flex items-center gap-2 px-3 py-1.5 border border-gray-300 rounded-lg bg-white hover:border-gray-400 transition-colors w-full sm:w-auto">
-                  <IconSearch className="text-gray-400 flex-shrink-0" />
+                <div className="flex items-center gap-2 px-3 py-1.5 border border-gray-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 hover:border-gray-400 dark:hover:border-slate-600 transition-colors w-full sm:w-auto">
+                  <IconSearch className="text-gray-400 dark:text-gray-500 flex-shrink-0" />
                   <input type="text" value={busqueda} onChange={e => setBusqueda(e.target.value)}
                     placeholder="Buscar por nombre..."
-                    className="outline-none text-sm text-gray-700 placeholder:text-gray-400 bg-transparent w-full sm:w-40"
+                    className="outline-none text-sm text-gray-700 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 bg-transparent w-full sm:w-40"
                   />
                   {busqueda && (
-                    <button onClick={() => setBusqueda("")} className="text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0">
+                    <button onClick={() => setBusqueda("")} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors flex-shrink-0">
                       <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                       </svg>
@@ -206,12 +206,12 @@ export default function HabilidadesPage() {
             </div>
 
             {/* Habilidades registradas */}
-            <div className="bg-white rounded-xl border border-transparent shadow-md p-5 mb-5">
+            <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 shadow-md p-5 mb-5 transition-colors duration-300">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                  <h2 className="text-sm font-bold text-gray-800">Tus Habilidades Registradas</h2>
+                  <h2 className="text-sm font-bold text-gray-800 dark:text-white">Tus Habilidades Registradas</h2>
                   {!loadingSkills && (
-                    <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full font-medium">{skills.length}</span>
+                    <span className="text-xs text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-slate-900 px-2 py-0.5 rounded-full font-medium">{skills.length}</span>
                   )}
                 </div>
                 <p className="text-xs text-gray-400 hidden sm:block">
@@ -230,7 +230,7 @@ export default function HabilidadesPage() {
                     <div className="mb-5">
                       <div className="flex items-center gap-2 mb-3">
                         <p className="text-xs font-bold uppercase tracking-widest text-gray-400">Habilidades Técnicas</p>
-                        <span className="text-[10px] text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded-full">{tecnicas.length}</span>
+                        <span className="text-[10px] text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-slate-900 px-1.5 py-0.5 rounded-full">{tecnicas.length}</span>
                       </div>
                       {tecnicas.length === 0 ? (
                         <p className="text-sm text-gray-400 italic">No hay habilidades técnicas registradas.</p>
@@ -252,7 +252,7 @@ export default function HabilidadesPage() {
                     <div>
                       <div className="flex items-center gap-2 mb-3">
                         <p className="text-xs font-bold uppercase tracking-widest text-gray-400">Habilidades Blandas</p>
-                        <span className="text-[10px] text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded-full">{blandas.length}</span>
+                        <span className="text-[10px] text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-slate-900 px-1.5 py-0.5 rounded-full">{blandas.length}</span>
                       </div>
                       {blandas.length === 0 ? (
                         <p className="text-sm text-gray-400 italic">No hay habilidades blandas registradas.</p>

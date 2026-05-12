@@ -24,8 +24,8 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children, title, positio
 
   if (!isOpen) return null;
 
-  let overlayClasses = "fixed inset-0 bg-[#001a5e8c] z-[1000] flex ";
-  let containerClasses = "bg-white relative text-left shadow-[0_16px_40px_rgba(0,26,94,0.18)] ";
+  let overlayClasses = "fixed inset-0 bg-[#001a5e8c] backdrop-blur-sm z-[1000] flex transition-opacity duration-300 ";
+  let containerClasses = "bg-white dark:bg-slate-900 relative text-left shadow-[0_16px_40px_rgba(0,26,94,0.18)] dark:shadow-none dark:border dark:border-slate-800 transition-colors duration-300 ";
 
   if (positioning === 'top-right') {
     overlayClasses += "justify-end items-start";
@@ -43,12 +43,12 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children, title, positio
       <div className={containerClasses} onClick={(e) => e.stopPropagation()}>
         <button
           onClick={onClose}
-          className={`absolute ${positioning === 'right' ? 'top-6 right-6' : 'top-4 right-5'} text-gray-400 hover:text-[#C8102E] hover:bg-red-50 rounded-lg w-8 h-8 flex items-center justify-center transition-colors text-2xl leading-none`}
+          className={`absolute ${positioning === 'right' ? 'top-6 right-6' : 'top-4 right-5'} text-gray-400 hover:text-[#C8102E] hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg w-8 h-8 flex items-center justify-center transition-all text-2xl leading-none`}
         >
           &times;
         </button>
         {title && (
-          <h2 className="mb-2 text-[18px] sm:text-[20px] font-bold text-[#1a1a2e] leading-snug pr-8">
+          <h2 className="mb-2 text-[18px] sm:text-[20px] font-bold text-[#1a1a2e] dark:text-white leading-snug pr-8">
             {title}
           </h2>
         )}

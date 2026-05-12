@@ -165,12 +165,12 @@ function Experience() {
       <Calendar />
 
       <div className="mt-8">
-        <h3 className="font-bold text-textMain text-sm mb-4 flex items-center gap-2 uppercase tracking-wider">
+        <h3 className="font-bold text-textMain dark:text-gray-100 text-sm mb-4 flex items-center gap-2 uppercase tracking-wider">
           <ShieldAlert size={16} className="text-action" />
           NOTIFICACIONES
         </h3>
         <div className="space-y-3">
-          <div className="flex items-start gap-2 text-[11px] text-gray-600 leading-tight bg-gray-50 p-3 rounded-lg border border-gray-100">
+          <div className="flex items-start gap-2 text-[11px] text-gray-600 dark:text-gray-400 leading-tight bg-gray-50 dark:bg-slate-800 p-3 rounded-lg border border-gray-100 dark:border-gray-700">
             <Clock size={14} className="text-action mt-0.5 shrink-0" />
             <span>Mantén tu experiencia actualizada para destacar ante reclutadores.</span>
           </div>
@@ -178,8 +178,8 @@ function Experience() {
       </div>
 
       <div className="mt-8">
-        <h3 className="font-bold text-textMain text-sm mb-4 uppercase tracking-wider">Enlaces rápidos</h3>
-        <div className="space-y-3 text-xs text-primary">
+        <h3 className="font-bold text-textMain dark:text-gray-100 text-sm mb-4 uppercase tracking-wider">Enlaces rápidos</h3>
+        <div className="space-y-3 text-xs text-primary dark:text-blue-400">
           <p className="cursor-pointer hover:underline flex items-center justify-between group">
             <span>📋 Guía de Usuario</span>
             <ExternalLink size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -194,20 +194,20 @@ function Experience() {
   );
 
   return (
-    <div className="min-h-screen bg-background flex flex-col font-sans">
+    <div className="min-h-screen bg-background dark:bg-slate-900 flex flex-col font-sans transition-colors duration-300">
       <div className="flex flex-1 overflow-hidden relative">
         <Sidebar activeItem="Experiencia" />
 
-        <main className="flex-1 flex flex-col lg:flex-row overflow-hidden bg-[#cbd5e1]">
+        <main className="flex-1 flex flex-col lg:flex-row overflow-hidden bg-[#cbd5e1] dark:bg-slate-900 transition-colors duration-300">
 
           <div className="flex-1 p-4 pl-14 sm:pl-6 md:p-8 overflow-y-auto">
             <div className="max-w-4xl mx-auto pt-2">
               <header className="mb-6 flex justify-between items-center">
-                <h1 className="text-2xl font-bold text-textMain">Experiencia</h1>
+                <h1 className="text-2xl font-bold text-textMain dark:text-white">Experiencia</h1>
               </header>
 
-              <div className="bg-white rounded-xl shadow-sm p-6 md:p-8 mb-8">
-                <h2 className="text-base font-bold text-textMain mb-6">Añadir Experiencia</h2>
+              <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 md:p-8 mb-8 border border-gray-100 dark:border-gray-700 transition-colors duration-300">
+                <h2 className="text-base font-bold text-textMain dark:text-gray-100 mb-6">Añadir Experiencia</h2>
 
                 {globalError && (
                   <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm flex items-center gap-3 animate-slideIn">
@@ -223,10 +223,10 @@ function Experience() {
                   </div>
                 )}
 
-                <div className="space-y-6 text-[#1a1a2e]">
+                <div className="space-y-6 text-[#1a1a2e] dark:text-gray-200">
                   {/* Cargo / Puesto */}
                   <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] items-start gap-4">
-                    <label className="text-[13px] font-bold mt-2">Cargo / Puesto: <span className="text-red-500">*</span></label>
+                    <label className="text-[13px] font-bold mt-2 dark:text-gray-300">Cargo / Puesto: <span className="text-red-500">*</span></label>
                     <div className="flex flex-col w-full">
                       <input
                         type="text"
@@ -240,7 +240,7 @@ function Experience() {
                           }
                         }}
                         disabled={actionLoading}
-                        className={`w-full p-2.5 rounded border bg-white outline-none focus:border-action transition-all text-sm placeholder:text-gray-300 ${validationErrors.position ? 'border-red-500 ring-1 ring-red-500/20' : 'border-gray-200'}`}
+                        className={`w-full p-2.5 rounded border bg-white dark:bg-slate-900 dark:text-white outline-none focus:border-action transition-all text-sm placeholder:text-gray-300 dark:placeholder:text-gray-600 ${validationErrors.position ? 'border-red-500 ring-1 ring-red-500/20' : 'border-gray-200 dark:border-gray-700'}`}
                       />
                       {validationErrors.position && <span className="text-red-500 text-[11px] mt-1">{validationErrors.position}</span>}
                     </div>
@@ -248,7 +248,7 @@ function Experience() {
 
                   {/* Empresa */}
                   <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] items-start gap-4">
-                    <label className="text-[13px] font-bold mt-2">Empresa/nombre: <span className="text-red-500">*</span></label>
+                    <label className="text-[13px] font-bold mt-2 dark:text-gray-300">Empresa/nombre: <span className="text-red-500">*</span></label>
                     <div className="flex flex-col w-full">
                       <input
                         type="text"
@@ -262,7 +262,7 @@ function Experience() {
                           }
                         }}
                         disabled={actionLoading}
-                        className={`w-full p-2.5 rounded border bg-white outline-none focus:border-action transition-all text-sm placeholder:text-gray-300 ${validationErrors.company ? 'border-red-500 ring-1 ring-red-500/20' : 'border-gray-200'}`}
+                        className={`w-full p-2.5 rounded border bg-white dark:bg-slate-900 dark:text-white outline-none focus:border-action transition-all text-sm placeholder:text-gray-300 dark:placeholder:text-gray-600 ${validationErrors.company ? 'border-red-500 ring-1 ring-red-500/20' : 'border-gray-200 dark:border-gray-700'}`}
                       />
                       {validationErrors.company && <span className="text-red-500 text-[11px] mt-1">{validationErrors.company}</span>}
                     </div>
@@ -270,7 +270,7 @@ function Experience() {
 
                   {/* Ubicación de la empresa */}
                   <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] items-start gap-4">
-                    <label className="text-[13px] font-bold mt-2">Ubicación de la empresa:</label>
+                    <label className="text-[13px] font-bold mt-2 dark:text-gray-300">Ubicación de la empresa:</label>
                     <div className="flex flex-col w-full">
                       <input
                         type="text"
@@ -284,7 +284,7 @@ function Experience() {
                           }
                         }}
                         disabled={actionLoading}
-                        className={`w-full p-2.5 rounded border bg-white outline-none focus:border-action transition-all text-sm placeholder:text-gray-300 ${validationErrors.location ? 'border-red-500 ring-1 ring-red-500/20' : 'border-gray-200'}`}
+                        className={`w-full p-2.5 rounded border bg-white dark:bg-slate-900 dark:text-white outline-none focus:border-action transition-all text-sm placeholder:text-gray-300 dark:placeholder:text-gray-600 ${validationErrors.location ? 'border-red-500 ring-1 ring-red-500/20' : 'border-gray-200 dark:border-gray-700'}`}
                       />
                       {validationErrors.location && <span className="text-red-500 text-[11px] mt-1">{validationErrors.location}</span>}
                     </div>
@@ -292,7 +292,7 @@ function Experience() {
 
                   {/* URL */}
                   <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] items-start gap-4">
-                    <label className="text-[13px] font-bold mt-2">URL:</label>
+                    <label className="text-[13px] font-bold mt-2 dark:text-gray-300">URL:</label>
                     <div className="flex flex-col w-full">
                       <input
                         type="url"
@@ -303,7 +303,7 @@ function Experience() {
                           if (validationErrors.verificationUrl) setValidationErrors({ ...validationErrors, verificationUrl: "" })
                         }}
                         disabled={actionLoading}
-                        className={`w-full p-2.5 rounded border bg-white outline-none focus:border-action transition-all text-sm placeholder:text-gray-300 ${validationErrors.verificationUrl ? 'border-red-500 ring-1 ring-red-500/20' : 'border-gray-200'}`}
+                        className={`w-full p-2.5 rounded border bg-white dark:bg-slate-900 dark:text-white outline-none focus:border-action transition-all text-sm placeholder:text-gray-300 dark:placeholder:text-gray-600 ${validationErrors.verificationUrl ? 'border-red-500 ring-1 ring-red-500/20' : 'border-gray-200 dark:border-gray-700'}`}
                       />
                       {validationErrors.verificationUrl && <span className="text-red-500 text-[11px] mt-1">{validationErrors.verificationUrl}</span>}
                     </div>
@@ -311,7 +311,7 @@ function Experience() {
 
                   {/* Fecha (1) */}
                   <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] items-start gap-4">
-                    <label className="text-[13px] font-bold text-gray-700 mt-2">Fecha: <span className="text-red-500">*</span></label>
+                    <label className="text-[13px] font-bold text-gray-700 dark:text-gray-300 mt-2">Fecha: <span className="text-red-500">*</span></label>
                     <div className="flex flex-col w-full">
                       <div className="flex flex-col sm:flex-row items-start gap-3 w-full">
                         {/* Fecha Inicio */}
@@ -326,8 +326,8 @@ function Experience() {
                             disabled={actionLoading}
                             className={`absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10 ${actionLoading ? 'pointer-events-none' : ''}`}
                           />
-                          <div className={`w-full p-2.5 rounded border bg-white flex items-center justify-between text-sm transition-all ${validationErrors.startDate ? 'border-red-500 ring-1 ring-red-500/20' : 'border-gray-200 group-hover:border-action'}`}>
-                            <span className={startDate ? 'text-textMain' : 'text-gray-400'}>
+                          <div className={`w-full p-2.5 rounded border bg-white dark:bg-slate-900 flex items-center justify-between text-sm transition-all ${validationErrors.startDate ? 'border-red-500 ring-1 ring-red-500/20' : 'border-gray-200 dark:border-gray-700 group-hover:border-action'}`}>
+                            <span className={startDate ? 'text-textMain dark:text-white' : 'text-gray-400 dark:text-gray-600'}>
                               {startDate ? formatToLongDate(startDate) : "Mes de año"}
                             </span>
                             <CalendarIcon size={14} className="text-gray-400" />
@@ -346,8 +346,8 @@ function Experience() {
                             disabled={actionLoading}
                             className={`absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10 ${actionLoading ? 'pointer-events-none' : ''}`}
                           />
-                          <div className="w-full p-2.5 rounded border border-gray-200 bg-white flex items-center justify-between text-sm transition-all group-hover:border-action">
-                            <span className={endDate ? 'text-textMain' : 'text-gray-400'}>
+                          <div className="w-full p-2.5 rounded border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-900 flex items-center justify-between text-sm transition-all group-hover:border-action">
+                            <span className={endDate ? 'text-textMain dark:text-white' : 'text-gray-400 dark:text-gray-600'}>
                               {endDate ? formatToLongDate(endDate) : "Mes de año"}
                             </span>
                             <CalendarIcon size={14} className="text-gray-400" />
@@ -360,7 +360,7 @@ function Experience() {
 
                   {/* Modalidad de trabajo */}
                   <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] items-start gap-4">
-                    <label className="text-[13px] font-bold mt-2">Modalidad de trabajo <span className="text-red-500">*</span></label>
+                    <label className="text-[13px] font-bold mt-2 dark:text-gray-300">Modalidad de trabajo <span className="text-red-500">*</span></label>
                     <div className="flex flex-col w-full">
                       <div className="relative">
                         <select
@@ -370,12 +370,12 @@ function Experience() {
                             if (validationErrors.employmentType) setValidationErrors({ ...validationErrors, employmentType: "" })
                           }}
                           disabled={actionLoading}
-                          className={`w-full p-2.5 rounded border bg-white outline-none focus:border-action transition-all text-sm appearance-none cursor-pointer ${validationErrors.employmentType ? 'border-red-500 ring-1 ring-red-500/20' : 'border-gray-200'}`}
+                          className={`w-full p-2.5 rounded border bg-white dark:bg-slate-900 dark:text-white outline-none focus:border-action transition-all text-sm appearance-none cursor-pointer ${validationErrors.employmentType ? 'border-red-500 ring-1 ring-red-500/20' : 'border-gray-200 dark:border-gray-700'}`}
                         >
-                          <option value="remote">Remoto</option>
-                          <option value="on_site">Presencial</option>
-                          <option value="hybrid">Híbrido</option>
-                          <option value="freelance">Freelance</option>
+                          <option value="remote" className="dark:bg-slate-900">Remoto</option>
+                          <option value="on_site" className="dark:bg-slate-900">Presencial</option>
+                          <option value="hybrid" className="dark:bg-slate-900">Híbrido</option>
+                          <option value="freelance" className="dark:bg-slate-900">Freelance</option>
                         </select>
                         <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
                       </div>
@@ -387,7 +387,7 @@ function Experience() {
 
                   {/* Descripcion */}
                   <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] items-start gap-4">
-                    <label className="text-[13px] font-bold mt-2">Descripcion: <span className="text-red-500">*</span></label>
+                    <label className="text-[13px] font-bold mt-2 dark:text-gray-300">Descripcion: <span className="text-red-500">*</span></label>
                     <div className="flex flex-col w-full">
                       <input
                         type="text"
@@ -401,7 +401,7 @@ function Experience() {
                           }
                         }}
                         disabled={actionLoading}
-                        className={`w-full p-2.5 rounded border bg-white outline-none focus:border-action transition-all text-sm placeholder:text-gray-300 ${validationErrors.description ? 'border-red-500 ring-1 ring-red-500/20' : 'border-gray-200'}`}
+                        className={`w-full p-2.5 rounded border bg-white dark:bg-slate-900 dark:text-white outline-none focus:border-action transition-all text-sm placeholder:text-gray-300 dark:placeholder:text-gray-600 ${validationErrors.description ? 'border-red-500 ring-1 ring-red-500/20' : 'border-gray-200 dark:border-gray-700'}`}
                       />
                       {validationErrors.description && <span className="text-red-500 text-[11px] mt-1">{validationErrors.description}</span>}
                     </div>
@@ -409,11 +409,11 @@ function Experience() {
 
                   {/* Tecnologías Usadas */}
                   <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] items-start gap-4" ref={dropdownRef}>
-                    <label className="text-[13px] font-bold pt-2.5">Tecnologías Usadas: <span className="text-red-500">*</span></label>
+                    <label className="text-[13px] font-bold pt-2.5 dark:text-gray-300">Tecnologías Usadas: <span className="text-red-500">*</span></label>
                     <div className="flex flex-col w-full">
                       <div className="relative">
                         <div
-                          className={`min-h-[42px] w-full px-3 py-2 text-sm bg-white border rounded transition-all cursor-pointer flex items-center justify-between gap-2 ${validationErrors.skills ? "border-red-500 ring-1 ring-red-500/20" : isTechDropdownOpen ? "border-action ring-1 ring-action/10" : "border-gray-200"
+                          className={`min-h-[42px] w-full px-3 py-2 text-sm bg-white dark:bg-slate-900 border rounded transition-all cursor-pointer flex items-center justify-between gap-2 ${validationErrors.skills ? "border-red-500 ring-1 ring-red-500/20" : isTechDropdownOpen ? "border-action ring-1 ring-action/10" : "border-gray-200 dark:border-gray-700"
                             }`}
                           onClick={() => setIsTechDropdownOpen(!isTechDropdownOpen)}
                         >
@@ -424,11 +424,11 @@ function Experience() {
                               selectedSkills.map((skill) => (
                                 <span
                                   key={skill.id}
-                                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-blue-50 text-primary text-[11px] font-semibold"
+                                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-900/30 text-primary dark:text-blue-300 text-[11px] font-semibold"
                                 >
                                   {skill.name}
                                   <span
-                                    className="hover:bg-blue-100 rounded-full p-0.5 transition-colors cursor-pointer"
+                                    className="hover:bg-blue-100 dark:hover:bg-blue-900/50 rounded-full p-0.5 transition-colors cursor-pointer"
                                     onClick={(e) => removeSkill(e, skill.id)}
                                   >
                                     <X size={12} />
@@ -441,19 +441,19 @@ function Experience() {
                         </div>
 
                         {isTechDropdownOpen && (
-                          <div className="absolute z-20 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-xl max-h-48 overflow-y-auto py-1 animate-fadeIn">
+                          <div className="absolute z-20 w-full mt-1 bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl max-h-48 overflow-y-auto py-1 animate-fadeIn">
                             {availableSkills.map((skill) => {
                               const isSelected = selectedSkills.some(s => s.id === skill.id)
                               return (
                                 <div
                                   key={skill.id}
-                                  className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-50 flex items-center justify-between transition-colors"
+                                  className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center justify-between transition-colors"
                                   onClick={() => {
                                     toggleSkill(skill)
                                     if (validationErrors.skills) setValidationErrors({ ...validationErrors, skills: "" })
                                   }}
                                 >
-                                  <span className={isSelected ? "font-bold text-primary" : "text-[#1a1a2e]"}>
+                                  <span className={isSelected ? "font-bold text-primary dark:text-blue-400" : "text-[#1a1a2e] dark:text-gray-300"}>
                                     {skill.name}
                                   </span>
                                   {isSelected && <Check size={16} className="text-primary" />}
@@ -475,7 +475,7 @@ function Experience() {
                       setPosition(""); setCompany(""); setVerificationUrl(""); setStartDate(""); setEndDate(""); setLocation(""); setDescription(""); setSelectedSkills([]); setValidationErrors({});
                     }}
                     disabled={actionLoading}
-                    className="px-6 py-2 rounded border border-gray-200 font-medium text-sm text-gray-700 hover:bg-gray-50 transition-all shadow-sm bg-white"
+                    className="px-6 py-2 rounded border border-gray-200 dark:border-gray-700 font-medium text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all shadow-sm bg-white dark:bg-transparent"
                   >
                     Limpiar
                   </button>
@@ -492,7 +492,7 @@ function Experience() {
             </div>
           </div>
 
-          <aside className="w-full lg:w-72 p-6 bg-white border-t lg:border-t-0 lg:border-l border-gray-200 shrink-0 overflow-y-auto">
+          <aside className="w-full lg:w-72 p-6 bg-white dark:bg-slate-900 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-800 shrink-0 overflow-y-auto transition-colors duration-300">
             <RightPanelContent />
           </aside>
         </main>
@@ -501,15 +501,15 @@ function Experience() {
         {showConfirmModal && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center">
             <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowConfirmModal(false)} />
-            <div className="relative bg-white rounded-xl shadow-2xl p-6 w-full max-w-[340px] mx-4 flex flex-col items-center gap-4 text-center">
-              <h3 className="text-[16px] font-bold text-[#1a1a2e] mb-1">Confirmar Acción</h3>
-              <p className="text-[13px] text-[#5b6472] leading-relaxed">¿Desea guardar la experiencia?</p>
+            <div className="relative bg-white dark:bg-slate-900 rounded-xl shadow-2xl p-6 w-full max-w-[340px] mx-4 flex flex-col items-center gap-4 text-center border border-gray-100 dark:border-gray-800">
+              <h3 className="text-[16px] font-bold text-[#1a1a2e] dark:text-white mb-1">Confirmar Acción</h3>
+              <p className="text-[13px] text-[#5b6472] dark:text-gray-400 leading-relaxed">¿Desea guardar la experiencia?</p>
               <div className="flex justify-center gap-3 w-full mt-2">
                 <button
                   type="button"
                   onClick={() => setShowConfirmModal(false)}
                   disabled={actionLoading}
-                  className="flex-1 h-10 px-4 text-[13px] font-bold text-[#1a1a2e] bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+                  className="flex-1 h-10 px-4 text-[13px] font-bold text-[#1a1a2e] dark:text-gray-200 bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50"
                 >
                   Cancelar
                 </button>

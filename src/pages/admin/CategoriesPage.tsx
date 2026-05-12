@@ -108,8 +108,8 @@ function CategoriesPage() {
     <div className="sticky top-6 space-y-8">
       {/* Calendario */}
       <div>
-        <h3 className="font-bold text-[#1f2937] mb-4 flex items-center gap-2">
-          <CalendarIcon size={18} className="text-[#00388c]" />
+        <h3 className="font-bold text-textMain dark:text-white mb-4 flex items-center gap-2">
+          <CalendarIcon size={18} className="text-primary dark:text-blue-400" />
           Calendario
         </h3>
         <Calendar />
@@ -117,23 +117,23 @@ function CategoriesPage() {
 
       {/* Notificaciones */}
       <div>
-        <h3 className="font-bold text-[#1f2937] mb-4 flex items-center gap-2 uppercase tracking-wider text-xs">
-          <BellRing size={16} className="text-[#00388c]" />
+        <h3 className="font-bold text-textMain dark:text-white mb-4 flex items-center gap-2 uppercase tracking-wider text-xs">
+          <BellRing size={16} className="text-primary dark:text-blue-400" />
           Notificaciones
         </h3>
-        <div className="p-4 bg-blue-50 rounded-xl border border-blue-100 shadow-sm space-y-4">
+        <div className="p-4 bg-blue-50 dark:bg-blue-900/10 rounded-xl border border-blue-100 dark:border-blue-900/30 shadow-sm space-y-4">
           <div className="flex items-start gap-3">
-            <Flag size={16} className="text-blue-700 shrink-0 mt-0.5" />
+            <Flag size={16} className="text-blue-700 dark:text-blue-400 shrink-0 mt-0.5" />
             <div>
-              <p className="text-[11px] text-blue-700 leading-relaxed">Se ha creado una nueva categoría "Blockchain".</p>
-              <p className="text-[10px] text-blue-500/80 mt-1">Hace 2 horas</p>
+              <p className="text-[11px] text-blue-700 dark:text-blue-400 leading-relaxed">Se ha creado una nueva categoría "Blockchain".</p>
+              <p className="text-[10px] text-blue-500/80 dark:text-blue-500 mt-1">Hace 2 horas</p>
             </div>
           </div>
           <div className="flex items-start gap-3">
-            <BellRing size={16} className="text-blue-700 shrink-0 mt-0.5" />
+            <BellRing size={16} className="text-blue-700 dark:text-blue-400 shrink-0 mt-0.5" />
             <div>
-              <p className="text-[11px] text-blue-700 leading-relaxed">Categoría "Marketing Digital" marcada como inactiva.</p>
-              <p className="text-[10px] text-blue-500/80 mt-1">Ayer, 14:30</p>
+              <p className="text-[11px] text-blue-700 dark:text-blue-400 leading-relaxed">Categoría "Marketing Digital" marcada como inactiva.</p>
+              <p className="text-[10px] text-blue-500/80 dark:text-blue-500 mt-1">Ayer, 14:30</p>
             </div>
           </div>
         </div>
@@ -142,23 +142,23 @@ function CategoriesPage() {
   )
 
   return (
-    <div className="min-h-screen bg-[#eef3f8] flex flex-col font-sans">
+    <div className="min-h-screen bg-background dark:bg-slate-900 flex flex-col font-sans transition-colors duration-300">
       <div className="flex flex-1 overflow-hidden relative">
         <Sidebar activeItem="Categorías" />
 
-        <main className="flex-1 flex flex-col lg:flex-row overflow-hidden" style={{ backgroundColor: '#ced6e0' }}>
+        <main className="flex-1 flex flex-col lg:flex-row overflow-hidden bg-background dark:bg-slate-900 transition-colors duration-300">
           
           {/* MAIN CONTENT AREA */}
           <div className="flex-1 p-4 md:p-8 overflow-y-auto">
             <header className="mb-6">
-              <h1 className="text-2xl font-bold text-[#1f2937]">Gestión de Categorias</h1>
+              <h1 className="text-2xl font-bold text-textMain dark:text-white">Gestión de Categorias</h1>
             </header>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 md:p-8 w-full">
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 md:p-8 w-full transition-colors">
               
               {/* Tab */}
               <div className="mb-8 border-b-0">
-                <button className="bg-[#00388c] text-white px-5 py-2 rounded-md text-sm font-medium shadow-sm">
+                <button className="bg-primary dark:bg-blue-600 text-white px-5 py-2 rounded-md text-sm font-medium shadow-sm">
                   Categorías
                 </button>
               </div>
@@ -172,13 +172,13 @@ function CategoriesPage() {
                       placeholder="Buscar por nombre" 
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="w-[200px] md:w-[240px] px-4 py-2 border border-gray-200 rounded text-sm outline-none focus:border-[#00388c]"
+                      className="w-[200px] md:w-[240px] px-4 py-2 border border-gray-200 dark:border-gray-700 rounded text-sm outline-none bg-white dark:bg-slate-900 text-textMain dark:text-white focus:border-primary dark:focus:border-blue-500"
                     />
                   </div>
                   <select 
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value)}
-                    className="border border-gray-200 rounded px-4 py-2 text-sm outline-none bg-white min-w-[180px]"
+                    className="border border-gray-200 dark:border-gray-700 rounded px-4 py-2 text-sm outline-none bg-white dark:bg-slate-900 text-textMain dark:text-white min-w-[180px]"
                   >
                     <option value="">Todos los estados</option>
                     <option value="ACTIVO">ACTIVO</option>
@@ -188,7 +188,7 @@ function CategoriesPage() {
                 <button 
                   onClick={handleCreateNew}
                   disabled={editingId !== null}
-                  className="flex items-center gap-2 bg-[#00388c] hover:brightness-110 disabled:bg-gray-300 disabled:cursor-not-allowed text-white px-5 py-2.5 rounded-lg font-medium text-sm transition-all shadow-sm md:w-auto justify-center"
+                  className="flex items-center gap-2 bg-primary dark:bg-blue-600 hover:brightness-110 disabled:bg-gray-300 dark:disabled:bg-slate-700 disabled:cursor-not-allowed text-white px-5 py-2.5 rounded-lg font-medium text-sm transition-all shadow-sm md:w-auto justify-center"
                 >
                   <Plus size={16} /> Crear Categoria
                 </button>
@@ -202,18 +202,18 @@ function CategoriesPage() {
               )}
 
               {/* Data Table */}
-              <div className="border border-gray-100 rounded overflow-x-auto overflow-y-visible relative">
+              <div className="border border-gray-100 dark:border-gray-700 rounded overflow-x-auto overflow-y-visible relative">
                 
                 {/* Overlay loading state */}
                 {loading && (
-                  <div className="absolute inset-0 bg-white/60 z-10 flex items-center justify-center">
-                    <Loader2 className="animate-spin text-[#00388c]" size={32} />
+                  <div className="absolute inset-0 bg-white/60 dark:bg-slate-900/60 z-10 flex items-center justify-center">
+                    <Loader2 className="animate-spin text-primary dark:text-blue-500" size={32} />
                   </div>
                 )}
 
                 <table className="w-full text-left border-collapse min-w-[700px]">
                   <thead>
-                    <tr className="bg-gray-50/50 border-b border-gray-100 text-[13px] text-gray-800 font-bold">
+                    <tr className="bg-gray-50/50 dark:bg-slate-900/50 border-b border-gray-100 dark:border-gray-700 text-[13px] text-gray-800 dark:text-white font-bold">
                       <th className="py-4 px-6 w-[25%]">Nombre</th>
                       <th className="py-4 px-6 w-[40%]">Descripción</th>
                       <th className="py-4 px-6 w-[15%]">Estado</th>
@@ -235,7 +235,7 @@ function CategoriesPage() {
 
                       if (isEditing && editFormData) {
                         return (
-                          <tr key={cat.id} className={`bg-blue-50/20 ${!isLast ? 'border-b border-gray-100' : ''}`}>
+                          <tr key={cat.id} className={`bg-blue-50/20 dark:bg-blue-900/10 ${!isLast ? 'border-b border-gray-100 dark:border-gray-700' : ''}`}>
                             <td className="py-3 px-6">
                               <input 
                                 type="text"
@@ -247,7 +247,7 @@ function CategoriesPage() {
                                   }
                                 }}
                                 placeholder="Nombre de categoría"
-                                className="w-full p-2 border border-gray-300 rounded outline-none text-sm bg-white focus:border-[#00388c]"
+                                className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded outline-none text-sm bg-white dark:bg-slate-900 text-textMain dark:text-white focus:border-primary dark:focus:border-blue-500"
                                 disabled={actionLoading}
                               />
                             </td>
@@ -262,19 +262,19 @@ function CategoriesPage() {
                                   }
                                 }}
                                 placeholder="Breve descripción..."
-                                className="w-full p-2 border border-gray-200 rounded outline-none text-sm bg-white"
+                                className="w-full p-2 border border-gray-200 dark:border-gray-700 rounded outline-none text-sm bg-white dark:bg-slate-900 text-textMain dark:text-white focus:border-primary dark:focus:border-blue-500"
                                 disabled={actionLoading}
                               />
                             </td>
                             <td className="py-3 px-6">
                               {/* Toggle is possible for existing data, but not new data initially unless saved. Actually they can choose status on creation */}
                               {editingId.startsWith('new-') ? (
-                                <span className="text-gray-400 text-xs italic">Generado Activo</span>
+                                <span className="text-gray-400 dark:text-gray-500 text-xs italic">Generado Activo</span>
                               ) : (
                                 <select 
                                   value={editFormData.status}
                                   onChange={(e) => setEditFormData({ ...editFormData, status: e.target.value as 'ACTIVO'|'INACTIVO' })}
-                                  className="p-2 border border-gray-300 rounded outline-none text-sm bg-white text-gray-800 min-w-[100px] focus:border-[#00388c]"
+                                  className="p-2 border border-gray-300 dark:border-gray-700 rounded outline-none text-sm bg-white dark:bg-slate-900 text-textMain dark:text-white min-w-[100px] focus:border-primary dark:focus:border-blue-500"
                                   disabled={actionLoading}
                                 >
                                   <option value="ACTIVO">ACTIVO</option>
@@ -287,14 +287,14 @@ function CategoriesPage() {
                                 <button 
                                   onClick={() => setShowConfirmModal(true)}
                                   disabled={actionLoading || !editFormData.name.trim() || !editFormData.description.trim()}
-                                  className="bg-[#00388c] text-white px-3 py-1.5 rounded disabled:bg-[#00388c]/60 font-medium hover:brightness-110 transition-all flex items-center justify-center gap-1 min-w-[70px]"
+                                  className="bg-primary dark:bg-blue-600 text-white px-3 py-1.5 rounded disabled:bg-primary/60 dark:disabled:bg-blue-600/60 font-medium hover:brightness-110 transition-all flex items-center justify-center gap-1 min-w-[70px]"
                                 >
                                   {actionLoading ? <Loader2 size={14} className="animate-spin" /> : 'Guardar'}
                                 </button>
                                 <button 
                                   onClick={handleCancelEdit}
                                   disabled={actionLoading}
-                                  className="bg-white border text-gray-700 border-gray-300 px-3 py-1.5 rounded hover:bg-gray-50 transition-colors"
+                                  className="bg-white dark:bg-slate-800 border text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-700 px-3 py-1.5 rounded hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors"
                                 >
                                   Cancelar
                                 </button>
@@ -305,10 +305,10 @@ function CategoriesPage() {
                       }
 
                       return (
-                        <tr key={cat.id} className={`bg-white hover:bg-gray-50/50 transition-colors ${!isLast ? 'border-b border-gray-100' : ''}`}>
-                          <td className="py-5 px-6 font-semibold text-gray-800">{cat.name}</td>
-                          <td className="py-5 px-6 text-gray-500 max-w-[200px] truncate" title={cat.description || ''}>
-                            {cat.description || <span className="italic text-gray-300 text-xs text-center block">— sin descripción —</span>}
+                        <tr key={cat.id} className={`bg-white dark:bg-slate-800 hover:bg-gray-50/50 dark:hover:bg-slate-900/50 transition-colors ${!isLast ? 'border-b border-gray-100 dark:border-gray-700' : ''}`}>
+                          <td className="py-5 px-6 font-semibold text-gray-800 dark:text-white">{cat.name}</td>
+                          <td className="py-5 px-6 text-gray-500 dark:text-gray-400 max-w-[200px] truncate" title={cat.description || ''}>
+                            {cat.description || <span className="italic text-gray-300 dark:text-gray-600 text-xs text-center block">— sin descripción —</span>}
                           </td>
                           <td className="py-5 px-6">
                             <span className={`px-3 py-1 rounded-full text-[10px] font-bold tracking-widest ${
@@ -324,7 +324,7 @@ function CategoriesPage() {
                               <button 
                                 onClick={() => handleEditClick(cat)}
                                 disabled={editingId !== null}
-                                className="p-1.5 border border-gray-200 text-gray-400 hover:text-[#00388c] hover:border-blue-200 hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed rounded transition-colors"
+                                className="p-1.5 border border-gray-200 dark:border-gray-700 text-gray-400 dark:text-gray-500 hover:text-primary dark:hover:text-blue-400 hover:border-blue-200 dark:hover:border-blue-900 hover:bg-blue-50 dark:hover:bg-blue-900/10 disabled:opacity-50 disabled:cursor-not-allowed rounded transition-colors"
                                 title="Editar"
                               >
                                 <Edit2 size={16} />
@@ -347,14 +347,14 @@ function CategoriesPage() {
                   <button 
                     onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                     disabled={currentPage === 1 || loading}
-                    className="px-4 py-2 border border-gray-200 rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 bg-white transition-colors"
+                    className="px-4 py-2 border border-gray-200 dark:border-gray-700 rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-slate-700 bg-white dark:bg-slate-800 text-textMain dark:text-gray-300 transition-colors"
                   >
                     Anterior
                   </button>
                   <button 
                     onClick={() => setCurrentPage(p => Math.min(pagination.last_page, p + 1))}
                     disabled={currentPage === pagination.last_page || loading}
-                    className="px-4 py-2 border border-gray-200 rounded text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 bg-white font-medium transition-colors"
+                    className="px-4 py-2 border border-gray-200 dark:border-gray-700 rounded text-gray-800 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-slate-700 bg-white dark:bg-slate-800 font-medium transition-colors"
                   >
                     Siguiente
                   </button>
@@ -365,7 +365,7 @@ function CategoriesPage() {
           </div>
 
           {/* ASIDE DERECHO */}
-          <aside className="w-full lg:w-72 p-6 bg-white border-t lg:border-t-0 lg:border-l border-gray-200 shrink-0 overflow-y-auto">
+          <aside className="w-full lg:w-72 p-6 bg-white dark:bg-slate-900 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-800 shrink-0 overflow-y-auto transition-colors duration-300">
             <RightPanelContent />
           </aside>
         </main>
@@ -374,15 +374,15 @@ function CategoriesPage() {
         {showConfirmModal && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center">
             <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => !actionLoading && setShowConfirmModal(false)} />
-            <div className="relative bg-white rounded-xl shadow-2xl p-6 w-full max-w-[340px] mx-4 flex flex-col items-center gap-4 text-center">
-              <h3 className="text-[16px] font-bold text-[#1a1a2e] mb-1">Confirmar Acción</h3>
-              <p className="text-[13px] text-[#5b6472] leading-relaxed">¿Desea guardar la categoría?</p>
+            <div className="relative bg-white dark:bg-slate-900 rounded-xl shadow-2xl p-6 w-full max-w-[340px] mx-4 flex flex-col items-center gap-4 text-center border border-gray-100 dark:border-gray-800">
+              <h3 className="text-[16px] font-bold text-textMain dark:text-white mb-1">Confirmar Acción</h3>
+              <p className="text-[13px] text-gray-500 dark:text-gray-400 leading-relaxed">¿Desea guardar la categoría?</p>
               <div className="flex justify-center gap-3 w-full mt-2">
                 <button
                   type="button"
                   onClick={() => setShowConfirmModal(false)}
                   disabled={actionLoading}
-                  className="flex-1 h-10 px-4 text-[13px] font-bold text-[#1a1a2e] bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 h-10 px-4 text-[13px] font-bold text-gray-700 dark:text-gray-300 bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Cancelar
                 </button>
@@ -393,7 +393,7 @@ function CategoriesPage() {
                     setShowConfirmModal(false);
                   }}
                   disabled={actionLoading}
-                  className="flex-1 h-10 px-4 text-[13px] font-bold text-white bg-[#00388c] rounded-lg hover:brightness-110 transition-all flex items-center justify-center gap-2 disabled:bg-[#00388c]/60 disabled:cursor-not-allowed"
+                  className="flex-1 h-10 px-4 text-[13px] font-bold text-white bg-primary dark:bg-blue-600 rounded-lg hover:brightness-110 transition-all flex items-center justify-center gap-2 disabled:bg-primary/60 dark:disabled:bg-blue-600/60 disabled:cursor-not-allowed"
                 >
                   {actionLoading ? <Loader2 size={14} className="animate-spin" /> : "Confirmar"}
                 </button>
