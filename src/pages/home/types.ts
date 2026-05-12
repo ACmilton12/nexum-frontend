@@ -5,6 +5,7 @@ export interface Feature {
 }
 
 export interface FeaturedProfile {
+  id: number
   first_name: string
   last_name: string
   location: string | null

@@ -30,31 +30,8 @@ export function useFeaturedProfiles() {
         })
       } catch (err) {
         console.error('Error cargando featured profiles:', err)
-        // Fallback con datos de ejemplo si el backend no responde
-        setProfiles([
-          {
-            first_name: 'Carlos',
-            last_name: 'Mendoza',
-            location: null,
-            avatar_url: null,
-            projects_count: 12
-          },
-          {
-            first_name: 'Lucía',
-            last_name: 'Martínez',
-            location: null,
-            avatar_url: null,
-            projects_count: 8
-          },
-          {
-            first_name: 'Marcelo',
-            last_name: 'Vargas',
-            location: null,
-            avatar_url: null,
-            projects_count: 15
-          }
-        ])
-        setStats({ total_users: 1200, total_projects: 3500, total_views: 15000 })
+        setProfiles([])
+        setStats({ total_users: 0, total_projects: 0, total_views: 0 })
       } finally {
         setLoading(false)
       }
