@@ -98,6 +98,7 @@ const DashboardProfessional = () => {
   const [experienceCount, setExperienceCount] = useState<number | null>(null)
   const [lastProjectName, setLastProjectName] = useState<string | null>(null)
   const [lastProjectDate, setLastProjectDate] = useState<string | null>(null)
+  const [portfolioId, setPortfolioId] = useState<number | null>(null)
   const [loading, setLoading] = useState(true)
   const [toast, setToast] = useState<{
     mensaje: string
@@ -119,8 +120,13 @@ const DashboardProfessional = () => {
           }
         })
         const data = await response.json()
-        if (data?.data?.views_count !== undefined) {
-          setViewsCount(data.data.views_count)
+        if (data?.data) {
+          if (data.data.views_count !== undefined) {
+            setViewsCount(data.data.views_count)
+          }
+          if (data.data.id) {
+            setPortfolioId(data.data.id)
+          }
         }
       } catch (error) {
         console.error('Error al obtener portafolio:', error)
@@ -248,8 +254,9 @@ const DashboardProfessional = () => {
                 <br />
                 <div className="flex flex-wrap gap-3">
                   <Link
-                    to="/profesional/proyectos"
-                    className="bg-action text-white text-sm px-4 py-2 rounded-lg hover:opacity-90 transition-all shadow-md flex items-center gap-2 no-underline"
+                    to={portfolioId ? `/portfolio/${portfolioId}` : '#'}
+                    className={`bg-action text-white text-sm px-4 py-2 rounded-lg hover:opacity-90 transition-all shadow-md flex items-center gap-2 no-underline ${!portfolioId && 'opacity-50 cursor-not-allowed'}`}
+                    onClick={(e) => !portfolioId && e.preventDefault()}
                   >
                     <ExternalLink size={14} /> Ver Online
                   </Link>
@@ -275,8 +282,8 @@ const DashboardProfessional = () => {
                 </div>
                 <br />
                 <Link
-                  to="/profesional/perfil"
-                  className="bg-primary text-white text-sm px-4 py-2 rounded-lg hover:opacity-90 transition-all shadow-md inline-block"
+                  to="/profile/personal-data"
+                  className="bg-primary text-white text-sm px-4 py-2 rounded-lg hover:opacity-90 transition-all shadow-md inline-block no-underline"
                 >
                   Editar perfil
                 </Link>

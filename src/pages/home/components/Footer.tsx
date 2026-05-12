@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import logoUmss from '../../../assets/logoUmss.png'
 
 export default function Footer() {
+  const { t } = useTranslation()
   return (
     <footer id="contacto" className="pt-16 pb-8" style={{ backgroundColor: '#001A5E' }}>
       <div className="max-w-7xl mx-auto px-6">
@@ -15,74 +17,83 @@ export default function Footer() {
               />
               <span className="text-white font-extrabold text-xl tracking-widest ml-1">NEXUM</span>
             </Link>
-            <p className="text-blue-300 text-sm leading-relaxed">
-              Plataforma institucional de portafolios digitales para profesionales.
-            </p>
+            <p className="text-blue-300 text-sm leading-relaxed">{t('footer.description')}</p>
           </div>
           <div>
             <div className="text-white font-bold text-xs mb-4 uppercase tracking-widest">
-              Navegación
+              {t('footer.navigation')}
             </div>
             <Link
               to="/"
               className="block text-blue-300 hover:text-white text-sm mb-2.5 transition-colors no-underline"
             >
-              Inicio
+              {t('footer.home')}
             </Link>
             <Link
               to="/Home"
               className="block text-blue-300 hover:text-white text-sm mb-2.5 transition-colors no-underline"
             >
-              Explorar Portafolios
+              {t('footer.search')}
             </Link>
             <Link
               to="/login"
               className="block text-blue-300 hover:text-white text-sm mb-2.5 transition-colors no-underline"
             >
-              Acceder
+              {t('footer.login')}
             </Link>
             <Link
               to="/register"
               className="block text-blue-300 hover:text-white text-sm mb-2.5 transition-colors no-underline"
             >
-              Registrarse
+              {t('footer.register')}
             </Link>
           </div>
           <div>
             <div className="text-white font-bold text-xs mb-4 uppercase tracking-widest">
-              Recursos
+              {t('footer.resources')}
             </div>
-            {['Guía de uso', 'Formato PDF', 'Preguntas frecuentes', 'Normativa'].map((l) => (
-              <a
-                key={l}
-                href="#"
-                className="block text-blue-300 hover:text-white text-sm mb-2.5 transition-colors no-underline"
-              >
-                {l}
-              </a>
-            ))}
+            <a
+              href="#"
+              className="block text-blue-300 hover:text-white text-sm mb-2.5 transition-colors no-underline"
+            >
+              {t('footer.resources_list.guide')}
+            </a>
+            <a
+              href="#"
+              className="block text-blue-300 hover:text-white text-sm mb-2.5 transition-colors no-underline"
+            >
+              {t('footer.resources_list.pdf')}
+            </a>
+            <a
+              href="#"
+              className="block text-blue-300 hover:text-white text-sm mb-2.5 transition-colors no-underline"
+            >
+              {t('footer.resources_list.faq')}
+            </a>
+            <a
+              href="#"
+              className="block text-blue-300 hover:text-white text-sm mb-2.5 transition-colors no-underline"
+            >
+              {t('footer.resources_list.rules')}
+            </a>
           </div>
           <div>
             <div className="text-white font-bold text-xs mb-4 uppercase tracking-widest">
-              Contacto
+              {t('footer.contact')}
             </div>
             <p className="text-blue-300 text-sm mb-2">soporte@nexum.umss.edu.bo</p>
-            <p className="text-blue-300 text-sm mb-2">FCyT · UMSS</p>
-            <p className="text-blue-300 text-sm">Cochabamba, Bolivia</p>
+            <p className="text-blue-300 text-sm mb-2">{t('footer.faculty')}</p>
+            <p className="text-blue-300 text-sm">{t('footer.location')}</p>
           </div>
         </div>
         <div
           className="border-t pt-8 flex flex-col md:flex-row items-center justify-between gap-4"
           style={{ borderColor: 'rgba(255,255,255,0.15)' }}
         >
-          <p className="text-blue-400 text-xs">
-            © 2025 NEXUM · Universidad Mayor de San Simón · Facultad de Ciencias y Tecnología
-          </p>
+          <p className="text-blue-400 text-xs">{t('footer.copyright')}</p>
           <div className="flex items-center gap-2">
             <span className="text-white font-mono font-bold text-sm">&lt;/&gt;</span>
-            <span className="text-blue-400 text-xs">
-              CODI · Departamento de Informática y Sistemas
-            </span>
+            <span className="text-blue-400 text-xs">{t('footer.developed_by')}</span>
           </div>
         </div>
       </div>

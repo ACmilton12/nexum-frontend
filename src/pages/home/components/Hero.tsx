@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Search, ChevronLeft, ChevronRight } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import type { GlobalStats } from '../types'
 
 export default function Hero({
@@ -8,6 +9,7 @@ export default function Hero({
   stats: GlobalStats
   onSearch?: (term: string) => void
 }) {
+  const { t } = useTranslation()
   const [current, setCurrent] = useState(0)
   const [searchTerm, setSearchTerm] = useState('')
 
@@ -43,10 +45,11 @@ export default function Hero({
         >
           <div className="max-w-5xl w-full px-6 text-center text-white mt-10">
             <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold mb-4 tracking-tight">
-              Encuentra el talento profesional de la UMSS
+              {t('hero.title_start')}{' '}
+              <span className="text-white/80">{t('hero.title_accent')}</span> {t('hero.title_end')}
             </h1>
             <p className="text-base md:text-xl opacity-90 mb-10 max-w-3xl mx-auto font-medium">
-              Explora portafolios públicos de desarrolladores, ingenieros y especialistas.
+              {t('hero.description')}
             </p>
 
             {/* Buscador */}
@@ -56,7 +59,7 @@ export default function Hero({
                   <Search className="text-gray-400 mr-2" size={22} />
                   <input
                     type="text"
-                    placeholder="Buscar por nombre, especialidad o habilidades..."
+                    placeholder={t('hero.search_placeholder')}
                     className="w-full py-3 text-gray-800 outline-none text-sm md:text-base border-none bg-transparent"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
@@ -66,7 +69,7 @@ export default function Hero({
                   type="submit"
                   className="bg-[#C8102E] text-white px-8 py-3 rounded-full font-bold text-sm md:text-base hover:bg-[#a50d25] transition-all cursor-pointer border-none shadow-lg active:scale-95"
                 >
-                  Buscar
+                  {t('hero.search_button')}
                 </button>
               </div>
             </form>
@@ -74,9 +77,9 @@ export default function Hero({
             {/* Filtros */}
             <div className="flex flex-wrap justify-center gap-3 opacity-95">
               {[
-                { label: 'Área: Desarrollo de Software', active: false },
-                { label: 'Habilidades: React, Node.js', active: false },
-                { label: 'Ordenar: Relevancia', active: false }
+                { label: t('hero.filter_area'), active: false },
+                { label: t('hero.filter_skills'), active: false },
+                { label: t('hero.filter_order'), active: false }
               ].map((filter, i) => (
                 <button
                   key={i}

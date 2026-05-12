@@ -143,3 +143,31 @@ export const resetPasswordService = async (
 
   return data
 }
+
+export const updateLocaleService = async (locale: string): Promise<void> => {
+  const token = localStorage.getItem('token') || sessionStorage.getItem('token')
+  if (!token) return
+
+  // Actualizar el objeto user localmente para que useAuth no lo revierta
+  const updateLocalUser = (storage: Storage) => {
+    const userStr = storage.getItem('user')
+    if (userStr) {
+      const user = JSON.parse(userStr)
+      user.locale = locale
+      storage.setItem('user', JSON.stringify(user))
+    }
+  }
+
+  updateLocalUser(localStorage)
+  updateLocalUser(sessionStorage)
+
+  await fetch(`${API_BASE_URL}/auth/update-locale`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify({ locale })
+  })
+}

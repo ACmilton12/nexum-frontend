@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import useAuth from '../hooks/useAuth'
 import { useFeaturedProfiles } from './home/hooks/useFeaturedProfiles'
 import { ChevronLeft, ChevronRight, Filter, Search as SearchIcon, X, Loader2 } from 'lucide-react'
@@ -35,6 +36,7 @@ function SearchResults({
   onPageChange,
   onFilterChange
 }: SearchResultsProps) {
+  const { t } = useTranslation()
   const [area, setArea] = useState('')
   const [skillInput, setSkillInput] = useState('')
   const [skills, setSkills] = useState<string[]>([])
@@ -65,8 +67,8 @@ function SearchResults({
     <section id="search-results" className="py-20 bg-[#F8FAFC]">
       <div className="max-w-7xl mx-auto px-6">
         <div className="mb-12">
-          <h2 className="text-3xl font-extrabold text-gray-900 mb-2">Resultados de búsqueda</h2>
-          <p className="text-gray-500">Explora perfiles públicos y encuentra especialistas.</p>
+          <h2 className="text-3xl font-extrabold text-gray-900 mb-2">{t('search.title')}</h2>
+          <p className="text-gray-500">{t('search.description')}</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -75,18 +77,18 @@ function SearchResults({
             <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
               <div className="flex items-center gap-2 mb-6">
                 <Filter size={20} className="text-[#C8102E]" />
-                <h3 className="font-bold text-gray-900">Filtros</h3>
+                <h3 className="font-bold text-gray-900">{t('search.filters')}</h3>
               </div>
 
               <div className="space-y-4">
                 <div>
                   <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
-                    Área / Profesión
+                    {t('search.area_label')}
                   </label>
                   <div className="flex gap-2">
                     <input
                       type="text"
-                      placeholder="Ej: Backend"
+                      placeholder={t('search.area_placeholder')}
                       className="flex-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#C8102E] transition-all"
                       value={area}
                       onChange={(e) => setArea(e.target.value)}
@@ -98,11 +100,11 @@ function SearchResults({
 
                 <div>
                   <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
-                    Habilidades
+                    {t('search.skills_label')}
                   </label>
                   <input
                     type="text"
-                    placeholder="Enter para añadir"
+                    placeholder={t('search.skills_placeholder')}
                     className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#C8102E] transition-all"
                     value={skillInput}
                     onChange={(e) => setSkillInput(e.target.value)}
@@ -129,15 +131,15 @@ function SearchResults({
             {loading ? (
               <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-gray-100">
                 <Loader2 className="w-10 h-10 text-[#C8102E] animate-spin mb-4" />
-                <p className="text-gray-500 font-medium">Buscando...</p>
+                <p className="text-gray-500 font-medium">{t('search.searching')}</p>
               </div>
             ) : results.length === 0 ? (
               <div className="bg-white p-16 rounded-3xl text-center border border-gray-100">
                 <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
                   <SearchIcon size={30} className="text-gray-300" />
                 </div>
-                <h3 className="text-lg font-bold text-gray-900">Sin resultados</h3>
-                <p className="text-gray-500 text-sm">No encontramos perfiles con esos criterios.</p>
+                <h3 className="text-lg font-bold text-gray-900">{t('search.no_results')}</h3>
+                <p className="text-gray-500 text-sm">{t('search.no_results_desc')}</p>
               </div>
             ) : (
               <>

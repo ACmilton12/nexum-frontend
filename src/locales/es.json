@@ -1,0 +1,124 @@
+{
+  "navbar": {
+    "search": "Buscar profesionales",
+    "contact": "Contacto",
+    "home": "Inicio",
+    "login": "Iniciar sesión",
+    "register": "Registrarse",
+    "dashboard": "Dashboard",
+    "profile": "Mi perfil",
+    "logout": "Cerrar sesión",
+    "select_language": "Seleccionar Idioma"
+  },
+  "hero": {
+    "badge": "Talento Universitario de la UMSS",
+    "title_start": "Encuentra al ",
+    "title_accent": "especialista ideal",
+    "title_end": " para tu próximo proyecto",
+    "description": "La plataforma oficial para conectar empresas y reclutadores con los mejores estudiantes y graduados de la Universidad Mayor de San Simón.",
+    "search_placeholder": "¿Qué perfil buscas? (Ej: Desarrollador React, Diseñador UI)",
+    "search_button": "Buscar Ahora",
+    "stats": {
+      "users": "Usuarios registrados",
+      "projects": "Proyectos publicados",
+      "views": "Visitas totales"
+    },
+    "filter_area": "Área: Desarrollo de Software",
+    "filter_skills": "Habilidades: React, Node.js",
+    "filter_order": "Ordenar: Relevancia"
+  },
+  "features": {
+    "title": "¿Por qué elegir Nexum?",
+    "subtitle": "Conectamos el talento académico con el mundo laboral de manera eficiente y transparente."
+  },
+  "home": {
+    "recent_portfolios": "Portafolios recientes",
+    "recent_description": "Conoce el trabajo de los profesionales destacados de nuestra universidad.",
+    "view_all": "Ver todos los portafolios",
+    "search_results": "Resultados de búsqueda",
+    "search_description": "Explora perfiles públicos y encuentra especialistas."
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Algo salió mal",
+    "back": "Regresar",
+    "view_more": "Ver más"
+  },
+  "footer": {
+    "description": "Plataforma institucional de portafolios digitales para profesionales.",
+    "navigation": "Navegación",
+    "home": "Inicio",
+    "search": "Buscar Profesionales",
+    "login": "Iniciar Sesión",
+    "register": "Registrarse",
+    "resources": "Recursos",
+    "contact": "Contacto",
+    "copyright": "© 2025 NEXUM · Universidad Mayor de San Simón · Facultad de Ciencias y Tecnología",
+    "developed_by": "CODI · Departamento de Informática y Sistemas",
+    "faculty": "Facultad de Ciencias y Tecnología",
+    "location": "Cochabamba, Bolivia",
+    "resources_list": {
+      "guide": "Guía de uso",
+      "pdf": "Formato PDF",
+      "faq": "Preguntas frecuentes",
+      "rules": "Normativa"
+    }
+  },
+  "search": {
+    "title": "Resultados de búsqueda",
+    "description": "Explora perfiles públicos y encuentra especialistas.",
+    "filters": "Filtros",
+    "area_label": "Área / Profesión",
+    "area_placeholder": "Ej: Backend",
+    "skills_label": "Habilidades",
+    "skills_placeholder": "Enter para añadir",
+    "no_results": "Sin resultados",
+    "no_results_desc": "No encontramos perfiles con esos criterios.",
+    "searching": "Buscando..."
+  },
+  "features_list": {
+    "title": "Funcionalidades del Sistema",
+    "subtitle": "Todo lo que necesitas para construir y gestionar tu portafolio profesional.",
+    "register": {
+      "title": "Registro de usuario",
+      "desc": "Los profesionales TIS pueden registrarse y acceder con usuario y contraseña asociados a la universidad."
+    },
+    "roles": {
+      "title": "Control de roles",
+      "desc": "Sistema de permisos por roles: estudiantes, docentes, coordinadores y administradores del sistema."
+    },
+    "projects": {
+      "title": "Gestión de proyectos",
+      "desc": "Administra proyectos académicos y laborales, mantén actualizadas tus experiencias de trabajo."
+    },
+    "pdf": {
+      "title": "Exportación PDF",
+      "desc": "Genera y exporta tu portafolio como archivo PDF profesional listo para compartir con empleadores."
+    },
+    "i18n": {
+      "title": "Multilenguaje",
+      "desc": "Soporte completo en español e inglés para ampliar las oportunidades a nivel internacional."
+    },
+    "admin": {
+      "title": "Panel Administrativo",
+      "desc": "Herramientas de administración para la gestión de usuarios, estadísticas y resolución de incidencias."
+    }
+  },
+  "recent": {
+    "title": "Portafolios recientes",
+    "subtitle": "Conoce el trabajo de los profesionales.",
+    "view_portfolio": "Ver portafolio",
+    "projects": "Proyectos",
+    "views": "Visitas",
+    "university": "Universidad Mayor de San Simón"
+  },
+  "cta": {
+    "title": "¿Eres profesional de software?",
+    "subtitle": "Crea tu portafolio institucional hoy mismo y destaca en tu área con una presencia digital profesional.",
+    "start": "Comenzar ahora"
+  },
+  "university_strip": {
+    "backed_by": "Respaldado por la Universidad Mayor de San Simón",
+    "dept": "Dpto. Informática y Sistemas"
+  }
+}

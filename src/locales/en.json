@@ -1,0 +1,124 @@
+{
+  "navbar": {
+    "search": "SEARCH PROFESSIONALS",
+    "contact": "CONTACT",
+    "home": "HOME",
+    "login": "Login",
+    "register": "Register",
+    "dashboard": "Dashboard",
+    "profile": "My Profile",
+    "logout": "Logout",
+    "select_language": "Select Language"
+  },
+  "hero": {
+    "badge": "UMSS University Talent",
+    "title_start": "Find the ",
+    "title_accent": "ideal specialist",
+    "title_end": " for your next project",
+    "description": "The official platform to connect companies and recruiters with the best students and graduates of the Universidad Mayor de San Simón.",
+    "search_placeholder": "What profile are you looking for? (e.g. React Developer, UI Designer)",
+    "search_button": "Search Now",
+    "stats": {
+      "users": "Registered users",
+      "projects": "Published projects",
+      "views": "Total views"
+    },
+    "filter_area": "Area: Software Development",
+    "filter_skills": "Skills: React, Node.js",
+    "filter_order": "Sort by: Relevance"
+  },
+  "features": {
+    "title": "Why choose Nexum?",
+    "subtitle": "We connect academic talent with the workforce efficiently and transparently."
+  },
+  "home": {
+    "recent_portfolios": "Recent Portfolios",
+    "recent_description": "Get to know the work of our university's featured professionals.",
+    "view_all": "View all portfolios",
+    "search_results": "Search results",
+    "search_description": "Explore public profiles and find specialists."
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "back": "Go back",
+    "view_more": "View more"
+  },
+  "footer": {
+    "description": "Institutional platform for digital portfolios for professionals.",
+    "navigation": "Navigation",
+    "home": "Home",
+    "search": "Search Professionals",
+    "login": "Login",
+    "register": "Register",
+    "resources": "Resources",
+    "contact": "Contact",
+    "copyright": "© 2025 NEXUM · Universidad Mayor de San Simón · Faculty of Science and Technology",
+    "developed_by": "CODI · Department of Informatics and Systems",
+    "faculty": "Faculty of Science and Technology",
+    "location": "Cochabamba, Bolivia",
+    "resources_list": {
+      "guide": "User Guide",
+      "pdf": "PDF Format",
+      "faq": "FAQ",
+      "rules": "Regulations"
+    }
+  },
+  "search": {
+    "title": "Search Results",
+    "description": "Explore public profiles and find specialists.",
+    "filters": "Filters",
+    "area_label": "Area / Profession",
+    "area_placeholder": "e.g. Backend",
+    "skills_label": "Skills",
+    "skills_placeholder": "Enter to add",
+    "no_results": "No results found",
+    "no_results_desc": "We couldn't find any profiles matching your criteria.",
+    "searching": "Searching..."
+  },
+  "features_list": {
+    "title": "System Features",
+    "subtitle": "Everything you need to build and manage your professional portfolio.",
+    "register": {
+      "title": "User Registration",
+      "desc": "TIS professionals can register and access with university-associated credentials."
+    },
+    "roles": {
+      "title": "Role Control",
+      "desc": "Permissions system by roles: students, teachers, coordinators, and system administrators."
+    },
+    "projects": {
+      "title": "Project Management",
+      "desc": "Manage academic and work projects, keep your work experiences updated."
+    },
+    "pdf": {
+      "title": "PDF Export",
+      "desc": "Generate and export your portfolio as a professional PDF file ready to share with employers."
+    },
+    "i18n": {
+      "title": "Multi-language",
+      "desc": "Full support in Spanish and English to expand opportunities internationally."
+    },
+    "admin": {
+      "title": "Admin Panel",
+      "desc": "Management tools for user management, statistics, and issue resolution."
+    }
+  },
+  "recent": {
+    "title": "Recent Portfolios",
+    "subtitle": "Get to know the work of our professionals.",
+    "view_portfolio": "View portfolio",
+    "projects": "Projects",
+    "views": "Views",
+    "university": "Mayor de San Simón University"
+  },
+  "cta": {
+    "title": "Are you a software professional?",
+    "subtitle": "Create your institutional portfolio today and stand out in your field with a professional digital presence.",
+    "start": "Get started now"
+  },
+  "university_strip": {
+    "backed_by": "Backed by the Mayor de San Simón University",
+    "dept": "Informatics & Systems Dept."
+  }
+}
