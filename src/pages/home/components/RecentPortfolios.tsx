@@ -57,7 +57,7 @@ function PortfolioCard({ profile, index }: { profile: FeaturedProfile; index: nu
         </div>
       </div>
       <Link
-        to="/Home"
+        to={`/portfolio/${profile.id}`}
         className="w-full font-bold text-sm py-2.5 rounded-xl border-2 transition-all duration-200 no-underline text-center inline-block"
         style={{
           color: btnHovered ? '#FFFFFF' : '#C8102E',

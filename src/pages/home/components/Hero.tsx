@@ -14,7 +14,7 @@ export default function Hero({
   const slides = [
     { color: '#C8102E' }, // Rojo
     { color: '#111111' }, // Negro (ligeramente suavizado)
-    { color: '#003087' }  // Azul UMSS
+    { color: '#003087' } // Azul UMSS
   ]
 
   useEffect(() => {

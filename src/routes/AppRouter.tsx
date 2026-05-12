@@ -19,6 +19,17 @@ import Certifications from '../pages/professional/certifications/Certifications'
 import ProtectedRoute from './ProtectedRoute'
 import Home from '../pages/Home'
 import ProjectsPage from '../pages/professional/projects/ProjectsPage'
+import SearchPage from '../pages/search/SearchPage'
+import PublicPortfolioPage from '../pages/portfolio/PublicPortfolioPage'
+import { useEffect } from 'react'
+
+const ScrollToTop = () => {
+  const { pathname } = useLocation()
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [pathname])
+  return null
+}
 
 const Breadcrumbs = () => {
   const { pathname } = useLocation()
@@ -138,6 +149,7 @@ const ROUTES_WITHOUT_LAYOUT = [
   '/forgot-password',
   '/reset-password',
   '/portfolio',
+  '/search',
   '/habilidades',
   '/profolio'
 ]
@@ -167,14 +179,16 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 const AppRouter = () => {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Layout>
         <Routes>
           {/* ── Página de inicio ─────────────────────────────── */}
           <Route path="/" element={<Home />} />
-          <Route path="/Home" element={<Home />} /> {/* ← AGREGADO: evita el breadcrumb */}
+          <Route path="/Home" element={<Home />} />
           {/* ── Rutas públicas ───────────────────────────────── */}
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/portfolio" element={<RolesPage />} />
+          <Route path="/search" element={<SearchPage />} />
+          <Route path="/portfolio/:id" element={<PublicPortfolioPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/login" element={<LoginPage />} />
