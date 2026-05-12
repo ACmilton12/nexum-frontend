@@ -736,8 +736,8 @@ const DashboardAdmin = () => {
   }, [])
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <div className="flex flex-1">
+    <div className="h-full bg-background flex flex-col overflow-hidden">
+      <div className="flex flex-1 overflow-hidden">
         <Sidebar activeItem="Dashboard" />
 
         <main className="flex-1 flex flex-col lg:flex-row overflow-hidden">

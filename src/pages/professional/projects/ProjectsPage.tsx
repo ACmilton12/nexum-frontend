@@ -142,7 +142,7 @@ const ProjectsPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col font-sans">
+    <div className="min-h-screen lg:h-full bg-background flex flex-col font-sans lg:overflow-hidden">
       <div className="flex flex-1 overflow-hidden relative">
         <Sidebar activeItem="Proyectos" />
 
@@ -169,11 +169,10 @@ const ProjectsPage = () => {
                     setIsModalOpen(true)
                   }}
                   disabled={hasPortfolio === false}
-                  className={`${
-                    hasPortfolio === false
+                  className={`${hasPortfolio === false
                       ? 'bg-gray-400 cursor-not-allowed'
                       : 'bg-[#c8102e] hover:brightness-110'
-                  } text-white font-bold px-6 py-2.5 rounded-lg shadow-sm transition-all text-[14px]`}
+                    } text-white font-bold px-6 py-2.5 rounded-lg shadow-sm transition-all text-[14px]`}
                 >
                   Nuevo proyecto
                 </button>
@@ -217,11 +216,10 @@ const ProjectsPage = () => {
                       setSortDate(sortDate === 'NEWEST' ? 'OLDEST' : 'NEWEST')
                       setSortAlpha('NONE')
                     }}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] font-bold transition-all ${
-                      sortAlpha === 'NONE'
+                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] font-bold transition-all ${sortAlpha === 'NONE'
                         ? 'bg-gray-100 text-[#003087] hover:bg-gray-200'
                         : 'bg-gray-100 text-[#5b6472] hover:bg-gray-200'
-                    }`}
+                      }`}
                   >
                     <CalendarDays size={15} />
                     {sortDate === 'NEWEST' ? 'Más recientes' : 'Más antiguos'}
@@ -238,11 +236,10 @@ const ProjectsPage = () => {
                       else if (sortAlpha === 'A-Z') setSortAlpha('Z-A')
                       else setSortAlpha('NONE')
                     }}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] font-bold transition-all ${
-                      sortAlpha !== 'NONE'
+                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] font-bold transition-all ${sortAlpha !== 'NONE'
                         ? 'bg-[#eef3f8] text-[#003087] hover:bg-[#e0eaf5]'
                         : 'bg-gray-100 text-[#5b6472] hover:bg-gray-200'
-                    }`}
+                      }`}
                   >
                     <ArrowDownAZ size={15} />
                     {sortAlpha === 'NONE' ? 'A–Z' : sortAlpha === 'A-Z' ? 'A → Z' : 'Z → A'}
@@ -346,11 +343,10 @@ const ProjectsPage = () => {
                             </td>
                             <td className="p-4">
                               <span
-                                className={`px-2.5 py-1.5 rounded-md text-[12px] font-bold inline-block ${
-                                  project.category?.name?.toLowerCase().includes('data')
+                                className={`px-2.5 py-1.5 rounded-md text-[12px] font-bold inline-block ${project.category?.name?.toLowerCase().includes('data')
                                     ? 'bg-[#e2e8f0] text-[#475569]'
                                     : 'bg-[#eef3f8] text-[#003087]'
-                                }`}
+                                  }`}
                               >
                                 {project.category?.name || 'Sin Categoría'}
                               </span>
@@ -364,16 +360,16 @@ const ProjectsPage = () => {
                             <td className="p-4 text-[13px] text-[#5b6472]">
                               {project.updated_at
                                 ? new Date(project.updated_at).toLocaleDateString('es-ES', {
+                                  day: '2-digit',
+                                  month: '2-digit',
+                                  year: 'numeric'
+                                })
+                                : project.created_at
+                                  ? new Date(project.created_at).toLocaleDateString('es-ES', {
                                     day: '2-digit',
                                     month: '2-digit',
                                     year: 'numeric'
                                   })
-                                : project.created_at
-                                  ? new Date(project.created_at).toLocaleDateString('es-ES', {
-                                      day: '2-digit',
-                                      month: '2-digit',
-                                      year: 'numeric'
-                                    })
                                   : 'N/A'}
                             </td>
                             <td className="p-4 pr-6">
@@ -443,4 +439,4 @@ const ProjectsPage = () => {
   )
 }
 
-export default ProjectsPage
+export default ProjectsPage;

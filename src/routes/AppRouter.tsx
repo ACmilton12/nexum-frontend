@@ -1,54 +1,52 @@
-import { BrowserRouter, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom'
-import React from 'react'
-import LoginPage from '../pages/auth/LoginPage'
-import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage'
-import ResetPasswordPage from '../pages/auth/ResetPasswordPage'
-import RegisterPage from '../pages/auth/RegisterPage'
-import RolesPage from '../pages/admin/RolesPage'
-import AccountsPage from '../pages/admin/AccountsPage'
-import Navbar from '../components/ui/Navbar'
-import Footer from '../components/ui/Footer'
-import AuditPage from '../pages/admin/AuditPage'
-import CategoriesPage from '../pages/admin/CategoriesPage'
-import BackupsPage from '../pages/admin/BackupsPage'
-import PersonalData from '../pages/professional/profile-settings/PersonalData'
-import LinksPrivacy from '../pages/professional/profile-settings/LinksPrivacy'
-import HabilidadesPage from '../pages/professional/Habilidades'
-import Experience from '../pages/professional/experience/Experience'
-import Certifications from '../pages/professional/certifications/Certifications'
-import ProtectedRoute from './ProtectedRoute'
-import Home from '../pages/Home'
-import ProjectsPage from '../pages/professional/projects/ProjectsPage'
+import { BrowserRouter, Routes, Route, Link, useLocation, Navigate } from "react-router-dom";
+import React from "react";
+import LoginPage from "../pages/auth/LoginPage";
+import ForgotPasswordPage from "../pages/auth/ForgotPasswordPage";
+import ResetPasswordPage from "../pages/auth/ResetPasswordPage";
+import RegisterPage from "../pages/auth/RegisterPage";
+import RolesPage from "../pages/admin/RolesPage";
+import AccountsPage from "../pages/admin/AccountsPage";
+import Navbar from "../components/ui/Navbar";
+import Footer from "../components/ui/Footer";
+import AuditPage from "../pages/admin/AuditPage";
+import CategoriesPage from "../pages/admin/CategoriesPage";
+import BackupsPage from "../pages/admin/BackupsPage";
+import PersonalData from "../pages/professional/profile-settings/PersonalData";
+import Links from "../pages/professional/profile-settings/Links";
+import Privacy from "../pages/professional/profile-settings/Privacy";
+import HabilidadesPage from "../pages/professional/Habilidades";
+import Experience from "../pages/professional/experience/Experience";
+import Certifications from "../pages/professional/certifications/Certifications";
+import ProfileVisitorsPage from "../pages/professional/visitors/ProfileVisitorsPage";
+import ProtectedRoute from "./ProtectedRoute";
+import Home from "../pages/Home";
+import ProjectsPage from "../pages/professional/projects/ProjectsPage";
+
+
 
 const Breadcrumbs = () => {
   const { pathname } = useLocation()
   const pathnames = pathname.split('/').filter((x) => x)
 
   const routeLabels: { [key: string]: string } = {
-    profile: 'Perfil',
-    admin: 'Administración',
-    usuarios: 'Gestión de Usuarios',
-    roles: 'Roles',
-    dashboard: 'Dashboard',
-    'personal-data': 'Datos Personales',
-    links: 'Enlaces y Privacidad',
-    projects: 'Proyectos',
-    proyectos: 'Proyectos',
-    habilidades: 'Habilidades',
-    experiencia: 'Experiencia',
-    certificaciones: 'Certificaciones',
-    portfolio: 'Portafolio'
-  }
+    "profile": "Perfil",
+    "admin": "Administración",
+    "usuarios": "Gestión de Usuarios",
+    "roles": "Roles",
+    "dashboard": "Dashboard",
+    "personal-data": "Datos Personales",
+    "links": "Enlaces",
+    "privacy": "Privacidad",
+    "projects": "Proyectos",
+    "proyectos": "Proyectos",
+    "habilidades": "Habilidades",
+    "experiencia": "Experiencia",
+    "certificaciones": "Certificaciones",
+    "visitantes": "Visitantes",
+    "portfolio": "Portafolio"
+  };
 
-  const isProfessionalRoute =
-    [
-      '/dashboard',
-      '/proyectos',
-      '/habilidades',
-      '/experiencia',
-      '/certificaciones',
-      '/portfolio'
-    ].includes(pathname) || pathname.startsWith('/profile')
+  const isProfessionalRoute = ["/dashboard", "/proyectos", "/habilidades", "/experiencia", "/certificaciones", "/visitantes", "/portfolio"].includes(pathname) || pathname.startsWith("/profile");
 
   return (
     <div
@@ -82,21 +80,16 @@ const Breadcrumbs = () => {
 
               <span style={{ margin: '0 8px', color: '#999' }}>&gt;</span>
               <span style={{ fontWeight: 'bold', color: '#003087' }}>
-                {pathname.includes('dashboard')
-                  ? 'Dashboard'
-                  : pathname.includes('proyectos')
-                    ? 'Proyectos'
-                    : pathname.includes('habilidades')
-                      ? 'Habilidades'
-                      : pathname.includes('experiencia')
-                        ? 'Experiencia'
-                        : pathname.includes('certificaciones')
-                          ? 'Certificaciones'
-                          : pathname.includes('links')
-                            ? 'Enlaces y Privacidad'
-                            : pathname.includes('portfolio')
-                              ? 'Portafolio'
-                              : 'Datos Personales'}
+                {pathname.includes("dashboard") ? "Dashboard" :
+                  pathname.includes("proyectos") ? "Proyectos" :
+                    pathname.includes("habilidades") ? "Habilidades" :
+                      pathname.includes("experiencia") ? "Experiencia" :
+                        pathname.includes("certificaciones") ? "Certificaciones" :
+                          pathname.includes("visitantes") ? "Visitantes" :
+                            pathname.includes("links") ? "Enlaces" :
+                              pathname.includes("privacy") ? "Privacidad" :
+                                pathname.includes("portfolio") ? "Portafolio" :
+                                  "Datos Personales"}
               </span>
             </>
           ) : (
@@ -126,8 +119,6 @@ const Breadcrumbs = () => {
   )
 }
 
-import PrintPortfolio from '../pages/professional/PrintPortfolio'
-
 // Rutas que NO usan el Navbar/Footer/Breadcrumbs del layout
 // porque tienen sus propios componentes integrados.
 const ROUTES_WITHOUT_LAYOUT = [
@@ -142,6 +133,7 @@ const ROUTES_WITHOUT_LAYOUT = [
   '/profolio'
 ]
 
+
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const { pathname } = useLocation()
 
@@ -155,11 +147,12 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   if (hideLayout) return <>{children}</>
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen lg:h-screen flex flex-col lg:overflow-hidden">
       <Navbar />
       <Breadcrumbs />
-      <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>{children}</div>
-      <Footer />
+      <div className="flex-1 flex flex-col min-h-0">
+        {children}
+      </div>
     </div>
   )
 }
@@ -176,6 +169,8 @@ const AppRouter = () => {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/portfolio" element={<RolesPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+
+
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route
@@ -244,63 +239,48 @@ const AppRouter = () => {
             }
           />
           {/* ── Rutas del profesional ────────────────────────── */}
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute allowedRole="professional">
-                <RolesPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/experiencia"
-            element={
-              <ProtectedRoute allowedRole="professional">
-                <Experience />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/certificaciones"
-            element={
-              <ProtectedRoute allowedRole="professional">
-                <Certifications />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/dashboard" element={
+            <ProtectedRoute allowedRole="professional">
+              <RolesPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/experiencia" element={
+            <ProtectedRoute allowedRole="professional">
+              <Experience />
+            </ProtectedRoute>
+          } />
+          <Route path="/certificaciones" element={
+            <ProtectedRoute allowedRole="professional">
+              <Certifications />
+            </ProtectedRoute>
+          } />
+          <Route path="/visitantes" element={
+            <ProtectedRoute allowedRole="professional">
+              <ProfileVisitorsPage />
+            </ProtectedRoute>
+          } />
           <Route path="/profile" element={<Navigate to="/profile/personal-data" replace />} />
-          <Route
-            path="/profile/personal-data"
-            element={
-              <ProtectedRoute allowedRole="professional">
-                <PersonalData />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/profile/links"
-            element={
-              <ProtectedRoute allowedRole="professional">
-                <LinksPrivacy />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/profile/habilidades"
-            element={
-              <ProtectedRoute allowedRole="professional">
-                <HabilidadesPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/imprimir"
-            element={
-              <ProtectedRoute allowedRole="professional">
-                <PrintPortfolio />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/profile/personal-data" element={
+            <ProtectedRoute allowedRole="professional">
+              <PersonalData />
+            </ProtectedRoute>
+          } />
+          <Route path="/profile/links" element={
+            <ProtectedRoute allowedRole="professional">
+              <Links />
+            </ProtectedRoute>
+          } />
+          <Route path="/profile/privacy" element={
+            <ProtectedRoute allowedRole="professional">
+              <Privacy />
+            </ProtectedRoute>
+          } />
+          <Route path="/profile/habilidades" element={
+            <ProtectedRoute allowedRole="professional">
+              <HabilidadesPage />
+            </ProtectedRoute>
+          } />
+
           {/* ── Ruta por defecto ─────────────────────────────── */}
           <Route path="*" element={<Home />} />
         </Routes>

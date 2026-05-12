@@ -7,7 +7,6 @@ import { Link } from 'react-router-dom'
 
 import Navbar from './home/components/Navbar'
 import Hero from './home/components/Hero'
-import UniversityStrip from './home/components/UniversityStrip'
 import Features from './home/components/Features'
 import CTA from './home/components/CTA'
 import RecentPortfolios from './home/components/RecentPortfolios'
@@ -156,7 +155,6 @@ export default function Home() {
 
       {searchResults.length > 0 && <SearchResults results={searchResults} />}
 
-      <UniversityStrip />
       <Features />
       {!user && <CTA />}
       <RecentPortfolios profiles={profiles} loading={loading} />

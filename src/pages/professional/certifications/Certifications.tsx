@@ -209,7 +209,7 @@ function Certifications() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col font-sans">
+    <div className="h-full bg-background flex flex-col font-sans overflow-hidden">
       <div className="flex flex-1 overflow-hidden relative">
         <Sidebar activeItem="Certificaciones" />
 

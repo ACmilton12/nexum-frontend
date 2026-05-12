@@ -476,6 +476,7 @@ export default function NuevaHabilidadPanel({
           nombreInicial={busqueda.trim()}
           tipo={tipo}
           categoriaKey={categoriaSeleccionada}
+          catalogoPorCategoria={catalogoPorCategoria}
           onCancel={() => setModalSugerencia(false)}
           onToast={onToast}
         />

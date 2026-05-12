@@ -15,9 +15,7 @@ export default function Footer() {
               />
               <span className="text-white font-extrabold text-xl tracking-widest ml-1">NEXUM</span>
             </Link>
-            <p className="text-blue-300 text-sm leading-relaxed">
-              Plataforma institucional de portafolios digitales para profesionales.
-            </p>
+            <p className="text-blue-300 text-sm leading-relaxed">Plataforma de portafolios digitales para profesionales.</p>
           </div>
           <div>
             <div className="text-white font-bold text-xs mb-4 uppercase tracking-widest">

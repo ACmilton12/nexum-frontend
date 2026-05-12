@@ -78,7 +78,7 @@ export default function BackupsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="h-full bg-background flex flex-col overflow-hidden">
       <div className="flex flex-1 overflow-hidden">
         <Sidebar activeItem="Copias de Seguridad" />
 

@@ -281,7 +281,7 @@ function PersonalData() {
 
   if (loading)
     return (
-      <div className="min-h-screen bg-background flex flex-col font-sans">
+      <div className="h-full bg-background flex flex-col font-sans overflow-hidden">
         <div className="flex flex-1 overflow-hidden relative">
           <Sidebar activeItem="Datos Personales" />
           <main className="flex-1 flex flex-col lg:flex-row overflow-hidden">
@@ -300,7 +300,7 @@ function PersonalData() {
     )
 
   return (
-    <div className="min-h-screen bg-background flex flex-col font-sans">
+    <div className="h-full bg-background flex flex-col font-sans overflow-hidden">
       <div className="flex flex-1 overflow-hidden relative">
         <Sidebar activeItem="Datos Personales" />
 
