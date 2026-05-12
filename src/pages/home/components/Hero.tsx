@@ -16,22 +16,15 @@ export default function Hero({
   const [current, setCurrent] = useState(0);
 
   const slides = [
-    {
-      title: "Dashboard Principal",
-      description: "Vista general de tu portafolio",
-      image: "/hero/dashboard.png",
-    },
-    {
-      title: "Exportación PDF",
-      description: "Descarga tu portafolio listo para empleadores",
-      image: "/hero/pdf.png",
-    },
-    {
-      title: "Gestión de Proyectos",
-      description: "Administra tu portafolio académico",
-      image: "/hero/projects.png",
-    },
-  ];
+    { color: '#C8102E' }, // Rojo
+    { color: '#111111' }, // Negro (ligeramente suavizado)
+    { color: '#003087' } // Azul UMSS
+  ]
+
+  useEffect(() => {
+    const timer = setInterval(() => setCurrent((prev) => (prev + 1) % slides.length), 6000)
+    return () => clearInterval(timer)
+  }, [slides.length])
 
   const prev = () => setCurrent((c) => (c - 1 + slides.length) % slides.length);
   const next = () => setCurrent((c) => (c + 1) % slides.length);

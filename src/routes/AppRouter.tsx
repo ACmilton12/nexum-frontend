@@ -1,28 +1,35 @@
-import { BrowserRouter, Routes, Route, Link, useLocation, Navigate } from "react-router-dom";
-import React from "react";
-import LoginPage from "../pages/auth/LoginPage";
-import ForgotPasswordPage from "../pages/auth/ForgotPasswordPage";
-import ResetPasswordPage from "../pages/auth/ResetPasswordPage";
-import RegisterPage from "../pages/auth/RegisterPage";
-import RolesPage from "../pages/admin/RolesPage";
-import AccountsPage from "../pages/admin/AccountsPage";
-import Navbar from "../components/ui/Navbar";
-import Footer from "../components/ui/Footer";
-import AuditPage from "../pages/admin/AuditPage";
-import CategoriesPage from "../pages/admin/CategoriesPage";
-import BackupsPage from "../pages/admin/BackupsPage";
-import PersonalData from "../pages/professional/profile-settings/PersonalData";
-import Links from "../pages/professional/profile-settings/Links";
-import Privacy from "../pages/professional/profile-settings/Privacy";
-import HabilidadesPage from "../pages/professional/Habilidades";
-import Experience from "../pages/professional/experience/Experience";
-import Certifications from "../pages/professional/certifications/Certifications";
-import ProfileVisitorsPage from "../pages/professional/visitors/ProfileVisitorsPage";
-import ProtectedRoute from "./ProtectedRoute";
-import Home from "../pages/Home";
-import ProjectsPage from "../pages/professional/projects/ProjectsPage";
+import { BrowserRouter, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom'
+import React from 'react'
+import LoginPage from '../pages/auth/LoginPage'
+import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage'
+import ResetPasswordPage from '../pages/auth/ResetPasswordPage'
+import RegisterPage from '../pages/auth/RegisterPage'
+import RolesPage from '../pages/admin/RolesPage'
+import AccountsPage from '../pages/admin/AccountsPage'
+import Navbar from '../components/ui/Navbar'
+import Footer from '../components/ui/Footer'
+import AuditPage from '../pages/admin/AuditPage'
+import CategoriesPage from '../pages/admin/CategoriesPage'
+import BackupsPage from '../pages/admin/BackupsPage'
+import PersonalData from '../pages/professional/profile-settings/PersonalData'
+import LinksPrivacy from '../pages/professional/profile-settings/LinksPrivacy'
+import HabilidadesPage from '../pages/professional/Habilidades'
+import Experience from '../pages/professional/experience/Experience'
+import Certifications from '../pages/professional/certifications/Certifications'
+import ProtectedRoute from './ProtectedRoute'
+import Home from '../pages/Home'
+import ProjectsPage from '../pages/professional/projects/ProjectsPage'
+import SearchPage from '../pages/search/SearchPage'
+import PublicPortfolioPage from '../pages/portfolio/PublicPortfolioPage'
+import { useEffect } from 'react'
 
-
+const ScrollToTop = () => {
+  const { pathname } = useLocation()
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [pathname])
+  return null
+}
 
 const Breadcrumbs = () => {
   const { pathname } = useLocation()
@@ -129,6 +136,7 @@ const ROUTES_WITHOUT_LAYOUT = [
   '/forgot-password',
   '/reset-password',
   '/portfolio',
+  '/search',
   '/habilidades',
   '/profolio'
 ]
@@ -160,14 +168,16 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 const AppRouter = () => {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Layout>
         <Routes>
           {/* ── Página de inicio ─────────────────────────────── */}
           <Route path="/" element={<Home />} />
-          <Route path="/Home" element={<Home />} /> {/* ← AGREGADO: evita el breadcrumb */}
+          <Route path="/Home" element={<Home />} />
           {/* ── Rutas públicas ───────────────────────────────── */}
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/portfolio" element={<RolesPage />} />
+          <Route path="/search" element={<SearchPage />} />
+          <Route path="/portfolio/:id" element={<PublicPortfolioPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
 

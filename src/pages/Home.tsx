@@ -1,9 +1,13 @@
 import { useState } from 'react'
 import useAuth from '../hooks/useAuth'
 import { useFeaturedProfiles } from './home/hooks/useFeaturedProfiles'
-import { MOCK_PORTFOLIOS, type PublicPortfolio } from '../utils/mockPortfolios'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { ChevronLeft, ChevronRight, Filter, Search as SearchIcon, X, Loader2 } from 'lucide-react'
+import {
+  searchProfessionals,
+  type SearchResult,
+  type PaginationMeta
+} from '../services/search.service'
+import PortfolioCard from './search/components/PortfolioCard'
 
 import Navbar from './home/components/Navbar'
 import Hero from './home/components/Hero'
@@ -12,110 +16,169 @@ import CTA from './home/components/CTA'
 import RecentPortfolios from './home/components/RecentPortfolios'
 import Footer from './home/components/Footer'
 
-// ── Public Profile Card ──────────────────────────────────────────────────
-function PublicProfileCard({ profile }: { profile: PublicPortfolio }) {
-  return (
-    <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-2xl transition-all duration-500 group flex flex-col items-center text-center">
-      <div className="relative mb-6">
-        <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-gray-50 shadow-inner group-hover:scale-110 transition-transform duration-500">
-          {profile.avatar_url ? (
-            <img
-              src={profile.avatar_url}
-              alt={profile.first_name}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <div className="w-full h-full bg-red-600 flex items-center justify-center text-white text-3xl font-bold">
-              {profile.first_name[0]}
-            </div>
-          )}
-        </div>
-        <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 border-4 border-white rounded-full"></div>
-      </div>
-
-      <h3 className="text-xl font-bold text-gray-900 mb-1">
-        {profile.first_name} {profile.last_name}
-      </h3>
-      <p className="text-sm text-gray-500 mb-4">
-        {profile.profession} • {profile.location}
-      </p>
-
-      <div className="flex flex-wrap justify-center gap-2 mb-8 h-16 overflow-hidden">
-        {profile.skills.map((skill) => (
-          <span
-            key={skill}
-            className="bg-blue-50 text-blue-600 px-3 py-1 rounded-lg text-xs font-bold border border-blue-100"
-          >
-            {skill}
-          </span>
-        ))}
-      </div>
-
-      <Link
-        to={`/portfolio/${profile.id}`}
-        className="w-full py-3 rounded-xl border-2 border-gray-100 text-gray-800 font-bold hover:bg-[#C8102E] hover:text-white hover:border-[#C8102E] transition-all no-underline"
-      >
-        Ver Portafolio
-      </Link>
-    </div>
-  )
-}
+// Removed PublicProfileCard as we use PortfolioCard
 
 // ── Search Results Section ───────────────────────────────────────────────
-function SearchResults({ results }: { results: PublicPortfolio[] }) {
-  const [currentPage, setCurrentPage] = useState(1)
-  const itemsPerPage = 3
-  const totalPages = Math.ceil(results.length / itemsPerPage)
+interface SearchResultsProps {
+  results: SearchResult[]
+  meta: PaginationMeta | null
+  loading: boolean
+  onPageChange: (page: number) => void
+  onFilterChange: (filters: { area: string; skills: string[] }) => void
+}
 
-  const currentResults = results.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+function SearchResults({
+  results,
+  meta,
+  loading,
+  onPageChange,
+  onFilterChange
+}: SearchResultsProps) {
+  const [area, setArea] = useState('')
+  const [skillInput, setSkillInput] = useState('')
+  const [skills, setSkills] = useState<string[]>([])
 
-  if (results.length === 0) return null
+  const handleAddSkill = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && skillInput.trim()) {
+      e.preventDefault()
+      if (!skills.includes(skillInput.trim())) {
+        const newSkills = [...skills, skillInput.trim()]
+        setSkills(newSkills)
+        onFilterChange({ area, skills: newSkills })
+      }
+      setSkillInput('')
+    }
+  }
+
+  const removeSkill = (skillToRemove: string) => {
+    const newSkills = skills.filter((s) => s !== skillToRemove)
+    setSkills(newSkills)
+    onFilterChange({ area, skills: newSkills })
+  }
+
+  const applyAreaFilter = () => {
+    onFilterChange({ area, skills })
+  }
 
   return (
-    <section id="search-results" className="py-20 bg-[#C9D1D9]/30">
+    <section id="search-results" className="py-20 bg-[#F8FAFC]">
       <div className="max-w-7xl mx-auto px-6">
         <div className="mb-12">
-          <h2 className="text-3xl font-extrabold text-gray-900">
-            Resultados de búsqueda ({results.length})
-          </h2>
-          <p className="text-gray-500">Excluyendo perfiles privados y secciones ocultas.</p>
+          <h2 className="text-3xl font-extrabold text-gray-900 mb-2">Resultados de búsqueda</h2>
+          <p className="text-gray-500">Explora perfiles públicos y encuentra especialistas.</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {currentResults.map((p) => (
-            <PublicProfileCard key={p.id} profile={p} />
-          ))}
-        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Sidebar Filtros */}
+          <aside className="lg:col-span-1 space-y-6">
+            <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
+              <div className="flex items-center gap-2 mb-6">
+                <Filter size={20} className="text-[#C8102E]" />
+                <h3 className="font-bold text-gray-900">Filtros</h3>
+              </div>
 
-        {totalPages > 1 && (
-          <div className="flex justify-center items-center gap-2 mt-16">
-            <button
-              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              className="p-2 rounded-lg bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-50"
-              disabled={currentPage === 1}
-            >
-              <ChevronLeft size={20} />
-            </button>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
+                    Área / Profesión
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="Ej: Backend"
+                      className="flex-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#C8102E] transition-all"
+                      value={area}
+                      onChange={(e) => setArea(e.target.value)}
+                      onBlur={applyAreaFilter}
+                      onKeyDown={(e) => e.key === 'Enter' && applyAreaFilter()}
+                    />
+                  </div>
+                </div>
 
-            {Array.from({ length: totalPages }).map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrentPage(i + 1)}
-                className={`w-10 h-10 rounded-lg font-bold transition-all ${currentPage === i + 1 ? 'bg-[#C8102E] text-white' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'}`}
-              >
-                {i + 1}
-              </button>
-            ))}
+                <div>
+                  <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
+                    Habilidades
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter para añadir"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#C8102E] transition-all"
+                    value={skillInput}
+                    onChange={(e) => setSkillInput(e.target.value)}
+                    onKeyDown={handleAddSkill}
+                  />
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    {skills.map((s) => (
+                      <span
+                        key={s}
+                        className="flex items-center gap-1 bg-[#C8102E]/5 text-[#C8102E] px-2 py-1 rounded-lg text-[10px] font-bold border border-[#C8102E]/10"
+                      >
+                        {s}
+                        <X size={12} className="cursor-pointer" onClick={() => removeSkill(s)} />
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </aside>
 
-            <button
-              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-              className="p-2 rounded-lg bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-50"
-              disabled={currentPage === totalPages}
-            >
-              <ChevronRight size={20} />
-            </button>
+          {/* Resultados Grid */}
+          <div className="lg:col-span-3">
+            {loading ? (
+              <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-gray-100">
+                <Loader2 className="w-10 h-10 text-[#C8102E] animate-spin mb-4" />
+                <p className="text-gray-500 font-medium">Buscando...</p>
+              </div>
+            ) : results.length === 0 ? (
+              <div className="bg-white p-16 rounded-3xl text-center border border-gray-100">
+                <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <SearchIcon size={30} className="text-gray-300" />
+                </div>
+                <h3 className="text-lg font-bold text-gray-900">Sin resultados</h3>
+                <p className="text-gray-500 text-sm">No encontramos perfiles con esos criterios.</p>
+              </div>
+            ) : (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {results.map((p) => (
+                    <PortfolioCard key={p.id} portfolio={p} />
+                  ))}
+                </div>
+
+                {meta && meta.last_page > 1 && (
+                  <div className="flex justify-center items-center gap-2 mt-12">
+                    <button
+                      onClick={() => onPageChange(meta.current_page - 1)}
+                      disabled={meta.current_page === 1}
+                      className="p-2 rounded-xl bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-50"
+                    >
+                      <ChevronLeft size={20} />
+                    </button>
+
+                    {Array.from({ length: meta.last_page }).map((_, i) => (
+                      <button
+                        key={i}
+                        onClick={() => onPageChange(i + 1)}
+                        className={`w-10 h-10 rounded-xl font-bold transition-all text-sm ${meta.current_page === i + 1 ? 'bg-[#C8102E] text-white shadow-lg shadow-red-600/20' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'}`}
+                      >
+                        {i + 1}
+                      </button>
+                    ))}
+
+                    <button
+                      onClick={() => onPageChange(meta.current_page + 1)}
+                      disabled={meta.current_page === meta.last_page}
+                      className="p-2 rounded-xl bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-50"
+                    >
+                      <ChevronRight size={20} />
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </section>
   )
@@ -123,23 +186,40 @@ function SearchResults({ results }: { results: PublicPortfolio[] }) {
 
 export default function Home() {
   const { user } = useAuth()
-  const { profiles, stats, loading } = useFeaturedProfiles()
-  const [searchResults, setSearchResults] = useState<PublicPortfolio[]>([])
+  const { profiles, stats, loading: loadingFeatured } = useFeaturedProfiles()
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([])
+  const [meta, setMeta] = useState<PaginationMeta | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [searchParams, setSearchParams] = useState({
+    q: '',
+    area: '',
+    skills: [] as string[],
+    page: 1
+  })
+
+  const executeSearch = async (params: typeof searchParams) => {
+    setLoading(true)
+    try {
+      const response = await searchProfessionals({
+        q: params.q,
+        area: params.area,
+        skills: params.skills,
+        page: params.page,
+        per_page: 9
+      })
+      setSearchResults(response.data)
+      setMeta(response.meta)
+    } catch (err) {
+      console.error('Search error:', err)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const handleSearch = (term: string) => {
-    if (!term.trim()) {
-      setSearchResults([])
-      return
-    }
-    const lowerTerm = term.toLowerCase()
-    const filtered = MOCK_PORTFOLIOS.filter(
-      (p) =>
-        p.first_name.toLowerCase().includes(lowerTerm) ||
-        p.last_name.toLowerCase().includes(lowerTerm) ||
-        p.profession.toLowerCase().includes(lowerTerm) ||
-        p.skills.some((s) => s.toLowerCase().includes(lowerTerm))
-    )
-    setSearchResults(filtered)
+    const newParams = { ...searchParams, q: term, page: 1 }
+    setSearchParams(newParams)
+    executeSearch(newParams)
 
     // Scroll a resultados
     setTimeout(() => {
@@ -148,16 +228,36 @@ export default function Home() {
     }, 100)
   }
 
+  const handlePageChange = (page: number) => {
+    const newParams = { ...searchParams, page }
+    setSearchParams(newParams)
+    executeSearch(newParams)
+  }
+
+  const handleFilterChange = (filters: { area: string; skills: string[] }) => {
+    const newParams = { ...searchParams, ...filters, page: 1 }
+    setSearchParams(newParams)
+    executeSearch(newParams)
+  }
+
   return (
     <div className="min-h-screen font-sans antialiased bg-white">
       <Navbar />
       <Hero stats={stats} onSearch={handleSearch} />
 
-      {searchResults.length > 0 && <SearchResults results={searchResults} />}
+      {(searchResults.length > 0 || loading || searchParams.q) && (
+        <SearchResults
+          results={searchResults}
+          meta={meta}
+          loading={loading}
+          onPageChange={handlePageChange}
+          onFilterChange={handleFilterChange}
+        />
+      )}
 
       <Features />
       {!user && <CTA />}
-      <RecentPortfolios profiles={profiles} loading={loading} />
+      <RecentPortfolios profiles={profiles} loading={loadingFeatured} />
       <Footer />
     </div>
   )

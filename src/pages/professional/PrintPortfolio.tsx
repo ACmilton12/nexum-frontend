@@ -67,10 +67,11 @@ const PrintPortfolio = () => {
 
               <button
                 disabled={isGenerating}
-                className={`flex items-center justify-center gap-3 px-6 py-3 rounded-xl font-bold text-white shadow-lg transition-all ${isGenerating
+                className={`flex items-center justify-center gap-3 px-6 py-3 rounded-xl font-bold text-white shadow-lg transition-all ${
+                  isGenerating
                     ? 'bg-[#C8102E]/80 cursor-not-allowed'
                     : 'bg-[#C8102E] hover:bg-[#a50d25]'
-                  }`}
+                }`}
               >
                 {isGenerating ? (
                   <>
