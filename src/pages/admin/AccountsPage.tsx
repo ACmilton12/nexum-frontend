@@ -70,8 +70,13 @@ const AccountsPage = () => {
   }
 
   return (
+<<<<<<< HEAD
     <div className="min-h-screen bg-background dark:bg-slate-900 flex flex-col transition-colors duration-300">
       <div className="flex flex-1">
+=======
+    <div className="h-full bg-background flex flex-col overflow-hidden">
+      <div className="flex flex-1 overflow-hidden">
+>>>>>>> feature/hu1-tercersprint
         {/* Sidebar adaptativo */}
         <Sidebar activeItem="Gestión Usuarios" />
 

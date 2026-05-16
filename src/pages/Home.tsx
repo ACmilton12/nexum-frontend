@@ -12,7 +12,6 @@ import PortfolioCard from './search/components/PortfolioCard'
 
 import Navbar from './home/components/Navbar'
 import Hero from './home/components/Hero'
-import UniversityStrip from './home/components/UniversityStrip'
 import Features from './home/components/Features'
 import CTA from './home/components/CTA'
 import RecentPortfolios from './home/components/RecentPortfolios'
@@ -258,7 +257,6 @@ export default function Home() {
         />
       )}
 
-      <UniversityStrip />
       <Features />
       {!user && <CTA />}
       <RecentPortfolios profiles={profiles} loading={loadingFeatured} />

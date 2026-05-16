@@ -167,7 +167,11 @@ function CategoriesPage() {
   }
 
   return (
+<<<<<<< HEAD
     <div className="min-h-screen bg-background dark:bg-slate-900 flex flex-col font-sans transition-colors duration-300">
+=======
+    <div className="h-full bg-[#eef3f8] flex flex-col font-sans overflow-hidden">
+>>>>>>> feature/hu1-tercersprint
       <div className="flex flex-1 overflow-hidden relative">
         <Sidebar activeItem="Categorías" />
 

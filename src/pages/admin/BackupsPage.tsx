@@ -218,11 +218,10 @@ export default function BackupsPage() {
                           </td>
                           <td className="px-6 py-4">
                             <span
-                              className={`px-2.5 py-1 text-[11px] font-bold rounded-full ${
-                                backup.type === 'Automático'
-                                  ? 'bg-primary/10 text-primary'
-                                  : 'bg-navbar/10 text-navbar'
-                              }`}
+                              className={`px-2.5 py-1 text-[11px] font-bold rounded-full ${backup.type === 'Automático'
+                                ? 'bg-primary/10 text-primary'
+                                : 'bg-navbar/10 text-navbar'
+                                }`}
                             >
                               {backup.type}
                             </span>

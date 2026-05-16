@@ -16,7 +16,10 @@ import {
   Download
 } from 'lucide-react'
 import { getPublicPortfolio, type FullPortfolio } from '../../services/portfolio.service'
+import { useRecordVisit, useProfileStats } from '../../hooks/useProfileVisits'
 import Navbar from '../home/components/Navbar'
+
+
 import Footer from '../home/components/Footer'
 
 const LinkedinIcon = ({ size = 20 }: { size?: number }) => (
@@ -51,21 +54,38 @@ export default function PublicPortfolioPage() {
     'projects' | 'skills' | 'experience' | 'certifications'
   >('projects')
 
+  // Registrar visita automáticamente
+  useRecordVisit(portfolio?.id || null)
+
+  // Obtener estadísticas reales (visitas)
+  const { stats } = useProfileStats(portfolio?.id || null)
+
+
   useEffect(() => {
     const fetchPortfolio = async () => {
       if (!id) return
       setLoading(true)
       try {
         const data = await getPublicPortfolio(id)
-        setPortfolio(data)
+        
+        if (data.global_privacy === 'private') {
+          setError('Este portafolio es privado por decisión del usuario.');
+          setPortfolio(null);
+        } else {
+          setPortfolio(data)
 
-        // Determinar pestaña inicial basada en lo que hay disponible
-        if (data.projects && data.projects.length > 0) setActiveTab('projects')
-        else if (data.skills && data.skills.length > 0) setActiveTab('skills')
-        else if (data.work_experiences && data.work_experiences.length > 0)
-          setActiveTab('experience')
-        else if (data.certifications && data.certifications.length > 0)
-          setActiveTab('certifications')
+          // Determinar pestaña inicial basada en lo que hay disponible Y permitido por privacidad
+          const canShowProjects = data.show_projects !== false && data.projects && data.projects.length > 0;
+          const canShowSkills = data.show_skills !== false && data.skills && data.skills.length > 0;
+          const canShowExperience = data.show_experience !== false && data.work_experiences && data.work_experiences.length > 0;
+          const canShowCertifications = data.show_certifications !== false && data.certifications && data.certifications.length > 0;
+
+          if (canShowProjects) setActiveTab('projects');
+          else if (canShowSkills) setActiveTab('skills');
+          else if (canShowExperience) setActiveTab('experience');
+          else if (canShowCertifications) setActiveTab('certifications');
+        }
+
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Error al cargar el portafolio')
       } finally {
@@ -162,9 +182,10 @@ export default function PublicPortfolioPage() {
                   <span className="px-3 py-1 rounded-full bg-[#C8102E]/10 text-[#C8102E] text-[10px] font-extrabold uppercase tracking-widest border border-[#C8102E]/20">
                     Talento UMSS
                   </span>
-                  <span className="px-3 py-1 rounded-full bg-blue-500/10 text-blue-500 text-[10px] font-extrabold uppercase tracking-widest border border-blue-500/20">
-                    {views_count} Visualizaciones
+                  <span className="px-3 py-1 rounded-full bg-blue-500/10 text-blue-500 text-[10px] font-bold uppercase tracking-widest border border-blue-500/20">
+                    {stats?.visits_count ?? views_count} Visualizaciones
                   </span>
+
                 </div>
                 <h1 className="text-4xl lg:text-6xl font-black mb-3 tracking-tight">
                   {user.first_name} <span className="text-[#C8102E]">{user.last_name}</span>
@@ -238,23 +259,28 @@ export default function PublicPortfolioPage() {
                 </p>
 
                 <div className="mt-10 pt-10 border-t border-gray-50 grid grid-cols-2 gap-4">
-                  <div className="text-center p-4 rounded-2xl bg-gray-50 border border-gray-100">
-                    <div className="text-2xl font-black text-[#C8102E]">
-                      {portfolio.projects?.length || 0}
+                  {portfolio.show_projects !== false && (
+                    <div className="text-center p-4 rounded-2xl bg-gray-50 border border-gray-100">
+                      <div className="text-2xl font-black text-[#C8102E]">
+                        {portfolio.projects?.length || 0}
+                      </div>
+                      <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                        Proyectos
+                      </div>
                     </div>
-                    <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                      Proyectos
+                  )}
+                  {portfolio.show_skills !== false && (
+                    <div className="text-center p-4 rounded-2xl bg-gray-50 border border-gray-100">
+                      <div className="text-2xl font-black text-blue-600">
+                        {portfolio.skills?.length || 0}
+                      </div>
+                      <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                        Habilidades
+                      </div>
                     </div>
-                  </div>
-                  <div className="text-center p-4 rounded-2xl bg-gray-50 border border-gray-100">
-                    <div className="text-2xl font-black text-blue-600">
-                      {portfolio.skills?.length || 0}
-                    </div>
-                    <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                      Habilidades
-                    </div>
-                  </div>
+                  )}
                 </div>
+
               </section>
 
               <section className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm overflow-hidden relative">
@@ -327,31 +353,40 @@ export default function PublicPortfolioPage() {
             <div className="lg:col-span-8">
               {/* Tabs Navigation */}
               <div className="flex overflow-x-auto gap-2 p-1.5 bg-white border border-gray-100 rounded-2xl mb-10 shadow-sm no-scrollbar">
-                <button
-                  onClick={() => setActiveTab('projects')}
-                  className={`flex-1 min-w-[120px] py-3 px-4 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 ${activeTab === 'projects' ? 'bg-[#C8102E] text-white shadow-lg shadow-red-600/20' : 'text-gray-400 hover:text-gray-700 hover:bg-gray-50'}`}
-                >
-                  <Briefcase size={18} /> Proyectos
-                </button>
-                <button
-                  onClick={() => setActiveTab('skills')}
-                  className={`flex-1 min-w-[120px] py-3 px-4 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 ${activeTab === 'skills' ? 'bg-[#C8102E] text-white shadow-lg shadow-red-600/20' : 'text-gray-400 hover:text-gray-700 hover:bg-gray-50'}`}
-                >
-                  <Code2 size={18} /> Habilidades
-                </button>
-                <button
-                  onClick={() => setActiveTab('experience')}
-                  className={`flex-1 min-w-[120px] py-3 px-4 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 ${activeTab === 'experience' ? 'bg-[#C8102E] text-white shadow-lg shadow-red-600/20' : 'text-gray-400 hover:text-gray-700 hover:bg-gray-50'}`}
-                >
-                  <GraduationCap size={18} /> Trayectoria
-                </button>
-                <button
-                  onClick={() => setActiveTab('certifications')}
-                  className={`flex-1 min-w-[120px] py-3 px-4 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 ${activeTab === 'certifications' ? 'bg-[#C8102E] text-white shadow-lg shadow-red-600/20' : 'text-gray-400 hover:text-gray-700 hover:bg-gray-50'}`}
-                >
-                  <Award size={18} /> Certificados
-                </button>
+                {portfolio.show_projects !== false && (
+                  <button
+                    onClick={() => setActiveTab('projects')}
+                    className={`flex-1 min-w-[120px] py-3 px-4 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 ${activeTab === 'projects' ? 'bg-[#C8102E] text-white shadow-lg shadow-red-600/20' : 'text-gray-400 hover:text-gray-700 hover:bg-gray-50'}`}
+                  >
+                    <Briefcase size={18} /> Proyectos
+                  </button>
+                )}
+                {portfolio.show_skills !== false && (
+                  <button
+                    onClick={() => setActiveTab('skills')}
+                    className={`flex-1 min-w-[120px] py-3 px-4 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 ${activeTab === 'skills' ? 'bg-[#C8102E] text-white shadow-lg shadow-red-600/20' : 'text-gray-400 hover:text-gray-700 hover:bg-gray-50'}`}
+                  >
+                    <Code2 size={18} /> Habilidades
+                  </button>
+                )}
+                {portfolio.show_experience !== false && (
+                  <button
+                    onClick={() => setActiveTab('experience')}
+                    className={`flex-1 min-w-[120px] py-3 px-4 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 ${activeTab === 'experience' ? 'bg-[#C8102E] text-white shadow-lg shadow-red-600/20' : 'text-gray-400 hover:text-gray-700 hover:bg-gray-50'}`}
+                  >
+                    <GraduationCap size={18} /> Trayectoria
+                  </button>
+                )}
+                {portfolio.show_certifications !== false && (
+                  <button
+                    onClick={() => setActiveTab('certifications')}
+                    className={`flex-1 min-w-[120px] py-3 px-4 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 ${activeTab === 'certifications' ? 'bg-[#C8102E] text-white shadow-lg shadow-red-600/20' : 'text-gray-400 hover:text-gray-700 hover:bg-gray-50'}`}
+                  >
+                    <Award size={18} /> Certificados
+                  </button>
+                )}
               </div>
+
 
               {/* Tab Content */}
               <div className="min-h-[400px]">
