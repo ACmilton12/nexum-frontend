@@ -20,6 +20,7 @@ import {
   Menu,
   X
 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import useAuth from '../../../hooks/useAuth'
 
 interface SidebarProps {
@@ -40,16 +41,43 @@ const SidebarContent = ({
   setIsProfileOpen: (open: boolean) => void
   onItemClick?: () => void
 }) => {
+  const { t } = useTranslation()
   const adminItems = [
-    { label: 'Dashboard', icon: <LayoutDashboard size={18} />, path: '/admin' },
-    { label: 'Gestión Usuarios', icon: <Users size={18} />, path: '/admin/usuarios' },
-    { label: 'Categorías', icon: <Layers size={18} />, path: '/admin/categorias' },
-    { label: 'Auditoría', icon: <Shield size={18} />, path: '/admin/auditoria' },
-    { label: 'Copias de Seguridad', icon: <Database size={18} />, path: '/admin/backups' },
     {
-      label: 'Configuración del Sistema',
+      label: t('sidebar.dashboard'),
+      icon: <LayoutDashboard size={18} />,
+      path: '/admin',
+      id: 'Dashboard'
+    },
+    {
+      label: t('sidebar.users_mgmt'),
+      icon: <Users size={18} />,
+      path: '/admin/usuarios',
+      id: 'Gestión Usuarios'
+    },
+    {
+      label: t('sidebar.categories'),
+      icon: <Layers size={18} />,
+      path: '/admin/categorias',
+      id: 'Categorías'
+    },
+    {
+      label: t('sidebar.audit'),
+      icon: <Shield size={18} />,
+      path: '/admin/auditoria',
+      id: 'Auditoría'
+    },
+    {
+      label: t('sidebar.backups'),
+      icon: <Database size={18} />,
+      path: '/admin/backups',
+      id: 'Copias de Seguridad'
+    },
+    {
+      label: t('sidebar.system_config'),
       icon: <Settings size={18} />,
-      path: '/admin/configuracion'
+      path: '/admin/configuracion',
+      id: 'Configuración del Sistema'
     }
   ]
 
@@ -58,11 +86,11 @@ const SidebarContent = ({
       {isAdmin ? (
         adminItems.map((item) => (
           <Link
-            key={item.label}
+            key={item.id}
             to={item.path}
             onClick={onItemClick}
             className={`flex items-center gap-3 px-4 py-3 text-sm transition-colors no-underline ${
-              activeItem === item.label
+              activeItem === item.id
                 ? 'bg-primary text-white font-medium'
                 : 'text-textMain hover:bg-gray-100'
             }`}
@@ -82,7 +110,7 @@ const SidebarContent = ({
                 : 'text-textMain hover:bg-gray-100'
             }`}
           >
-            <LayoutDashboard size={18} /> Dashboard
+            <LayoutDashboard size={18} /> {t('sidebar.dashboard')}
           </Link>
           <Link
             to="/proyectos"
@@ -93,7 +121,7 @@ const SidebarContent = ({
                 : 'text-textMain hover:bg-gray-100'
             }`}
           >
-            <FolderOpen size={18} /> Proyectos
+            <FolderOpen size={18} /> {t('sidebar.projects')}
           </Link>
           <Link
             to="/profile/habilidades"
@@ -104,7 +132,7 @@ const SidebarContent = ({
                 : 'text-textMain hover:bg-gray-100'
             }`}
           >
-            <Wrench size={18} /> Habilidades
+            <Wrench size={18} /> {t('sidebar.skills')}
           </Link>
           <Link
             to="/experiencia"
@@ -115,7 +143,7 @@ const SidebarContent = ({
                 : 'text-textMain hover:bg-gray-100'
             }`}
           >
-            <Briefcase size={18} /> Experiencia
+            <Briefcase size={18} /> {t('sidebar.experience')}
           </Link>
           <Link
             to="/certificaciones"
@@ -126,7 +154,7 @@ const SidebarContent = ({
                 : 'text-textMain hover:bg-gray-100'
             }`}
           >
-            <CheckCircle size={18} /> Certificaciones
+            <CheckCircle size={18} /> {t('sidebar.certifications')}
           </Link>
 
           {/* PERFIL CON DESPLEGABLE */}
@@ -138,7 +166,7 @@ const SidebarContent = ({
           >
             <div className="flex items-center gap-3">
               <User size={18} />
-              Perfil
+              {t('sidebar.profile')}
             </div>
             <ChevronDown
               size={16}
@@ -157,7 +185,7 @@ const SidebarContent = ({
                     : 'text-gray-500 hover:bg-gray-100'
                 }`}
               >
-                <IdCard size={14} /> Datos Personales
+                <IdCard size={14} /> {t('sidebar.personal_data')}
               </Link>
               <Link
                 to="/profile/links"
@@ -168,7 +196,7 @@ const SidebarContent = ({
                     : 'text-gray-500 hover:bg-gray-100'
                 }`}
               >
-                <Link2 size={14} /> Enlaces y Privacidad
+                <Link2 size={14} /> {t('sidebar.links_privacy')}
               </Link>
               <Link
                 to="/profile/appearance"
@@ -179,7 +207,7 @@ const SidebarContent = ({
                     : 'text-gray-500 hover:bg-gray-100'
                 }`}
               >
-                <Palette size={14} /> Apariencia
+                <Palette size={14} /> {t('sidebar.appearance')}
               </Link>
               <Link
                 to="/profile/notifications"
@@ -190,7 +218,7 @@ const SidebarContent = ({
                     : 'text-gray-500 hover:bg-gray-100'
                 }`}
               >
-                <BellRing size={14} /> Notificaciones
+                <BellRing size={14} /> {t('sidebar.notifications')}
               </Link>
             </div>
           )}

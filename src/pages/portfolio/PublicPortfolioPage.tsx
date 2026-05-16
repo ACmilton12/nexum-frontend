@@ -13,7 +13,8 @@ import {
   Loader2,
   AlertCircle,
   Calendar,
-  Globe
+  Globe,
+  Download
 } from 'lucide-react'
 import { getPublicPortfolio, type FullPortfolio } from '../../services/portfolio.service'
 import Navbar from '../home/components/Navbar'
@@ -207,6 +208,12 @@ export default function PublicPortfolioPage() {
                     <GithubIcon size={20} />
                   </a>
                 )}
+                <Link
+                  to={`/imprimir/${id}`}
+                  className="px-6 h-12 rounded-2xl bg-white text-gray-900 font-bold shadow-lg border border-gray-100 hover:bg-gray-50 transition-all transform hover:-translate-y-1 flex items-center gap-2 no-underline"
+                >
+                  Descargar PDF <Download size={18} className="text-[#C8102E]" />
+                </Link>
                 <a
                   href={`mailto:${user.email}?subject=Contacto desde Nexum - ${user.first_name} ${user.last_name}`}
                   className="px-6 h-12 rounded-2xl bg-[#C8102E] text-white font-bold shadow-lg shadow-red-600/20 hover:bg-[#a50d25] transition-all transform hover:-translate-y-1 flex items-center gap-2 no-underline"

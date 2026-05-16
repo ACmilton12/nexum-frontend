@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type {
   TipoHabilidad,
   CategoriaKey,
@@ -33,6 +34,7 @@ export default function NuevaHabilidadPanel({
   onCancel: () => void
   onToast: (msg: string, t: 'success' | 'error') => void
 }) {
+  const { t } = useTranslation()
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<CategoriaKey | null>(null)
   const [busqueda, setBusqueda] = useState('')
   const [skillSeleccionada, setSkillSeleccionada] = useState<CatalogItem | null>(null)
@@ -53,9 +55,9 @@ export default function NuevaHabilidadPanel({
     : 'text-navbar bg-navbar/5 border-navbar/10'
 
   const nivelesTecnicos: { key: NivelTecnico; desc: string }[] = [
-    { key: 'Básico', desc: 'Conceptos y uso guiado.' },
-    { key: 'Intermedio', desc: 'Implementación funcional en proyectos.' },
-    { key: 'Avanzado', desc: 'Uso profesional autónomo.' }
+    { key: t('skills.basic') as NivelTecnico, desc: t('skills.basic_desc') },
+    { key: t('skills.intermediate') as NivelTecnico, desc: t('skills.intermediate_desc') },
+    { key: t('skills.advanced') as NivelTecnico, desc: t('skills.advanced_desc') }
   ]
 
   const handleTipoChange = (t: TipoHabilidad) => {
@@ -85,12 +87,12 @@ export default function NuevaHabilidadPanel({
       (s) => s.skillId !== null && s.skillId === item.id && s.status === 'disabled'
     )
     if (yaExisteActiva) {
-      setErrorDuplicado(`"${item.nombre}" ya está activa en tu perfil.`)
+      setErrorDuplicado(t('skills.already_active', { name: item.nombre }))
       setSkillSeleccionada(null)
       return
     }
     if (yaExisteDeshabilitada) {
-      setErrorDuplicado(`"${item.nombre}" está deshabilitada. Re-habilítala desde la lista.`)
+      setErrorDuplicado(t('skills.already_disabled', { name: item.nombre }))
       setSkillSeleccionada(null)
       return
     }
@@ -127,23 +129,23 @@ export default function NuevaHabilidadPanel({
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 sm:px-5 py-3.5 border-b border-gray-100 bg-gray-50/60">
           <div className="min-w-0">
             <p className="text-xs font-bold text-gray-500 uppercase tracking-wide truncate">
-              {skillSeleccionada ? `Nueva · ${skillSeleccionada.nombre}` : 'Nueva habilidad'}
+              {skillSeleccionada
+                ? t('skills.new_skill_specific', { name: skillSeleccionada.nombre })
+                : t('skills.new_skill_title')}
             </p>
             <p className="text-xs text-gray-400 mt-0.5">
-              {isTecnica
-                ? 'Selecciona del catálogo técnico y asigna tu nivel.'
-                : 'Selecciona del catálogo de habilidades blandas y tu nivel de desarrollo.'}
+              {isTecnica ? t('skills.instruction_technical') : t('skills.instruction_soft')}
             </p>
           </div>
           <div className="flex gap-1 bg-gray-100 rounded-lg p-0.5 self-start sm:self-auto flex-shrink-0">
-            {(['Técnica', 'Blanda'] as TipoHabilidad[]).map((t) => (
+            {(['Técnica', 'Blanda'] as TipoHabilidad[]).map((t_item) => (
               <button
-                key={t}
-                onClick={() => handleTipoChange(t)}
+                key={t_item}
+                onClick={() => handleTipoChange(t_item)}
                 disabled={saving}
-                className={`px-3 py-1 text-xs font-bold rounded-md transition-all disabled:opacity-50 ${tipo === t ? (isTecnica ? 'bg-white text-primary shadow-sm' : 'bg-white text-navbar shadow-sm') : 'text-gray-500 hover:text-gray-700'}`}
+                className={`px-3 py-1 text-xs font-bold rounded-md transition-all disabled:opacity-50 ${tipo === t_item ? (isTecnica ? 'bg-white text-primary shadow-sm' : 'bg-white text-navbar shadow-sm') : 'text-gray-500 hover:text-gray-700'}`}
               >
-                {t}
+                {t_item === 'Técnica' ? t('skills.technical') : t('skills.soft')}
               </button>
             ))}
           </div>
@@ -153,7 +155,8 @@ export default function NuevaHabilidadPanel({
           {/* Paso 1 */}
           <div>
             <p className="text-sm font-semibold text-gray-700 mb-3">
-              <span className="text-gray-400 mr-1.5">1.</span>Selecciona categoría
+              <span className="text-gray-400 mr-1.5">1.</span>
+              {t('skills.step_category')}
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3">
               {categoriasParaTipo(tipo).map((cat) => {
@@ -186,7 +189,8 @@ export default function NuevaHabilidadPanel({
           {/* Paso 2 */}
           <div>
             <p className="text-sm font-semibold text-gray-700 mb-3">
-              <span className="text-gray-400 mr-1.5">2.</span>Busca una habilidad
+              <span className="text-gray-400 mr-1.5">2.</span>
+              {t('skills.step_search')}
             </p>
             <div
               className={`flex items-center gap-2 px-3 py-2 border rounded-lg bg-white transition-colors ${categoriaSeleccionada ? 'border-gray-300 focus-within:border-primary' : 'border-gray-200 opacity-50 pointer-events-none'}`}
@@ -209,8 +213,8 @@ export default function NuevaHabilidadPanel({
                 }}
                 placeholder={
                   categoriaSeleccionada
-                    ? 'Buscar en el catálogo...'
-                    : 'Primero selecciona una categoría'
+                    ? t('skills.search_catalog_placeholder')
+                    : t('skills.select_category_first')
                 }
                 className="flex-1 outline-none text-sm text-gray-700 placeholder:text-gray-400 bg-transparent disabled:opacity-50"
               />
@@ -240,7 +244,10 @@ export default function NuevaHabilidadPanel({
               <div className="mt-2 border border-gray-200 rounded-xl overflow-hidden">
                 <div className="px-4 py-2 bg-gray-50 border-b border-gray-100 flex items-center justify-between">
                   <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide">
-                    {isTecnica ? 'TÉCNICA' : 'SOFT SKILLS'} · {categoriaLabel.toUpperCase()}
+                    {isTecnica
+                      ? t('skills.technical').toUpperCase()
+                      : t('skills.soft').toUpperCase()}{' '}
+                    · {categoriaLabel.toUpperCase()}
                   </span>
                   {skillSeleccionada && (
                     <span
@@ -253,7 +260,8 @@ export default function NuevaHabilidadPanel({
                 <div className="divide-y divide-gray-50 max-h-52 overflow-y-auto">
                   {loadingCatalog && (
                     <div className="flex items-center justify-center gap-2 py-6 text-sm text-gray-400">
-                      <IconSpinner className="w-4 h-4 text-gray-400" /> Cargando catálogo...
+                      <IconSpinner className="w-4 h-4 text-gray-400" />{' '}
+                      {t('skills.loading_catalog')}
                     </div>
                   )}
                   {!loadingCatalog &&
@@ -324,17 +332,17 @@ export default function NuevaHabilidadPanel({
                           <div className="flex-shrink-0 ml-2">
                             {yaRegistradaActiva ? (
                               <span className="text-[10px] text-gray-400 italic">
-                                Ya registrada
+                                {t('skills.registered_already')}
                               </span>
                             ) : yaRegistradaDisabled ? (
                               <span className="text-[10px] text-orange-400 italic">
-                                Deshabilitada
+                                {t('skills.disabled_already')}
                               </span>
                             ) : isSelected ? (
                               <span
                                 className={`text-xs font-semibold px-2 py-0.5 rounded-full border ${accentBadge}`}
                               >
-                                Seleccionada
+                                {t('skills.selected')}
                               </span>
                             ) : null}
                           </div>
@@ -345,13 +353,9 @@ export default function NuevaHabilidadPanel({
                     <div className="px-4 py-5 flex flex-col items-center gap-3 text-center">
                       <div>
                         <p className="text-sm text-gray-500">
-                          No se encontró{' '}
-                          <span className="font-semibold text-gray-700">"{busqueda}"</span> en el
-                          catálogo.
+                          {t('skills.no_results_found', { name: busqueda })}
                         </p>
-                        <p className="text-xs text-gray-400 mt-0.5">
-                          ¿Crees que debería estar? Puedes sugerirla.
-                        </p>
+                        <p className="text-xs text-gray-400 mt-0.5">{t('skills.suggest_info')}</p>
                       </div>
                       <button
                         type="button"
@@ -367,7 +371,7 @@ export default function NuevaHabilidadPanel({
                         >
                           <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
                         </svg>
-                        Sugerir "{busqueda}"
+                        {t('skills.suggest_btn', { name: busqueda })}
                       </button>
                     </div>
                   )}
@@ -376,7 +380,7 @@ export default function NuevaHabilidadPanel({
                     itemsFiltrados.length === 0 &&
                     !busqueda.trim() && (
                       <div className="px-4 py-6 text-center text-sm text-gray-400">
-                        Escribe para buscar una habilidad.
+                        {t('skills.write_to_search')}
                       </div>
                     )}
                 </div>
@@ -387,7 +391,8 @@ export default function NuevaHabilidadPanel({
           {/* Paso 3: Nivel */}
           <div>
             <p className="text-sm font-semibold text-gray-700 mb-3">
-              <span className="text-gray-400 mr-1.5">3.</span>Nivel
+              <span className="text-gray-400 mr-1.5">3.</span>
+              {t('skills.step_level')}
             </p>
             {isTecnica ? (
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
@@ -457,7 +462,7 @@ export default function NuevaHabilidadPanel({
               disabled={saving}
               className="flex-1 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
             >
-              Cancelar
+              {t('skills.cancel_btn')}
             </button>
             <button
               onClick={handleGuardar}
@@ -465,7 +470,7 @@ export default function NuevaHabilidadPanel({
               className="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-white bg-primary rounded-lg hover:bg-primary/90 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {saving && <IconSpinner className="w-4 h-4" />}
-              Guardar habilidad
+              {t('skills.save_skill_btn')}
             </button>
           </div>
         </div>

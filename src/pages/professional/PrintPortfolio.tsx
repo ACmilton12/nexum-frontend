@@ -1,167 +1,333 @@
 import { useState, useEffect } from 'react'
-import { CheckCircle2, Info, ArrowLeft, Download } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
-import Sidebar from '../admin/components/Sidebar'
-import Calendar from '../../components/ui/Calendar'
-
-// Subcomponente movido fuera para evitar "Cannot create components during render"
-const RightPanelContent = () => (
-  <div className="sticky top-6 space-y-8">
-    <div>
-      <h3 className="font-bold text-textMain text-sm mb-4 uppercase tracking-wider">Calendario</h3>
-      <Calendar />
-    </div>
-    <div>
-      <h3 className="font-bold text-textMain text-sm mb-4 flex items-center gap-2 uppercase tracking-wider text-action">
-        <Info size={18} /> NOTIFICACIONES
-      </h3>
-      <div className="space-y-3">
-        <div className="flex items-start gap-2 text-xs text-gray-600 leading-relaxed">
-          <Info size={14} className="text-action mt-0.5 shrink-0" />
-          <span>Tu PDF está listo para ser descargado.</span>
-        </div>
-      </div>
-    </div>
-  </div>
-)
+import { useParams, useNavigate } from 'react-router-dom'
+import { Download, ArrowLeft, Loader2, Mail, Phone, MapPin, Globe, Award } from 'lucide-react'
+import jsPDF from 'jspdf'
+import html2canvas from 'html2canvas'
+import { getPublicPortfolio, type FullPortfolio } from '../../services/portfolio.service'
+import { getProjects } from '../../services/project.service'
+import { getPortfolioSkills } from '../../services/habilidades.service'
+import { getExperiences } from '../../services/experience.service'
+import { getCertifications } from '../../services/certification.service'
+import { API_BASE_URL } from '../../utils/constants'
 
 const PrintPortfolio = () => {
+  const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const [isGenerating, setIsGenerating] = useState(true)
-
-  // Datos mock del usuario
-  const user = {
-    name: 'Juan Pérez',
-    title: 'Ingeniero de Sistemas • Cochabamba, Bolivia',
-    avatar: null
-  }
-
-  const sections = [
-    'Información de contacto',
-    'Resumen profesional (Biografía)',
-    'Proyectos destacados (3)',
-    'Habilidades técnicas',
-    'Experiencia laboral y académica'
-  ]
+  const [portfolio, setPortfolio] = useState<FullPortfolio | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [isExporting, setIsExporting] = useState(false)
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsGenerating(false), 3000)
-    return () => clearTimeout(timer)
-  }, [])
+    const fetchPortfolio = async () => {
+      setLoading(true)
+      try {
+        if (id) {
+          // Si hay ID, es un portafolio público o específico
+          const data = await getPublicPortfolio(id)
+          setPortfolio(data)
+        } else {
+          // Si no hay ID, es el del usuario logueado
+          const token = localStorage.getItem('token') || sessionStorage.getItem('token')
+          if (!token) {
+            navigate('/login')
+            return
+          }
+
+          // Fetch basic portfolio info
+          const response = await fetch(`${API_BASE_URL}/portfolio`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: 'application/json'
+            }
+          })
+          if (!response.ok) throw new Error('No se pudo cargar tu portafolio básico.')
+          const result = await response.json()
+          const basic = result.data
+
+          // Fetch other sections in parallel
+          const [projects, skills, experiences, certifications] = await Promise.all([
+            getProjects().catch(() => []),
+            getPortfolioSkills().catch(() => []),
+            getExperiences().catch(() => []),
+            getCertifications().catch(() => [])
+          ])
+
+          // Map the data to the FullPortfolio structure
+          setPortfolio({
+            ...basic,
+            projects: projects.filter((p) => !p.archived),
+            skills: skills.map((s) => ({
+              id: s.id,
+              name: s.name,
+              category: s.category,
+              level:
+                s.level === 'basico'
+                  ? 'Básico'
+                  : s.level === 'intermedio'
+                    ? 'Intermedio'
+                    : s.level === 'avanzado'
+                      ? 'Avanzado'
+                      : 'Experto'
+            })),
+            work_experiences: experiences.map((e) => ({
+              id: e.id,
+              company: e.company,
+              position: e.position,
+              description: e.description || '',
+              start_date: e.start_date,
+              end_date: e.end_date || undefined,
+              is_current: !e.end_date,
+              location: e.location || ''
+            })),
+            certifications: certifications.map((c) => ({
+              id: c.id,
+              name: c.name,
+              issuing_organization: c.issuing_entity,
+              issue_date: c.issue_date,
+              expiration_date: c.expiration_date || undefined,
+              image_url: c.image_url || undefined
+            }))
+          })
+        }
+      } catch (err) {
+        console.error('Print Error:', err)
+        setError(err instanceof Error ? err.message : 'Error al cargar los datos')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchPortfolio()
+  }, [id, navigate])
+
+  const handleDownloadPDF = async () => {
+    const element = document.getElementById('portfolio-content')
+    if (!element) return
+
+    setIsExporting(true)
+    try {
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff',
+        windowWidth: 1024
+      })
+      
+      const imgData = canvas.toDataURL('image/png')
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'px',
+        format: [canvas.width, canvas.height]
+      })
+
+      pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height)
+      pdf.save(`Portafolio_${portfolio?.user.first_name}_${portfolio?.user.last_name}.pdf`)
+    } catch (err) {
+      console.error('Error generating PDF:', err)
+      alert('Hubo un error al generar el PDF. Por favor intenta de nuevo.')
+    } finally {
+      setIsExporting(false)
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-10 h-10 text-primary animate-spin" />
+          <p className="text-gray-500 font-medium">Preparando documento...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error || !portfolio) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
+        <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 max-w-md w-full text-center">
+          <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Award size={32} />
+          </div>
+          <h2 className="text-xl font-bold text-gray-900 mb-2">Error</h2>
+          <p className="text-gray-500 mb-6">{error || 'No se encontró información.'}</p>
+          <button
+            onClick={() => navigate(-1)}
+            className="w-full py-3 bg-primary text-white rounded-xl font-bold shadow-lg"
+          >
+            Volver
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  const { user, profession, biography, location, phone, avatar_url } = portfolio
 
   return (
-    <div className="min-h-screen bg-background flex flex-col font-sans">
-      <div className="flex flex-1 overflow-hidden relative">
-        <Sidebar activeItem="Dashboard" />
+    <div className="min-h-screen bg-gray-100 font-sans print:bg-white">
+      {/* Barra de herramientas - No se imprime */}
+      <div className="no-print bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+        <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+          <button
+            onClick={() => navigate(-1)}
+            className="text-gray-500 font-bold hover:text-primary transition-colors flex items-center gap-2 text-sm"
+          >
+            <ArrowLeft size={18} /> Regresar
+          </button>
+          <button
+            onClick={handleDownloadPDF}
+            disabled={isExporting}
+            className="flex items-center gap-2 bg-[#C8102E] text-white px-5 py-2.5 rounded-lg font-bold shadow-lg hover:bg-[#a50d25] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isExporting ? (
+              <>
+                <Loader2 size={18} className="animate-spin" /> Generando PDF...
+              </>
+            ) : (
+              <>
+                <Download size={18} /> Descargar PDF
+              </>
+            )}
+          </button>
+        </div>
+      </div>
 
-        <main className="flex-1 flex flex-col lg:flex-row overflow-y-auto">
-          {/* SECCIÓN IZQUIERDA: Contenido de Exportación */}
-          <div className="flex-1 p-4 pl-14 sm:pl-6 md:p-8">
-            <header className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div>
-                <h1 className="text-2xl font-bold text-textMain mb-1">Exportar Portafolio</h1>
-                <p className="text-sm text-gray-500">
-                  Genera un documento PDF optimizado para impresión.
-                </p>
-              </div>
-
-              <button
-                disabled={isGenerating}
-                className={`flex items-center justify-center gap-3 px-6 py-3 rounded-xl font-bold text-white shadow-lg transition-all ${
-                  isGenerating
-                    ? 'bg-[#C8102E]/80 cursor-not-allowed'
-                    : 'bg-[#C8102E] hover:bg-[#a50d25]'
-                }`}
-              >
-                {isGenerating ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    Generando PDF...
-                  </>
+      <div className="max-w-5xl mx-auto pb-20">
+        <main className="flex-1 py-10 px-4 sm:px-6 print:py-0 print:px-0">
+          <div 
+            id="portfolio-content"
+            className="bg-white shadow-xl max-w-4xl mx-auto print:shadow-none print:max-w-full"
+          >
+            {/* Header */}
+            <div className="bg-[#1a1a2e] text-white p-10 flex flex-col md:flex-row items-center gap-8">
+              <div className="w-32 h-32 rounded-2xl overflow-hidden border-4 border-white/10 shrink-0 shadow-lg">
+                {avatar_url ? (
+                  <img src={avatar_url} alt={user.first_name} className="w-full h-full object-cover" />
                 ) : (
-                  <>
-                    <Download size={18} />
-                    Descargar PDF
-                  </>
+                  <div className="w-full h-full bg-[#C8102E] flex items-center justify-center text-4xl font-bold uppercase">
+                    {user.first_name[0]}
+                  </div>
                 )}
-              </button>
-            </header>
-
-            <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden max-w-5xl">
-              <div className="p-6 md:p-10">
-                {/* Profile Brief */}
-                <div className="flex flex-col md:flex-row items-center gap-8 mb-10">
-                  <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden border-4 border-gray-50 shadow-lg">
-                    <img
-                      src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200"
-                      alt="Juan Pérez"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="text-center md:text-left">
-                    <h2 className="text-2xl font-bold text-[#1a1a2e] mb-1">{user.name}</h2>
-                    <p className="text-sm text-gray-500 mb-4">{user.title}</p>
-                    <div className="flex flex-wrap justify-center md:justify-start gap-2">
-                      <span className="bg-[#E6F4EA] text-[#1E8E3E] px-3 py-1 rounded-full text-[10px] font-bold border border-[#CEEAD6]">
-                        Perfil 100% completo
-                      </span>
-                      <span className="bg-[#E8F0FE] text-[#1967D2] px-3 py-1 rounded-full text-[10px] font-bold border border-[#D2E3FC]">
-                        Público
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-                  {/* Included Sections */}
-                  <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100">
-                    <h3 className="font-bold text-[#1a1a2e] text-sm mb-6">
-                      Secciones incluidas en el PDF
-                    </h3>
-                    <div className="space-y-4">
-                      {sections.map((section, idx) => (
-                        <div key={idx} className="flex items-center justify-between">
-                          <span className="text-gray-600 text-xs font-medium">{section}</span>
-                          <CheckCircle2 className="text-green-500" size={18} />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Privacy Options */}
-                  <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100 flex flex-col justify-between">
-                    <div>
-                      <h3 className="font-bold text-[#1a1a2e] text-sm mb-4">
-                        Opciones de privacidad aplicadas
-                      </h3>
-                      <p className="text-xs text-gray-500 leading-relaxed">
-                        El PDF respeta tus configuraciones de privacidad actuales. Se excluirán las
-                        secciones marcadas como ocultas.
-                      </p>
-                    </div>
-                    <div className="mt-6 flex items-center gap-3 text-gray-400">
-                      <Info size={18} className="opacity-50" />
-                      <p className="text-[10px] italic">
-                        Incluye pie de página con fecha de generación.
-                      </p>
-                    </div>
-                  </div>
+              </div>
+              <div className="text-center md:text-left flex-1">
+                <h1 className="text-3xl md:text-4xl font-black mb-2 uppercase tracking-tight">
+                  {user.first_name} {user.last_name}
+                </h1>
+                <p className="text-xl text-[#C8102E] font-bold mb-4">{profession || 'Profesional'}</p>
+                <div className="flex flex-wrap justify-center md:justify-start gap-4 text-sm opacity-80">
+                  <div className="flex items-center gap-1.5"><MapPin size={16} /> {location || 'Bolivia'}</div>
+                  <div className="flex items-center gap-1.5"><Mail size={16} /> {user.email}</div>
+                  {phone && <div className="flex items-center gap-1.5"><Phone size={16} /> {phone}</div>}
                 </div>
               </div>
             </div>
 
-            <button
-              onClick={() => navigate(-1)}
-              className="mt-6 text-gray-400 font-bold hover:text-primary transition-colors flex items-center gap-2 text-sm"
-            >
-              <ArrowLeft size={16} /> Regresar al Dashboard
-            </button>
-          </div>
+            {/* Cuerpo */}
+            <div className="p-10 space-y-12">
+              {biography && (
+                <section>
+                  <h3 className="text-lg font-black text-[#1a1a2e] uppercase tracking-widest border-b-2 border-[#C8102E] pb-2 mb-4">
+                    Perfil Profesional
+                  </h3>
+                  <p className="text-gray-600 leading-relaxed text-sm whitespace-pre-line">{biography}</p>
+                </section>
+              )}
 
-          {/* ASIDE DERECHO */}
-          <aside className="w-full lg:w-72 p-6 bg-white border-t lg:border-t-0 lg:border-l border-gray-200 shrink-0">
-            <RightPanelContent />
-          </aside>
+              {portfolio.work_experiences && portfolio.work_experiences.length > 0 && (
+                <section>
+                  <h3 className="text-lg font-black text-[#1a1a2e] uppercase tracking-widest border-b-2 border-[#C8102E] pb-2 mb-6">
+                    Trayectoria Laboral
+                  </h3>
+                  <div className="space-y-8">
+                    {portfolio.work_experiences.map((exp) => (
+                      <div key={exp.id} className="relative pl-6 border-l-2 border-gray-100">
+                        <div className="absolute top-0 -left-[9px] w-4 h-4 rounded-full bg-[#C8102E] border-4 border-white shadow-sm"></div>
+                        <div className="flex flex-col md:flex-row md:items-center justify-between mb-2">
+                          <h4 className="font-bold text-gray-900">{exp.position}</h4>
+                          <span className="text-xs font-bold text-gray-400">{exp.start_date} — {exp.end_date || 'Presente'}</span>
+                        </div>
+                        <p className="text-[#C8102E] font-bold text-sm mb-2">{exp.company}</p>
+                        <p className="text-gray-500 text-xs leading-relaxed">{exp.description}</p>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                {portfolio.skills && portfolio.skills.length > 0 && (
+                  <section>
+                    <h3 className="text-lg font-black text-[#1a1a2e] uppercase tracking-widest border-b-2 border-[#C8102E] pb-2 mb-6">Habilidades</h3>
+                    <div className="space-y-4">
+                      {portfolio.skills.map((s) => (
+                        <div key={s.id} className="space-y-1">
+                          <div className="flex justify-between text-xs font-bold uppercase">
+                            <span className="text-gray-700">{s.name}</span>
+                            <span className="text-[#C8102E]">{s.level}</span>
+                          </div>
+                          <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+                            <div className="h-full bg-[#C8102E]" style={{ width: s.level === 'Experto' ? '100%' : s.level === 'Avanzado' ? '75%' : s.level === 'Intermedio' ? '50%' : '25%' }}></div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                )}
+
+                {portfolio.certifications && portfolio.certifications.length > 0 && (
+                  <section>
+                    <h3 className="text-lg font-black text-[#1a1a2e] uppercase tracking-widest border-b-2 border-[#C8102E] pb-2 mb-6">Certificaciones</h3>
+                    <div className="space-y-4">
+                      {portfolio.certifications.map((cert) => (
+                        <div key={cert.id} className="flex gap-3">
+                          <Award size={16} className="text-[#C8102E] shrink-0 mt-1" />
+                          <div>
+                            <h4 className="text-sm font-bold text-gray-900">{cert.name}</h4>
+                            <p className="text-xs text-gray-500">{cert.issuing_organization}</p>
+                            <p className="text-[10px] text-gray-400 font-bold uppercase mt-0.5">{new Date(cert.issue_date).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                )}
+              </div>
+
+              {portfolio.projects && portfolio.projects.length > 0 && (
+                <section>
+                  <h3 className="text-lg font-black text-[#1a1a2e] uppercase tracking-widest border-b-2 border-[#C8102E] pb-2 mb-6">Proyectos Destacados</h3>
+                  <div className="space-y-6">
+                    {portfolio.projects.map((project) => (
+                      <div key={project.id} className="p-6 rounded-2xl border border-gray-100 bg-gray-50/50">
+                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-3">
+                          <h4 className="text-base font-bold text-gray-900">{project.title}</h4>
+                          <span className="text-[10px] font-bold text-gray-400 uppercase bg-white px-2 py-1 rounded-md border border-gray-100">{new Date(project.created_at).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}</span>
+                        </div>
+                        <p className="text-[10px] font-bold text-[#C8102E] uppercase mb-3 tracking-wider">{project.category?.name || 'Proyecto General'}</p>
+                        <p className="text-gray-600 text-xs leading-relaxed mb-4">{project.description}</p>
+                        {project.skills && project.skills.length > 0 && (
+                          <div className="flex flex-wrap gap-1.5">
+                            <span className="text-[9px] font-black text-gray-400 uppercase mr-1 mt-0.5">Tecnologías:</span>
+                            {project.skills.map((skill) => (
+                              <span key={skill.id} className="px-2 py-0.5 rounded-md bg-white text-gray-600 text-[9px] font-bold border border-gray-200 shadow-sm">{skill.name}</span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
+            </div>
+
+            <div className="bg-gray-50 p-6 border-t border-gray-100 text-center">
+              <p className="text-[10px] text-gray-400 font-medium uppercase tracking-widest flex items-center justify-center gap-2">
+                <Globe size={12} /> Generado via Nexum UMSS • {new Date().toLocaleDateString()}
+              </p>
+            </div>
+          </div>
         </main>
       </div>
     </div>

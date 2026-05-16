@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Search as SearchIcon, X, Filter } from 'lucide-react'
 
 interface SearchFiltersProps {
@@ -14,6 +15,7 @@ export default function SearchFilters({
   initialSkills,
   onSearch
 }: SearchFiltersProps) {
+  const { t } = useTranslation()
   const [q, setQ] = useState(initialQuery)
   const [area, setArea] = useState(initialArea)
   const [skillInput, setSkillInput] = useState('')
@@ -45,14 +47,14 @@ export default function SearchFilters({
     <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm space-y-8 sticky top-24">
       <div className="flex items-center gap-2 mb-2">
         <Filter size={20} className="text-[#C8102E]" />
-        <h3 className="font-bold text-gray-900">Filtros Avanzados</h3>
+        <h3 className="font-bold text-gray-900">{t('search.advanced_filters')}</h3>
       </div>
 
       <div className="space-y-6">
         {/* Búsqueda por Nombre */}
         <div>
           <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">
-            Buscar por nombre
+            {t('search.search_by_name')}
           </label>
           <div className="relative">
             <SearchIcon
@@ -61,7 +63,7 @@ export default function SearchFilters({
             />
             <input
               type="text"
-              placeholder="Ej: Miguel Angel"
+              placeholder={t('search.name_placeholder')}
               className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-sm outline-none focus:border-[#C8102E] transition-all"
               value={q}
               onChange={(e) => setQ(e.target.value)}
@@ -73,11 +75,11 @@ export default function SearchFilters({
         {/* Área / Profesión */}
         <div>
           <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">
-            Área de especialidad
+            {t('search.area_specialty')}
           </label>
           <input
             type="text"
-            placeholder="Ej: Backend, UX/UI..."
+            placeholder={t('search.area_placeholder_detailed')}
             className="w-full px-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-sm outline-none focus:border-[#C8102E] transition-all"
             value={area}
             onChange={(e) => setArea(e.target.value)}
@@ -88,11 +90,11 @@ export default function SearchFilters({
         {/* Habilidades */}
         <div>
           <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">
-            Habilidades técnicas
+            {t('search.technical_skills')}
           </label>
           <input
             type="text"
-            placeholder="Añadir habilidad + Enter"
+            placeholder={t('search.skills_placeholder_detailed')}
             className="w-full px-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-sm outline-none focus:border-[#C8102E] transition-all"
             value={skillInput}
             onChange={(e) => setSkillInput(e.target.value)}
@@ -122,7 +124,7 @@ export default function SearchFilters({
         onClick={handleApply}
         className="w-full py-3 bg-[#C8102E] text-white rounded-xl font-bold shadow-lg shadow-red-600/20 hover:bg-[#a50d25] transition-all mt-4"
       >
-        Aplicar Filtros
+        {t('search.apply_filters')}
       </button>
 
       <button
@@ -134,7 +136,7 @@ export default function SearchFilters({
         }}
         className="w-full py-2 text-gray-400 text-xs font-bold hover:text-gray-600 transition-colors"
       >
-        Limpiar todo
+        {t('search.clear_all')}
       </button>
     </div>
   )

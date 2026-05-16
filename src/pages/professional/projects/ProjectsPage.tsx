@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import Sidebar from '../../admin/components/Sidebar'
 import RightWidgets from '../../../components/ui/RightWidgets'
 import CreateProjectModal from './CreateProjectModal'
@@ -45,6 +46,7 @@ const ProjectsPage = () => {
   const [selectedCategory, setSelectedCategory] = useState<number | 'ALL'>('ALL')
   const [sortDate, setSortDate] = useState<'NEWEST' | 'OLDEST'>('NEWEST')
   const [sortAlpha, setSortAlpha] = useState<'A-Z' | 'Z-A' | 'NONE'>('NONE')
+  const { t, i18n } = useTranslation()
 
   const fetchProjects = async () => {
     try {
@@ -118,10 +120,10 @@ const ProjectsPage = () => {
       setProjects(projects.filter((p) => p.id !== projectToDelete.id))
       setIsDeleteModalOpen(false)
       setProjectToDelete(null)
-      setToast({ message: 'Proyecto eliminado con éxito.', type: 'success' })
+      setToast({ message: t('projects.toast_delete_success'), type: 'success' })
     } catch (error) {
       console.error('Error al eliminar proyecto:', error)
-      setToast({ message: 'No se pudo eliminar el proyecto.', type: 'error' })
+      setToast({ message: t('projects.toast_delete_error'), type: 'error' })
     } finally {
       setIsDeleting(false)
     }
@@ -153,14 +155,13 @@ const ProjectsPage = () => {
               <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                   <p className="text-[12px] font-medium text-[#5b6472] mb-1">
-                    Portafolio profesional UMSS
+                    {t('projects.subtitle')}
                   </p>
                   <h1 className="text-2xl sm:text-[32px] font-bold text-[#1a1a2e] mb-2">
-                    Mis Proyectos
+                    {t('projects.title')}
                   </h1>
                   <p className="text-[14px] text-[#5b6472] max-w-2xl leading-relaxed">
-                    La gestión y la clasificación por categorías se resuelven dentro de una sola
-                    pantalla, con filtros visibles y acciones por proyecto.
+                    {t('projects.desc')}
                   </p>
                 </div>
                 <button
@@ -175,17 +176,17 @@ const ProjectsPage = () => {
                       : 'bg-[#c8102e] hover:brightness-110'
                   } text-white font-bold px-6 py-2.5 rounded-lg shadow-sm transition-all text-[14px]`}
                 >
-                  Nuevo proyecto
+                  {t('projects.new_project')}
                 </button>
               </header>
 
               {/* Toolbar de Filtros */}
               <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col gap-5">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <h2 className="text-[16px] font-bold text-[#1a1a2e]">Filtros y ordenamiento</h2>
-                  <p className="text-[13px] text-[#5b6472]">
-                    Categoría, búsqueda y orden en un solo bloque.
-                  </p>
+                  <h2 className="text-[16px] font-bold text-[#1a1a2e]">
+                    {t('projects.filters_title')}
+                  </h2>
+                  <p className="text-[13px] text-[#5b6472]">{t('projects.filters_desc')}</p>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-3">
@@ -200,7 +201,7 @@ const ProjectsPage = () => {
                       }
                       className="appearance-none bg-transparent pl-11 pr-10 py-2 w-full text-[13px] font-bold cursor-pointer focus:outline-none outline-none border-none"
                     >
-                      <option value="ALL">Categoría: Todas</option>
+                      <option value="ALL">{t('projects.category_all')}</option>
                       {categories.map((c) => (
                         <option key={c.id} value={c.id}>
                           {c.name}
@@ -224,7 +225,7 @@ const ProjectsPage = () => {
                     }`}
                   >
                     <CalendarDays size={15} />
-                    {sortDate === 'NEWEST' ? 'Más recientes' : 'Más antiguos'}
+                    {sortDate === 'NEWEST' ? t('projects.recent') : t('projects.oldest')}
                     <span className="text-[11px] opacity-60">
                       {sortDate === 'NEWEST' ? '↓' : '↑'}
                     </span>
@@ -259,13 +260,13 @@ const ProjectsPage = () => {
                       type="text"
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      placeholder="Buscar por nombre, categoría o tecnología..."
+                      placeholder={t('projects.search_placeholder')}
                       className="w-full pl-11 pr-4 py-2.5 bg-white border border-gray-200 rounded-full text-[13px] focus:outline-none focus:border-[#003087] focus:ring-1 focus:ring-[#003087] transition-colors"
                     />
                   </div>
                   {searchTerm.trim().length > 0 && searchTerm.trim().length < 3 && (
                     <span className="text-[12px] text-gray-500 italic">
-                      Escribe al menos 3 letras para buscar...
+                      {t('projects.search_min_chars')}
                     </span>
                   )}
                 </div>
@@ -279,19 +280,17 @@ const ProjectsPage = () => {
                   </div>
                   <div className="flex-1 text-center sm:text-left">
                     <h3 className="text-[16px] font-bold text-amber-900 mb-1">
-                      Información de portafolio requerida
+                      {t('projects.portfolio_required_title')}
                     </h3>
                     <p className="text-[14px] text-amber-700 leading-relaxed">
-                      Para añadir proyectos a tu portafolio, primero debes completar tus{' '}
-                      <span className="font-bold">Datos Personales</span>. Esto permitirá que tus
-                      proyectos estén vinculados a tu perfil profesional.
+                      {t('projects.portfolio_required_desc')}
                     </p>
                   </div>
                   <a
                     href="/profile/personal-data"
                     className="bg-amber-600 hover:bg-amber-700 text-white font-bold px-6 py-2.5 rounded-lg shadow-sm transition-all text-[13px] whitespace-nowrap"
                   >
-                    Completar perfil
+                    {t('projects.complete_profile')}
                   </a>
                 </div>
               )}
@@ -302,19 +301,23 @@ const ProjectsPage = () => {
                   <table className="w-full text-left border-collapse min-w-[850px]">
                     <thead>
                       <tr className="bg-[#f8f9fa] border-b border-gray-100">
-                        <th className="p-4 pl-6 text-[13px] font-bold text-[#1a1a2e] w-[25%]">
-                          Proyecto
-                        </th>
-                        <th className="p-4 text-[13px] font-bold text-[#1a1a2e] w-[15%]">
-                          Categoría
-                        </th>
-                        <th className="p-4 text-[13px] font-bold text-[#1a1a2e] w-[25%]">
-                          Tecnologías
-                        </th>
-                        <th className="p-4 text-[13px] font-bold text-[#1a1a2e] w-[15%]">Fecha</th>
-                        <th className="p-4 pr-6 text-[13px] font-bold text-[#1a1a2e] text-center w-[20%]">
-                          Acciones
-                        </th>
+                        <tr className="bg-[#f8f9fa] border-b border-gray-100">
+                          <th className="p-4 pl-6 text-[13px] font-bold text-[#1a1a2e] w-[25%]">
+                            {t('projects.table_project')}
+                          </th>
+                          <th className="p-4 text-[13px] font-bold text-[#1a1a2e] w-[15%]">
+                            {t('projects.table_category')}
+                          </th>
+                          <th className="p-4 text-[13px] font-bold text-[#1a1a2e] w-[25%]">
+                            {t('projects.table_skills')}
+                          </th>
+                          <th className="p-4 text-[13px] font-bold text-[#1a1a2e] w-[15%]">
+                            {t('projects.table_date')}
+                          </th>
+                          <th className="p-4 pr-6 text-[13px] font-bold text-[#1a1a2e] text-center w-[20%]">
+                            {t('projects.table_actions')}
+                          </th>
+                        </tr>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100">
@@ -325,15 +328,15 @@ const ProjectsPage = () => {
                               className="animate-spin mx-auto mb-2 text-[#003087]"
                               size={24}
                             />
-                            Cargando proyectos...
+                            {t('projects.loading')}
                           </td>
                         </tr>
                       ) : filteredProjects.length === 0 ? (
                         <tr>
                           <td colSpan={5} className="p-8 text-center text-[#5b6472]">
                             {projects.length === 0
-                              ? 'Aún no has registrado ningún proyecto.'
-                              : 'No se encontraron proyectos con los filtros aplicados.'}
+                              ? t('projects.no_projects')
+                              : t('projects.no_results')}
                           </td>
                         </tr>
                       ) : (
@@ -352,24 +355,25 @@ const ProjectsPage = () => {
                                     : 'bg-[#eef3f8] text-[#003087]'
                                 }`}
                               >
-                                {project.category?.name || 'Sin Categoría'}
+                                {project.category?.name || t('projects.uncategorized')}
                               </span>
                             </td>
                             <td
                               className="p-4 text-[13px] text-[#5b6472] truncate max-w-[200px]"
                               title={project.skills?.map((s) => s.name).join(', ')}
                             >
-                              {project.skills?.map((s) => s.name).join(', ') || 'No especificadas'}
+                              {project.skills?.map((s) => s.name).join(', ') ||
+                                t('projects.unspecified_skills')}
                             </td>
                             <td className="p-4 text-[13px] text-[#5b6472]">
                               {project.updated_at
-                                ? new Date(project.updated_at).toLocaleDateString('es-ES', {
+                                ? new Date(project.updated_at).toLocaleDateString(i18n.language, {
                                     day: '2-digit',
                                     month: '2-digit',
                                     year: 'numeric'
                                   })
                                 : project.created_at
-                                  ? new Date(project.created_at).toLocaleDateString('es-ES', {
+                                  ? new Date(project.created_at).toLocaleDateString(i18n.language, {
                                       day: '2-digit',
                                       month: '2-digit',
                                       year: 'numeric'
@@ -382,13 +386,13 @@ const ProjectsPage = () => {
                                   onClick={() => handleEditClick(project)}
                                   className="px-4 py-1.5 text-[13px] font-bold text-[#1a1a2e] bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                                 >
-                                  Editar
+                                  {t('projects.edit')}
                                 </button>
                                 <button
                                   onClick={() => handleDelete(project.id)}
                                   className="px-4 py-1.5 text-[13px] font-bold text-white bg-[#c8102e] rounded-lg hover:brightness-110 transition-colors shadow-sm"
                                 >
-                                  Eliminar
+                                  {t('projects.delete')}
                                 </button>
                               </div>
                             </td>
