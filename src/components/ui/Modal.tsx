@@ -31,10 +31,8 @@ const Modal: React.FC<ModalProps> = ({
 
   if (!isOpen) return null
 
-  let overlayClasses =
-    'fixed inset-0 bg-[#001a5e8c] backdrop-blur-sm z-[1000] flex transition-opacity duration-300 '
-  let containerClasses =
-    'bg-white dark:bg-slate-900 relative text-left shadow-[0_16px_40px_rgba(0,26,94,0.18)] dark:shadow-none dark:border dark:border-slate-800 transition-colors duration-300 '
+  let overlayClasses = "fixed inset-0 bg-[#001a5e8c] backdrop-blur-sm z-[1000] flex transition-opacity duration-300 ";
+  let containerClasses = "bg-white dark:bg-slate-900 relative text-left shadow-[0_16px_40px_rgba(0,26,94,0.18)] dark:shadow-none dark:border dark:border-slate-800 transition-colors duration-300 ";
 
   if (positioning === 'top-right') {
     overlayClasses += 'justify-end items-start'
