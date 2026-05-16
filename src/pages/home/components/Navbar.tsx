@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import useAuth from '../../../hooks/useAuth'
 import logoUmss from '../../../assets/logoUmss.png'
+import LanguageSelector from '../../../components/ui/LanguageSelector'
 
 export default function Navbar() {
+  const { t } = useTranslation()
   const { user } = useAuth()
   const navigate = useNavigate()
   const [scrolled, setScrolled] = useState(false)
@@ -48,24 +51,25 @@ export default function Navbar() {
             to="/"
             className="text-white text-xs font-bold tracking-widest hover:text-gray-300 transition-colors duration-200 no-underline"
           >
-            INICIO
+            {t('navbar.home').toUpperCase()}
           </Link>
           <Link
             to="/Home"
             className="text-white text-xs font-bold tracking-widest hover:text-gray-300 transition-colors duration-200 no-underline"
           >
-            EXPLORAR PORTAFOLIOS
+            {t('navbar.search').toUpperCase()}
           </Link>
           <a
             href="#contacto"
             className="text-white text-xs font-bold tracking-widest hover:text-gray-300 transition-colors duration-200 no-underline"
           >
-            CONTACTO
+            {t('navbar.contact', 'CONTACTO').toUpperCase()}
           </a>
         </div>
 
         {/* Botones — derecha */}
         <div className="hidden md:flex flex-1 items-center justify-end gap-3">
+          <LanguageSelector />
           {user ? (
             <>
               <span className="text-white text-sm opacity-80 font-medium">
@@ -86,7 +90,7 @@ export default function Navbar() {
                   l.style.color = 'white'
                 }}
               >
-                Mi Perfil
+                {t('navbar.profile')}
               </Link>
               <button
                 onClick={handleLogout}
@@ -99,7 +103,7 @@ export default function Navbar() {
                   ((e.currentTarget as HTMLButtonElement).style.backgroundColor = '#C8102E')
                 }
               >
-                Cerrar sesión
+                {t('navbar.logout')}
               </button>
             </>
           ) : (
@@ -119,7 +123,7 @@ export default function Navbar() {
                   l.style.color = 'white'
                 }}
               >
-                Acceder
+                {t('navbar.login')}
               </Link>
               <Link
                 to="/register"
@@ -132,7 +136,7 @@ export default function Navbar() {
                   ((e.currentTarget as HTMLAnchorElement).style.backgroundColor = '#C8102E')
                 }
               >
-                Registrarse
+                {t('navbar.register')}
               </Link>
             </>
           )}
@@ -156,13 +160,13 @@ export default function Navbar() {
           style={{ backgroundColor: '#001A5E' }}
         >
           <Link to="/" className="text-white text-xs font-bold tracking-widest no-underline">
-            INICIO
+            {t('navbar.home').toUpperCase()}
           </Link>
           <Link to="/Home" className="text-white text-xs font-bold tracking-widest no-underline">
-            EXPLORAR PORTAFOLIOS
+            {t('navbar.search').toUpperCase()}
           </Link>
           <a href="#contacto" className="text-white text-xs font-bold tracking-widest no-underline">
-            CONTACTO
+            {t('navbar.contact').toUpperCase()}
           </a>
           <div className="flex gap-3 pt-2">
             {user ? (
@@ -171,14 +175,14 @@ export default function Navbar() {
                   to="/profile/personal-data"
                   className="flex-1 border-2 border-white text-white text-sm font-bold py-2 rounded text-center no-underline"
                 >
-                  Mi Perfil
+                  {t('navbar.profile')}
                 </Link>
                 <button
                   onClick={handleLogout}
                   className="flex-1 text-white text-sm font-bold py-2 rounded text-center border-0 cursor-pointer"
                   style={{ backgroundColor: '#C8102E' }}
                 >
-                  Salir
+                  {t('navbar.logout')}
                 </button>
               </>
             ) : (

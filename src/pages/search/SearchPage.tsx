@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSearchParams } from 'react-router-dom'
 import { ChevronLeft, ChevronRight, Search as SearchIcon, Loader2, UserX } from 'lucide-react'
 import {
@@ -12,6 +13,7 @@ import SearchFilters from './components/SearchFilters'
 import PortfolioCard from './components/PortfolioCard'
 
 export default function SearchPage() {
+  const { t } = useTranslation()
   const [searchParams, setSearchParams] = useSearchParams()
   const [results, setResults] = useState<SearchResult[]>([])
   const [meta, setMeta] = useState<PaginationMeta | null>(null)
@@ -37,7 +39,7 @@ export default function SearchPage() {
       setResults(response.data)
       setMeta(response.meta)
     } catch (err) {
-      setError('No se pudieron cargar los resultados. Inténtalo de nuevo más tarde.')
+      setError(t('search.error_results'))
       console.error(err)
     } finally {
       setLoading(false)
@@ -71,10 +73,10 @@ export default function SearchPage() {
       <main className="flex-grow pt-24 pb-20">
         <div className="max-w-7xl mx-auto px-6">
           <div className="mb-10">
-            <h1 className="text-3xl font-extrabold text-gray-900 mb-2">Explorar Portafolios</h1>
-            <p className="text-gray-500">
-              Encuentra y conecta con el mejor talento de la comunidad.
-            </p>
+            <h1 className="text-3xl font-extrabold text-gray-900 mb-2">
+              {t('search.explore_title')}
+            </h1>
+            <p className="text-gray-500">{t('search.explore_desc')}</p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -93,11 +95,11 @@ export default function SearchPage() {
               {loading ? (
                 <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-gray-100">
                   <Loader2 className="w-12 h-12 text-[#C8102E] animate-spin mb-4" />
-                  <p className="text-gray-500 font-medium">Buscando profesionales...</p>
+                  <p className="text-gray-500 font-medium">{t('search.loading')}</p>
                 </div>
               ) : error ? (
                 <div className="bg-red-50 border border-red-100 p-8 rounded-3xl text-center">
-                  <p className="text-red-600 font-bold mb-2">¡Ups! Algo salió mal</p>
+                  <p className="text-red-600 font-bold mb-2">¡Ups! {t('common.error')}</p>
                   <p className="text-red-500 text-sm">{error}</p>
                 </div>
               ) : results.length === 0 ? (
@@ -105,26 +107,20 @@ export default function SearchPage() {
                   <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-6">
                     <UserX className="text-gray-300" size={40} />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">
-                    No encontramos resultados
-                  </h3>
-                  <p className="text-gray-500 max-w-md mx-auto">
-                    Intenta ajustar tus filtros o busca por otros términos para encontrar lo que
-                    necesitas.
-                  </p>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">{t('search.no_results')}</h3>
+                  <p className="text-gray-500 max-w-md mx-auto">{t('search.no_results_desc')}</p>
                   <button
                     onClick={() => handleFilterChange({ q: '', area: '', skills: [] })}
                     className="mt-8 px-6 py-2 bg-gray-900 text-white rounded-xl font-bold hover:bg-[#C8102E] transition-all"
                   >
-                    Ver todos los portafolios
+                    {t('search.view_all')}
                   </button>
                 </div>
               ) : (
                 <>
                   <div className="flex items-center justify-between mb-6">
                     <p className="text-sm text-gray-500">
-                      Mostrando <span className="font-bold text-gray-900">{results.length}</span> de{' '}
-                      <span className="font-bold text-gray-900">{meta?.total}</span> resultados
+                      {t('search.showing_results', { count: results.length, total: meta?.total })}
                     </p>
                     <div className="flex items-center gap-2">
                       {/* Aquí se podría agregar un selector de ordenamiento en el futuro */}

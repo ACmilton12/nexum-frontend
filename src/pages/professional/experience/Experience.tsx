@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import Sidebar from '../../admin/components/Sidebar'
 import Calendar from '../../../components/ui/Calendar'
 import {
@@ -36,6 +37,7 @@ function Experience() {
   const [validationErrors, setValidationErrors] = useState<{ [key: string]: string }>({})
   const [globalError, setGlobalError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
+  const { t, i18n } = useTranslation()
 
   useEffect(() => {
     getSkillsCatalog().then(setAvailableSkills).catch(console.error)
@@ -54,21 +56,8 @@ function Experience() {
   const formatToLongDate = (val: string) => {
     if (!val) return ''
     const [y, m] = val.split('-')
-    const months = [
-      'Enero',
-      'Febrero',
-      'Marzo',
-      'Abril',
-      'Mayo',
-      'Junio',
-      'Julio',
-      'Agosto',
-      'Septiembre',
-      'Octubre',
-      'Noviembre',
-      'Diciembre'
-    ]
-    return `${months[parseInt(m) - 1]} de ${y}`
+    const date = new Date(parseInt(y), parseInt(m) - 1)
+    return new Intl.DateTimeFormat(i18n.language, { month: 'long', year: 'numeric' }).format(date)
   }
 
   const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,25 +73,25 @@ function Experience() {
     setSuccess(null)
     const errors: { [key: string]: string } = {}
 
-    if (!position.trim()) errors.position = 'Este campo es obligatorio'
-    if (!company.trim()) errors.company = 'Este campo es obligatorio'
+    if (!position.trim()) errors.position = t('experience.error_required')
+    if (!company.trim()) errors.company = t('experience.error_required')
     if (!startDate) {
-      errors.startDate = 'Este campo es obligatorio'
+      errors.startDate = t('experience.error_required')
     } else {
       const currentMonth = new Date().toISOString().slice(0, 7)
       if (startDate > currentMonth) {
-        errors.startDate = 'La fecha de inicio no puede ser una fecha futura'
+        errors.startDate = t('experience.error_future_date')
       }
     }
     if (startDate && endDate && endDate < startDate) {
-      errors.endDate = 'La fecha de fin debe ser posterior a la de inicio'
+      errors.endDate = t('experience.error_date_range')
     }
-    if (!employmentType) errors.employmentType = 'Este campo es obligatorio'
-    if (!description.trim()) errors.description = 'Este campo es obligatorio'
-    if (selectedSkills.length === 0) errors.skills = 'Debe seleccionar al menos una tecnología'
+    if (!employmentType) errors.employmentType = t('experience.error_required')
+    if (!description.trim()) errors.description = t('experience.error_required')
+    if (selectedSkills.length === 0) errors.skills = t('experience.error_min_skills')
 
     if (verificationUrl && !/^https?:\/\/.+/.test(verificationUrl)) {
-      errors.verificationUrl = 'URL inválida (debe iniciar con http:// o https://)'
+      errors.verificationUrl = t('experience.error_invalid_url')
     }
 
     if (Object.keys(errors).length > 0) {
@@ -142,7 +131,7 @@ function Experience() {
 
       await createExperience(payload)
 
-      setSuccess('Experiencia laboral guardada exitosamente.')
+      setSuccess(t('experience.toast_success'))
       // Reset form
       setPosition('')
       setCompany('')
@@ -160,7 +149,7 @@ function Experience() {
         const firstErr = Object.values(error.errors)[0]
         setGlobalError(firstErr[0])
       } else {
-        setGlobalError(error.message || 'Ocurrió un error al guardar.')
+        setGlobalError(error.message || t('experience.toast_error'))
       }
     } finally {
       setActionLoading(false)
@@ -187,30 +176,30 @@ function Experience() {
       <div className="mt-8">
         <h3 className="font-bold text-textMain text-sm mb-4 flex items-center gap-2 uppercase tracking-wider">
           <ShieldAlert size={16} className="text-action" />
-          NOTIFICACIONES
+          {t('dashboard.notifications')}
         </h3>
         <div className="space-y-3">
           <div className="flex items-start gap-2 text-[11px] text-gray-600 leading-tight bg-gray-50 p-3 rounded-lg border border-gray-100">
             <Clock size={14} className="text-action mt-0.5 shrink-0" />
-            <span>Mantén tu experiencia actualizada para destacar ante reclutadores.</span>
+            <span>{t('experience.notification_tip')}</span>
           </div>
         </div>
       </div>
 
       <div className="mt-8">
         <h3 className="font-bold text-textMain text-sm mb-4 uppercase tracking-wider">
-          Enlaces rápidos
+          {t('dashboard.quick_links')}
         </h3>
         <div className="space-y-3 text-xs text-primary">
           <p className="cursor-pointer hover:underline flex items-center justify-between group">
-            <span>📋 Guía de Usuario</span>
+            <span>📋 {t('dashboard.user_guide')}</span>
             <ExternalLink
               size={12}
               className="opacity-0 group-hover:opacity-100 transition-opacity"
             />
           </p>
           <p className="cursor-pointer hover:underline flex items-center justify-between group">
-            <span>⚙️ Soporte Técnico</span>
+            <span>⚙️ {t('sidebar.support')}</span>
             <ExternalLink
               size={12}
               className="opacity-0 group-hover:opacity-100 transition-opacity"
@@ -230,11 +219,13 @@ function Experience() {
           <div className="flex-1 p-4 pl-14 sm:pl-6 md:p-8 overflow-y-auto">
             <div className="max-w-4xl mx-auto pt-2">
               <header className="mb-6 flex justify-between items-center">
-                <h1 className="text-2xl font-bold text-textMain">Experiencia</h1>
+                <h1 className="text-2xl font-bold text-textMain">{t('experience.title')}</h1>
               </header>
 
               <div className="bg-white rounded-xl shadow-sm p-6 md:p-8 mb-8">
-                <h2 className="text-base font-bold text-textMain mb-6">Añadir Experiencia</h2>
+                <h2 className="text-base font-bold text-textMain mb-6">
+                  {t('experience.add_experience')}
+                </h2>
 
                 {globalError && (
                   <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm flex items-center gap-3 animate-slideIn">
@@ -254,12 +245,12 @@ function Experience() {
                   {/* Cargo / Puesto */}
                   <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] items-start gap-4">
                     <label className="text-[13px] font-bold mt-2">
-                      Cargo / Puesto: <span className="text-red-500">*</span>
+                      {t('experience.position_label')}: <span className="text-red-500">*</span>
                     </label>
                     <div className="flex flex-col w-full">
                       <input
                         type="text"
-                        placeholder="Ej. Desarrollador Frontend"
+                        placeholder={t('experience.position_placeholder')}
                         value={position}
                         onChange={(e) => {
                           const val = e.target.value
@@ -283,12 +274,12 @@ function Experience() {
                   {/* Empresa */}
                   <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] items-start gap-4">
                     <label className="text-[13px] font-bold mt-2">
-                      Empresa/nombre: <span className="text-red-500">*</span>
+                      {t('experience.company_label')}: <span className="text-red-500">*</span>
                     </label>
                     <div className="flex flex-col w-full">
                       <input
                         type="text"
-                        placeholder="Ej. Comteco"
+                        placeholder={t('experience.company_placeholder')}
                         value={company}
                         onChange={(e) => {
                           const val = e.target.value
@@ -311,11 +302,13 @@ function Experience() {
 
                   {/* Ubicación de la empresa */}
                   <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] items-start gap-4">
-                    <label className="text-[13px] font-bold mt-2">Ubicación de la empresa:</label>
+                    <label className="text-[13px] font-bold mt-2">
+                      {t('experience.location_label')}:
+                    </label>
                     <div className="flex flex-col w-full">
                       <input
                         type="text"
-                        placeholder="Av. Villazon"
+                        placeholder={t('experience.location_placeholder')}
                         value={location}
                         onChange={(e) => {
                           const val = e.target.value
@@ -338,7 +331,9 @@ function Experience() {
 
                   {/* URL */}
                   <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] items-start gap-4">
-                    <label className="text-[13px] font-bold mt-2">URL:</label>
+                    <label className="text-[13px] font-bold mt-2">
+                      {t('experience.url_label')}:
+                    </label>
                     <div className="flex flex-col w-full">
                       <input
                         type="url"
@@ -363,7 +358,7 @@ function Experience() {
                   {/* Fecha */}
                   <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] items-start gap-4">
                     <label className="text-[13px] font-bold text-gray-700 mt-2">
-                      Fecha: <span className="text-red-500">*</span>
+                      {t('experience.date_label')}: <span className="text-red-500">*</span>
                     </label>
                     <div className="flex flex-col w-full">
                       <div className="flex flex-col sm:flex-row items-start gap-3 w-full">
@@ -384,7 +379,9 @@ function Experience() {
                             className={`w-full p-2.5 rounded border bg-white flex items-center justify-between text-sm transition-all ${validationErrors.startDate ? 'border-red-500 ring-1 ring-red-500/20' : 'border-gray-200 group-hover:border-action'}`}
                           >
                             <span className={startDate ? 'text-textMain' : 'text-gray-400'}>
-                              {startDate ? formatToLongDate(startDate) : 'Mes de año'}
+                              {startDate
+                                ? formatToLongDate(startDate)
+                                : t('experience.date_placeholder')}
                             </span>
                             <CalendarIcon size={14} className="text-gray-400" />
                           </div>
@@ -408,7 +405,9 @@ function Experience() {
                           />
                           <div className="w-full p-2.5 rounded border border-gray-200 bg-white flex items-center justify-between text-sm transition-all group-hover:border-action">
                             <span className={endDate ? 'text-textMain' : 'text-gray-400'}>
-                              {endDate ? formatToLongDate(endDate) : 'Mes de año'}
+                              {endDate
+                                ? formatToLongDate(endDate)
+                                : t('experience.date_placeholder')}
                             </span>
                             <CalendarIcon size={14} className="text-gray-400" />
                           </div>
@@ -425,7 +424,8 @@ function Experience() {
                   {/* Modalidad de trabajo */}
                   <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] items-start gap-4">
                     <label className="text-[13px] font-bold mt-2">
-                      Modalidad de trabajo <span className="text-red-500">*</span>
+                      {t('experience.employment_type_label')}{' '}
+                      <span className="text-red-500">*</span>
                     </label>
                     <div className="flex flex-col w-full">
                       <div className="relative">
@@ -439,10 +439,10 @@ function Experience() {
                           disabled={actionLoading}
                           className={`w-full p-2.5 rounded border bg-white outline-none focus:border-action transition-all text-sm appearance-none cursor-pointer ${validationErrors.employmentType ? 'border-red-500 ring-1 ring-red-500/20' : 'border-gray-200'}`}
                         >
-                          <option value="remote">Remoto</option>
-                          <option value="on_site">Presencial</option>
-                          <option value="hybrid">Híbrido</option>
-                          <option value="freelance">Freelance</option>
+                          <option value="remote">{t('experience.remote')}</option>
+                          <option value="on_site">{t('experience.on_site')}</option>
+                          <option value="hybrid">{t('experience.hybrid')}</option>
+                          <option value="freelance">{t('experience.freelance')}</option>
                         </select>
                         <ChevronDown
                           size={16}
@@ -460,12 +460,12 @@ function Experience() {
                   {/* Descripcion */}
                   <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] items-start gap-4">
                     <label className="text-[13px] font-bold mt-2">
-                      Descripcion: <span className="text-red-500">*</span>
+                      {t('experience.description_label')}: <span className="text-red-500">*</span>
                     </label>
                     <div className="flex flex-col w-full">
                       <input
                         type="text"
-                        placeholder="Funciones de trabajo"
+                        placeholder={t('experience.description_placeholder')}
                         value={description}
                         onChange={(e) => {
                           const val = e.target.value
@@ -492,7 +492,7 @@ function Experience() {
                     ref={dropdownRef}
                   >
                     <label className="text-[13px] font-bold pt-2.5">
-                      Tecnologías Usadas: <span className="text-red-500">*</span>
+                      {t('experience.skills_label')}: <span className="text-red-500">*</span>
                     </label>
                     <div className="flex flex-col w-full">
                       <div className="relative">
@@ -508,7 +508,9 @@ function Experience() {
                         >
                           <div className="flex flex-wrap gap-1.5 flex-1">
                             {selectedSkills.length === 0 ? (
-                              <span className="text-gray-300 select-none">React, Laravel</span>
+                              <span className="text-gray-300 select-none">
+                                {t('experience.skills_placeholder')}
+                              </span>
                             ) : (
                               selectedSkills.map((skill) => (
                                 <span
@@ -587,7 +589,7 @@ function Experience() {
                     disabled={actionLoading}
                     className="px-6 py-2 rounded border border-gray-200 font-medium text-sm text-gray-700 hover:bg-gray-50 transition-all shadow-sm bg-white"
                   >
-                    Limpiar
+                    {t('experience.clear')}
                   </button>
                   <button
                     type="button"
@@ -595,7 +597,11 @@ function Experience() {
                     disabled={actionLoading}
                     className="px-6 py-2 rounded font-medium text-sm text-white bg-[#dc2626] hover:bg-red-700 shadow-sm transition-all flex items-center gap-2 min-w-[150px] justify-center"
                   >
-                    {actionLoading ? <Loader2 className="animate-spin" size={16} /> : 'Guardar'}
+                    {actionLoading ? (
+                      <Loader2 className="animate-spin" size={16} />
+                    ) : (
+                      t('experience.save')
+                    )}
                   </button>
                 </div>
               </div>
@@ -615,9 +621,11 @@ function Experience() {
               onClick={() => setShowConfirmModal(false)}
             />
             <div className="relative bg-white rounded-xl shadow-2xl p-6 w-full max-w-[340px] mx-4 flex flex-col items-center gap-4 text-center">
-              <h3 className="text-[16px] font-bold text-[#1a1a2e] mb-1">Confirmar Acción</h3>
+              <h3 className="text-[16px] font-bold text-[#1a1a2e] mb-1">
+                {t('experience.confirm_title')}
+              </h3>
               <p className="text-[13px] text-[#5b6472] leading-relaxed">
-                ¿Desea guardar la experiencia?
+                {t('experience.confirm_desc')}
               </p>
               <div className="flex justify-center gap-3 w-full mt-2">
                 <button
@@ -626,7 +634,7 @@ function Experience() {
                   disabled={actionLoading}
                   className="flex-1 h-10 px-4 text-[13px] font-bold text-[#1a1a2e] bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
                 >
-                  Cancelar
+                  {t('common.cancel')}
                 </button>
                 <button
                   type="button"
@@ -634,7 +642,11 @@ function Experience() {
                   disabled={actionLoading}
                   className="flex-1 h-10 px-4 text-[13px] font-bold text-white bg-[#00388c] rounded-lg hover:brightness-110 transition-all flex items-center justify-center gap-2 disabled:bg-[#00388c]/60"
                 >
-                  {actionLoading ? <Loader2 size={14} className="animate-spin" /> : 'Confirmar'}
+                  {actionLoading ? (
+                    <Loader2 size={14} className="animate-spin" />
+                  ) : (
+                    t('experience.confirm_btn')
+                  )}
                 </button>
               </div>
             </div>

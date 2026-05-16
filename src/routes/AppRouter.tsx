@@ -307,14 +307,7 @@ const AppRouter = () => {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/imprimir"
-            element={
-              <ProtectedRoute allowedRole="professional">
-                <PrintPortfolio />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/imprimir/:id?" element={<PrintPortfolio />} />
           {/* ── Ruta por defecto ─────────────────────────────── */}
           <Route path="*" element={<Home />} />
         </Routes>

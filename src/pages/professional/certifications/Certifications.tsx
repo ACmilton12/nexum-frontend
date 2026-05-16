@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import Sidebar from '../../admin/components/Sidebar'
 import Calendar from '../../../components/ui/Calendar'
 import {
@@ -17,40 +18,43 @@ import {
 } from '../../../services/certification.service'
 
 // Subcomponente movido fuera para evitar "Cannot create components during render"
-const RightPanelContent = () => (
-  <div className="sticky top-6 space-y-8">
-    <div>
-      <Calendar />
-    </div>
+const RightPanelContent = () => {
+  const { t } = useTranslation()
+  return (
+    <div className="sticky top-6 space-y-8">
+      <div>
+        <Calendar />
+      </div>
 
-    <div>
-      <h3 className="font-bold text-textMain text-sm mb-4 flex items-center gap-2 uppercase tracking-wider">
-        <ShieldCheck size={18} className="text-action" />
-        NOTIFICACIONES
-      </h3>
-      <div className="space-y-3">
-        <div className="flex items-start gap-2 text-xs text-gray-600 leading-relaxed bg-gray-50 p-3 rounded-lg border border-gray-100">
-          <span className="mt-0.5 shrink-0 bg-white p-1 rounded shadow-sm">
-            <FileText size={14} className="text-gray-600" />
-          </span>
-          <span>Las certificaciones ayudan a validar tus conocimientos técnicos.</span>
+      <div>
+        <h3 className="font-bold text-textMain text-sm mb-4 flex items-center gap-2 uppercase tracking-wider">
+          <ShieldCheck size={18} className="text-action" />
+          {t('dashboard.notifications')}
+        </h3>
+        <div className="space-y-3">
+          <div className="flex items-start gap-2 text-xs text-gray-600 leading-relaxed bg-gray-50 p-3 rounded-lg border border-gray-100">
+            <span className="mt-0.5 shrink-0 bg-white p-1 rounded shadow-sm">
+              <FileText size={14} className="text-gray-600" />
+            </span>
+            <span>{t('certifications.notification_tip')}</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 className="font-bold text-textMain text-sm mb-4 uppercase tracking-wider">
+          {t('dashboard.quick_links')}
+        </h3>
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 text-sm text-primary cursor-pointer hover:underline transition-all">
+            <Settings size={16} className="text-gray-500" />
+            <span className="font-medium text-gray-700">{t('profile.config_profile')}</span>
+          </div>
         </div>
       </div>
     </div>
-
-    <div>
-      <h3 className="font-bold text-textMain text-sm mb-4 uppercase tracking-wider">
-        Enlaces rápidos
-      </h3>
-      <div className="space-y-3">
-        <div className="flex items-center gap-2 text-sm text-primary cursor-pointer hover:underline transition-all">
-          <Settings size={16} className="text-gray-500" />
-          <span className="font-medium text-gray-700">Configurar perfil</span>
-        </div>
-      </div>
-    </div>
-  </div>
-)
+  )
+}
 
 function Certifications() {
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -67,6 +71,7 @@ function Certifications() {
   const [globalError, setGlobalError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
   const [showConfirmModal, setShowConfirmModal] = useState(false)
+  const { t, i18n } = useTranslation()
 
   const handleTituloChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value
@@ -86,21 +91,8 @@ function Certifications() {
   const formatToLongDate = (val: string) => {
     if (!val) return ''
     const [y, m] = val.split('-')
-    const months = [
-      'Enero',
-      'Febrero',
-      'Marzo',
-      'Abril',
-      'Mayo',
-      'Junio',
-      'Julio',
-      'Agosto',
-      'Septiembre',
-      'Octubre',
-      'Noviembre',
-      'Diciembre'
-    ]
-    return `${months[parseInt(m) - 1]} de ${y}`
+    const date = new Date(parseInt(y), parseInt(m) - 1)
+    return new Intl.DateTimeFormat(i18n.language, { month: 'long', year: 'numeric' }).format(date)
   }
 
   const handleFechaDesdeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -115,13 +107,13 @@ function Certifications() {
     const file = e.target.files?.[0]
     if (file) {
       if (!file.type.startsWith('image/')) {
-        setGlobalError('Solo se permiten archivos de imagen (JPG, PNG, WEBP).')
+        setGlobalError(t('certifications.error_image_type'))
         setSelectedFile(null)
         if (fileInputRef.current) fileInputRef.current.value = ''
         return
       }
       if (file.size > 2 * 1024 * 1024) {
-        setGlobalError('limite exedido, por favor seleccione otra imagen')
+        setGlobalError(t('certifications.error_image_size'))
         setSelectedFile(null)
         if (fileInputRef.current) fileInputRef.current.value = ''
         return
@@ -136,17 +128,17 @@ function Certifications() {
     setSuccess(null)
     const errors: { [key: string]: string } = {}
 
-    if (!titulo.trim()) errors.titulo = 'Este campo es obligatorio'
+    if (!titulo.trim()) errors.titulo = t('certifications.error_required')
     if (!entidad.trim()) {
-      errors.entidad = 'Este campo es obligatorio'
+      errors.entidad = t('certifications.error_required')
     } else if (!/^https?:\/\/.+/.test(entidad)) {
-      errors.entidad = 'URL inválida (debe iniciar con http:// o https://)'
+      errors.entidad = t('certifications.error_invalid_url')
     }
-    if (!fechaDesde) errors.fechaDesde = 'La fecha de inicio es obligatoria'
-    if (!fechaHasta) errors.fechaHasta = 'La fecha de fin es obligatoria'
+    if (!fechaDesde) errors.fechaDesde = t('certifications.error_required')
+    if (!fechaHasta) errors.fechaHasta = t('certifications.error_required')
 
     if (fechaDesde && fechaHasta && fechaHasta < fechaDesde) {
-      errors.fechaHasta = 'La fecha de fin debe ser posterior a la de inicio'
+      errors.fechaHasta = t('certifications.error_date_range')
     }
 
     if (Object.keys(errors).length > 0) {
@@ -186,7 +178,7 @@ function Certifications() {
         await updateCertificationImage(newCert.id, selectedFile)
       }
 
-      setSuccess('Certificación guardada exitosamente.')
+      setSuccess(t('certifications.toast_success'))
       setTitulo('')
       setDescripcion('')
       setEntidad('')
@@ -201,7 +193,7 @@ function Certifications() {
         const firstErr = Object.values(error.errors)[0] as string[]
         setGlobalError(firstErr[0])
       } else {
-        setGlobalError(error.message || 'Ocurrió un error al guardar.')
+        setGlobalError(error.message || t('certifications.toast_error'))
       }
     } finally {
       setActionLoading(false)
@@ -217,11 +209,13 @@ function Certifications() {
           <div className="flex-1 p-4 pl-14 sm:pl-6 md:p-8 overflow-y-auto">
             <div className="max-w-4xl mx-auto pt-2">
               <header className="mb-6 flex justify-between items-center">
-                <h1 className="text-2xl font-bold text-textMain">Certificaciones</h1>
+                <h1 className="text-2xl font-bold text-textMain">{t('certifications.title')}</h1>
               </header>
 
               <div className="bg-white rounded-xl shadow-sm p-6 md:p-8 mb-8">
-                <h2 className="text-base font-bold text-textMain mb-6">Añadir Certificación</h2>
+                <h2 className="text-base font-bold text-textMain mb-6">
+                  {t('certifications.add_certification')}
+                </h2>
 
                 {globalError && (
                   <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm flex items-center gap-3 animate-slideIn">
@@ -240,12 +234,13 @@ function Certifications() {
                 <div className="space-y-6 text-gray-700">
                   <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] items-start gap-4">
                     <label className="text-[13px] font-bold mt-2">
-                      Título de la Certificación: <span className="text-red-500">*</span>
+                      {t('certifications.cert_title_label')}:{' '}
+                      <span className="text-red-500">*</span>
                     </label>
                     <div className="flex flex-col w-full">
                       <input
                         type="text"
-                        placeholder="Ej. Cisco Certified Network Associate"
+                        placeholder={t('certifications.cert_title_placeholder')}
                         value={titulo}
                         onChange={(e) => {
                           handleTituloChange(e)
@@ -264,11 +259,13 @@ function Certifications() {
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] items-start gap-4">
-                    <label className="text-[13px] font-bold mt-2">Descripción (Opcional):</label>
+                    <label className="text-[13px] font-bold mt-2">
+                      {t('certifications.description_label')}:
+                    </label>
                     <div className="flex flex-col w-full">
                       <input
                         type="text"
-                        placeholder="Ej. Redes de computadoras y protocolos"
+                        placeholder={t('certifications.description_placeholder')}
                         value={descripcion}
                         onChange={(e) => {
                           handleDescripcionChange(e)
@@ -281,12 +278,13 @@ function Certifications() {
 
                   <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] items-start gap-4">
                     <label className="text-[13px] font-bold mt-2">
-                      URL Entidad Emisora: <span className="text-red-500">*</span>
+                      {t('certifications.entity_url_label')}:{' '}
+                      <span className="text-red-500">*</span>
                     </label>
                     <div className="flex flex-col w-full">
                       <input
                         type="text"
-                        placeholder="https://entidad.com/certificado"
+                        placeholder={t('certifications.entity_url_placeholder')}
                         value={entidad}
                         onChange={(e) => {
                           handleEntidadChange(e)
@@ -306,7 +304,7 @@ function Certifications() {
 
                   <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] items-start gap-4">
                     <label className="text-[13px] font-bold mt-2">
-                      Fecha: <span className="text-red-500">*</span>
+                      {t('certifications.date_label')}: <span className="text-red-500">*</span>
                     </label>
                     <div className="flex flex-col w-full">
                       <div className="flex flex-col sm:flex-row items-start gap-3 w-full">
@@ -327,7 +325,9 @@ function Certifications() {
                             className={`w-full p-2.5 rounded border bg-white flex items-center justify-between text-sm transition-all ${validationErrors.fechaDesde ? 'border-red-500 ring-1 ring-red-500/20' : 'border-gray-200 group-hover:border-action'}`}
                           >
                             <span className={fechaDesde ? 'text-gray-700' : 'text-gray-400'}>
-                              {fechaDesde ? formatToLongDate(fechaDesde) : 'Mes de año'}
+                              {fechaDesde
+                                ? formatToLongDate(fechaDesde)
+                                : t('certifications.date_placeholder')}
                             </span>
                             <CalendarIcon size={14} className="text-gray-400" />
                           </div>
@@ -357,7 +357,9 @@ function Certifications() {
                             className={`w-full p-2.5 rounded border bg-white flex items-center justify-between text-sm transition-all ${validationErrors.fechaHasta ? 'border-red-500 ring-1 ring-red-500/20' : 'border-gray-200 group-hover:border-action'}`}
                           >
                             <span className={fechaHasta ? 'text-gray-700' : 'text-gray-400'}>
-                              {fechaHasta ? formatToLongDate(fechaHasta) : 'Mes de año'}
+                              {fechaHasta
+                                ? formatToLongDate(fechaHasta)
+                                : t('certifications.date_placeholder')}
                             </span>
                             <CalendarIcon size={14} className="text-gray-400" />
                           </div>
@@ -373,7 +375,7 @@ function Certifications() {
 
                   <div className="pt-4">
                     <label className="text-[13px] font-bold mb-3 block">
-                      Insignia o Imagen (JPG, PNG):
+                      {t('certifications.image_label')}:
                     </label>
                     <div className="w-full bg-[#f0f4f8] border border-dashed border-[#d1dce5] rounded-xl p-8 flex flex-col items-center justify-center gap-3">
                       {selectedFile ? (
@@ -388,7 +390,7 @@ function Certifications() {
                             onClick={() => setSelectedFile(null)}
                             className="text-red-500 text-[10px] hover:underline"
                           >
-                            Quitar
+                            {t('certifications.remove')}
                           </button>
                         </div>
                       ) : (
@@ -398,10 +400,10 @@ function Certifications() {
                             disabled={actionLoading}
                             className="bg-white border text-gray-700 border-gray-200 font-medium text-sm py-2 px-4 rounded-lg shadow-sm hover:bg-gray-50 flex items-center gap-2 transition-all disabled:opacity-50"
                           >
-                            <Upload size={16} /> Seleccionar Imagen
+                            <Upload size={16} /> {t('certifications.select_image')}
                           </button>
                           <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold">
-                            Formato JPG, PNG o WEBP - Máx 2MB
+                            {t('certifications.image_format_info')}
                           </p>
                         </>
                       )}
@@ -431,7 +433,7 @@ function Certifications() {
                     disabled={actionLoading}
                     className="px-6 py-2 rounded border border-gray-200 font-medium text-sm text-gray-700 hover:bg-gray-50 transition-all shadow-sm bg-white"
                   >
-                    Limpiar
+                    {t('certifications.clear')}
                   </button>
                   <button
                     type="button"
@@ -439,7 +441,11 @@ function Certifications() {
                     disabled={actionLoading}
                     className="px-6 py-2 rounded font-medium text-sm text-white bg-[#dc2626] hover:bg-red-700 shadow-sm transition-all flex items-center gap-2 min-w-[150px] justify-center"
                   >
-                    {actionLoading ? <Loader2 className="animate-spin" size={16} /> : 'Guardar'}
+                    {actionLoading ? (
+                      <Loader2 className="animate-spin" size={16} />
+                    ) : (
+                      t('certifications.save')
+                    )}
                   </button>
                 </div>
               </div>
@@ -470,7 +476,7 @@ function Certifications() {
                   disabled={actionLoading}
                   className="flex-1 h-10 px-4 text-[13px] font-bold text-[#1a1a2e] bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
                 >
-                  Cancelar
+                  {t('common.cancel')}
                 </button>
                 <button
                   type="button"
@@ -478,7 +484,11 @@ function Certifications() {
                   disabled={actionLoading}
                   className="flex-1 h-10 px-4 text-[13px] font-bold text-white bg-[#dc2626] rounded-lg hover:bg-red-700 transition-all flex items-center justify-center gap-2 disabled:bg-red-700/60"
                 >
-                  {actionLoading ? <Loader2 size={14} className="animate-spin" /> : 'Confirmar'}
+                  {actionLoading ? (
+                    <Loader2 size={14} className="animate-spin" />
+                  ) : (
+                    t('certifications.confirm_btn')
+                  )}
                 </button>
               </div>
             </div>

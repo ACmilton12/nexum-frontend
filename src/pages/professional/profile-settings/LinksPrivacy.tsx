@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import Sidebar from '../../admin/components/Sidebar'
 import RightWidgets from '../../../components/ui/RightWidgets'
 import { Globe, Loader2 } from 'lucide-react'
@@ -60,6 +61,7 @@ function LinksPrivacy() {
 
   // Unificamos la visibilidad en un solo estado para todos
   const [isPublic, setIsPublic] = useState(true)
+  const { t } = useTranslation()
 
   const [loading, setLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
@@ -110,10 +112,10 @@ function LinksPrivacy() {
         github,
         global_privacy: privacyValue
       })
-      setToast({ message: 'Enlaces y Privacidad actualizados con éxito', type: 'success' })
+      setToast({ message: t('privacy.toast_success'), type: 'success' })
     } catch (err: unknown) {
       const error = err as { message?: string }
-      setToast({ message: 'Error al actualizar: ' + error.message, type: 'error' })
+      setToast({ message: t('privacy.toast_error') + ': ' + error.message, type: 'error' })
     } finally {
       setIsSaving(false)
     }
@@ -132,7 +134,7 @@ function LinksPrivacy() {
             <div className="flex-1 p-4 pl-14 sm:pl-6 md:p-6 flex items-center justify-center overflow-y-auto">
               <div className="flex flex-col items-center gap-3 text-gray-400 font-medium">
                 <Loader2 className="animate-spin text-primary" size={32} />
-                <span>Cargando...</span>
+                <span>{t('common.loading')}</span>
               </div>
             </div>
             <RightWidgets type="profile" className="w-full lg:w-64 shrink-0" />
@@ -155,25 +157,25 @@ function LinksPrivacy() {
             {/* Header */}
             <div className="mb-6">
               <h1 className="text-xl sm:text-2xl font-bold text-textMain mb-1">
-                Enlaces y Privacidad
+                {t('privacy.title')}
               </h1>
-              <p className="text-sm text-gray-500">
-                Gestiona tus redes profesionales y configuración de privacidad
-              </p>
+              <p className="text-sm text-gray-500">{t('privacy.desc')}</p>
             </div>
 
             {/* Grid responsivo: 1 columna en móvil, 2 en desktop */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Tarjeta de Redes Profesionales */}
               <div className="bg-white rounded-xl p-6 sm:p-8 shadow-sm border border-gray-100">
-                <h3 className="text-base font-bold text-textMain mb-5">Redes Profesionales</h3>
+                <h3 className="text-base font-bold text-textMain mb-5">
+                  {t('privacy.social_networks')}
+                </h3>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                   {/* LinkedIn */}
                   <div>
                     <label className="text-sm font-semibold text-textMain flex items-center gap-2 mb-2">
                       <LinkedinIcon />
-                      LinkedIn
+                      {t('privacy.linkedin')}
                     </label>
                     <input
                       type="text"
@@ -189,7 +191,7 @@ function LinksPrivacy() {
                   <div>
                     <label className="text-sm font-semibold text-textMain flex items-center gap-2 mb-2">
                       <GithubIcon />
-                      GitHub
+                      {t('privacy.github')}
                     </label>
                     <input
                       type="text"
@@ -205,7 +207,7 @@ function LinksPrivacy() {
                   <div>
                     <label className="text-sm font-semibold text-textMain flex items-center gap-2 mb-2">
                       <Globe size={18} />
-                      Sitio web
+                      {t('privacy.website')}
                     </label>
                     <input
                       type="text"
@@ -224,7 +226,7 @@ function LinksPrivacy() {
                       disabled={isSaving}
                       className="px-6 py-2.5 bg-action text-white text-sm font-semibold rounded-lg hover:opacity-90 transition-opacity disabled:opacity-60 disabled:cursor-not-allowed"
                     >
-                      {isSaving ? 'Guardando...' : 'Guardar enlaces'}
+                      {isSaving ? t('profile.saving') : t('privacy.save_links')}
                     </button>
                   </div>
                 </form>
@@ -232,16 +234,22 @@ function LinksPrivacy() {
 
               {/* Tarjeta de Visibilidad */}
               <div className="bg-white rounded-xl p-6 sm:p-8 shadow-sm border border-gray-100">
-                <h3 className="text-base font-bold text-textMain mb-5">Visibilidad Pública</h3>
+                <h3 className="text-base font-bold text-textMain mb-5">
+                  {t('privacy.public_visibility')}
+                </h3>
 
                 <div className="space-y-4">
                   {/* Switch principal */}
                   <div className="pb-4 border-b border-gray-200">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm font-semibold text-textMain">Hacer perfil público</p>
+                        <p className="text-sm font-semibold text-textMain">
+                          {t('privacy.make_public')}
+                        </p>
                         <p className="text-xs text-gray-500 mt-1">
-                          {isPublic ? 'Tu perfil es visible para todos' : 'Tu perfil es privado'}
+                          {isPublic
+                            ? t('privacy.profile_is_public')
+                            : t('privacy.profile_is_private')}
                         </p>
                       </div>
                       <Toggle active={isPublic} onToggle={handleToggleAll} disabled={isSaving} />
@@ -251,7 +259,9 @@ function LinksPrivacy() {
                   {/* Opciones de visibilidad individuales */}
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-textMain">Mostrar proyectos</span>
+                      <span className="text-sm font-medium text-textMain">
+                        {t('privacy.show_projects')}
+                      </span>
                       <Toggle
                         active={isPublic}
                         onToggle={handleToggleAll}
@@ -259,7 +269,9 @@ function LinksPrivacy() {
                       />
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-textMain">Mostrar habilidades</span>
+                      <span className="text-sm font-medium text-textMain">
+                        {t('privacy.show_skills')}
+                      </span>
                       <Toggle
                         active={isPublic}
                         onToggle={handleToggleAll}
@@ -267,7 +279,9 @@ function LinksPrivacy() {
                       />
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-textMain">Mostrar experiencia</span>
+                      <span className="text-sm font-medium text-textMain">
+                        {t('privacy.show_experience')}
+                      </span>
                       <Toggle
                         active={isPublic}
                         onToggle={handleToggleAll}
@@ -275,7 +289,9 @@ function LinksPrivacy() {
                       />
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-textMain">Mostrar contacto</span>
+                      <span className="text-sm font-medium text-textMain">
+                        {t('privacy.show_contact')}
+                      </span>
                       <Toggle
                         active={isPublic}
                         onToggle={handleToggleAll}
@@ -287,8 +303,8 @@ function LinksPrivacy() {
                   {/* Info adicional */}
                   <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-100">
                     <p className="text-xs text-blue-700">
-                      💡 <span className="font-medium">Consejo:</span> Habilita la visibilidad
-                      pública para que reclutadores puedan encontrarte más fácilmente.
+                      💡 <span className="font-medium">{t('privacy.tip_title')}:</span>{' '}
+                      {t('privacy.tip_desc')}
                     </p>
                   </div>
                 </div>

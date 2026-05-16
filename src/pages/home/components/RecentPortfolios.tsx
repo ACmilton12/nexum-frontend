@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import type { FeaturedProfile } from '../types'
 import { getInitials } from '../utils'
 
 const accentColors = ['#003087', '#C8102E', '#001A5E']
 
 function PortfolioCard({ profile, index }: { profile: FeaturedProfile; index: number }) {
+  const { t } = useTranslation()
   const [btnHovered, setBtnHovered] = useState(false)
   const accentColor = accentColors[index % accentColors.length]
   const initials = getInitials(profile.first_name, profile.last_name)
@@ -36,7 +38,7 @@ function PortfolioCard({ profile, index }: { profile: FeaturedProfile; index: nu
             {fullName}
           </div>
           <div className="text-gray-500 text-xs">{profile.location || 'UMSS · FCyT'}</div>
-          <div className="text-gray-400 text-xs">Universidad Mayor de San Simón</div>
+          <div className="text-gray-400 text-xs">{t('recent.university')}</div>
         </div>
       </div>
       <div
@@ -47,13 +49,13 @@ function PortfolioCard({ profile, index }: { profile: FeaturedProfile; index: nu
           <div className="font-extrabold text-2xl" style={{ color: '#1A1A2E' }}>
             {profile.projects_count}
           </div>
-          <div className="text-gray-400 text-xs">Proyectos</div>
+          <div className="text-gray-400 text-xs">{t('recent.projects')}</div>
         </div>
         <div className="flex-1">
           <div className="font-extrabold text-2xl" style={{ color: '#1A1A2E' }}>
             —
           </div>
-          <div className="text-gray-400 text-xs">Visitas</div>
+          <div className="text-gray-400 text-xs">{t('recent.views')}</div>
         </div>
       </div>
       <Link
@@ -67,7 +69,7 @@ function PortfolioCard({ profile, index }: { profile: FeaturedProfile; index: nu
         onMouseEnter={() => setBtnHovered(true)}
         onMouseLeave={() => setBtnHovered(false)}
       >
-        Ver portafolio →
+        {t('recent.view_portfolio')} →
       </Link>
     </div>
   )
@@ -80,16 +82,15 @@ export default function RecentPortfolios({
   profiles: FeaturedProfile[]
   loading: boolean
 }) {
+  const { t } = useTranslation()
   return (
     <section className="py-24" style={{ backgroundColor: '#FFFFFF' }}>
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
           <h2 className="font-extrabold text-3xl lg:text-4xl mb-4" style={{ color: '#1A1A2E' }}>
-            Portafolios recientes
+            {t('recent.title')}
           </h2>
-          <p className="text-gray-500 max-w-xl mx-auto text-base">
-            Conoce el trabajo de los profesionales.
-          </p>
+          <p className="text-gray-500 max-w-xl mx-auto text-base">{t('recent.subtitle')}</p>
         </div>
 
         {loading ? (
@@ -133,7 +134,7 @@ export default function RecentPortfolios({
               ((e.currentTarget as HTMLAnchorElement).style.backgroundColor = '#003087')
             }
           >
-            Ver todos los portafolios
+            {t('home.view_all')}
           </Link>
         </div>
       </div>

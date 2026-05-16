@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import Sidebar from '../../admin/components/Sidebar'
 //import RightWidgets from '../../../components/ui/RightWidgets'
 import Modal from '../../../components/ui/Modal'
@@ -60,6 +61,7 @@ const compressAndConvertToWebP = async (file: File, quality: number = 0.8): Prom
 }
 
 function PersonalData() {
+  const { t } = useTranslation()
   const [nombre, setNombre] = useState('')
   const [apellido, setApellido] = useState('')
   const [tituloProfesional, setTituloProfesional] = useState('')
@@ -170,10 +172,10 @@ function PersonalData() {
         biografia
       })
       setInitialData({ nombre, apellido, tituloProfesional, telefono, ubicacion, biografia })
-      setToast({ message: 'Tus datos se actualizaron correctamente.', type: 'success' })
+      setToast({ message: t('profile.toast_success'), type: 'success' })
     } catch (err: unknown) {
       const error = err as { message?: string }
-      setToast({ message: error.message || 'Error al guardar cambios.', type: 'error' })
+      setToast({ message: error.message || t('profile.toast_error'), type: 'error' })
     } finally {
       setIsSaving(false)
     }
@@ -188,7 +190,7 @@ function PersonalData() {
       setUbicacion(initialData.ubicacion)
       setBiografia(initialData.biografia)
     }
-    setToast({ message: 'Se han revertido los cambios.', type: 'info' })
+    setToast({ message: t('profile.toast_reverted'), type: 'info' })
   }
 
   const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -221,63 +223,66 @@ function PersonalData() {
       // 3. Subir el WebP
       const result = await uploadAvatar(webpFile)
       setAvatarUrl(result.data.avatar_url)
-      setToast({ message: 'Foto de perfil actualizada y comprimida con éxito.', type: 'success' })
+      setToast({ message: t('profile.toast_avatar_success'), type: 'success' })
     } catch {
-      setToast({ message: 'Error al procesar o subir la imagen.', type: 'error' })
+      setToast({ message: t('profile.toast_avatar_error'), type: 'error' })
     }
   }
 
   // ESTRUCTURA DEL PANEL DERECHO (Basada en tu imagen de Dashboard Admin)
-  const RightPanelContent = () => (
-    <div className="sticky top-6 space-y-8">
-      {/* Calendario */}
-      <div>
-        <h3 className="font-bold text-textMain text-sm mb-4 uppercase tracking-wider">
-          Calendario
-        </h3>
-        <Calendar />
-      </div>
+  const RightPanelContent = () => {
+    const { t } = useTranslation()
+    return (
+      <div className="sticky top-6 space-y-8">
+        {/* Calendario */}
+        <div>
+          <h3 className="font-bold text-textMain text-sm mb-4 uppercase tracking-wider">
+            {t('sidebar.calendar', 'Calendario')}
+          </h3>
+          <Calendar />
+        </div>
 
-      {/* Notificaciones */}
-      <div>
-        <h3 className="font-bold text-textMain text-sm mb-4 flex items-center gap-2 uppercase tracking-wider">
-          <ShieldCheck size={18} className="text-action" />
-          NOTIFICACIONES
-        </h3>
-        <div className="space-y-3">
-          <div className="flex items-start gap-2 text-xs text-gray-600 leading-relaxed">
-            <AlertTriangle size={14} className="text-action mt-0.5 shrink-0" />
-            <span>Tu perfil fue visitado 3 veces hoy.</span>
+        {/* Notificaciones */}
+        <div>
+          <h3 className="font-bold text-textMain text-sm mb-4 flex items-center gap-2 uppercase tracking-wider">
+            <ShieldCheck size={18} className="text-action" />
+            {t('dashboard.notifications.title')}
+          </h3>
+          <div className="space-y-3">
+            <div className="flex items-start gap-2 text-xs text-gray-600 leading-relaxed">
+              <AlertTriangle size={14} className="text-action mt-0.5 shrink-0" />
+              <span>{t('dashboard.notifications.views', { count: 3 })}</span>
+            </div>
+            <div className="flex items-start gap-2 text-xs text-gray-600 leading-relaxed">
+              <CheckCircle size={14} className="text-green-500 mt-0.5 shrink-0" />
+              <span>{t('dashboard.notifications.last_project', { name: 'App Móvil' })}</span>
+            </div>
           </div>
-          <div className="flex items-start gap-2 text-xs text-gray-600 leading-relaxed">
-            <CheckCircle size={14} className="text-green-500 mt-0.5 shrink-0" />
-            <span>Proyecto 'App Móvil' publicado correctamente.</span>
+        </div>
+
+        {/* Enlaces Rápidos */}
+        <div>
+          <h3 className="font-normal text-textMain text-sm mb-4 uppercase tracking-wider">
+            {t('dashboard.links.title')}
+          </h3>
+          <div className="space-y-3">
+            <div className="flex items-center gap-2 text-sm text-primary cursor-pointer hover:underline transition-all">
+              <BookOpen size={16} className="text-orange-400" />
+              <span className="font-medium">{t('dashboard.links.user_guide')}</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-primary cursor-pointer hover:underline transition-all">
+              <Settings size={16} className="text-purple-400" />
+              <span className="font-medium">{t('dashboard.links.tech_support')}</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-primary cursor-pointer hover:underline transition-all">
+              <FileText size={16} className="text-blue-300" />
+              <span className="font-medium">{t('dashboard.links.university_policies')}</span>
+            </div>
           </div>
         </div>
       </div>
-
-      {/* Enlaces Rápidos */}
-      <div>
-        <h3 className="font-normal text-textMain text-sm mb-4 uppercase tracking-wider">
-          Enlaces rápidos
-        </h3>
-        <div className="space-y-3">
-          <div className="flex items-center gap-2 text-sm text-primary cursor-pointer hover:underline transition-all">
-            <BookOpen size={16} className="text-orange-400" />
-            <span className="font-medium">Guía de Usuario</span>
-          </div>
-          <div className="flex items-center gap-2 text-sm text-primary cursor-pointer hover:underline transition-all">
-            <Settings size={16} className="text-purple-400" />
-            <span className="font-medium">Soporte Técnico</span>
-          </div>
-          <div className="flex items-center gap-2 text-sm text-primary cursor-pointer hover:underline transition-all">
-            <FileText size={16} className="text-blue-300" />
-            <span className="font-medium">Políticas UMSS</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
+    )
+  }
 
   if (loading)
     return (
@@ -288,7 +293,7 @@ function PersonalData() {
             <div className="flex-1 p-4 pl-14 sm:pl-6 md:p-8 flex items-center justify-center overflow-y-auto">
               <div className="flex flex-col items-center gap-3 text-gray-400 font-medium">
                 <Loader2 className="animate-spin text-primary" size={32} />
-                <span>Cargando perfil...</span>
+                <span>{t('profile.loading_profile')}</span>
               </div>
             </div>
             <aside className="w-full lg:w-72 p-6 bg-white border-t lg:border-t-0 lg:border-l border-gray-200 shrink-0 overflow-y-auto">
@@ -308,10 +313,10 @@ function PersonalData() {
           {/* SECCIÓN IZQUIERDA: Formulario */}
           <div className="flex-1 p-4 pl-14 sm:pl-6 md:p-8 overflow-y-auto">
             <header className="mb-8">
-              <h1 className="text-xl sm:text-2xl font-bold text-textMain mb-1">Datos Personales</h1>
-              <p className="text-sm text-gray-400">
-                Gestiona la información pública de tu cuenta profesional.
-              </p>
+              <h1 className="text-xl sm:text-2xl font-bold text-textMain mb-1">
+                {t('profile.personal_data')}
+              </h1>
+              <p className="text-sm text-gray-400">{t('profile.subtitle')}</p>
             </header>
 
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 max-w-5xl">
@@ -341,7 +346,7 @@ function PersonalData() {
                     />
                   </div>
                   <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
-                    Foto de Perfil
+                    {t('profile.avatar_title')}
                   </p>
                 </div>
 
@@ -356,7 +361,7 @@ function PersonalData() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div className="space-y-1.5">
                       <label className="text-[11px] font-bold text-gray-500 uppercase flex items-center gap-2 italic">
-                        <User size={14} /> Nombre
+                        <User size={14} /> {t('profile.first_name')}
                       </label>
                       <input
                         type="text"
@@ -369,7 +374,7 @@ function PersonalData() {
                     </div>
                     <div className="space-y-1.5">
                       <label className="text-[11px] font-bold text-gray-500 uppercase flex items-center gap-2 italic">
-                        <User size={14} /> Apellido
+                        <User size={14} /> {t('profile.last_name')}
                       </label>
                       <input
                         type="text"
@@ -385,7 +390,7 @@ function PersonalData() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div className="space-y-1.5">
                       <label className="text-[11px] font-bold text-gray-500 uppercase flex items-center gap-2 italic">
-                        <Briefcase size={14} /> Título Profesional
+                        <Briefcase size={14} /> {t('profile.professional_title')}
                       </label>
                       <input
                         type="text"
@@ -396,7 +401,7 @@ function PersonalData() {
                     </div>
                     <div className="space-y-1.5">
                       <label className="text-[11px] font-bold text-gray-400 uppercase flex items-center gap-2 italic">
-                        <Mail size={14} /> Correo Institucional
+                        <Mail size={14} /> {t('profile.institutional_email')}
                       </label>
                       <input
                         type="email"
@@ -410,7 +415,7 @@ function PersonalData() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div className="space-y-1.5">
                       <label className="text-[11px] font-bold text-gray-500 uppercase flex items-center gap-2 italic">
-                        <Phone size={14} /> Teléfono
+                        <Phone size={14} /> {t('profile.phone')}
                       </label>
                       <input
                         type="tel"
@@ -421,7 +426,7 @@ function PersonalData() {
                     </div>
                     <div className="space-y-1.5">
                       <label className="text-[11px] font-bold text-gray-500 uppercase flex items-center gap-2 italic">
-                        <MapPin size={14} /> Ubicación
+                        <MapPin size={14} /> {t('profile.location')}
                       </label>
                       <input
                         type="text"
@@ -434,14 +439,14 @@ function PersonalData() {
 
                   <div className="space-y-1.5">
                     <label className="text-[11px] font-bold text-gray-500 uppercase">
-                      Biografía Profesional
+                      {t('profile.biography')}
                     </label>
                     <textarea
                       value={biografia}
                       onChange={(e) => setBiografia(e.target.value)}
                       rows={4}
                       className="w-full p-4 rounded-xl border border-gray-200 bg-gray-50/30 outline-none focus:border-primary transition-all resize-none text-sm leading-relaxed"
-                      placeholder="Describe brevemente tu perfil académico y profesional..."
+                      placeholder={t('profile.biography_placeholder')}
                     />
                   </div>
 
@@ -452,18 +457,18 @@ function PersonalData() {
                       disabled={isSaving}
                       className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl border border-gray-200 font-bold text-sm text-gray-600 hover:bg-gray-50 transition-all shadow-sm"
                     >
-                      <X size={16} /> Cancelar
+                      <X size={16} /> {t('profile.cancel')}
                     </button>
                     <button
                       type="submit"
                       disabled={isSaving || !hasChanges}
-                      className={`flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm text-white shadow-lg transition-all ${
-                        isSaving || !hasChanges
+                      className={`flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm text-white shadow-lg transition-all ${isSaving || !hasChanges
                           ? 'bg-gray-300 cursor-not-allowed'
                           : 'bg-action hover:brightness-110 shadow-red-100'
-                      }`}
+                        }`}
                     >
-                      <Save size={16} /> {isSaving ? 'Guardando...' : 'Guardar cambios'}
+                      <Save size={16} />{' '}
+                      {isSaving ? t('profile.saving') : t('profile.save_changes')}
                     </button>
                   </div>
                 </form>
@@ -482,28 +487,27 @@ function PersonalData() {
       <Modal
         isOpen={showConfirmModal}
         onClose={() => setShowConfirmModal(false)}
-        title="Confirmar Actualización"
+        title={t('profile.confirm_update')}
       >
         <div className="space-y-6 max-w-sm text-center p-2">
           <div className="w-16 h-16 bg-red-50 text-action rounded-full flex items-center justify-center mx-auto">
             <Save size={30} />
           </div>
           <p className="text-sm text-gray-500 leading-relaxed font-medium">
-            ¿Estás seguro de que deseas guardar los cambios? Se actualizará tu información
-            profesional en la plataforma.
+            {t('profile.confirm_desc')}
           </p>
           <div className="flex gap-3">
             <button
               onClick={() => setShowConfirmModal(false)}
               className="flex-1 py-3 text-sm font-bold border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
             >
-              Volver
+              {t('common.back')}
             </button>
             <button
               onClick={handleConfirmSave}
               className="flex-1 py-3 text-sm font-bold bg-action text-white rounded-xl hover:brightness-110 shadow-lg shadow-red-200 transition-all"
             >
-              Guardar
+              {t('dashboard.portfolio.save', 'Guardar')}
             </button>
           </div>
         </div>
