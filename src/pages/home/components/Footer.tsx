@@ -17,11 +17,7 @@ export default function Footer() {
               />
               <span className="text-white font-extrabold text-xl tracking-widest ml-1">NEXUM</span>
             </Link>
-<<<<<<< HEAD
             <p className="text-blue-300 text-sm leading-relaxed">{t('footer.description')}</p>
-=======
-            <p className="text-blue-300 text-sm leading-relaxed">Plataforma de portafolios digitales para profesionales.</p>
->>>>>>> feature/hu1-tercersprint
           </div>
           <div>
             <div className="text-white font-bold text-xs mb-4 uppercase tracking-widest">

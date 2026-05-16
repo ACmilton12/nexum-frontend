@@ -1,37 +1,18 @@
-<<<<<<< HEAD
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { CheckCircle2, MapPin, Briefcase, Eye } from 'lucide-react'
 import type { FeaturedProfile } from '../types'
 import { getInitials } from '../utils'
-=======
-import React, { useState, useEffect, useMemo } from "react";
-import { Link } from "react-router-dom";
-import { Briefcase, Eye, MapPin, CheckCircle2, ChevronRight } from "lucide-react";
-import type { FeaturedProfile } from "../types";
-import { getInitials } from "../utils";
-import { useProfileStats } from "../../../hooks/useProfileVisits";
->>>>>>> feature/hu1-tercersprint
 
 const accentColors = ['#003087', '#C8102E', '#001A5E']
 
 function PortfolioCard({ profile, index }: { profile: FeaturedProfile; index: number }) {
-<<<<<<< HEAD
   const { t } = useTranslation()
   const [btnHovered, setBtnHovered] = useState(false)
   const accentColor = accentColors[index % accentColors.length]
   const initials = getInitials(profile.first_name, profile.last_name)
   const fullName = `${profile.first_name} ${profile.last_name}`
-=======
-  const accentColor = accentColors[index % accentColors.length];
-  const initials = getInitials(profile.first_name, profile.last_name);
-  const fullName = `${profile.first_name} ${profile.last_name}`;
-
-  const portfolioIdToUse = profile.portfolio_id || profile.id || profile.user_id || null;
-  const { stats, loading: statsLoading } = useProfileStats(portfolioIdToUse);
-
-  const displayVisits = stats?.visits_count ?? profile.visits_count ?? 0;
->>>>>>> feature/hu1-tercersprint
 
   return (
     <div className="relative rounded-2xl bg-white overflow-hidden flex flex-col h-full border border-gray-100 group shadow-sm transition-all duration-300 hover:shadow-md">
@@ -53,8 +34,10 @@ function PortfolioCard({ profile, index }: { profile: FeaturedProfile; index: nu
           {profile.avatar_url ? (
             <img src={profile.avatar_url} alt={fullName} className="w-16 h-16 rounded-full object-cover" />
           ) : (
-            <div className="w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-xl"
-              style={{ backgroundColor: accentColor }}>
+            <div
+              className="w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-xl"
+              style={{ backgroundColor: accentColor }}
+            >
               {initials}
             </div>
           )}
@@ -91,11 +74,7 @@ function PortfolioCard({ profile, index }: { profile: FeaturedProfile; index: nu
               <Eye size={12} /> Visitas
             </div>
             <div className="font-black text-xl text-gray-800">
-              {statsLoading ? (
-                <span className="text-gray-300 text-sm animate-pulse">...</span>
-              ) : (
-                displayVisits
-              )}
+              {profile.visits_count ?? '—'}
             </div>
           </div>
         </div>
@@ -103,105 +82,67 @@ function PortfolioCard({ profile, index }: { profile: FeaturedProfile; index: nu
         {/* CTA */}
         <div className="mt-auto">
           <Link
-            to={`/portfolio/${portfolioIdToUse}`}
-            className="w-full flex items-center justify-center gap-2 font-bold text-sm py-2.5 rounded-xl transition-all duration-300 no-underline text-white shadow-md hover:shadow-lg hover:-translate-y-0.5"
-            style={{ backgroundColor: accentColor }}
+            to={`/portfolio/${profile.id}`}
+            className="w-full flex items-center justify-center gap-2 font-bold text-sm py-2.5 rounded-xl transition-all duration-200 no-underline text-center"
+            style={{
+              color: btnHovered ? '#FFFFFF' : '#C8102E',
+              borderColor: '#C8102E',
+              border: '2px solid #C8102E',
+              backgroundColor: btnHovered ? '#C8102E' : 'transparent'
+            }}
+            onMouseEnter={() => setBtnHovered(true)}
+            onMouseLeave={() => setBtnHovered(false)}
           >
-<<<<<<< HEAD
-            {initials}
-          </div>
-        )}
-        <div>
-          <div className="font-bold text-base" style={{ color: '#1A1A2E' }}>
-            {fullName}
-          </div>
-          <div className="text-gray-500 text-xs">{profile.location || 'UMSS · FCyT'}</div>
-          <div className="text-gray-400 text-xs">{t('recent.university')}</div>
-        </div>
-      </div>
-      <div
-        className="flex items-center gap-8 mb-6 pt-4 border-t-2"
-        style={{ borderColor: '#C9D1D9' }}
-      >
-        <div className="flex-1 border-r-2 pr-8" style={{ borderColor: '#C9D1D9' }}>
-          <div className="font-extrabold text-2xl" style={{ color: '#1A1A2E' }}>
-            {profile.projects_count}
-          </div>
-          <div className="text-gray-400 text-xs">{t('recent.projects')}</div>
-        </div>
-        <div className="flex-1">
-          <div className="font-extrabold text-2xl" style={{ color: '#1A1A2E' }}>
-            —
-          </div>
-          <div className="text-gray-400 text-xs">{t('recent.views')}</div>
-        </div>
-      </div>
-      <Link
-        to={`/portfolio/${profile.id}`}
-        className="w-full font-bold text-sm py-2.5 rounded-xl border-2 transition-all duration-200 no-underline text-center inline-block"
-        style={{
-          color: btnHovered ? '#FFFFFF' : '#C8102E',
-          borderColor: '#C8102E',
-          backgroundColor: btnHovered ? '#C8102E' : 'transparent'
-        }}
-        onMouseEnter={() => setBtnHovered(true)}
-        onMouseLeave={() => setBtnHovered(false)}
-      >
-        {t('recent.view_portfolio')} →
-      </Link>
-=======
-            <span>Ver portafolio</span>
-            <ChevronRight size={16} />
+            {t('recent.view_portfolio')} →
           </Link>
         </div>
       </div>
->>>>>>> feature/hu1-tercersprint
     </div>
-  );
+  )
 }
 
 function DraggableCarousel({ profiles }: { profiles: FeaturedProfile[] }) {
   const displayProfiles = profiles.length > 0
     ? Array.from({ length: Math.max(50, profiles.length * 10) }).map((_, i) => profiles[i % profiles.length])
-    : [];
-  const total = displayProfiles.length;
+    : []
+  const total = displayProfiles.length
 
-  const [progress, setProgress] = useState(2);
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [startProgress, setStartProgress] = useState(0);
+  const [progress, setProgress] = useState(2)
+  const [isDragging, setIsDragging] = useState(false)
+  const [startX, setStartX] = useState(0)
+  const [startProgress, setStartProgress] = useState(0)
 
   useEffect(() => {
-    if (isDragging) return;
+    if (isDragging) return
     const interval = setInterval(() => {
       setProgress((prev) => {
-        if (prev >= total - 3) return 2;
-        return prev + 1;
-      });
-    }, 3000);
-    return () => clearInterval(interval);
-  }, [isDragging, total]);
+        if (prev >= total - 3) return 2
+        return prev + 1
+      })
+    }, 3000)
+    return () => clearInterval(interval)
+  }, [isDragging, total])
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    setIsDragging(true);
-    setStartX(e.clientX);
-    setStartProgress(progress);
-    e.currentTarget.setPointerCapture(e.pointerId);
-  };
+    setIsDragging(true)
+    setStartX(e.clientX)
+    setStartProgress(progress)
+    e.currentTarget.setPointerCapture(e.pointerId)
+  }
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!isDragging) return;
-    const deltaX = e.clientX - startX;
-    let newProgress = startProgress - (deltaX / 150);
-    newProgress = Math.max(0, Math.min(total - 1, newProgress));
-    setProgress(newProgress);
-  };
+    if (!isDragging) return
+    const deltaX = e.clientX - startX
+    let newProgress = startProgress - (deltaX / 150)
+    newProgress = Math.max(0, Math.min(total - 1, newProgress))
+    setProgress(newProgress)
+  }
 
   const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
-    setIsDragging(false);
-    e.currentTarget.releasePointerCapture(e.pointerId);
-    setProgress(Math.round(progress));
-  };
+    setIsDragging(false)
+    e.currentTarget.releasePointerCapture(e.pointerId)
+    setProgress(Math.round(progress))
+  }
 
   return (
     <div className="relative w-full py-16 flex justify-center items-center h-[600px] overflow-hidden">
@@ -253,20 +194,20 @@ function DraggableCarousel({ profiles }: { profiles: FeaturedProfile[] }) {
         style={{ '--speed': isDragging ? '0.05s' : '0.8s' } as React.CSSProperties}
       >
         {displayProfiles.map((p, i) => {
-          const diff = i - progress;
-          const absDiff = Math.abs(diff);
-          const sign = Math.sign(diff);
+          const diff = i - progress
+          const absDiff = Math.abs(diff)
+          const sign = Math.sign(diff)
 
-          const translateX = diff * 150;
-          const translateZ = -absDiff * 120 + (absDiff === 0 ? 80 : 0);
-          let rotateY = 0;
+          const translateX = diff * 150
+          const translateZ = -absDiff * 120 + (absDiff === 0 ? 80 : 0)
+          let rotateY = 0
           if (absDiff > 0.01) {
-            rotateY = sign * -45 * Math.min(absDiff, 1.2);
+            rotateY = sign * -45 * Math.min(absDiff, 1.2)
           }
-          const scale = Math.max(1 - absDiff * 0.1, 0.7);
-          const zIndex = 100 - Math.round(absDiff * 10);
-          const shadowOpacity = Math.min(absDiff * 0.35, 0.8);
-          const opacity = absDiff > 3 ? 0 : 1;
+          const scale = Math.max(1 - absDiff * 0.1, 0.7)
+          const zIndex = 100 - Math.round(absDiff * 10)
+          const shadowOpacity = Math.min(absDiff * 0.35, 0.8)
+          const opacity = absDiff > 3 ? 0 : 1
 
           return (
             <div
@@ -283,14 +224,12 @@ function DraggableCarousel({ profiles }: { profiles: FeaturedProfile[] }) {
                 <PortfolioCard profile={p} index={i} />
               </div>
             </div>
-          );
+          )
         })}
       </div>
     </div>
-  );
+  )
 }
-
-// ─── Componente principal ───────────────────────────────────────
 
 export default function RecentPortfolios({
   profiles,
@@ -299,33 +238,16 @@ export default function RecentPortfolios({
   profiles: FeaturedProfile[]
   loading: boolean
 }) {
-<<<<<<< HEAD
   const { t } = useTranslation()
-=======
-  // Ordenar por visitas descendente y tomar los 5 primeros
-  const top5 = useMemo(() => {
-    return [...profiles]
-      .sort((a, b) => (b.visits_count ?? 0) - (a.visits_count ?? 0))
-      .slice(0, 5);
-  }, [profiles]);
 
->>>>>>> feature/hu1-tercersprint
   return (
     <section className="py-24" style={{ backgroundColor: '#FFFFFF' }}>
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
           <h2 className="font-extrabold text-3xl lg:text-4xl mb-4" style={{ color: '#1A1A2E' }}>
-<<<<<<< HEAD
             {t('recent.title')}
           </h2>
           <p className="text-gray-500 max-w-xl mx-auto text-base">{t('recent.subtitle')}</p>
-=======
-            Portafolios más visitados
-          </h2>
-          <p className="text-gray-500 max-w-xl mx-auto text-base">
-            Los 5 profesionales con más visitas en la plataforma.
-          </p>
->>>>>>> feature/hu1-tercersprint
         </div>
 
         {loading ? (
@@ -348,12 +270,12 @@ export default function RecentPortfolios({
               </div>
             ))}
           </div>
-        ) : top5.length === 0 ? (
+        ) : profiles.length === 0 ? (
           <p className="text-center text-gray-400 py-16">
             Aún no hay portafolios con visitas registradas.
           </p>
         ) : (
-          <DraggableCarousel profiles={top5} />
+          <DraggableCarousel profiles={profiles} />
         )}
 
         <div className="text-center mt-10">
@@ -373,5 +295,5 @@ export default function RecentPortfolios({
         </div>
       </div>
     </section>
-  );
+  )
 }

@@ -285,11 +285,7 @@ function PersonalData() {
 
   if (loading)
     return (
-<<<<<<< HEAD
       <div className="min-h-screen bg-background dark:bg-slate-900 flex flex-col font-sans transition-colors duration-300">
-=======
-      <div className="h-full bg-background flex flex-col font-sans overflow-hidden">
->>>>>>> feature/hu1-tercersprint
         <div className="flex flex-1 overflow-hidden relative">
           <Sidebar activeItem="Datos Personales" />
           <main className="flex-1 flex flex-col lg:flex-row overflow-hidden bg-background dark:bg-slate-900 transition-colors duration-300">
@@ -308,11 +304,7 @@ function PersonalData() {
     )
 
   return (
-<<<<<<< HEAD
     <div className="min-h-screen bg-background dark:bg-slate-900 flex flex-col font-sans transition-colors duration-300">
-=======
-    <div className="h-full bg-background flex flex-col font-sans overflow-hidden">
->>>>>>> feature/hu1-tercersprint
       <div className="flex flex-1 overflow-hidden relative">
         <Sidebar activeItem="Datos Personales" />
 
@@ -469,11 +461,10 @@ function PersonalData() {
                     <button
                       type="submit"
                       disabled={isSaving || !hasChanges}
-                      className={`flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm text-white shadow-lg transition-all ${
-                        isSaving || !hasChanges
-                          ? 'bg-gray-300 dark:bg-slate-700 cursor-not-allowed'
-                          : 'bg-action hover:brightness-110 shadow-red-100'
-                      }`}
+                      className={`flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm text-white shadow-lg transition-all ${isSaving || !hasChanges
+                        ? 'bg-gray-300 dark:bg-slate-700 cursor-not-allowed'
+                        : 'bg-action hover:brightness-110 shadow-red-100'
+                        }`}
                     >
                       <Save size={16} />{' '}
                       {isSaving ? t('profile.saving') : t('profile.save_changes')}

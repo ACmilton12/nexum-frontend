@@ -44,7 +44,7 @@ export default function HabilidadesPage() {
   const [toast, setToast] = useState<{ mensaje: string; tipo: 'success' | 'error' } | null>(null)
 
   useEffect(() => {
-    ;(async () => {
+    ; (async () => {
       setLoadingSkills(true)
       try {
         const data = await getPortfolioSkills()
@@ -67,31 +67,31 @@ export default function HabilidadesPage() {
 
   useEffect(() => {
     if (!mostrandoPanel || Object.keys(catalogoPorCategoria).length > 0) return
-    ;(async () => {
-      setLoadingCatalog(true)
-      try {
-        const data = await getCatalogSkills()
-        const grouped: Record<string, CatalogItem[]> = {}
-        for (const s of data) {
-          const key: string = CATEGORIA_KEY_MAP[s.category] ?? 'otras'
-          if (!grouped[key]) grouped[key] = []
-          grouped[key].push({
-            id: s.id,
-            nombre: s.name,
-            descripcion: '',
-            tipo: s.type === 'tecnica' ? 'Técnica' : 'Blanda',
-            categoria: s.category
-          })
+      ; (async () => {
+        setLoadingCatalog(true)
+        try {
+          const data = await getCatalogSkills()
+          const grouped: Record<string, CatalogItem[]> = {}
+          for (const s of data) {
+            const key: string = CATEGORIA_KEY_MAP[s.category] ?? 'otras'
+            if (!grouped[key]) grouped[key] = []
+            grouped[key].push({
+              id: s.id,
+              nombre: s.name,
+              descripcion: '',
+              tipo: s.type === 'tecnica' ? 'Técnica' : 'Blanda',
+              categoria: s.category
+            })
+          }
+          setCatalogoPorCategoria(grouped)
+          setToast({ mensaje: t('skills.toast_catalog_loaded'), tipo: 'success' })
+        } catch (err: unknown) {
+          const message = err instanceof Error ? err.message : t('skills.error_catalog')
+          setToast({ mensaje: message, tipo: 'error' })
+        } finally {
+          setLoadingCatalog(false)
         }
-        setCatalogoPorCategoria(grouped)
-        setToast({ mensaje: t('skills.toast_catalog_loaded'), tipo: 'success' })
-      } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : t('skills.error_catalog')
-        setToast({ mensaje: message, tipo: 'error' })
-      } finally {
-        setLoadingCatalog(false)
-      }
-    })()
+      })()
   }, [mostrandoPanel, catalogoPorCategoria])
 
   const handleGuardarNuevo = async (skillId: number, nivel: NivelHabilidad | null) => {
@@ -189,11 +189,7 @@ export default function HabilidadesPage() {
   const blandas = skillsFiltered.filter((s) => s.tipo === 'Blanda')
 
   return (
-<<<<<<< HEAD
     <div className="min-h-screen bg-background dark:bg-slate-900 flex flex-col transition-colors duration-300">
-=======
-    <div className="h-full bg-background flex flex-col overflow-hidden">
->>>>>>> feature/hu1-tercersprint
       <div className="flex flex-1 overflow-hidden">
         <Sidebar activeItem="Habilidades" />
         <main className="flex-1 flex flex-col lg:flex-row overflow-hidden bg-background dark:bg-slate-900 transition-colors duration-300">

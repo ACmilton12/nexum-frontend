@@ -70,13 +70,8 @@ const AccountsPage = () => {
   }
 
   return (
-<<<<<<< HEAD
     <div className="min-h-screen bg-background dark:bg-slate-900 flex flex-col transition-colors duration-300">
       <div className="flex flex-1">
-=======
-    <div className="h-full bg-background flex flex-col overflow-hidden">
-      <div className="flex flex-1 overflow-hidden">
->>>>>>> feature/hu1-tercersprint
         {/* Sidebar adaptativo */}
         <Sidebar activeItem="Gestión Usuarios" />
 
@@ -168,11 +163,10 @@ const AccountsPage = () => {
                             </td>
                             <td className="px-6 py-4 text-center">
                               <span
-                                className={`inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                                  u.status === 'Activo'
-                                    ? 'bg-green-100 text-green-700'
-                                    : 'bg-red-50 text-red-600'
-                                }`}
+                                className={`inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${u.status === 'Activo'
+                                  ? 'bg-green-100 text-green-700'
+                                  : 'bg-red-50 text-red-600'
+                                  }`}
                               >
                                 {u.status}
                               </span>
