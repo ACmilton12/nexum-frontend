@@ -73,14 +73,21 @@ export interface FullPortfolio {
   linkedin_url: string | null
   github_url: string | null
   design_pattern: string
+  global_privacy: 'public' | 'private'
   views_count: number
+
   created_at: string
   updated_at: string
+  show_projects?: boolean
+  show_skills?: boolean
+  show_experience?: boolean
+  show_certifications?: boolean
   projects?: PortfolioProject[]
   skills?: PortfolioSkill[]
   certifications?: PortfolioCertification[]
   work_experiences?: WorkExperience[]
 }
+
 
 const getToken = () => localStorage.getItem('token') || sessionStorage.getItem('token')
 
