@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSearchParams } from 'react-router-dom'
-import { ChevronLeft, ChevronRight, Search as SearchIcon, Loader2, UserX } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Loader2, UserX } from 'lucide-react'
 import {
   searchProfessionals,
   type SearchResult,

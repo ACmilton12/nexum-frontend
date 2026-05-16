@@ -34,13 +34,13 @@ const RightPanelContent = ({
       <Calendar />
 
       <div className="mt-8">
-        <h3 className="font-bold text-textMain text-sm mb-4 flex items-center gap-2 uppercase tracking-wider">
+        <h3 className="font-bold text-textMain dark:text-white text-sm mb-4 flex items-center gap-2 uppercase tracking-wider">
           <ShieldAlert size={16} className="text-action" />
           {t('dashboard.notifications.title')}
         </h3>
         <div className="space-y-3">
           {viewsCount > 0 && (
-            <div className="flex items-start gap-2 text-[11px] text-gray-600 leading-tight">
+            <div className="flex items-start gap-2 text-[11px] text-gray-600 dark:text-gray-400 leading-tight">
               <AlertTriangle size={14} className="text-action mt-0.5 shrink-0" />
               <span>
                 {t('dashboard.notifications.views', {
@@ -51,14 +51,14 @@ const RightPanelContent = ({
             </div>
           )}
           {lastProjectName && (
-            <div className="flex items-start gap-2 text-[11px] text-gray-600 leading-tight">
-              <CheckCircle size={14} className="text-primary mt-0.5 shrink-0" />
+            <div className="flex items-start gap-2 text-[11px] text-gray-600 dark:text-gray-400 leading-tight">
+              <CheckCircle size={14} className="text-primary dark:text-blue-400 mt-0.5 shrink-0" />
               <span>{t('dashboard.notifications.last_project', { name: lastProjectName })}</span>
             </div>
           )}
           {skillsCount !== null && skillsCount > 0 && (
-            <div className="flex items-start gap-2 text-[11px] text-gray-600 leading-tight">
-              <CheckCircle size={14} className="text-primary mt-0.5 shrink-0" />
+            <div className="flex items-start gap-2 text-[11px] text-gray-600 dark:text-gray-400 leading-tight">
+              <CheckCircle size={14} className="text-primary dark:text-blue-400 mt-0.5 shrink-0" />
               <span>{t('dashboard.notifications.skills_active', { count: skillsCount })}</span>
             </div>
           )}
@@ -66,8 +66,10 @@ const RightPanelContent = ({
       </div>
 
       <div className="mt-8">
-        <h3 className="font-bold text-textMain text-sm mb-4">{t('dashboard.links.title')}</h3>
-        <div className="space-y-3 text-xs text-primary">
+        <h3 className="font-bold text-textMain dark:text-white text-sm mb-4">
+          {t('dashboard.links.title')}
+        </h3>
+        <div className="space-y-3 text-xs text-primary dark:text-blue-400">
           <p className="cursor-pointer hover:underline flex items-center justify-between group">
             <span>📋 {t('dashboard.links.user_guide')}</span>
             <ExternalLink
@@ -220,44 +222,56 @@ const DashboardProfessional = () => {
   }, [])
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background dark:bg-slate-900 flex flex-col transition-colors duration-300">
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
         <Sidebar activeItem="Dashboard" />
 
         {/* Contenedor Principal Adaptativo */}
-        <main className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+        <main className="flex-1 flex flex-col lg:flex-row overflow-hidden bg-background dark:bg-slate-900 transition-colors duration-300">
           {/* SECCIÓN IZQUIERDA: Contenido del Dashboard */}
           <div className="flex-1 p-4 pl-14 sm:pl-6 md:p-6 overflow-y-auto">
-            <h1 className="text-xl sm:text-2xl font-bold text-textMain mb-1">
+            <h1 className="text-xl sm:text-2xl font-bold text-textMain dark:text-white mb-1">
               {t('dashboard.title')}
             </h1>
-            <p className="text-sm text-gray-500 mb-5">{t('dashboard.welcome')}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-5">
+              {t('dashboard.welcome')}
+            </p>
 
             {/* Cards de estadísticas */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-              <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:border-action/20 transition-colors">
-                <p className="text-sm text-gray-500 mb-1">{t('dashboard.stats.views')}</p>
-                <p className="text-3xl font-bold text-primary">{loading ? '—' : viewsCount}</p>
-                <p className="text-xs text-gray-400 mt-1">{t('dashboard.stats.total_views')}</p>
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 hover:border-action/20 transition-colors">
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                  {t('dashboard.stats.views')}
+                </p>
+                <p className="text-3xl font-bold text-primary dark:text-blue-400">
+                  {loading ? '—' : viewsCount}
+                </p>
+                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                  {t('dashboard.stats.total_views')}
+                </p>
               </div>
-              <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
-                <p className="text-sm text-gray-500 mb-1">{t('dashboard.stats.active_projects')}</p>
-                <p className="text-3xl font-bold text-primary">
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors">
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                  {t('dashboard.stats.active_projects')}
+                </p>
+                <p className="text-3xl font-bold text-primary dark:text-blue-400">
                   {loading ? '—' : (projectsCount ?? 0)}
                 </p>
-                <p className="text-xs text-gray-400 mt-1">
+                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
                   {lastProjectDate
                     ? t('dashboard.stats.last_update', { date: lastProjectDate })
                     : t('dashboard.stats.no_projects')}
                 </p>
               </div>
-              <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
-                <p className="text-sm text-gray-500 mb-1">{t('dashboard.stats.skills')}</p>
-                <p className="text-3xl font-bold text-primary">
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors">
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                  {t('dashboard.stats.skills')}
+                </p>
+                <p className="text-3xl font-bold text-primary dark:text-blue-400">
                   {loading ? '—' : (skillsCount ?? 0)}
                 </p>
-                <p className="text-xs text-gray-400 mt-1">
+                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
                   {experienceCount !== null && experienceCount > 0
                     ? t('dashboard.stats.experience_count', { count: experienceCount })
                     : t('dashboard.stats.no_experience')}
@@ -267,10 +281,12 @@ const DashboardProfessional = () => {
 
             {/* Cards de acciones */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-              <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors">
                 <div className="flex items-center gap-2 mb-2">
-                  <FolderOpen size={18} className="text-textMain" />
-                  <h2 className="font-semibold text-textMain">{t('dashboard.portfolio.title')}</h2>
+                  <FolderOpen size={18} className="text-textMain dark:text-white" />
+                  <h2 className="font-semibold text-textMain dark:text-white">
+                    {t('dashboard.portfolio.title')}
+                  </h2>
                 </div>
                 <p className="text-sm text-gray-500 mb-3 leading-relaxed">
                   {t('dashboard.portfolio.desc')}
@@ -289,7 +305,7 @@ const DashboardProfessional = () => {
                   </Link>
                   <Link
                     to="/imprimir"
-                    className="bg-white text-gray-700 border border-gray-200 text-sm px-4 py-2 rounded-lg hover:bg-gray-50 transition-all shadow-sm flex items-center gap-2 no-underline font-medium"
+                    className="bg-white text-gray-700 dark:text-gray-300 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 text-sm px-4 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-600 transition-all shadow-sm flex items-center gap-2 no-underline font-medium"
                   >
                     <FileText size={14} className="text-action" />{' '}
                     {t('dashboard.portfolio.export_pdf')}
@@ -297,10 +313,12 @@ const DashboardProfessional = () => {
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors">
                 <div className="flex items-center gap-2 mb-2">
-                  <Eye size={18} className="text-textMain" />
-                  <h2 className="font-semibold text-textMain">{t('dashboard.settings.title')}</h2>
+                  <Eye size={18} className="text-textMain dark:text-white" />
+                  <h2 className="font-semibold text-textMain dark:text-white">
+                    {t('dashboard.settings.title')}
+                  </h2>
                 </div>
                 <p className="text-sm text-gray-500 mb-3 leading-relaxed">
                   {t('dashboard.settings.desc')}
@@ -319,12 +337,14 @@ const DashboardProfessional = () => {
             </div>
 
             {/* Secciones disponibles */}
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 mb-6">
-              <h2 className="font-semibold text-textMain mb-4">{t('dashboard.sections.title')}</h2>
+            <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 mb-6 transition-colors">
+              <h2 className="font-semibold text-textMain dark:text-white mb-4">
+                {t('dashboard.sections.title')}
+              </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="bg-background rounded-xl p-4 border border-gray-50">
-                  <h3 className="font-medium text-textMain mb-3 text-sm flex items-center gap-2">
-                    <CheckCircle size={14} className="text-primary" />
+                <div className="bg-background dark:bg-slate-900 rounded-xl p-4 border border-gray-50 dark:border-gray-800 transition-colors">
+                  <h3 className="font-medium text-textMain dark:text-white mb-3 text-sm flex items-center gap-2">
+                    <CheckCircle size={14} className="text-primary dark:text-blue-400" />
                     {t('dashboard.sections.available')}
                   </h3>
                   <div className="space-y-2">
@@ -335,15 +355,18 @@ const DashboardProfessional = () => {
                       t('sidebar.experience'),
                       t('sidebar.profile')
                     ].map((item) => (
-                      <div key={item} className="flex items-center gap-2 text-[13px] text-gray-600">
+                      <div
+                        key={item}
+                        className="flex items-center gap-2 text-[13px] text-gray-600 dark:text-gray-400"
+                      >
                         <div className="w-1 h-1 bg-primary rounded-full"></div>
                         {item}
                       </div>
                     ))}
                   </div>
                 </div>
-                <div className="bg-background rounded-xl p-4 border border-gray-50">
-                  <h3 className="font-medium text-textMain mb-3 text-sm flex items-center gap-2">
+                <div className="bg-background dark:bg-slate-900 rounded-xl p-4 border border-gray-50 dark:border-gray-800 transition-colors">
+                  <h3 className="font-medium text-textMain dark:text-white mb-3 text-sm flex items-center gap-2">
                     <AlertTriangle size={14} className="text-action" />
                     {t('dashboard.sections.restricted')}
                   </h3>
@@ -356,7 +379,7 @@ const DashboardProfessional = () => {
                     ].map((item) => (
                       <div
                         key={item}
-                        className="flex items-center gap-2 text-[13px] text-gray-600 opacity-60"
+                        className="flex items-center gap-2 text-[13px] text-gray-600 dark:text-gray-500 opacity-60"
                       >
                         <div className="w-1 h-1 bg-action rounded-full"></div>
                         {item}
@@ -369,7 +392,7 @@ const DashboardProfessional = () => {
           </div>
 
           {/* ASIDE DERECHO (Responsivo) */}
-          <aside className="w-full lg:w-64 p-6 bg-white border-t lg:border-t-0 lg:border-l border-gray-200 shrink-0 overflow-y-auto">
+          <aside className="w-full lg:w-64 p-6 bg-white dark:bg-slate-900 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-800 shrink-0 overflow-y-auto transition-colors duration-300">
             <RightPanelContent
               viewsCount={viewsCount}
               lastProjectName={lastProjectName}

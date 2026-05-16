@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import logoUmss from '../../assets/logoUmss.png' // Asegúrate de que la ruta sea correcta
-import { User, Globe, ChevronDown, CheckCircle } from 'lucide-react' // Iconos necesarios
+import { User } from 'lucide-react' // Iconos necesarios
 import { useState } from 'react'
 import UserMenuModal from './UserMenuModal' // Importa el componente del modal
 import useAuth from '../../hooks/useAuth' // Hook para obtener el usuario logueado

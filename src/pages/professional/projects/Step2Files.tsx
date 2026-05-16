@@ -80,20 +80,28 @@ const StorageIndicator = ({ usedBytes }: { usedBytes: number }) => {
   const barColor = isFull ? 'bg-[#C8102E]' : isWarn ? 'bg-amber-500' : 'bg-[#003087]'
 
   return (
-    <div className="flex flex-col gap-1.5 px-3 py-2.5 bg-[#f4f7fb] rounded-lg border border-gray-100">
+    <div className="flex flex-col gap-1.5 px-3 py-2.5 bg-[#f4f7fb] dark:bg-slate-800 rounded-lg border border-gray-100 dark:border-gray-700 transition-colors">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1.5">
           <HardDrive
             size={13}
-            className={isFull ? 'text-[#C8102E]' : isWarn ? 'text-amber-500' : 'text-[#003087]'}
+            className={
+              isFull
+                ? 'text-[#C8102E]'
+                : isWarn
+                  ? 'text-amber-500'
+                  : 'text-[#003087] dark:text-blue-400'
+            }
           />
-          <span className="text-[12px] font-bold text-[#1a1a2e]">Uso de almacenamiento</span>
+          <span className="text-[12px] font-bold text-[#1a1a2e] dark:text-gray-300">
+            Uso de almacenamiento
+          </span>
         </div>
         <span className={`text-[11px] font-semibold ${color}`}>
           {formatMB(usedBytes)} MB / {MAX_STORAGE_MB} MB
         </span>
       </div>
-      <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+      <div className="w-full h-1.5 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
         <div
           className={`h-full rounded-full transition-all duration-500 ${barColor}`}
           style={{ width: `${pct}%` }}
@@ -114,17 +122,19 @@ const FileItem = ({
   onPreview: (f: UploadedFile) => void
   isRemoving: boolean
 }) => (
-  <div className="flex items-center gap-3 px-3 py-2.5 bg-white border border-gray-100 rounded-lg hover:border-gray-200 transition-all group">
+  <div className="flex items-center gap-3 px-3 py-2.5 bg-white dark:bg-slate-800 border border-gray-100 dark:border-gray-700 rounded-lg hover:border-gray-200 dark:hover:border-gray-600 transition-all group">
     <div className="flex-shrink-0">{getFileIcon(file.mimeType)}</div>
     <div className="flex-1 min-w-0">
       <div className="flex items-center justify-between gap-2 mb-1">
-        <p className="text-[12px] font-semibold text-[#1a1a2e] truncate">{file.name}</p>
-        <span className="text-[10px] text-[#5b6472] flex-shrink-0">
+        <p className="text-[12px] font-semibold text-[#1a1a2e] dark:text-white truncate">
+          {file.name}
+        </p>
+        <span className="text-[10px] text-[#5b6472] dark:text-gray-500 flex-shrink-0">
           {file.size === 0 ? '? MB' : `${formatMB(file.size)} MB`}
         </span>
       </div>
       {file.status === 'uploading' && (
-        <div className="w-full h-1 bg-gray-100 rounded-full overflow-hidden">
+        <div className="w-full h-1 bg-gray-100 dark:bg-slate-700 rounded-full overflow-hidden">
           <div
             className="h-full bg-[#003087] rounded-full transition-all duration-300"
             style={{ width: `${file.progress}%` }}
@@ -146,17 +156,17 @@ const FileItem = ({
     </div>
     <div className="flex items-center gap-2 flex-shrink-0">
       {file.status === 'uploading' && (
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#eef3f8] text-[#003087] text-[10px] font-bold">
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#eef3f8] dark:bg-blue-900/30 text-[#003087] dark:text-blue-400 text-[10px] font-bold">
           <Loader2 size={10} className="animate-spin" /> Uploading
         </span>
       )}
       {file.status === 'success' && (
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-50 text-emerald-600 text-[10px] font-bold">
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold">
           <Check size={10} /> Success
         </span>
       )}
       {file.status === 'error' && (
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-red-50 text-[#C8102E] text-[10px] font-bold">
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-red-50 dark:bg-red-900/20 text-[#C8102E] text-[10px] font-bold">
           <AlertCircle size={10} /> Error
         </span>
       )}
@@ -165,7 +175,7 @@ const FileItem = ({
           type="button"
           onClick={() => onPreview(file)}
           title="Ver archivo"
-          className="flex items-center justify-center w-7 h-7 rounded-md bg-[#eef3f8] text-[#003087] hover:bg-[#d8e4f2] transition-all shadow-sm"
+          className="flex items-center justify-center w-7 h-7 rounded-md bg-[#eef3f8] dark:bg-blue-900/20 text-[#003087] dark:text-blue-400 hover:bg-[#d8e4f2] dark:hover:bg-blue-900/40 transition-all shadow-sm"
         >
           <Eye size={14} />
         </button>
@@ -176,7 +186,7 @@ const FileItem = ({
           disabled={isRemoving}
           onClick={() => onRemove(file)}
           title="Eliminar archivo"
-          className="flex items-center justify-center w-7 h-7 rounded-md bg-red-50 text-[#C8102E] hover:bg-red-100 transition-all shadow-sm disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex items-center justify-center w-7 h-7 rounded-md bg-red-50 dark:bg-red-900/20 text-[#C8102E] hover:bg-red-100 dark:hover:bg-red-900/40 transition-all shadow-sm disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isRemoving ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
         </button>
@@ -190,15 +200,17 @@ const FormatErrorModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative bg-white rounded-xl shadow-2xl p-6 w-full max-w-[340px] mx-4 flex flex-col items-center gap-4">
-        <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center">
+      <div className="relative bg-white dark:bg-slate-900 rounded-xl shadow-2xl p-6 w-full max-w-[340px] mx-4 flex flex-col items-center gap-4 border border-gray-100 dark:border-gray-800">
+        <div className="w-12 h-12 rounded-full bg-red-50 dark:bg-red-900/20 flex items-center justify-center">
           <AlertCircle size={24} className="text-[#C8102E]" />
         </div>
         <div className="text-center">
-          <h3 className="text-[15px] font-bold text-[#1a1a2e] mb-1">Formato no permitido</h3>
-          <p className="text-[13px] text-[#5b6472] leading-relaxed">
+          <h3 className="text-[15px] font-bold text-[#1a1a2e] dark:text-white mb-1">
+            Formato no permitido
+          </h3>
+          <p className="text-[13px] text-[#5b6472] dark:text-gray-400 leading-relaxed">
             Solo se aceptan archivos{' '}
-            <span className="font-semibold text-[#1a1a2e]">{ALLOWED_LABEL}</span>.
+            <span className="font-semibold text-[#1a1a2e] dark:text-white">{ALLOWED_LABEL}</span>.
           </p>
         </div>
         <button
@@ -226,13 +238,15 @@ const ConfirmNoFilesModal = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onCancel} />
-      <div className="relative bg-white rounded-xl shadow-2xl p-6 w-full max-w-[360px] mx-4 flex flex-col items-center gap-4">
-        <div className="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center">
+      <div className="relative bg-white dark:bg-slate-900 rounded-xl shadow-2xl p-6 w-full max-w-[360px] mx-4 flex flex-col items-center gap-4 border border-gray-100 dark:border-gray-800">
+        <div className="w-12 h-12 rounded-full bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center">
           <AlertCircle size={24} className="text-amber-500" />
         </div>
         <div className="text-center">
-          <h3 className="text-[15px] font-bold text-[#1a1a2e] mb-1">¿Guardar sin archivos?</h3>
-          <p className="text-[13px] text-[#5b6472] leading-relaxed">
+          <h3 className="text-[15px] font-bold text-[#1a1a2e] dark:text-white mb-1">
+            ¿Guardar sin archivos?
+          </h3>
+          <p className="text-[13px] text-[#5b6472] dark:text-gray-400 leading-relaxed">
             No has subido ninguna imagen o documento. ¿Estás seguro de que deseas guardar sin
             archivos adjuntos?
           </p>
@@ -241,7 +255,7 @@ const ConfirmNoFilesModal = ({
           <button
             type="button"
             onClick={onCancel}
-            className="flex-1 h-10 bg-white border border-gray-200 text-[#1a1a2e] text-[13px] font-bold rounded-lg hover:bg-gray-50 transition-all"
+            className="flex-1 h-10 bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 text-[#1a1a2e] dark:text-gray-200 text-[13px] font-bold rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 transition-all"
           >
             No, agregar archivos
           </button>
@@ -314,33 +328,37 @@ const FilePreviewModal = ({
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative bg-white rounded-xl shadow-2xl flex flex-col w-full max-w-4xl max-h-[90vh] overflow-hidden">
-        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
-          <h3 className="text-[14px] font-bold text-[#1a1a2e] truncate pr-4">{file.name}</h3>
+      <div className="relative bg-white dark:bg-slate-900 rounded-xl shadow-2xl flex flex-col w-full max-w-4xl max-h-[90vh] overflow-hidden border border-gray-100 dark:border-gray-800 transition-colors">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-800">
+          <h3 className="text-[14px] font-bold text-[#1a1a2e] dark:text-white truncate pr-4">
+            {file.name}
+          </h3>
           <button
             onClick={onClose}
-            className="p-1 text-gray-400 hover:text-[#C8102E] hover:bg-red-50 rounded-lg transition-colors"
+            className="p-1 text-gray-400 hover:text-[#C8102E] hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
           >
             <X size={18} />
           </button>
         </div>
-        <div className="flex-1 overflow-auto bg-[#fafbfc] flex items-center justify-center p-4 min-h-[50vh]">
+        <div className="flex-1 overflow-auto bg-[#fafbfc] dark:bg-slate-950 flex items-center justify-center p-4 min-h-[50vh] transition-colors">
           {isLoading ? (
             <div className="flex flex-col items-center gap-3">
-              <Loader2 size={32} className="animate-spin text-[#003087]" />
-              <p className="text-[13px] font-bold text-[#5b6472]">Cargando vista previa...</p>
+              <Loader2 size={32} className="animate-spin text-[#003087] dark:text-blue-400" />
+              <p className="text-[13px] font-bold text-[#5b6472] dark:text-gray-400">
+                Cargando vista previa...
+              </p>
             </div>
           ) : isPdf ? (
             <iframe
               src={blobUrl}
-              className="w-full h-[70vh] rounded border border-gray-200"
+              className="w-full h-[70vh] rounded border border-gray-200 dark:border-gray-700"
               title={file.name}
             />
           ) : (
             <img
               src={blobUrl}
               alt={file.name}
-              className="max-w-full max-h-[70vh] object-contain rounded border border-gray-200"
+              className="max-w-full max-h-[70vh] object-contain rounded border border-gray-200 dark:border-gray-700"
             />
           )}
         </div>
@@ -362,23 +380,25 @@ const ConfirmDeleteFileModal = ({
   return (
     <div className="fixed inset-0 z-[70] flex items-center justify-center">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onCancel} />
-      <div className="relative bg-white rounded-xl shadow-2xl p-6 w-full max-w-[360px] mx-4 flex flex-col items-center gap-4">
-        <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center">
+      <div className="relative bg-white dark:bg-slate-900 rounded-xl shadow-2xl p-6 w-full max-w-[360px] mx-4 flex flex-col items-center gap-4 border border-gray-100 dark:border-gray-800">
+        <div className="w-12 h-12 rounded-full bg-red-50 dark:bg-red-900/20 flex items-center justify-center">
           <Trash2 size={24} className="text-[#C8102E]" />
         </div>
         <div className="text-center">
-          <h3 className="text-[15px] font-bold text-[#1a1a2e] mb-1">¿Eliminar archivo?</h3>
-          <p className="text-[13px] text-[#5b6472] leading-relaxed">
+          <h3 className="text-[15px] font-bold text-[#1a1a2e] dark:text-white mb-1">
+            ¿Eliminar archivo?
+          </h3>
+          <p className="text-[13px] text-[#5b6472] dark:text-gray-400 leading-relaxed">
             Estás a punto de eliminar{' '}
-            <span className="font-semibold text-[#1a1a2e]">{file.name}</span>. Esta acción es
-            inmediata y no se puede deshacer.
+            <span className="font-semibold text-[#1a1a2e] dark:text-white">{file.name}</span>. Esta
+            acción es inmediata y no se puede deshacer.
           </p>
         </div>
         <div className="flex gap-3 w-full">
           <button
             type="button"
             onClick={onCancel}
-            className="flex-1 h-10 bg-white border border-gray-200 text-[#1a1a2e] text-[13px] font-bold rounded-lg hover:bg-gray-50 transition-all"
+            className="flex-1 h-10 bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 text-[#1a1a2e] dark:text-gray-200 text-[13px] font-bold rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 transition-all"
           >
             Cancelar
           </button>
@@ -558,17 +578,17 @@ const Step2Files = ({
     <>
       <div className="flex flex-col gap-4 w-full max-w-[520px] max-h-[75vh] overflow-y-auto pr-1">
         <div className="flex flex-col sm:flex-row justify-between items-start gap-3 sm:gap-4">
-          <p className="text-[14px] text-[#5b6472] leading-relaxed">
+          <p className="text-[14px] text-[#5b6472] dark:text-gray-400 leading-relaxed">
             Adjunta imágenes o documentos PDF como evidencia digital de tu proyecto.
           </p>
-          <span className="bg-[#eef3f8] text-[#003087] px-3 py-1.5 rounded-md text-[13px] font-bold flex-shrink-0 self-start sm:self-auto">
+          <span className="bg-[#eef3f8] dark:bg-slate-800 text-[#003087] dark:text-blue-400 px-3 py-1.5 rounded-md text-[13px] font-bold flex-shrink-0 self-start sm:self-auto transition-colors">
             Archivos
           </span>
         </div>
 
         <div className="flex justify-end">
           <span
-            className={`text-[11px] font-semibold ${maxFilesReached ? 'text-[#C8102E]' : 'text-[#5b6472]'}`}
+            className={`text-[11px] font-semibold ${maxFilesReached ? 'text-[#C8102E]' : 'text-[#5b6472] dark:text-gray-500'}`}
           >
             {uploadedFiles.filter((f) => f.status !== 'error').length} / {MAX_FILES} archivos
           </span>
@@ -585,26 +605,29 @@ const Step2Files = ({
           className={`relative flex flex-col items-center justify-center gap-2 p-6 border-2 border-dashed rounded-xl transition-all
             ${
               dropZoneDisabled
-                ? 'border-gray-200 bg-gray-50 cursor-not-allowed opacity-60'
+                ? 'border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-slate-900/50 cursor-not-allowed opacity-60'
                 : isDragOver
-                  ? 'border-[#003087] bg-[#eef3f8] cursor-copy'
-                  : 'border-gray-200 bg-[#fafbfc] hover:border-[#003087] hover:bg-[#eef3f8] cursor-pointer'
+                  ? 'border-[#003087] dark:border-blue-500 bg-[#eef3f8] dark:bg-blue-900/20 cursor-copy'
+                  : 'border-gray-200 dark:border-gray-700 bg-[#fafbfc] dark:bg-slate-900 hover:border-[#003087] dark:hover:border-blue-500 hover:bg-[#eef3f8] dark:hover:bg-blue-900/10 cursor-pointer'
             }`}
         >
           <div
-            className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${isDragOver ? 'bg-[#003087]' : 'bg-[#eef3f8]'}`}
+            className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${isDragOver ? 'bg-[#003087] dark:bg-blue-600' : 'bg-[#eef3f8] dark:bg-blue-900/20'}`}
           >
-            <Upload size={18} className={isDragOver ? 'text-white' : 'text-[#003087]'} />
+            <Upload
+              size={18}
+              className={isDragOver ? 'text-white' : 'text-[#003087] dark:text-blue-400'}
+            />
           </div>
           <div className="text-center">
-            <p className="text-[13px] font-semibold text-[#1a1a2e]">
+            <p className="text-[13px] font-semibold text-[#1a1a2e] dark:text-white">
               {storageFull
                 ? 'Almacenamiento lleno'
                 : maxFilesReached
                   ? `Máximo de ${MAX_FILES} archivos alcanzado`
                   : 'Arrastra archivos o haz clic para seleccionar'}
             </p>
-            <p className="text-[11px] text-[#5b6472] mt-0.5">
+            <p className="text-[11px] text-[#5b6472] dark:text-gray-400 mt-0.5">
               Formatos: {ALLOWED_LABEL} · Imágenes ≤ {MAX_IMAGE_MB} MB · PDF ≤ {MAX_PDF_MB} MB
             </p>
           </div>
@@ -619,10 +642,10 @@ const Step2Files = ({
         </div>
 
         {storageFull && (
-          <div className="flex items-center gap-2 px-3 py-2 bg-red-50 border border-red-100 rounded-lg">
+          <div className="flex items-center gap-2 px-3 py-2 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30 rounded-lg">
             <AlertCircle size={14} className="text-[#C8102E] flex-shrink-0" />
             <p className="text-[12px] text-[#C8102E] font-medium">
-              Has alcanzado el límite de almacenamiento disponible (700 MB).
+              Has alcanzado el límite de almacenamiento disponible ({MAX_STORAGE_MB} MB).
             </p>
           </div>
         )}
@@ -643,11 +666,11 @@ const Step2Files = ({
 
         {usedBytes > 0 && <StorageIndicator usedBytes={usedBytes} />}
 
-        <div className="flex flex-col-reverse sm:flex-row justify-between sm:items-center gap-3 pt-4 mt-1 border-t border-gray-100">
+        <div className="flex flex-col-reverse sm:flex-row justify-between sm:items-center gap-3 pt-4 mt-1 border-t border-gray-100 dark:border-gray-800 transition-colors">
           <button
             type="button"
             onClick={onBack}
-            className="w-full sm:w-auto h-10 px-5 text-[14px] font-bold text-[#1a1a2e] bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
+            className="w-full sm:w-auto h-10 px-5 text-[14px] font-bold text-[#1a1a2e] dark:text-gray-300 bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors flex items-center justify-center gap-2"
           >
             <ChevronLeft size={14} /> Atrás
           </button>
@@ -655,7 +678,7 @@ const Step2Files = ({
             type="button"
             onClick={handleSave}
             disabled={hasUploading}
-            className={`w-full sm:w-auto h-10 px-6 text-[14px] font-bold text-white rounded-lg transition-all flex items-center justify-center gap-2 ${
+            className={`w-full sm:w-auto h-10 px-6 text-[14px] font-bold text-white rounded-lg transition-all flex items-center justify-center gap-2 shadow-md ${
               hasUploading ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#c8102e] hover:brightness-110'
             }`}
           >

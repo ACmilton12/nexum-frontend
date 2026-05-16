@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom'
-import React from 'react'
+import React, { useEffect } from 'react'
 import LoginPage from '../pages/auth/LoginPage'
 import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage'
 import ResetPasswordPage from '../pages/auth/ResetPasswordPage'
@@ -19,9 +19,12 @@ import Certifications from '../pages/professional/certifications/Certifications'
 import ProtectedRoute from './ProtectedRoute'
 import Home from '../pages/Home'
 import ProjectsPage from '../pages/professional/projects/ProjectsPage'
+import HomeDirectory from '../pages/professional/HomeDirectory'
+import PublicProfile from '../pages/professional/PublicProfile'
+import PortfolioView from '../pages/professional/portfolio/PortfolioView'
 import SearchPage from '../pages/search/SearchPage'
 import PublicPortfolioPage from '../pages/portfolio/PublicPortfolioPage'
-import { useEffect } from 'react'
+import PrintPortfolio from '../pages/professional/PrintPortfolio'
 
 const ScrollToTop = () => {
   const { pathname } = useLocation()
@@ -62,37 +65,32 @@ const Breadcrumbs = () => {
     ].includes(pathname) || pathname.startsWith('/profile')
 
   return (
-    <div
-      style={{
-        padding: '12px 40px',
-        backgroundColor: '#eef3f8',
-        borderBottom: '1px solid #ddd',
-        fontSize: '13px',
-        color: '#666'
-      }}
-    >
+    <div className="px-6 md:px-10 py-3 bg-[#eef3f8] dark:bg-slate-900 border-b border-[#ddd] dark:border-slate-800 text-[13px] text-[#666] dark:text-gray-400 transition-colors duration-300">
       {pathname === '/' ? (
-        <span style={{ fontWeight: 'bold', color: '#003087' }}>Menú principal</span>
+        <span className="font-bold text-[#003087] dark:text-blue-400">Menú principal</span>
       ) : (
         <>
-          <Link to="/" style={{ color: '#666', textDecoration: 'none' }}>
+          <Link
+            to="/"
+            className="text-[#666] dark:text-gray-400 hover:text-[#003087] dark:hover:text-blue-400 no-underline transition-colors"
+          >
             Menú principal
           </Link>
 
           {isProfessionalRoute ? (
             <>
-              <span style={{ margin: '0 8px', color: '#999' }}>&gt;</span>
-              <span style={{ color: '#666' }}>Configuración de perfil</span>
+              <span className="mx-2 text-[#999] dark:text-gray-600">&gt;</span>
+              <span className="text-[#666] dark:text-gray-400">Configuración de perfil</span>
 
               {pathname.startsWith('/profile') && (
                 <>
-                  <span style={{ margin: '0 8px', color: '#999' }}>&gt;</span>
-                  <span style={{ color: '#666' }}>Perfil</span>
+                  <span className="mx-2 text-[#999] dark:text-gray-600">&gt;</span>
+                  <span className="text-[#666] dark:text-gray-400">Perfil</span>
                 </>
               )}
 
-              <span style={{ margin: '0 8px', color: '#999' }}>&gt;</span>
-              <span style={{ fontWeight: 'bold', color: '#003087' }}>
+              <span className="mx-2 text-[#999] dark:text-gray-600">&gt;</span>
+              <span className="font-bold text-[#003087] dark:text-blue-400">
                 {pathname.includes('dashboard')
                   ? 'Dashboard'
                   : pathname.includes('proyectos')
@@ -119,11 +117,16 @@ const Breadcrumbs = () => {
                 name.charAt(0).toUpperCase() + name.slice(1).replace(/-/g, ' ')
               return (
                 <span key={name}>
-                  <span style={{ margin: '0 8px', color: '#999' }}>&gt;</span>
+                  <span className="mx-2 text-[#999] dark:text-gray-600">&gt;</span>
                   {isLast ? (
-                    <span style={{ fontWeight: 'bold', color: '#003087' }}>{displayName}</span>
+                    <span className="font-bold text-[#003087] dark:text-blue-400">
+                      {displayName}
+                    </span>
                   ) : (
-                    <Link to={routeTo} style={{ color: '#666', textDecoration: 'none' }}>
+                    <Link
+                      to={routeTo}
+                      className="text-[#666] dark:text-gray-400 hover:text-[#003087] dark:hover:text-blue-400 no-underline transition-colors"
+                    >
                       {displayName}
                     </Link>
                   )}
@@ -137,10 +140,7 @@ const Breadcrumbs = () => {
   )
 }
 
-import PrintPortfolio from '../pages/professional/PrintPortfolio'
-
 // Rutas que NO usan el Navbar/Footer/Breadcrumbs del layout
-// porque tienen sus propios componentes integrados.
 const ROUTES_WITHOUT_LAYOUT = [
   '/',
   '/home',
@@ -150,14 +150,11 @@ const ROUTES_WITHOUT_LAYOUT = [
   '/reset-password',
   '/portfolio',
   '/search',
-  '/habilidades',
-  '/profolio'
+  '/habilidades'
 ]
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const { pathname } = useLocation()
-
-  // toLowerCase() para que /Home, /home, /HOME etc. todos hagan match
   const lowerPath = pathname.toLowerCase()
 
   const hideLayout = ROUTES_WITHOUT_LAYOUT.some((route) =>
@@ -167,10 +164,10 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   if (hideLayout) return <>{children}</>
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col transition-colors duration-300">
       <Navbar />
       <Breadcrumbs />
-      <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>{children}</div>
+      <div className="flex-grow flex flex-col">{children}</div>
       <Footer />
     </div>
   )
@@ -185,21 +182,16 @@ const AppRouter = () => {
           {/* ── Página de inicio ─────────────────────────────── */}
           <Route path="/" element={<Home />} />
           <Route path="/Home" element={<Home />} />
+
           {/* ── Rutas públicas ───────────────────────────────── */}
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/search" element={<SearchPage />} />
-          <Route path="/portfolio/:id" element={<PublicPortfolioPage />} />
+          <Route path="/login" element={<LoginPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route
-            path="/proyectos"
-            element={
-              <ProtectedRoute allowedRole="professional">
-                <ProjectsPage />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/search" element={<SearchPage />} />
+          <Route path="/portfolio/:id" element={<PublicPortfolioPage />} />
+          <Route path="/imprimir/:id?" element={<PrintPortfolio />} />
+
           {/* ── Rutas del admin ──────────────────────────────── */}
           <Route
             path="/admin"
@@ -257,12 +249,37 @@ const AppRouter = () => {
               </ProtectedRoute>
             }
           />
+
           {/* ── Rutas del profesional ────────────────────────── */}
           <Route
             path="/dashboard"
             element={
               <ProtectedRoute allowedRole="professional">
                 <RolesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/directorio"
+            element={
+              <ProtectedRoute allowedRole="professional">
+                <HomeDirectory />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/directorio/perfil/:id"
+            element={
+              <ProtectedRoute allowedRole="professional">
+                <PublicProfile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/proyectos"
+            element={
+              <ProtectedRoute allowedRole="professional">
+                <ProjectsPage />
               </ProtectedRoute>
             }
           />
@@ -282,6 +299,16 @@ const AppRouter = () => {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/portfolio"
+            element={
+              <ProtectedRoute allowedRole="professional">
+                <PortfolioView />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* ── Perfil del profesional ────────────────────────── */}
           <Route path="/profile" element={<Navigate to="/profile/personal-data" replace />} />
           <Route
             path="/profile/personal-data"
@@ -307,7 +334,7 @@ const AppRouter = () => {
               </ProtectedRoute>
             }
           />
-          <Route path="/imprimir/:id?" element={<PrintPortfolio />} />
+
           {/* ── Ruta por defecto ─────────────────────────────── */}
           <Route path="*" element={<Home />} />
         </Routes>

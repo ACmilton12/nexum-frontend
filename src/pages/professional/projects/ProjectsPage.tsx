@@ -144,23 +144,23 @@ const ProjectsPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col font-sans">
+    <div className="min-h-screen bg-background dark:bg-slate-900 flex flex-col font-sans transition-colors duration-300">
       <div className="flex flex-1 overflow-hidden relative">
         <Sidebar activeItem="Proyectos" />
 
         <main className="flex-1 flex flex-col lg:flex-row overflow-hidden">
-          <div className="flex-1 bg-[#C9D1D9] p-4 pl-14 sm:pl-6 md:p-8 overflow-y-auto">
+          <div className="flex-1 bg-[#C9D1D9] dark:bg-slate-900 p-4 pl-14 sm:pl-6 md:p-8 overflow-y-auto transition-colors duration-300">
             <div className="max-w-[1200px] mx-auto space-y-8">
               {/* Header */}
               <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                  <p className="text-[12px] font-medium text-[#5b6472] mb-1">
+                  <p className="text-[12px] font-medium text-[#5b6472] dark:text-gray-400 mb-1">
                     {t('projects.subtitle')}
                   </p>
-                  <h1 className="text-2xl sm:text-[32px] font-bold text-[#1a1a2e] mb-2">
+                  <h1 className="text-2xl sm:text-[32px] font-bold text-[#1a1a2e] dark:text-white mb-2">
                     {t('projects.title')}
                   </h1>
-                  <p className="text-[14px] text-[#5b6472] max-w-2xl leading-relaxed">
+                  <p className="text-[14px] text-[#5b6472] dark:text-gray-400 max-w-2xl leading-relaxed">
                     {t('projects.desc')}
                   </p>
                 </div>
@@ -181,16 +181,18 @@ const ProjectsPage = () => {
               </header>
 
               {/* Toolbar de Filtros */}
-              <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col gap-5">
+              <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col gap-5 transition-colors duration-300">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <h2 className="text-[16px] font-bold text-[#1a1a2e]">
+                  <h2 className="text-[16px] font-bold text-[#1a1a2e] dark:text-white">
                     {t('projects.filters_title')}
                   </h2>
-                  <p className="text-[13px] text-[#5b6472]">{t('projects.filters_desc')}</p>
+                  <p className="text-[13px] text-[#5b6472] dark:text-gray-400">
+                    {t('projects.filters_desc')}
+                  </p>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-3">
-                  <div className="relative flex items-center bg-[#eef3f8] text-[#003087] rounded-xl hover:bg-[#e0eaf5] transition-colors">
+                  <div className="relative flex items-center bg-[#eef3f8] dark:bg-slate-800 text-[#003087] dark:text-blue-400 rounded-xl hover:bg-[#e0eaf5] dark:hover:bg-slate-700 transition-colors">
                     <FolderOpen size={16} className="absolute left-4 pointer-events-none" />
                     <select
                       value={selectedCategory}
@@ -199,11 +201,13 @@ const ProjectsPage = () => {
                           e.target.value === 'ALL' ? 'ALL' : Number(e.target.value)
                         )
                       }
-                      className="appearance-none bg-transparent pl-11 pr-10 py-2 w-full text-[13px] font-bold cursor-pointer focus:outline-none outline-none border-none"
+                      className="appearance-none bg-transparent pl-11 pr-10 py-2 w-full text-[13px] font-bold cursor-pointer focus:outline-none outline-none border-none dark:text-blue-300"
                     >
-                      <option value="ALL">{t('projects.category_all')}</option>
+                      <option value="ALL" className="dark:bg-slate-800">
+                        {t('projects.category_all')}
+                      </option>
                       {categories.map((c) => (
-                        <option key={c.id} value={c.id}>
+                        <option key={c.id} value={c.id} className="dark:bg-slate-800">
                           {c.name}
                         </option>
                       ))}
@@ -211,7 +215,6 @@ const ProjectsPage = () => {
                     <ChevronDown size={16} className="absolute right-4 pointer-events-none" />
                   </div>
 
-                  {/* Toggle fecha: botón único que alterna */}
                   <button
                     type="button"
                     onClick={() => {
@@ -220,8 +223,8 @@ const ProjectsPage = () => {
                     }}
                     className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] font-bold transition-all ${
                       sortAlpha === 'NONE'
-                        ? 'bg-gray-100 text-[#003087] hover:bg-gray-200'
-                        : 'bg-gray-100 text-[#5b6472] hover:bg-gray-200'
+                        ? 'bg-gray-100 dark:bg-slate-800 text-[#003087] dark:text-blue-400 hover:bg-gray-200 dark:hover:bg-slate-700'
+                        : 'bg-gray-100 dark:bg-slate-800 text-[#5b6472] dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-slate-700'
                     }`}
                   >
                     <CalendarDays size={15} />
@@ -231,7 +234,6 @@ const ProjectsPage = () => {
                     </span>
                   </button>
 
-                  {/* Toggle alfa: botón único que cicla NONE→A-Z→Z-A→NONE */}
                   <button
                     type="button"
                     onClick={() => {
@@ -241,8 +243,8 @@ const ProjectsPage = () => {
                     }}
                     className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] font-bold transition-all ${
                       sortAlpha !== 'NONE'
-                        ? 'bg-[#eef3f8] text-[#003087] hover:bg-[#e0eaf5]'
-                        : 'bg-gray-100 text-[#5b6472] hover:bg-gray-200'
+                        ? 'bg-[#eef3f8] dark:bg-slate-800 text-[#003087] dark:text-blue-400 hover:bg-[#e0eaf5] dark:hover:bg-slate-700'
+                        : 'bg-gray-100 dark:bg-slate-800 text-[#5b6472] dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-slate-700'
                     }`}
                   >
                     <ArrowDownAZ size={15} />
@@ -261,7 +263,7 @@ const ProjectsPage = () => {
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                       placeholder={t('projects.search_placeholder')}
-                      className="w-full pl-11 pr-4 py-2.5 bg-white border border-gray-200 rounded-full text-[13px] focus:outline-none focus:border-[#003087] focus:ring-1 focus:ring-[#003087] transition-colors"
+                      className="w-full pl-11 pr-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-full text-[13px] dark:text-white focus:outline-none focus:border-[#003087] dark:focus:border-blue-500 focus:ring-1 focus:ring-[#003087] transition-colors"
                     />
                   </div>
                   {searchTerm.trim().length > 0 && searchTerm.trim().length < 3 && (
@@ -274,15 +276,15 @@ const ProjectsPage = () => {
 
               {/* Advertencia de Portafolio Faltante */}
               {hasPortfolio === false && (
-                <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6 flex flex-col sm:flex-row items-center gap-4 animate-fadeIn">
-                  <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center shrink-0">
-                    <AlertCircle className="text-amber-600" size={24} />
+                <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-2xl p-6 flex flex-col sm:flex-row items-center gap-4 animate-fadeIn">
+                  <div className="w-12 h-12 bg-amber-100 dark:bg-amber-800 rounded-full flex items-center justify-center shrink-0">
+                    <AlertCircle className="text-amber-600 dark:text-amber-400" size={24} />
                   </div>
                   <div className="flex-1 text-center sm:text-left">
-                    <h3 className="text-[16px] font-bold text-amber-900 mb-1">
+                    <h3 className="text-[16px] font-bold text-amber-900 dark:text-amber-200 mb-1">
                       {t('projects.portfolio_required_title')}
                     </h3>
-                    <p className="text-[14px] text-amber-700 leading-relaxed">
+                    <p className="text-[14px] text-amber-700 dark:text-amber-400 leading-relaxed">
                       {t('projects.portfolio_required_desc')}
                     </p>
                   </div>
@@ -296,36 +298,34 @@ const ProjectsPage = () => {
               )}
 
               {/* Tabla de Proyectos */}
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+              <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden transition-colors duration-300">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse min-w-[850px]">
                     <thead>
-                      <tr className="bg-[#f8f9fa] border-b border-gray-100">
-                        <tr className="bg-[#f8f9fa] border-b border-gray-100">
-                          <th className="p-4 pl-6 text-[13px] font-bold text-[#1a1a2e] w-[25%]">
-                            {t('projects.table_project')}
-                          </th>
-                          <th className="p-4 text-[13px] font-bold text-[#1a1a2e] w-[15%]">
-                            {t('projects.table_category')}
-                          </th>
-                          <th className="p-4 text-[13px] font-bold text-[#1a1a2e] w-[25%]">
-                            {t('projects.table_skills')}
-                          </th>
-                          <th className="p-4 text-[13px] font-bold text-[#1a1a2e] w-[15%]">
-                            {t('projects.table_date')}
-                          </th>
-                          <th className="p-4 pr-6 text-[13px] font-bold text-[#1a1a2e] text-center w-[20%]">
-                            {t('projects.table_actions')}
-                          </th>
-                        </tr>
+                      <tr className="bg-[#f8f9fa] dark:bg-slate-900 border-b border-gray-100 dark:border-gray-700">
+                        <th className="p-4 pl-6 text-[13px] font-bold text-[#1a1a2e] dark:text-white w-[25%]">
+                          {t('projects.table_project')}
+                        </th>
+                        <th className="p-4 text-[13px] font-bold text-[#1a1a2e] dark:text-white w-[15%]">
+                          {t('projects.table_category')}
+                        </th>
+                        <th className="p-4 text-[13px] font-bold text-[#1a1a2e] dark:text-white w-[25%]">
+                          {t('projects.table_skills')}
+                        </th>
+                        <th className="p-4 text-[13px] font-bold text-[#1a1a2e] dark:text-white w-[15%]">
+                          {t('projects.table_date')}
+                        </th>
+                        <th className="p-4 pr-6 text-[13px] font-bold text-[#1a1a2e] dark:text-white text-center w-[20%]">
+                          {t('projects.table_actions')}
+                        </th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100">
+                    <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                       {loading ? (
                         <tr>
                           <td colSpan={5} className="p-8 text-center text-[#5b6472]">
                             <Loader2
-                              className="animate-spin mx-auto mb-2 text-[#003087]"
+                              className="animate-spin mx-auto mb-2 text-[#003087] dark:text-blue-500"
                               size={24}
                             />
                             {t('projects.loading')}
@@ -333,7 +333,10 @@ const ProjectsPage = () => {
                         </tr>
                       ) : filteredProjects.length === 0 ? (
                         <tr>
-                          <td colSpan={5} className="p-8 text-center text-[#5b6472]">
+                          <td
+                            colSpan={5}
+                            className="p-8 text-center text-[#5b6472] dark:text-gray-400"
+                          >
                             {projects.length === 0
                               ? t('projects.no_projects')
                               : t('projects.no_results')}
@@ -341,8 +344,11 @@ const ProjectsPage = () => {
                         </tr>
                       ) : (
                         filteredProjects.map((project) => (
-                          <tr key={project.id} className="hover:bg-gray-50 transition-colors group">
-                            <td className="p-4 pl-6 text-[13px] text-[#5b6472] font-medium">
+                          <tr
+                            key={project.id}
+                            className="hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors group"
+                          >
+                            <td className="p-4 pl-6 text-[13px] text-[#5b6472] dark:text-gray-300 font-medium">
                               {project.title.length > 30
                                 ? project.title.substring(0, 30) + '...'
                                 : project.title}
@@ -351,21 +357,21 @@ const ProjectsPage = () => {
                               <span
                                 className={`px-2.5 py-1.5 rounded-md text-[12px] font-bold inline-block ${
                                   project.category?.name?.toLowerCase().includes('data')
-                                    ? 'bg-[#e2e8f0] text-[#475569]'
-                                    : 'bg-[#eef3f8] text-[#003087]'
+                                    ? 'bg-[#e2e8f0] dark:bg-slate-700 text-[#475569] dark:text-gray-300'
+                                    : 'bg-[#eef3f8] dark:bg-blue-900/30 text-[#003087] dark:text-blue-300'
                                 }`}
                               >
                                 {project.category?.name || t('projects.uncategorized')}
                               </span>
                             </td>
                             <td
-                              className="p-4 text-[13px] text-[#5b6472] truncate max-w-[200px]"
+                              className="p-4 text-[13px] text-[#5b6472] dark:text-gray-400 truncate max-w-[200px]"
                               title={project.skills?.map((s) => s.name).join(', ')}
                             >
                               {project.skills?.map((s) => s.name).join(', ') ||
                                 t('projects.unspecified_skills')}
                             </td>
-                            <td className="p-4 text-[13px] text-[#5b6472]">
+                            <td className="p-4 text-[13px] text-[#5b6472] dark:text-gray-400">
                               {project.updated_at
                                 ? new Date(project.updated_at).toLocaleDateString(i18n.language, {
                                     day: '2-digit',
@@ -384,7 +390,7 @@ const ProjectsPage = () => {
                               <div className="flex justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                 <button
                                   onClick={() => handleEditClick(project)}
-                                  className="px-4 py-1.5 text-[13px] font-bold text-[#1a1a2e] bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                                  className="px-4 py-1.5 text-[13px] font-bold text-[#1a1a2e] dark:text-gray-200 bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors"
                                 >
                                   {t('projects.edit')}
                                 </button>

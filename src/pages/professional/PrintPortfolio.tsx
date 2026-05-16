@@ -114,7 +114,7 @@ const PrintPortfolio = () => {
         backgroundColor: '#ffffff',
         windowWidth: 1024
       })
-      
+
       const imgData = canvas.toDataURL('image/png')
       const pdf = new jsPDF({
         orientation: 'portrait',
@@ -196,7 +196,7 @@ const PrintPortfolio = () => {
 
       <div className="max-w-5xl mx-auto pb-20">
         <main className="flex-1 py-10 px-4 sm:px-6 print:py-0 print:px-0">
-          <div 
+          <div
             id="portfolio-content"
             className="bg-white shadow-xl max-w-4xl mx-auto print:shadow-none print:max-w-full"
           >
@@ -204,7 +204,11 @@ const PrintPortfolio = () => {
             <div className="bg-[#1a1a2e] text-white p-10 flex flex-col md:flex-row items-center gap-8">
               <div className="w-32 h-32 rounded-2xl overflow-hidden border-4 border-white/10 shrink-0 shadow-lg">
                 {avatar_url ? (
-                  <img src={avatar_url} alt={user.first_name} className="w-full h-full object-cover" />
+                  <img
+                    src={avatar_url}
+                    alt={user.first_name}
+                    className="w-full h-full object-cover"
+                  />
                 ) : (
                   <div className="w-full h-full bg-[#C8102E] flex items-center justify-center text-4xl font-bold uppercase">
                     {user.first_name[0]}
@@ -215,11 +219,21 @@ const PrintPortfolio = () => {
                 <h1 className="text-3xl md:text-4xl font-black mb-2 uppercase tracking-tight">
                   {user.first_name} {user.last_name}
                 </h1>
-                <p className="text-xl text-[#C8102E] font-bold mb-4">{profession || 'Profesional'}</p>
+                <p className="text-xl text-[#C8102E] font-bold mb-4">
+                  {profession || 'Profesional'}
+                </p>
                 <div className="flex flex-wrap justify-center md:justify-start gap-4 text-sm opacity-80">
-                  <div className="flex items-center gap-1.5"><MapPin size={16} /> {location || 'Bolivia'}</div>
-                  <div className="flex items-center gap-1.5"><Mail size={16} /> {user.email}</div>
-                  {phone && <div className="flex items-center gap-1.5"><Phone size={16} /> {phone}</div>}
+                  <div className="flex items-center gap-1.5">
+                    <MapPin size={16} /> {location || 'Bolivia'}
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <Mail size={16} /> {user.email}
+                  </div>
+                  {phone && (
+                    <div className="flex items-center gap-1.5">
+                      <Phone size={16} /> {phone}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -231,7 +245,9 @@ const PrintPortfolio = () => {
                   <h3 className="text-lg font-black text-[#1a1a2e] uppercase tracking-widest border-b-2 border-[#C8102E] pb-2 mb-4">
                     Perfil Profesional
                   </h3>
-                  <p className="text-gray-600 leading-relaxed text-sm whitespace-pre-line">{biography}</p>
+                  <p className="text-gray-600 leading-relaxed text-sm whitespace-pre-line">
+                    {biography}
+                  </p>
                 </section>
               )}
 
@@ -246,7 +262,9 @@ const PrintPortfolio = () => {
                         <div className="absolute top-0 -left-[9px] w-4 h-4 rounded-full bg-[#C8102E] border-4 border-white shadow-sm"></div>
                         <div className="flex flex-col md:flex-row md:items-center justify-between mb-2">
                           <h4 className="font-bold text-gray-900">{exp.position}</h4>
-                          <span className="text-xs font-bold text-gray-400">{exp.start_date} — {exp.end_date || 'Presente'}</span>
+                          <span className="text-xs font-bold text-gray-400">
+                            {exp.start_date} — {exp.end_date || 'Presente'}
+                          </span>
                         </div>
                         <p className="text-[#C8102E] font-bold text-sm mb-2">{exp.company}</p>
                         <p className="text-gray-500 text-xs leading-relaxed">{exp.description}</p>
@@ -259,7 +277,9 @@ const PrintPortfolio = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                 {portfolio.skills && portfolio.skills.length > 0 && (
                   <section>
-                    <h3 className="text-lg font-black text-[#1a1a2e] uppercase tracking-widest border-b-2 border-[#C8102E] pb-2 mb-6">Habilidades</h3>
+                    <h3 className="text-lg font-black text-[#1a1a2e] uppercase tracking-widest border-b-2 border-[#C8102E] pb-2 mb-6">
+                      Habilidades
+                    </h3>
                     <div className="space-y-4">
                       {portfolio.skills.map((s) => (
                         <div key={s.id} className="space-y-1">
@@ -268,7 +288,19 @@ const PrintPortfolio = () => {
                             <span className="text-[#C8102E]">{s.level}</span>
                           </div>
                           <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
-                            <div className="h-full bg-[#C8102E]" style={{ width: s.level === 'Experto' ? '100%' : s.level === 'Avanzado' ? '75%' : s.level === 'Intermedio' ? '50%' : '25%' }}></div>
+                            <div
+                              className="h-full bg-[#C8102E]"
+                              style={{
+                                width:
+                                  s.level === 'Experto'
+                                    ? '100%'
+                                    : s.level === 'Avanzado'
+                                      ? '75%'
+                                      : s.level === 'Intermedio'
+                                        ? '50%'
+                                        : '25%'
+                              }}
+                            ></div>
                           </div>
                         </div>
                       ))}
@@ -278,7 +310,9 @@ const PrintPortfolio = () => {
 
                 {portfolio.certifications && portfolio.certifications.length > 0 && (
                   <section>
-                    <h3 className="text-lg font-black text-[#1a1a2e] uppercase tracking-widest border-b-2 border-[#C8102E] pb-2 mb-6">Certificaciones</h3>
+                    <h3 className="text-lg font-black text-[#1a1a2e] uppercase tracking-widest border-b-2 border-[#C8102E] pb-2 mb-6">
+                      Certificaciones
+                    </h3>
                     <div className="space-y-4">
                       {portfolio.certifications.map((cert) => (
                         <div key={cert.id} className="flex gap-3">
@@ -286,7 +320,12 @@ const PrintPortfolio = () => {
                           <div>
                             <h4 className="text-sm font-bold text-gray-900">{cert.name}</h4>
                             <p className="text-xs text-gray-500">{cert.issuing_organization}</p>
-                            <p className="text-[10px] text-gray-400 font-bold uppercase mt-0.5">{new Date(cert.issue_date).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}</p>
+                            <p className="text-[10px] text-gray-400 font-bold uppercase mt-0.5">
+                              {new Date(cert.issue_date).toLocaleDateString('es-ES', {
+                                month: 'long',
+                                year: 'numeric'
+                              })}
+                            </p>
                           </div>
                         </div>
                       ))}
@@ -297,21 +336,42 @@ const PrintPortfolio = () => {
 
               {portfolio.projects && portfolio.projects.length > 0 && (
                 <section>
-                  <h3 className="text-lg font-black text-[#1a1a2e] uppercase tracking-widest border-b-2 border-[#C8102E] pb-2 mb-6">Proyectos Destacados</h3>
+                  <h3 className="text-lg font-black text-[#1a1a2e] uppercase tracking-widest border-b-2 border-[#C8102E] pb-2 mb-6">
+                    Proyectos Destacados
+                  </h3>
                   <div className="space-y-6">
                     {portfolio.projects.map((project) => (
-                      <div key={project.id} className="p-6 rounded-2xl border border-gray-100 bg-gray-50/50">
+                      <div
+                        key={project.id}
+                        className="p-6 rounded-2xl border border-gray-100 bg-gray-50/50"
+                      >
                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-3">
                           <h4 className="text-base font-bold text-gray-900">{project.title}</h4>
-                          <span className="text-[10px] font-bold text-gray-400 uppercase bg-white px-2 py-1 rounded-md border border-gray-100">{new Date(project.created_at).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}</span>
+                          <span className="text-[10px] font-bold text-gray-400 uppercase bg-white px-2 py-1 rounded-md border border-gray-100">
+                            {new Date(project.created_at).toLocaleDateString('es-ES', {
+                              month: 'long',
+                              year: 'numeric'
+                            })}
+                          </span>
                         </div>
-                        <p className="text-[10px] font-bold text-[#C8102E] uppercase mb-3 tracking-wider">{project.category?.name || 'Proyecto General'}</p>
-                        <p className="text-gray-600 text-xs leading-relaxed mb-4">{project.description}</p>
+                        <p className="text-[10px] font-bold text-[#C8102E] uppercase mb-3 tracking-wider">
+                          {project.category?.name || 'Proyecto General'}
+                        </p>
+                        <p className="text-gray-600 text-xs leading-relaxed mb-4">
+                          {project.description}
+                        </p>
                         {project.skills && project.skills.length > 0 && (
                           <div className="flex flex-wrap gap-1.5">
-                            <span className="text-[9px] font-black text-gray-400 uppercase mr-1 mt-0.5">Tecnologías:</span>
+                            <span className="text-[9px] font-black text-gray-400 uppercase mr-1 mt-0.5">
+                              Tecnologías:
+                            </span>
                             {project.skills.map((skill) => (
-                              <span key={skill.id} className="px-2 py-0.5 rounded-md bg-white text-gray-600 text-[9px] font-bold border border-gray-200 shadow-sm">{skill.name}</span>
+                              <span
+                                key={skill.id}
+                                className="px-2 py-0.5 rounded-md bg-white text-gray-600 text-[9px] font-bold border border-gray-200 shadow-sm"
+                              >
+                                {skill.name}
+                              </span>
                             ))}
                           </div>
                         )}

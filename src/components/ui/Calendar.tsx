@@ -21,6 +21,7 @@ const Calendar = () => {
 
   // Primer día del mes (0=domingo, 1=lunes...)
   const firstDay = new Date(year, month, 1).getDay()
+
   // Ajustar para que lunes sea 0
   const startDay = firstDay === 0 ? 6 : firstDay - 1
 
@@ -49,16 +50,32 @@ const Calendar = () => {
   }
 
   return (
-    <div>
-      <h3 className="font-semibold text-textMain mb-2">Calendario</h3>
-      <p className="text-xs text-gray-400 mb-3">
+    <div
+      className="
+        bg-white dark:bg-gray-900
+        border border-gray-200 dark:border-gray-700
+        rounded-2xl
+        p-4
+        shadow-sm
+        transition-colors
+      "
+    >
+      {/* TÍTULO */}
+      <h3 className="font-semibold text-textMain dark:text-gray-100 mb-2">Calendario</h3>
+
+      {/* FECHA */}
+      <p className="text-xs text-gray-400 dark:text-gray-500 mb-3">
         {monthNames[month]} {year}
       </p>
-      <div className="grid grid-cols-7 text-xs text-center text-gray-400 mb-1">
+
+      {/* DÍAS SEMANA */}
+      <div className="grid grid-cols-7 text-xs text-center text-gray-400 dark:text-gray-500 mb-1">
         {['L', 'M', 'M', 'J', 'V', 'S', 'D'].map((d, i) => (
           <span key={i}>{d}</span>
         ))}
       </div>
+
+      {/* CALENDARIO */}
       <div className="grid grid-cols-7 text-xs text-center gap-y-1">
         {days.map((d, i) => (
           <span
@@ -67,8 +84,8 @@ const Calendar = () => {
               d.day === todayDate && d.currentMonth
                 ? 'bg-primary text-white font-bold'
                 : !d.currentMonth
-                  ? 'text-gray-300'
-                  : 'text-textMain'
+                  ? 'text-gray-300 dark:text-gray-600'
+                  : 'text-textMain dark:text-gray-300'
             }`}
           >
             {d.day}

@@ -39,14 +39,12 @@ export default function HabilidadesPage() {
   const [savingNew, setSavingNew] = useState(false)
   const [editando, setEditando] = useState<Skill | null>(null)
   const [savingEdit, setSavingEdit] = useState(false)
-  // Reemplaza `eliminando` por `toggling` — puede ser deshabilitar o re-habilitar
   const [togglingSkill, setTogglingSkill] = useState<Skill | null>(null)
   const [togglingId, setTogglingId] = useState<number | null>(null)
   const [toast, setToast] = useState<{ mensaje: string; tipo: 'success' | 'error' } | null>(null)
 
-  // Carga inicial
   useEffect(() => {
-    ; (async () => {
+    ;(async () => {
       setLoadingSkills(true)
       try {
         const data = await getPortfolioSkills()
@@ -67,37 +65,35 @@ export default function HabilidadesPage() {
     })()
   }, [])
 
-  // Catálogo al abrir el panel
   useEffect(() => {
     if (!mostrandoPanel || Object.keys(catalogoPorCategoria).length > 0) return
-      ; (async () => {
-        setLoadingCatalog(true)
-        try {
-          const data = await getCatalogSkills()
-          const grouped: Record<string, CatalogItem[]> = {}
-          for (const s of data) {
-            const key: string = CATEGORIA_KEY_MAP[s.category] ?? 'otras'
-            if (!grouped[key]) grouped[key] = []
-            grouped[key].push({
-              id: s.id,
-              nombre: s.name,
-              descripcion: '',
-              tipo: s.type === 'tecnica' ? 'Técnica' : 'Blanda',
-              categoria: s.category
-            })
-          }
-          setCatalogoPorCategoria(grouped)
-          setToast({ mensaje: t('skills.toast_catalog_loaded'), tipo: 'success' })
-        } catch (err: unknown) {
-          const message = err instanceof Error ? err.message : t('skills.error_catalog')
-          setToast({ mensaje: message, tipo: 'error' })
-        } finally {
-          setLoadingCatalog(false)
+    ;(async () => {
+      setLoadingCatalog(true)
+      try {
+        const data = await getCatalogSkills()
+        const grouped: Record<string, CatalogItem[]> = {}
+        for (const s of data) {
+          const key: string = CATEGORIA_KEY_MAP[s.category] ?? 'otras'
+          if (!grouped[key]) grouped[key] = []
+          grouped[key].push({
+            id: s.id,
+            nombre: s.name,
+            descripcion: '',
+            tipo: s.type === 'tecnica' ? 'Técnica' : 'Blanda',
+            categoria: s.category
+          })
         }
-      })()
+        setCatalogoPorCategoria(grouped)
+        setToast({ mensaje: t('skills.toast_catalog_loaded'), tipo: 'success' })
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : t('skills.error_catalog')
+        setToast({ mensaje: message, tipo: 'error' })
+      } finally {
+        setLoadingCatalog(false)
+      }
+    })()
   }, [mostrandoPanel, catalogoPorCategoria])
 
-  // Crear
   const handleGuardarNuevo = async (skillId: number, nivel: NivelHabilidad | null) => {
     setSavingNew(true)
     try {
@@ -117,7 +113,6 @@ export default function HabilidadesPage() {
     }
   }
 
-  // Actualizar nivel
   const handleGuardarNivel = async (nuevoNivel: NivelHabilidad) => {
     if (!editando) return
     setSavingEdit(true)
@@ -144,14 +139,12 @@ export default function HabilidadesPage() {
     }
   }
 
-  // Deshabilitar / Re-habilitar — usa updatePortfolioSkill con status
   const handleToggleDisableConfirm = async () => {
     if (!togglingSkill) return
     const isCurrentlyDisabled = togglingSkill.status === 'disabled'
     setTogglingId(togglingSkill.portfolioSkillId)
     try {
       if (isCurrentlyDisabled) {
-        // Re-habilitar — llama al store con el skill_id original
         const created = await addPortfolioSkill(
           togglingSkill.skillId!,
           togglingSkill.nivel ? frontendLevelToApi(togglingSkill.nivel) : undefined
@@ -162,7 +155,6 @@ export default function HabilidadesPage() {
           )
         )
       } else {
-        // Deshabilitar — llama al destroy
         const updated = await disablePortfolioSkill(togglingSkill.portfolioSkillId)
         setSkills((prev) =>
           prev.map((s) =>
@@ -197,30 +189,32 @@ export default function HabilidadesPage() {
   const blandas = skillsFiltered.filter((s) => s.tipo === 'Blanda')
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background dark:bg-slate-900 flex flex-col transition-colors duration-300">
       <div className="flex flex-1 overflow-hidden">
         <Sidebar activeItem="Habilidades" />
-        <main className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+        <main className="flex-1 flex flex-col lg:flex-row overflow-hidden bg-background dark:bg-slate-900 transition-colors duration-300">
           <div className="flex-1 p-4 pl-16 sm:pl-6 md:p-8 overflow-y-auto">
             <header className="mb-4 sm:mb-6">
-              <p className="text-sm sm:text-base text-gray-500 mb-0.5">
+              <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mb-0.5">
                 {t('skills.platform_name')}
               </p>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-textMain">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-textMain dark:text-white">
                 {t('skills.title')}
               </h1>
-              <p className="text-xs sm:text-sm text-gray-500 mt-1">{t('skills.subtitle')}</p>
+              <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
+                {t('skills.subtitle')}
+              </p>
             </header>
 
             {/* Filtros */}
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-5">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-0.5 self-start">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                <div className="flex items-center gap-1 bg-gray-100 dark:bg-slate-800 rounded-lg p-0.5 self-start transition-colors">
                   {(['Todas', 'Técnica', 'Blanda'] as const).map((tipo_f) => (
                     <button
                       key={tipo_f}
                       onClick={() => setFiltroTipo(tipo_f)}
-                      className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${filtroTipo === tipo_f ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                      className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${filtroTipo === tipo_f ? 'bg-white dark:bg-slate-700 text-gray-800 dark:text-white shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'}`}
                     >
                       {tipo_f === 'Todas'
                         ? t('skills.all')
@@ -230,19 +224,19 @@ export default function HabilidadesPage() {
                     </button>
                   ))}
                 </div>
-                <div className="flex items-center gap-2 px-3 py-1.5 border border-gray-300 rounded-lg bg-white hover:border-gray-400 transition-colors w-full sm:w-auto">
-                  <IconSearch className="text-gray-400 flex-shrink-0" />
+                <div className="flex items-center gap-2 px-3 py-1.5 border border-gray-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 hover:border-gray-400 dark:hover:border-slate-600 transition-colors w-full sm:w-auto">
+                  <IconSearch className="text-gray-400 dark:text-gray-500 flex-shrink-0" />
                   <input
                     type="text"
                     value={busqueda}
                     onChange={(e) => setBusqueda(e.target.value)}
                     placeholder={t('skills.search_placeholder')}
-                    className="outline-none text-sm text-gray-700 placeholder:text-gray-400 bg-transparent w-full sm:w-40"
+                    className="outline-none text-sm text-gray-700 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 bg-transparent w-full sm:w-40"
                   />
                   {busqueda && (
                     <button
                       onClick={() => setBusqueda('')}
-                      className="text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0"
+                      className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors flex-shrink-0"
                     >
                       <svg
                         className="w-3.5 h-3.5"
@@ -264,26 +258,26 @@ export default function HabilidadesPage() {
               <button
                 onClick={() => setMostrandoPanel(true)}
                 disabled={mostrandoPanel}
-                className="w-full sm:w-auto px-4 py-2.5 sm:py-2 bg-action hover:bg-action/90 text-white text-sm font-semibold rounded-lg active:scale-95 transition-all whitespace-nowrap disabled:opacity-60"
+                className="w-full sm:w-auto px-4 py-2.5 sm:py-2 bg-action hover:bg-action/90 text-white text-sm font-semibold rounded-lg active:scale-95 transition-all whitespace-nowrap disabled:opacity-60 shadow-md"
               >
                 + {t('skills.new_skill')}
               </button>
             </div>
 
             {/* Habilidades registradas */}
-            <div className="bg-white rounded-xl border border-transparent shadow-md p-5 mb-5">
+            <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 shadow-md p-5 mb-5 transition-colors duration-300">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                  <h2 className="text-sm font-bold text-gray-800">
+                  <h2 className="text-sm font-bold text-gray-800 dark:text-white">
                     {t('skills.registered_skills')}
                   </h2>
                   {!loadingSkills && (
-                    <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full font-medium">
+                    <span className="text-xs text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-slate-900 px-2 py-0.5 rounded-full font-medium">
                       {skills.length}
                     </span>
                   )}
                 </div>
-                <p className="text-xs text-gray-400 hidden sm:block">
+                <p className="text-xs text-gray-400 dark:text-gray-500 hidden sm:block">
                   {t('skills.edit_tip')} · <IconEyeOff className="inline w-3 h-3" /> →{' '}
                   {t('skills.disable_tip')} · <IconEye className="inline w-3 h-3" /> →{' '}
                   {t('skills.enable_tip')}
@@ -292,7 +286,7 @@ export default function HabilidadesPage() {
 
               {loadingSkills ? (
                 <div className="flex items-center justify-center gap-2 py-10 text-sm text-gray-400">
-                  <IconSpinner className="w-5 h-5 text-gray-400" />
+                  <IconSpinner className="w-5 h-5 animate-spin" />
                   {t('skills.loading_skills')}
                 </div>
               ) : (
@@ -300,15 +294,15 @@ export default function HabilidadesPage() {
                   {(filtroTipo === 'Todas' || filtroTipo === 'Técnica') && (
                     <div className="mb-5">
                       <div className="flex items-center gap-2 mb-3">
-                        <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
+                        <p className="text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">
                           {t('skills.technical_skills_title')}
                         </p>
-                        <span className="text-[10px] text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded-full">
+                        <span className="text-[10px] text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-slate-900 px-1.5 py-0.5 rounded-full">
                           {tecnicas.length}
                         </span>
                       </div>
                       {tecnicas.length === 0 ? (
-                        <p className="text-sm text-gray-400 italic">
+                        <p className="text-sm text-gray-400 dark:text-gray-500 italic">
                           {t('skills.no_technical_skills')}
                         </p>
                       ) : (
@@ -329,15 +323,17 @@ export default function HabilidadesPage() {
                   {(filtroTipo === 'Todas' || filtroTipo === 'Blanda') && (
                     <div>
                       <div className="flex items-center gap-2 mb-3">
-                        <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
+                        <p className="text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">
                           {t('skills.soft_skills_title')}
                         </p>
-                        <span className="text-[10px] text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded-full">
+                        <span className="text-[10px] text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-slate-900 px-1.5 py-0.5 rounded-full">
                           {blandas.length}
                         </span>
                       </div>
                       {blandas.length === 0 ? (
-                        <p className="text-sm text-gray-400 italic">{t('skills.no_soft_skills')}</p>
+                        <p className="text-sm text-gray-400 dark:text-gray-500 italic">
+                          {t('skills.no_soft_skills')}
+                        </p>
                       ) : (
                         <div className="flex flex-wrap gap-2">
                           {blandas.map((s) => (

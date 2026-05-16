@@ -231,12 +231,11 @@ function PersonalData() {
 
   // ESTRUCTURA DEL PANEL DERECHO (Basada en tu imagen de Dashboard Admin)
   const RightPanelContent = () => {
-    const { t } = useTranslation()
     return (
       <div className="sticky top-6 space-y-8">
         {/* Calendario */}
         <div>
-          <h3 className="font-bold text-textMain text-sm mb-4 uppercase tracking-wider">
+          <h3 className="font-bold text-textMain dark:text-white text-sm mb-4 uppercase tracking-wider">
             {t('sidebar.calendar', 'Calendario')}
           </h3>
           <Calendar />
@@ -244,16 +243,16 @@ function PersonalData() {
 
         {/* Notificaciones */}
         <div>
-          <h3 className="font-bold text-textMain text-sm mb-4 flex items-center gap-2 uppercase tracking-wider">
+          <h3 className="font-bold text-textMain dark:text-white text-sm mb-4 flex items-center gap-2 uppercase tracking-wider">
             <ShieldCheck size={18} className="text-action" />
             {t('dashboard.notifications.title')}
           </h3>
           <div className="space-y-3">
-            <div className="flex items-start gap-2 text-xs text-gray-600 leading-relaxed">
+            <div className="flex items-start gap-2 text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
               <AlertTriangle size={14} className="text-action mt-0.5 shrink-0" />
               <span>{t('dashboard.notifications.views', { count: 3 })}</span>
             </div>
-            <div className="flex items-start gap-2 text-xs text-gray-600 leading-relaxed">
+            <div className="flex items-start gap-2 text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
               <CheckCircle size={14} className="text-green-500 mt-0.5 shrink-0" />
               <span>{t('dashboard.notifications.last_project', { name: 'App Móvil' })}</span>
             </div>
@@ -262,19 +261,19 @@ function PersonalData() {
 
         {/* Enlaces Rápidos */}
         <div>
-          <h3 className="font-normal text-textMain text-sm mb-4 uppercase tracking-wider">
+          <h3 className="font-normal text-textMain dark:text-white text-sm mb-4 uppercase tracking-wider">
             {t('dashboard.links.title')}
           </h3>
           <div className="space-y-3">
-            <div className="flex items-center gap-2 text-sm text-primary cursor-pointer hover:underline transition-all">
+            <div className="flex items-center gap-2 text-sm text-primary dark:text-blue-400 cursor-pointer hover:underline transition-all">
               <BookOpen size={16} className="text-orange-400" />
               <span className="font-medium">{t('dashboard.links.user_guide')}</span>
             </div>
-            <div className="flex items-center gap-2 text-sm text-primary cursor-pointer hover:underline transition-all">
+            <div className="flex items-center gap-2 text-sm text-primary dark:text-blue-400 cursor-pointer hover:underline transition-all">
               <Settings size={16} className="text-purple-400" />
               <span className="font-medium">{t('dashboard.links.tech_support')}</span>
             </div>
-            <div className="flex items-center gap-2 text-sm text-primary cursor-pointer hover:underline transition-all">
+            <div className="flex items-center gap-2 text-sm text-primary dark:text-blue-400 cursor-pointer hover:underline transition-all">
               <FileText size={16} className="text-blue-300" />
               <span className="font-medium">{t('dashboard.links.university_policies')}</span>
             </div>
@@ -286,17 +285,17 @@ function PersonalData() {
 
   if (loading)
     return (
-      <div className="min-h-screen bg-background flex flex-col font-sans">
+      <div className="min-h-screen bg-background dark:bg-slate-900 flex flex-col font-sans transition-colors duration-300">
         <div className="flex flex-1 overflow-hidden relative">
           <Sidebar activeItem="Datos Personales" />
-          <main className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+          <main className="flex-1 flex flex-col lg:flex-row overflow-hidden bg-background dark:bg-slate-900 transition-colors duration-300">
             <div className="flex-1 p-4 pl-14 sm:pl-6 md:p-8 flex items-center justify-center overflow-y-auto">
-              <div className="flex flex-col items-center gap-3 text-gray-400 font-medium">
+              <div className="flex flex-col items-center gap-3 text-gray-400 dark:text-gray-500 font-medium">
                 <Loader2 className="animate-spin text-primary" size={32} />
                 <span>{t('profile.loading_profile')}</span>
               </div>
             </div>
-            <aside className="w-full lg:w-72 p-6 bg-white border-t lg:border-t-0 lg:border-l border-gray-200 shrink-0 overflow-y-auto">
+            <aside className="w-full lg:w-72 p-6 bg-white dark:bg-slate-900 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-800 shrink-0 overflow-y-auto transition-colors duration-300">
               <RightPanelContent />
             </aside>
           </main>
@@ -305,30 +304,30 @@ function PersonalData() {
     )
 
   return (
-    <div className="min-h-screen bg-background flex flex-col font-sans">
+    <div className="min-h-screen bg-background dark:bg-slate-900 flex flex-col font-sans transition-colors duration-300">
       <div className="flex flex-1 overflow-hidden relative">
         <Sidebar activeItem="Datos Personales" />
 
-        <main className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+        <main className="flex-1 flex flex-col lg:flex-row overflow-hidden bg-background dark:bg-slate-900 transition-colors duration-300">
           {/* SECCIÓN IZQUIERDA: Formulario */}
           <div className="flex-1 p-4 pl-14 sm:pl-6 md:p-8 overflow-y-auto">
             <header className="mb-8">
-              <h1 className="text-xl sm:text-2xl font-bold text-textMain mb-1">
+              <h1 className="text-xl sm:text-2xl font-bold text-textMain dark:text-white mb-1">
                 {t('profile.personal_data')}
               </h1>
-              <p className="text-sm text-gray-400">{t('profile.subtitle')}</p>
+              <p className="text-sm text-gray-400 dark:text-gray-500">{t('profile.subtitle')}</p>
             </header>
 
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 max-w-5xl">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 md:p-8 max-w-5xl transition-colors duration-300">
               <div className="flex flex-col lg:flex-row gap-10">
                 {/* AVATAR */}
                 <div className="flex flex-col items-center gap-4 shrink-0">
                   <div className="relative group">
-                    <div className="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-white shadow-xl bg-gray-50 flex items-center justify-center">
+                    <div className="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-white dark:border-slate-800 shadow-xl bg-gray-50 dark:bg-slate-900 flex items-center justify-center transition-colors">
                       {avatarUrl ? (
                         <img src={avatarUrl} alt="Profile" className="w-full h-full object-cover" />
                       ) : (
-                        <User size={60} className="text-gray-200" />
+                        <User size={60} className="text-gray-200 dark:text-gray-600" />
                       )}
                     </div>
                     <button
@@ -345,7 +344,7 @@ function PersonalData() {
                       className="hidden"
                     />
                   </div>
-                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                  <p className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest transition-colors">
                     {t('profile.avatar_title')}
                   </p>
                 </div>
@@ -360,7 +359,7 @@ function PersonalData() {
                 >
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div className="space-y-1.5">
-                      <label className="text-[11px] font-bold text-gray-500 uppercase flex items-center gap-2 italic">
+                      <label className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase flex items-center gap-2 italic">
                         <User size={14} /> {t('profile.first_name')}
                       </label>
                       <input
@@ -369,11 +368,11 @@ function PersonalData() {
                         onChange={(e) =>
                           setNombre(e.target.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, ''))
                         }
-                        className="w-full p-3 rounded-xl border border-gray-200 bg-gray-50/30 outline-none focus:border-primary transition-all text-sm"
+                        className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/30 dark:bg-slate-900 dark:text-white outline-none focus:border-primary transition-all text-sm"
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-[11px] font-bold text-gray-500 uppercase flex items-center gap-2 italic">
+                      <label className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase flex items-center gap-2 italic">
                         <User size={14} /> {t('profile.last_name')}
                       </label>
                       <input
@@ -382,90 +381,91 @@ function PersonalData() {
                         onChange={(e) =>
                           setApellido(e.target.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, ''))
                         }
-                        className="w-full p-3 rounded-xl border border-gray-200 bg-gray-50/30 outline-none focus:border-primary transition-all text-sm"
+                        className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/30 dark:bg-slate-900 dark:text-white outline-none focus:border-primary transition-all text-sm"
                       />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div className="space-y-1.5">
-                      <label className="text-[11px] font-bold text-gray-500 uppercase flex items-center gap-2 italic">
+                      <label className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase flex items-center gap-2 italic">
                         <Briefcase size={14} /> {t('profile.professional_title')}
                       </label>
                       <input
                         type="text"
                         value={tituloProfesional}
                         onChange={(e) => setTituloProfesional(e.target.value)}
-                        className="w-full p-3 rounded-xl border border-gray-200 bg-gray-50/30 outline-none focus:border-primary transition-all text-sm"
+                        className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/30 dark:bg-slate-900 dark:text-white outline-none focus:border-primary transition-all text-sm"
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-[11px] font-bold text-gray-400 uppercase flex items-center gap-2 italic">
+                      <label className="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase flex items-center gap-2 italic">
                         <Mail size={14} /> {t('profile.institutional_email')}
                       </label>
                       <input
                         type="email"
                         value={correoElectronico}
                         disabled
-                        className="w-full p-3 rounded-xl border border-gray-100 bg-gray-100 text-gray-400 cursor-not-allowed italic text-sm"
+                        className="w-full p-3 rounded-xl border border-gray-100 dark:border-gray-800 bg-gray-100 dark:bg-slate-700 text-gray-400 dark:text-gray-500 cursor-not-allowed italic text-sm transition-colors"
                       />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div className="space-y-1.5">
-                      <label className="text-[11px] font-bold text-gray-500 uppercase flex items-center gap-2 italic">
+                      <label className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase flex items-center gap-2 italic">
                         <Phone size={14} /> {t('profile.phone')}
                       </label>
                       <input
                         type="tel"
                         value={telefono}
                         onChange={(e) => setTelefono(e.target.value.replace(/[^0-9]/g, ''))}
-                        className="w-full p-3 rounded-xl border border-gray-200 bg-gray-50/30 outline-none focus:border-primary transition-all text-sm tabular-nums"
+                        className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/30 dark:bg-slate-900 dark:text-white outline-none focus:border-primary transition-all text-sm tabular-nums"
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-[11px] font-bold text-gray-500 uppercase flex items-center gap-2 italic">
+                      <label className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase flex items-center gap-2 italic">
                         <MapPin size={14} /> {t('profile.location')}
                       </label>
                       <input
                         type="text"
                         value={ubicacion}
                         onChange={(e) => setUbicacion(e.target.value)}
-                        className="w-full p-3 rounded-xl border border-gray-200 bg-gray-50/30 outline-none focus:border-primary transition-all text-sm"
+                        className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/30 dark:bg-slate-900 dark:text-white outline-none focus:border-primary transition-all text-sm"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-[11px] font-bold text-gray-500 uppercase">
+                    <label className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase">
                       {t('profile.biography')}
                     </label>
                     <textarea
                       value={biografia}
                       onChange={(e) => setBiografia(e.target.value)}
                       rows={4}
-                      className="w-full p-4 rounded-xl border border-gray-200 bg-gray-50/30 outline-none focus:border-primary transition-all resize-none text-sm leading-relaxed"
+                      className="w-full p-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/30 dark:bg-slate-900 dark:text-white outline-none focus:border-primary transition-all resize-none text-sm leading-relaxed"
                       placeholder={t('profile.biography_placeholder')}
                     />
                   </div>
 
-                  <div className="flex flex-col sm:flex-row justify-end gap-3 pt-6 border-t border-gray-50">
+                  <div className="flex flex-col sm:flex-row justify-end gap-3 pt-6 border-t border-gray-50 dark:border-gray-700 transition-colors">
                     <button
                       type="button"
                       onClick={handleCancel}
                       disabled={isSaving}
-                      className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl border border-gray-200 font-bold text-sm text-gray-600 hover:bg-gray-50 transition-all shadow-sm"
+                      className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 font-bold text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition-all shadow-sm"
                     >
                       <X size={16} /> {t('profile.cancel')}
                     </button>
                     <button
                       type="submit"
                       disabled={isSaving || !hasChanges}
-                      className={`flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm text-white shadow-lg transition-all ${isSaving || !hasChanges
-                          ? 'bg-gray-300 cursor-not-allowed'
+                      className={`flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm text-white shadow-lg transition-all ${
+                        isSaving || !hasChanges
+                          ? 'bg-gray-300 dark:bg-slate-700 cursor-not-allowed'
                           : 'bg-action hover:brightness-110 shadow-red-100'
-                        }`}
+                      }`}
                     >
                       <Save size={16} />{' '}
                       {isSaving ? t('profile.saving') : t('profile.save_changes')}
@@ -477,7 +477,7 @@ function PersonalData() {
           </div>
 
           {/* ASIDE DERECHO (ESTILO DASHBOARD ADMIN) */}
-          <aside className="w-full lg:w-72 p-6 bg-white border-t lg:border-t-0 lg:border-l border-gray-200 shrink-0 overflow-y-auto">
+          <aside className="w-full lg:w-72 p-6 bg-white dark:bg-slate-900 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-800 shrink-0 overflow-y-auto transition-colors duration-300">
             <RightPanelContent />
           </aside>
         </main>
@@ -490,16 +490,16 @@ function PersonalData() {
         title={t('profile.confirm_update')}
       >
         <div className="space-y-6 max-w-sm text-center p-2">
-          <div className="w-16 h-16 bg-red-50 text-action rounded-full flex items-center justify-center mx-auto">
+          <div className="w-16 h-16 bg-red-50 dark:bg-red-900/20 text-action rounded-full flex items-center justify-center mx-auto">
             <Save size={30} />
           </div>
-          <p className="text-sm text-gray-500 leading-relaxed font-medium">
+          <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed font-medium">
             {t('profile.confirm_desc')}
           </p>
           <div className="flex gap-3">
             <button
               onClick={() => setShowConfirmModal(false)}
-              className="flex-1 py-3 text-sm font-bold border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
+              className="flex-1 py-3 text-sm font-bold border border-gray-200 dark:border-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors"
             >
               {t('common.back')}
             </button>

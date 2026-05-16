@@ -9,7 +9,6 @@ import {
   GraduationCap,
   Award,
   Code2,
-  ChevronRight,
   Loader2,
   AlertCircle,
   Calendar,
