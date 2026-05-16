@@ -162,8 +162,11 @@ export const getSkillsCatalog = async (): Promise<Skill[]> => {
   return skills.sort((a, b) => a.name.localeCompare(b.name))
 }
 
-export const suggestCategory = async (projectId: number, data: { name: string; justification: string }): Promise<void> => {
-  const token = getToken();
+export const suggestCategory = async (
+  projectId: number,
+  data: { name: string; justification: string }
+): Promise<void> => {
+  const token = getToken()
   const response = await fetch(`${API_BASE_URL}/projects/${projectId}/category-suggestions`, {
     method: 'POST',
     headers: {
@@ -172,10 +175,10 @@ export const suggestCategory = async (projectId: number, data: { name: string; j
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(data)
-  });
+  })
 
   if (!response.ok) {
-    const errorData = await response.json().catch(() => null);
-    throw new Error(errorData?.message || 'Error al enviar la sugerencia de categoría');
+    const errorData = await response.json().catch(() => null)
+    throw new Error(errorData?.message || 'Error al enviar la sugerencia de categoría')
   }
 }

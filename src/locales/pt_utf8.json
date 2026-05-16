@@ -1,0 +1,198 @@
+﻿{
+  "navbar": {
+    "search": "BUSCAR PROFISSIONAIS",
+    "contact": "CONTATO",
+    "home": "INÍCIO",
+    "login": "Entrar",
+    "register": "Registrar",
+    "profile": "Meu Perfil",
+    "logout": "Sair",
+    "select_language": "Selecionar Idioma"
+  },
+  "hero": {
+    "badge": "Talento Universitário da UMSS",
+    "title_start": "Encontre o ",
+    "title_accent": "especialista ideal",
+    "title_end": " para o seu próximo projeto",
+    "description": "A plataforma oficial para conectar empresas e recrutadores com os melhores estudantes e graduados da Universidade Mayor de San Simón.",
+    "search_placeholder": "Que perfil você procura? (Ex: Desenvolvedor React, Designer UI)",
+    "search_button": "Buscar Agora",
+    "stats": {
+      "users": "Usuários registrados",
+      "projects": "Projetos publicados",
+      "views": "Visitas totais"
+    },
+    "filter_area": "Área: Desenvolvimento de Software",
+    "filter_skills": "Habilidades: React, Node.js",
+    "filter_order": "Ordenar: Relevância"
+  },
+  "features": {
+    "title": "Por que escolher a Nexum?",
+    "subtitle": "Conectamos o talento acadêmico com o mundo do trabalho de forma eficiente e transparente."
+  },
+  "home": {
+    "recent_portfolios": "Portfólios Recentes",
+    "recent_description": "Conheça o trabalho dos profissionais de destaque da nossa universidade.",
+    "view_all": "Ver todos os portfólios",
+    "search_results": "Resultados da busca",
+    "search_description": "Explore perfis públicos e encontre especialistas."
+  },
+  "common": {
+    "loading": "Carregando...",
+    "error": "Algo deu errado",
+    "back": "Voltar",
+    "view_more": "Ver mais"
+  },
+  "footer": {
+    "description": "Plataforma institucional de portfólios digitais para profissionais.",
+    "navigation": "Navegação",
+    "home": "Início",
+    "search": "Buscar Profissionais",
+    "login": "Entrar",
+    "register": "Registrar",
+    "resources": "Recursos",
+    "contact": "Contato",
+    "copyright": "© 2025 NEXUM · Universidade Mayor de San Simón · Faculdade de Ciências e Tecnologia",
+    "developed_by": "CODI · Departamento de Informática e Sistemas",
+    "faculty": "Faculdade de Ciências e Tecnologia",
+    "location": "Cochabamba, Bolívia",
+    "resources_list": {
+      "guide": "Guia de uso",
+      "pdf": "Formato PDF",
+      "faq": "Perguntas frequentes",
+      "rules": "Normas"
+    }
+  },
+  "search": {
+    "title": "Resultados da busca",
+    "description": "Explore perfis públicos e encontre especialistas.",
+    "filters": "Filtros",
+    "area_label": "Área / Profissão",
+    "area_placeholder": "Ex: Backend",
+    "skills_label": "Habilidades",
+    "skills_placeholder": "Enter para adicionar",
+    "no_results": "Sem resultados",
+    "no_results_desc": "Não encontramos perfis com esses critérios.",
+    "searching": "Buscando...",
+    "explore_title": "Explorar Portfólios",
+    "explore_desc": "Encontre e conecte-se com os melhores talentos da comunidade.",
+    "loading": "Buscando profissionais...",
+    "showing_results": "Mostrando {{count}} de {{total}} resultados",
+    "view_all": "Ver todos os portfólios",
+    "error_results": "Não foi possível carregar los resultados. Tente novamente mais tarde."
+  },
+  "features_list": {
+    "title": "Funcionalidades do Sistema",
+    "subtitle": "Tudo o que você precisa para construir e gerenciar seu portfólio profissional.",
+    "register": {
+      "title": "Registro de usuário",
+      "desc": "Profissionais TIS podem se registrar e acessar com credenciais associadas à universidade."
+    },
+    "roles": {
+      "title": "Controle de papéis",
+      "desc": "Sistema de permissões por papéis: alunos, professores, coordenadores e administradores."
+    },
+    "projects": {
+      "title": "Gestão de projetos",
+      "desc": "Gerencie projetos acadêmicos e de trabalho, mantenha suas experiências atualizadas."
+    },
+    "pdf": {
+      "title": "Exportação PDF",
+      "desc": "Gere e exporte seu portfólio como um arquivo PDF profissional pronto para compartilhar."
+    },
+    "i18n": {
+      "title": "Multi-idioma",
+      "desc": "Suporte completo em espanhol e inglês para expandir oportunidades internacionalmente."
+    },
+    "admin": {
+      "title": "Painel Admin",
+      "desc": "Ferramentas para gestão de usuários, estatísticas e resolução de problemas."
+    }
+  },
+  "recent": {
+    "title": "Portfólios recentes",
+    "subtitle": "Conheça o trabalho dos nossos profissionais.",
+    "view_portfolio": "Ver portfólio",
+    "projects": "Projetos",
+    "views": "Visitas",
+    "university": "Universidade Mayor de San Simón"
+  },
+  "cta": {
+    "title": "Você é um profissional de software?",
+    "subtitle": "Crie seu portfólio institucional hoje mesmo e se destaque na sua área com uma presença digital profissional.",
+    "start": "Começar agora"
+  },
+  "university_strip": {
+    "backed_by": "Apoiado pela Universidade Mayor de San Simón",
+    "dept": "Depto. Informática e Sistemas"
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "users_mgmt": "Gestão de Usuários",
+    "categories": "Categorias",
+    "audit": "Auditoria",
+    "backups": "Cópias de Segurança",
+    "system_config": "Configuração do Sistema",
+    "projects": "Projetos",
+    "skills": "Habilidades",
+    "experience": "Experiência",
+    "certifications": "Certificações",
+    "profile": "Perfil",
+    "personal_data": "Dados Pessoais",
+    "links_privacy": "Links e Privacidade",
+    "appearance": "Aparência",
+    "notifications": "Notificações"
+  },
+  "dashboard": {
+    "title": "Dashboard Profissional",
+    "welcome": "Bem-vindo, aqui está o resumo do seu portfólio",
+    "stats": {
+      "views": "Visitas ao Perfil",
+      "active_projects": "Projetos Ativos",
+      "skills": "Habilidades Registradas",
+      "total_views": "Total de visitas",
+      "last_update": "Última atualização: {{date}}",
+      "no_projects": "Sem projetos ainda",
+      "experience_count": "{{count}} experiência profissional",
+      "experience_count_plural": "{{count}} experiências profissionais",
+      "no_experience": "Sem experiência registrada"
+    },
+    "portfolio": {
+      "title": "Meu Portfólio",
+      "desc": "Gerencie seus projetos, habilidades e experiência profissional.",
+      "access_granted": "Acesso permitido às suas rotas.",
+      "view_online": "Ver Online",
+      "export_pdf": "Exportar PDF"
+    },
+    "settings": {
+      "title": "Configuração de Perfil",
+      "desc": "Atualize suas informações pessoais, foto e dados de contato.",
+      "active_status": "Perfil ativo e visível.",
+      "edit_button": "Editar perfil"
+    },
+    "sections": {
+      "title": "Suas seções disponíveis",
+      "available": "Você pode acessar:",
+      "restricted": "Acesso restrito:"
+    },
+    "notifications": {
+      "title": "Notificações",
+      "views": "Seu perfil recebeu {{count}} visita",
+      "views_plural": "Seu perfil recebeu {{count}} visitas",
+      "last_project": "Último projeto atualizado: \"{{name}}\"",
+      "skills_active": "Você tem {{count}} habilidade ativa no seu perfil",
+      "skills_active_plural": "Você tem {{count}} habilidades ativas no seu perfil"
+    },
+    "links": {
+      "title": "Links rápidos",
+      "user_guide": "Guia do Usuário",
+      "tech_support": "Suporte Técnico",
+      "university_policies": "Políticas UMSS"
+    },
+    "dates": {
+      "today": "Hoje",
+      "yesterday": "Ontem",
+      "days_ago": "Há {{count}} dias"
+    }
+  }
+}

@@ -1,45 +1,54 @@
-import { useNavigate } from "react-router-dom";
-import { UserCog, LogOut, Mail, Sun, Moon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom'
+import { UserCog, LogOut, Mail, Sun, Moon } from 'lucide-react'
+import { useEffect, useState } from 'react'
+
 interface UserMenuModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  userName: string;
-  userProfession: string;
-  userPhoto: string;
-  userEmail: string;
+  isOpen: boolean
+  onClose: () => void
+  userName: string
+  userProfession: string
+  userPhoto: string
+  userEmail: string
 }
 
-const UserMenuModal = ({ isOpen, onClose, userName, userProfession, userPhoto, userEmail }: UserMenuModalProps) => {
-
-  if (!isOpen) return null;
-  const navigate = useNavigate();
+const UserMenuModal = ({
+  isOpen,
+  onClose,
+  userName,
+  userProfession,
+  userPhoto,
+  userEmail
+}: UserMenuModalProps) => {
+  const navigate = useNavigate()
   const [isDarkMode, setIsDarkMode] = useState(() => {
-    return localStorage.getItem("theme") === "dark";
-  });
+    return localStorage.getItem('theme') === 'dark'
+  })
+
   // Aplicar tema
   useEffect(() => {
     if (isDarkMode) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
+      document.documentElement.classList.add('dark')
+      localStorage.setItem('theme', 'dark')
     } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
+      document.documentElement.classList.remove('dark')
+      localStorage.setItem('theme', 'light')
     }
-  }, [isDarkMode]);
+  }, [isDarkMode])
+
+  if (!isOpen) return null
 
   const handleGoToProfile = () => {
-    onClose();
-    navigate("/profile");
-  };
+    onClose()
+    navigate('/profile')
+  }
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    sessionStorage.removeItem("token");
-    sessionStorage.removeItem("user");
-    navigate("/login");
-  };
+    localStorage.removeItem('token')
+    localStorage.removeItem('user')
+    sessionStorage.removeItem('token')
+    sessionStorage.removeItem('user')
+    navigate('/login')
+  }
 
   return (
     <div className="absolute top-full right-0 pt-3 z-50 animate-in fade-in zoom-in duration-200">
@@ -48,11 +57,7 @@ const UserMenuModal = ({ isOpen, onClose, userName, userProfession, userPhoto, u
         <div className="p-5 border-b border-gray-100 dark:border-gray-800 flex flex-col items-center gap-3">
           <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-[#003087] dark:border-blue-500 flex items-center justify-center bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500">
             {userPhoto ? (
-              <img
-                src={userPhoto}
-                alt="Avatar"
-                className="w-full h-full object-cover"
-              />
+              <img src={userPhoto} alt="Avatar" className="w-full h-full object-cover" />
             ) : (
               <UserCog size={32} />
             )}
@@ -93,12 +98,13 @@ const UserMenuModal = ({ isOpen, onClose, userName, userProfession, userPhoto, u
             {/* Interruptor */}
             <div
               className={`w-11 h-6 flex items-center rounded-full p-1 transition-colors ${
-                isDarkMode ? "bg-blue-600" : "bg-gray-300 dark:bg-gray-700"
+                isDarkMode ? 'bg-blue-600' : 'bg-gray-300 dark:bg-gray-700'
               }`}
             >
               <div
-                className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${isDarkMode ? "translate-x-5" : ""
-                  }`}
+                className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
+                  isDarkMode ? 'translate-x-5' : ''
+                }`}
               />
             </div>
           </button>
@@ -113,7 +119,7 @@ const UserMenuModal = ({ isOpen, onClose, userName, userProfession, userPhoto, u
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default UserMenuModal;
+export default UserMenuModal

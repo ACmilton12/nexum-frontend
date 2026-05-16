@@ -1,151 +1,181 @@
-import React, { useState, useRef, useEffect } from "react";
-import { X, ChevronDown, Check, Loader2, Send } from "lucide-react";
-import { getCategories, getSkillsCatalog, type ProjectCategory, type Skill, type Project } from "../../../services/project.service";
+import React, { useState, useRef, useEffect } from 'react'
+import { X, ChevronDown, Check, Loader2, Send } from 'lucide-react'
+import {
+  getCategories,
+  getSkillsCatalog,
+  type ProjectCategory,
+  type Skill,
+  type Project
+} from '../../../services/project.service'
 
 interface Step1FormProps {
-  projectToEdit?: Project | null;
-  onSubmit: (data: { title: string; description: string; projectUrl: string; categoryId: number | ""; selectedSkills: Skill[] }) => Promise<void>;
-  onCancel: () => void;
-  onDelete?: (id: number) => void;
-  isSaving: boolean;
-  onSuggestCategory?: (name: string, justification: string) => void;
+  projectToEdit?: Project | null
+  onSubmit: (data: {
+    title: string
+    description: string
+    projectUrl: string
+    categoryId: number | ''
+    selectedSkills: Skill[]
+  }) => Promise<void>
+  onCancel: () => void
+  onDelete?: (id: number) => void
+  isSaving: boolean
+  onSuggestCategory?: (name: string, justification: string) => void
 }
 
-const Step1Form = ({ projectToEdit, onSubmit, onCancel, onDelete, isSaving, onSuggestCategory }: Step1FormProps) => {
-  const [availableSkills, setAvailableSkills] = useState<Skill[]>([]);
-  const [categories, setCategories] = useState<ProjectCategory[]>([]);
-  const [selectedSkills, setSelectedSkills] = useState<Skill[]>([]);
-  const [isTechDropdownOpen, setIsTechDropdownOpen] = useState(false);
-  const [title, setTitle] = useState("");
-  const [categoryId, setCategoryId] = useState<number | string>("");
-  const [description, setDescription] = useState("");
-  const [projectUrl, setProjectUrl] = useState("");
-  const [projectUrlError, setProjectUrlError] = useState("");
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  
+const Step1Form = ({
+  projectToEdit,
+  onSubmit,
+  onCancel,
+  onDelete,
+  isSaving,
+  onSuggestCategory
+}: Step1FormProps) => {
+  const [availableSkills, setAvailableSkills] = useState<Skill[]>([])
+  const [categories, setCategories] = useState<ProjectCategory[]>([])
+  const [selectedSkills, setSelectedSkills] = useState<Skill[]>([])
+  const [isTechDropdownOpen, setIsTechDropdownOpen] = useState(false)
+  const [title, setTitle] = useState('')
+  const [categoryId, setCategoryId] = useState<number | string>('')
+  const [description, setDescription] = useState('')
+  const [projectUrl, setProjectUrl] = useState('')
+  const [projectUrlError, setProjectUrlError] = useState('')
+  const dropdownRef = useRef<HTMLDivElement>(null)
+
   // States for Suggest Category Modal
-  const [showSuggestModal, setShowSuggestModal] = useState(false);
-  const [suggestedCategoryName, setSuggestedCategoryName] = useState("");
-  const [suggestedCategoryJustification, setSuggestedCategoryJustification] = useState("");
-  const [isSubmittingSuggestion, setIsSubmittingSuggestion] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [showSuggestModal, setShowSuggestModal] = useState(false)
+  const [suggestedCategoryName, setSuggestedCategoryName] = useState('')
+  const [suggestedCategoryJustification, setSuggestedCategoryJustification] = useState('')
+  const [isSubmittingSuggestion, setIsSubmittingSuggestion] = useState(false)
+  const [successMessage, setSuccessMessage] = useState('')
 
   useEffect(() => {
-    getCategories().then(setCategories).catch(console.error);
-    getSkillsCatalog().then(setAvailableSkills).catch(console.error);
+    getCategories().then(setCategories).catch(console.error)
+    getSkillsCatalog().then(setAvailableSkills).catch(console.error)
 
     if (projectToEdit) {
-      setTitle(projectToEdit.title);
-      setCategoryId(projectToEdit.category?.id || "");
-      setDescription(projectToEdit.description || "");
-      setProjectUrl(projectToEdit.project_url || "");
-      setSelectedSkills((projectToEdit.skills as unknown as Skill[]) || []);
+      setTitle(projectToEdit.title)
+      setCategoryId(projectToEdit.category?.id || '')
+      setDescription(projectToEdit.description || '')
+      setProjectUrl(projectToEdit.project_url || '')
+      setSelectedSkills((projectToEdit.skills as unknown as Skill[]) || [])
     } else {
-      setTitle("");
-      setCategoryId("");
-      setDescription("");
-      setProjectUrl("");
-      setSelectedSkills([]);
+      setTitle('')
+      setCategoryId('')
+      setDescription('')
+      setProjectUrl('')
+      setSelectedSkills([])
     }
-  }, [projectToEdit]);
+  }, [projectToEdit])
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node))
-        setIsTechDropdownOpen(false);
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+        setIsTechDropdownOpen(false)
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   const toggleSkill = (skill: Skill) => {
-    if (selectedSkills.find(s => s.id === skill.id)) {
-      setSelectedSkills(selectedSkills.filter(s => s.id !== skill.id));
+    if (selectedSkills.find((s) => s.id === skill.id)) {
+      setSelectedSkills(selectedSkills.filter((s) => s.id !== skill.id))
     } else {
-      setSelectedSkills([...selectedSkills, skill]);
+      setSelectedSkills([...selectedSkills, skill])
     }
-  };
+  }
 
   const removeSkill = (e: React.MouseEvent, skillId: number) => {
-    e.stopPropagation();
-    setSelectedSkills(selectedSkills.filter(s => s.id !== skillId));
-  };
+    e.stopPropagation()
+    setSelectedSkills(selectedSkills.filter((s) => s.id !== skillId))
+  }
 
   const isValidGithubUrl = (url: string) => {
-    if (!url.trim()) return true;
-    return /^https:\/\/github\.com\/[a-zA-Z0-9_.-]+(\/.+)?$/.test(url.trim());
-  };
+    if (!url.trim()) return true
+    return /^https:\/\/github\.com\/[a-zA-Z0-9_.-]+(\/.+)?$/.test(url.trim())
+  }
 
   const handleProjectUrlBlur = () => {
     if (projectUrl && !isValidGithubUrl(projectUrl)) {
-      setProjectUrlError("Ingresa un enlace valido de GitHub (ej. https://github.com/usuario/repo)");
+      setProjectUrlError('Ingresa un enlace valido de GitHub (ej. https://github.com/usuario/repo)')
     } else {
-      setProjectUrlError("");
+      setProjectUrlError('')
     }
-  };
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     if (!title.trim()) {
-      alert("El título del proyecto es obligatorio.");
-      return;
+      alert('El título del proyecto es obligatorio.')
+      return
     }
-    if (categoryId === "otros") {
-      alert("Por favor selecciona una categoría válida antes de continuar. La categoría sugerida está en revisión.");
-      return;
+    if (categoryId === 'otros') {
+      alert(
+        'Por favor selecciona una categoría válida antes de continuar. La categoría sugerida está en revisión.'
+      )
+      return
     }
-    await onSubmit({ title, description, projectUrl, categoryId: categoryId as number | "", selectedSkills });
-  };
+    await onSubmit({
+      title,
+      description,
+      projectUrl,
+      categoryId: categoryId as number | '',
+      selectedSkills
+    })
+  }
 
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const val = e.target.value;
-    if (val === "otros") {
-      setCategoryId("otros");
-      setShowSuggestModal(true);
+    const val = e.target.value
+    if (val === 'otros') {
+      setCategoryId('otros')
+      setShowSuggestModal(true)
     } else {
-      setCategoryId(val === "" ? "" : Number(val));
+      setCategoryId(val === '' ? '' : Number(val))
     }
-  };
+  }
 
   const submitCategorySuggestion = async () => {
     if (!suggestedCategoryName.trim()) {
-      alert("El nombre de la categoría es obligatorio.");
-      return;
+      alert('El nombre de la categoría es obligatorio.')
+      return
     }
     if (!suggestedCategoryJustification.trim()) {
-      alert("La justificación es obligatoria.");
-      return;
+      alert('La justificación es obligatoria.')
+      return
     }
-    
-    setIsSubmittingSuggestion(true);
+
+    setIsSubmittingSuggestion(true)
     try {
       if (onSuggestCategory) {
-        onSuggestCategory(suggestedCategoryName, suggestedCategoryJustification);
+        onSuggestCategory(suggestedCategoryName, suggestedCategoryJustification)
       }
-      
-      setSuccessMessage(`Sugerencia guardada: "${suggestedCategoryName}". Se enviará al completar el proyecto.`);
-      setShowSuggestModal(false);
-      setCategoryId(""); // Reset category so they can save the project
-      setSuggestedCategoryName("");
-      setSuggestedCategoryJustification("");
-      
+
+      setSuccessMessage(
+        `Sugerencia guardada: "${suggestedCategoryName}". Se enviará al completar el proyecto.`
+      )
+      setShowSuggestModal(false)
+      setCategoryId('') // Reset category so they can save the project
+      setSuggestedCategoryName('')
+      setSuggestedCategoryJustification('')
+
       // Ocultar el mensaje después de 5 segundos
-      setTimeout(() => setSuccessMessage(""), 5000);
-    } catch (error) {
-      alert("Error al enviar la sugerencia");
+      setTimeout(() => setSuccessMessage(''), 5000)
+    } catch {
+      alert('Error al enviar la sugerencia')
     } finally {
-      setIsSubmittingSuggestion(false);
+      setIsSubmittingSuggestion(false)
     }
-  };
+  }
 
   return (
     <div className="flex flex-col gap-5 w-full max-w-[520px]">
       <div className="flex flex-col sm:flex-row justify-between items-start gap-3 sm:gap-4">
         <p className="text-[14px] text-[#5b6472] dark:text-gray-400 leading-relaxed">
-          Completa la información principal para agregar un nuevo proyecto a tu portafolio profesional.
+          Completa la información principal para agregar un nuevo proyecto a tu portafolio
+          profesional.
         </p>
-        <span className="bg-[#eef3f8] dark:bg-slate-800 text-[#003087] dark:text-blue-400 px-3 py-1.5 rounded-md text-[13px] font-bold flex-shrink-0 self-start sm:self-auto">
-          {projectToEdit ? "Editar" : "Crear"}
+        <span className="bg-[#eef3f8] dark:bg-slate-800 text-[#003087] dark:text-blue-400 px-3 py-1.5 rounded-md text-[13px] font-bold flex-shrink-0 self-start sm:self-auto transition-colors">
+          {projectToEdit ? 'Editar' : 'Crear'}
         </span>
       </div>
 
@@ -158,7 +188,9 @@ const Step1Form = ({ projectToEdit, onSubmit, onCancel, onDelete, isSaving, onSu
       <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
           <div className="flex flex-col gap-1.5">
-            <label className="text-[13px] font-bold text-[#1a1a2e] dark:text-gray-300">Título del proyecto</label>
+            <label className="text-[13px] font-bold text-[#1a1a2e] dark:text-gray-300 transition-colors">
+              Título del proyecto
+            </label>
             <input
               type="text"
               value={title}
@@ -169,13 +201,15 @@ const Step1Form = ({ projectToEdit, onSubmit, onCancel, onDelete, isSaving, onSu
             />
           </div>
           <div className="flex flex-col gap-1.5">
-            <label className="text-[13px] font-bold text-[#1a1a2e] dark:text-gray-300">Categoría</label>
+            <label className="text-[13px] font-bold text-[#1a1a2e] dark:text-gray-300 transition-colors">
+              Categoría
+            </label>
             <select
               value={categoryId}
               onChange={handleCategoryChange}
               className="w-full h-10 px-3 text-sm bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0030871a] focus:border-[#003087] transition-all cursor-pointer text-[#1a1a2e] dark:text-white"
             >
-              <option value="" disabled>
+              <option value="" disabled className="dark:bg-slate-800">
                 Selecciona una categoría
               </option>
               {categories.map((c) => (
@@ -183,16 +217,20 @@ const Step1Form = ({ projectToEdit, onSubmit, onCancel, onDelete, isSaving, onSu
                   {c.name}
                 </option>
               ))}
-              <option value="otros" className="dark:bg-slate-800">Otros</option>
+              <option value="otros" className="dark:bg-slate-800">
+                Otros
+              </option>
             </select>
-            <p className="text-[11px] text-[#5b6472] dark:text-gray-500 mt-0.5 leading-relaxed">
+            <p className="text-[11px] text-[#5b6472] dark:text-gray-500 mt-0.5 leading-relaxed transition-colors">
               Selecciona una categoría para clasificar y facilitar la búsqueda del proyecto.
             </p>
           </div>
         </div>
 
         <div className="flex flex-col gap-1.5 -mt-2">
-          <label className="text-[13px] font-bold text-[#1a1a2e] dark:text-gray-300">Descripción</label>
+          <label className="text-[13px] font-bold text-[#1a1a2e] dark:text-gray-300 transition-colors">
+            Descripción
+          </label>
           <textarea
             rows={4}
             value={description}
@@ -203,17 +241,21 @@ const Step1Form = ({ projectToEdit, onSubmit, onCancel, onDelete, isSaving, onSu
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <label className="text-[13px] font-bold text-[#1a1a2e] dark:text-gray-300">Enlace del proyecto</label>
+          <label className="text-[13px] font-bold text-[#1a1a2e] dark:text-gray-300 transition-colors">
+            Enlace del proyecto
+          </label>
           <input
             type="text"
             value={projectUrl}
             onChange={(e) => {
-              setProjectUrl(e.target.value);
-              if (projectUrlError) setProjectUrlError("");
+              setProjectUrl(e.target.value)
+              if (projectUrlError) setProjectUrlError('')
             }}
             onBlur={handleProjectUrlBlur}
             className={`w-full h-10 px-3 text-sm bg-white dark:bg-slate-800 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0030871a] transition-all text-[#1a1a2e] dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 ${
-              projectUrlError ? "border-red-400 focus:border-red-400 focus:ring-red-100" : "border-gray-200 dark:border-gray-700 focus:border-[#003087]"
+              projectUrlError
+                ? 'border-red-400 focus:border-red-400 focus:ring-red-100'
+                : 'border-gray-200 dark:border-gray-700 focus:border-[#003087]'
             }`}
             placeholder="https://github.com/usuario/repositorio"
           />
@@ -225,54 +267,84 @@ const Step1Form = ({ projectToEdit, onSubmit, onCancel, onDelete, isSaving, onSu
         </div>
 
         <div className="flex flex-col gap-1.5 mt-1" ref={dropdownRef}>
-          <label className="text-[13px] font-bold text-[#1a1a2e] dark:text-gray-300">Tecnologías</label>
+          <label className="text-[13px] font-bold text-[#1a1a2e] dark:text-gray-300 transition-colors">
+            Tecnologías
+          </label>
           <div className="relative">
             <div
               className={`min-h-10 w-full px-3 py-2 text-sm bg-white dark:bg-slate-800 border rounded-lg transition-all cursor-pointer flex items-center justify-between gap-2 ${
-                isTechDropdownOpen ? "ring-2 ring-[#0030871a] border-[#003087]" : "border-gray-200 dark:border-gray-700"
+                isTechDropdownOpen
+                  ? 'ring-2 ring-[#0030871a] border-[#003087]'
+                  : 'border-gray-200 dark:border-gray-700'
               }`}
               onClick={() => setIsTechDropdownOpen(!isTechDropdownOpen)}
             >
               <div className="flex flex-wrap gap-1.5 flex-1">
                 {selectedSkills.length === 0 ? (
-                  <span className="text-[#5b6472] dark:text-gray-600 select-none">Ej. React, Python...</span>
+                  <span className="text-[#5b6472] dark:text-gray-600 select-none">
+                    Ej. React, Python...
+                  </span>
                 ) : (
                   selectedSkills.map((skill) => (
-                    <span key={skill.id} className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#0030871a] dark:bg-blue-900/30 text-[#003087] dark:text-blue-300 text-[11px] font-semibold">
+                    <span
+                      key={skill.id}
+                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#0030871a] dark:bg-blue-900/30 text-[#003087] dark:text-blue-300 text-[11px] font-semibold transition-colors"
+                    >
                       {skill.name}
-                      <span className="hover:bg-[#00308733] rounded-full p-0.5 transition-colors cursor-pointer" onClick={(e) => removeSkill(e, skill.id)}>
+                      <span
+                        className="hover:bg-[#00308733] rounded-full p-0.5 transition-colors cursor-pointer"
+                        onClick={(e) => removeSkill(e, skill.id)}
+                      >
                         <X size={12} />
                       </span>
                     </span>
                   ))
                 )}
               </div>
-              <ChevronDown size={16} className={`text-[#5b6472] dark:text-gray-500 transition-transform flex-shrink-0 ${isTechDropdownOpen ? "rotate-180" : ""}`} />
+              <ChevronDown
+                size={16}
+                className={`text-[#5b6472] dark:text-gray-500 transition-transform flex-shrink-0 ${isTechDropdownOpen ? 'rotate-180' : ''}`}
+              />
             </div>
             {isTechDropdownOpen && (
               <div className="absolute z-20 w-full mt-1 bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl max-h-48 overflow-y-auto py-1">
-                {availableSkills.length === 0 && <div className="px-3 py-2 text-sm text-gray-400 dark:text-gray-600">Cargando habilidades...</div>}
+                {availableSkills.length === 0 && (
+                  <div className="px-3 py-2 text-sm text-gray-400 dark:text-gray-600">
+                    Cargando habilidades...
+                  </div>
+                )}
                 {availableSkills.map((skill) => {
-                  const isSelected = selectedSkills.some((s) => s.id === skill.id);
+                  const isSelected = selectedSkills.some((s) => s.id === skill.id)
                   return (
                     <div
                       key={skill.id}
                       className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-700 flex items-center justify-between transition-colors"
                       onClick={() => toggleSkill(skill)}
                     >
-                      <span className={isSelected ? "font-bold text-[#003087] dark:text-blue-400" : "text-[#1a1a2e] dark:text-gray-300"}>
-                        {skill.name} <span className="text-[11px] text-gray-400 dark:text-gray-600 ml-1 font-normal">({skill.category})</span>
+                      <span
+                        className={
+                          isSelected
+                            ? 'font-bold text-[#003087] dark:text-blue-400'
+                            : 'text-[#1a1a2e] dark:text-gray-300'
+                        }
+                      >
+                        {skill.name}{' '}
+                        <span className="text-[11px] text-gray-400 dark:text-gray-600 ml-1 font-normal">
+                          ({skill.category})
+                        </span>
                       </span>
-                      {isSelected && <Check size={16} className="text-[#003087] dark:text-blue-400" />}
+                      {isSelected && (
+                        <Check size={16} className="text-[#003087] dark:text-blue-400" />
+                      )}
                     </div>
-                  );
+                  )
                 })}
               </div>
             )}
           </div>
         </div>
 
-        <div className="flex flex-col-reverse sm:flex-row justify-between sm:items-center gap-3 pt-6 mt-2 border-t border-gray-100 dark:border-gray-800">
+        <div className="flex flex-col-reverse sm:flex-row justify-between sm:items-center gap-3 pt-6 mt-2 border-t border-gray-100 dark:border-gray-800 transition-colors">
           <button
             type="button"
             onClick={onCancel}
@@ -285,19 +357,21 @@ const Step1Form = ({ projectToEdit, onSubmit, onCancel, onDelete, isSaving, onSu
               <button
                 type="button"
                 onClick={() => {
-                  onDelete(projectToEdit.id);
-                  onCancel();
+                  onDelete(projectToEdit.id)
+                  onCancel()
                 }}
-                className="w-full sm:w-auto h-10 px-6 text-[14px] font-bold text-white bg-[#c8102e] rounded-lg hover:brightness-110 transition-all"
+                className="w-full sm:w-auto h-10 px-6 text-[14px] font-bold text-white bg-[#c8102e] rounded-lg hover:brightness-110 transition-all shadow-sm"
               >
                 Eliminar
               </button>
             )}
             <button
               type="submit"
-              disabled={isSaving || categoryId === "otros"}
-              className={`w-full sm:w-auto h-10 px-6 text-[14px] font-bold text-white rounded-lg transition-all flex items-center justify-center gap-2 ${
-                isSaving || categoryId === "otros" ? "bg-gray-400 cursor-not-allowed" : "bg-[#003087] hover:brightness-110"
+              disabled={isSaving || categoryId === 'otros'}
+              className={`w-full sm:w-auto h-10 px-6 text-[14px] font-bold text-white rounded-lg transition-all flex items-center justify-center gap-2 shadow-md ${
+                isSaving || categoryId === 'otros'
+                  ? 'bg-gray-400 cursor-not-allowed'
+                  : 'bg-[#003087] hover:brightness-110'
               }`}
             >
               {isSaving ? (
@@ -313,32 +387,49 @@ const Step1Form = ({ projectToEdit, onSubmit, onCancel, onDelete, isSaving, onSu
           </div>
         </div>
       </form>
- 
+
       {/* Modal for suggesting category */}
       {showSuggestModal && (
         <div className="fixed inset-0 z-[1050] flex items-center justify-center">
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => { setShowSuggestModal(false); setCategoryId(""); }} />
-          <div className="relative bg-white dark:bg-slate-900 rounded-xl shadow-2xl p-6 w-full max-w-[400px] mx-4 flex flex-col gap-4 border border-gray-100 dark:border-gray-800" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            onClick={() => {
+              setShowSuggestModal(false)
+              setCategoryId('')
+            }}
+          />
+          <div
+            className="relative bg-white dark:bg-slate-900 rounded-xl shadow-2xl p-6 w-full max-w-[400px] mx-4 flex flex-col gap-4 border border-gray-100 dark:border-gray-800 transition-colors"
+            onClick={(e) => e.stopPropagation()}
+          >
             <button
-              onClick={() => { setShowSuggestModal(false); setCategoryId(""); }}
-              className="absolute top-4 right-4 text-gray-400 hover:text-[#C8102E] transition-colors"
+              onClick={() => {
+                setShowSuggestModal(false)
+                setCategoryId('')
+              }}
+              className="absolute top-4 right-4 text-gray-400 hover:text-[#C8102E] dark:hover:text-red-400 transition-colors"
             >
               <X size={20} />
             </button>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center transition-colors">
                 <Send size={18} className="text-[#003087] dark:text-blue-400" />
               </div>
-              <h3 className="text-[16px] font-bold text-[#1a1a2e] dark:text-white">Sugerir nueva categoría</h3>
+              <h3 className="text-[16px] font-bold text-[#1a1a2e] dark:text-white transition-colors">
+                Sugerir nueva categoría
+              </h3>
             </div>
-            
-            <p className="text-[13px] text-[#5b6472] dark:text-gray-400 leading-relaxed mb-1">
-              Si no encuentras una categoría adecuada, puedes sugerir una nueva. Un administrador la revisará.
+
+            <p className="text-[13px] text-[#5b6472] dark:text-gray-400 leading-relaxed mb-1 transition-colors">
+              Si no encuentras una categoría adecuada, puedes sugerir una nueva. Un administrador la
+              revisará.
             </p>
- 
+
             <div className="flex flex-col gap-3">
               <div className="flex flex-col gap-1.5">
-                <label className="text-[13px] font-bold text-[#1a1a2e] dark:text-gray-300">Nombre de la categoría</label>
+                <label className="text-[13px] font-bold text-[#1a1a2e] dark:text-gray-300 transition-colors">
+                  Nombre de la categoría
+                </label>
                 <input
                   type="text"
                   value={suggestedCategoryName}
@@ -349,7 +440,9 @@ const Step1Form = ({ projectToEdit, onSubmit, onCancel, onDelete, isSaving, onSu
                 />
               </div>
               <div className="flex flex-col gap-1.5">
-                <label className="text-[13px] font-bold text-[#1a1a2e] dark:text-gray-300">Justificación</label>
+                <label className="text-[13px] font-bold text-[#1a1a2e] dark:text-gray-300 transition-colors">
+                  Justificación
+                </label>
                 <textarea
                   rows={3}
                   value={suggestedCategoryJustification}
@@ -359,11 +452,14 @@ const Step1Form = ({ projectToEdit, onSubmit, onCancel, onDelete, isSaving, onSu
                 />
               </div>
             </div>
- 
+
             <div className="flex justify-end gap-3 mt-2">
               <button
                 type="button"
-                onClick={() => { setShowSuggestModal(false); setCategoryId(""); }}
+                onClick={() => {
+                  setShowSuggestModal(false)
+                  setCategoryId('')
+                }}
                 className="h-10 px-4 text-[13px] font-bold text-[#1a1a2e] dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 rounded-lg transition-colors"
               >
                 Cancelar
@@ -372,14 +468,18 @@ const Step1Form = ({ projectToEdit, onSubmit, onCancel, onDelete, isSaving, onSu
                 type="button"
                 onClick={submitCategorySuggestion}
                 disabled={isSubmittingSuggestion}
-                className={`h-10 px-5 text-[13px] font-bold text-white rounded-lg transition-all flex items-center gap-2 ${
-                  isSubmittingSuggestion ? "bg-gray-400 cursor-not-allowed" : "bg-[#003087] hover:brightness-110"
+                className={`h-10 px-5 text-[13px] font-bold text-white rounded-lg transition-all flex items-center gap-2 shadow-md ${
+                  isSubmittingSuggestion
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : 'bg-[#003087] hover:brightness-110'
                 }`}
               >
                 {isSubmittingSuggestion ? (
-                  <><Loader2 size={14} className="animate-spin" /> Enviando...</>
+                  <>
+                    <Loader2 size={14} className="animate-spin" /> Enviando...
+                  </>
                 ) : (
-                  "Enviar sugerencia"
+                  'Enviar sugerencia'
                 )}
               </button>
             </div>
@@ -387,7 +487,7 @@ const Step1Form = ({ projectToEdit, onSubmit, onCancel, onDelete, isSaving, onSu
         </div>
       )}
     </div>
-  );
-};
- 
-export default Step1Form;
+  )
+}
+
+export default Step1Form

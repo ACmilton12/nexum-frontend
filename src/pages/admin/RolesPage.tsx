@@ -1,15 +1,15 @@
-import useAuth from "../../hooks/useAuth";
-import DashboardAdmin from "./DashboardAdmin";
-import DashboardProfessional from "./DashboardProfessional";
+import useAuth from '../../hooks/useAuth'
+import DashboardAdmin from './DashboardAdmin'
+import DashboardProfessional from './DashboardProfessional'
 
 const RolesPage = () => {
-  const { isAdmin } = useAuth();
+  const { isAdmin } = useAuth()
 
   if (isAdmin) {
-    return <DashboardAdmin />;
+    return <DashboardAdmin />
   }
 
-  return <DashboardProfessional />;
-};
+  return <DashboardProfessional />
+}
 
-export default RolesPage;
+export default RolesPage

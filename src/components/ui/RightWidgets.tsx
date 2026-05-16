@@ -1,14 +1,26 @@
-import Calendar from './Calendar';
-import { Bell, BookOpen, LifeBuoy, FileText, History, Download, ImagePlus, UserCog, Globe } from 'lucide-react';
+import Calendar from './Calendar'
+import {
+  Bell,
+  BookOpen,
+  LifeBuoy,
+  FileText,
+  History,
+  Download,
+  ImagePlus,
+  UserCog,
+  Globe
+} from 'lucide-react'
 
 interface RightWidgetsProps {
-  type?: 'profile' | 'admin' | 'audit';
-  className?: string;
+  type?: 'profile' | 'admin' | 'audit'
+  className?: string
 }
 
 const RightWidgets = ({ type = 'profile', className = '' }: RightWidgetsProps) => {
   return (
-    <aside className={`w-[292px] ${className} bg-white dark:bg-slate-900 p-6 flex flex-col gap-6 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-800 overflow-y-auto transition-colors duration-300`}>
+    <aside
+      className={`w-[292px] ${className} bg-white dark:bg-slate-900 p-6 flex flex-col gap-6 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-800 overflow-y-auto transition-colors duration-300`}
+    >
       {/* Calendario del Milton*/}
       <div className="flex flex-col gap-3">
         <Calendar />
@@ -72,7 +84,7 @@ const RightWidgets = ({ type = 'profile', className = '' }: RightWidgetsProps) =
         </div>
       </div>
     </aside>
-  );
-};
+  )
+}
 
-export default RightWidgets;
+export default RightWidgets
