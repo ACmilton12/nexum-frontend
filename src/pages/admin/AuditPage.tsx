@@ -204,7 +204,7 @@ const AuditPage = () => {
     return map[key] || key
   }
 
-  const formatValue = (key: string, value: any) => {
+  const formatValue = (key: string, value: unknown) => {
     if (value === undefined || value === null || value === 'null') return 'No especificado'
 
     // Si el valor es booleano o string 'true'/'false'
@@ -236,7 +236,7 @@ const AuditPage = () => {
           month: 'short',
           year: 'numeric'
         })
-      } catch (e) {
+      } catch {
         // Si falla, retornamos el string original
       }
     }

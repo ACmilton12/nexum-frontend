@@ -519,13 +519,12 @@ function Experience() {
                     <div className="flex flex-col w-full">
                       <div className="relative">
                         <div
-                          className={`min-h-[42px] w-full px-3 py-2 text-sm bg-white dark:bg-slate-900 border rounded transition-all cursor-pointer flex items-center justify-between gap-2 ${
-                            validationErrors.skills
-                              ? 'border-red-500 ring-1 ring-red-500/20'
-                              : isTechDropdownOpen
-                                ? 'border-action ring-1 ring-action/10'
-                                : 'border-gray-200 dark:border-gray-700'
-                          }`}
+                          className={`min-h-[42px] w-full px-3 py-2 text-sm bg-white dark:bg-slate-900 border rounded transition-all cursor-pointer flex items-center justify-between gap-2 ${validationErrors.skills
+                            ? 'border-red-500 ring-1 ring-red-500/20'
+                            : isTechDropdownOpen
+                              ? 'border-action ring-1 ring-action/10'
+                              : 'border-gray-200 dark:border-gray-700'
+                            }`}
                           onClick={() => setIsTechDropdownOpen(!isTechDropdownOpen)}
                         >
                           <div className="flex flex-wrap gap-1.5 flex-1">

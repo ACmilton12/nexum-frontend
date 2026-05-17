@@ -89,11 +89,10 @@ const SidebarContent = ({
             key={item.id}
             to={item.path}
             onClick={onItemClick}
-            className={`flex items-center gap-3 px-4 py-3 text-sm transition-colors no-underline ${
-              activeItem === item.id
-                ? 'bg-primary text-white font-medium'
-                : 'text-textMain dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
-            }`}
+            className={`flex items-center gap-3 px-4 py-3 text-sm transition-colors no-underline ${activeItem === item.id
+              ? 'bg-primary text-white font-medium'
+              : 'text-textMain dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
+              }`}
           >
             {item.icon}
             {item.label}
@@ -104,77 +103,70 @@ const SidebarContent = ({
           <Link
             to="/dashboard"
             onClick={onItemClick}
-            className={`flex items-center gap-3 px-4 py-3 text-sm no-underline transition-colors ${
-              activeItem === 'Dashboard'
-                ? 'bg-primary text-white font-medium'
-                : 'text-textMain dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
-            }`}
+            className={`flex items-center gap-3 px-4 py-3 text-sm no-underline transition-colors ${activeItem === 'Dashboard'
+              ? 'bg-primary text-white font-medium'
+              : 'text-textMain dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
+              }`}
           >
             <LayoutDashboard size={18} /> {t('sidebar.dashboard')}
           </Link>
           <Link
             to="/proyectos"
             onClick={onItemClick}
-            className={`flex items-center gap-3 px-4 py-3 text-sm no-underline transition-colors ${
-              activeItem === 'Proyectos'
-                ? 'bg-primary text-white font-medium'
-                : 'text-textMain dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
-            }`}
+            className={`flex items-center gap-3 px-4 py-3 text-sm no-underline transition-colors ${activeItem === 'Proyectos'
+              ? 'bg-primary text-white font-medium'
+              : 'text-textMain dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
+              }`}
           >
             <FolderOpen size={18} /> {t('sidebar.projects')}
           </Link>
           <Link
             to="/profile/habilidades"
             onClick={onItemClick}
-            className={`flex items-center gap-3 px-4 py-3 text-sm no-underline transition-colors ${
-              activeItem === 'Habilidades'
-                ? 'bg-primary text-white font-medium'
-                : 'text-textMain dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
-            }`}
+            className={`flex items-center gap-3 px-4 py-3 text-sm no-underline transition-colors ${activeItem === 'Habilidades'
+              ? 'bg-primary text-white font-medium'
+              : 'text-textMain dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
+              }`}
           >
             <Wrench size={18} /> {t('sidebar.skills')}
           </Link>
           <Link
             to="/experiencia"
             onClick={onItemClick}
-            className={`flex items-center gap-3 px-4 py-3 text-sm no-underline transition-colors ${
-              activeItem === 'Experiencia'
-                ? 'bg-primary text-white font-medium'
-                : 'text-textMain dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
-            }`}
+            className={`flex items-center gap-3 px-4 py-3 text-sm no-underline transition-colors ${activeItem === 'Experiencia'
+              ? 'bg-primary text-white font-medium'
+              : 'text-textMain dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
+              }`}
           >
             <Briefcase size={18} /> {t('sidebar.experience')}
           </Link>
           <Link
             to="/certificaciones"
             onClick={onItemClick}
-            className={`flex items-center gap-3 px-4 py-3 text-sm no-underline transition-colors ${
-              activeItem === 'Certificaciones'
-                ? 'bg-primary text-white font-medium'
-                : 'text-textMain dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
-            }`}
+            className={`flex items-center gap-3 px-4 py-3 text-sm no-underline transition-colors ${activeItem === 'Certificaciones'
+              ? 'bg-primary text-white font-medium'
+              : 'text-textMain dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
+              }`}
           >
             <CheckCircle size={18} /> {t('sidebar.certifications')}
           </Link>
           <Link
             to="/portfolio"
             onClick={onItemClick}
-            className={`flex items-center gap-3 px-4 py-3 text-sm no-underline transition-colors ${
-              activeItem === 'Vista Portafolio'
-                ? 'bg-primary text-white font-medium'
-                : 'text-textMain dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
-            }`}
+            className={`flex items-center gap-3 px-4 py-3 text-sm no-underline transition-colors ${activeItem === 'Vista Portafolio'
+              ? 'bg-primary text-white font-medium'
+              : 'text-textMain dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
+              }`}
           >
             <Eye size={18} /> Vista Portafolio
           </Link>
 
           <button
             onClick={() => setIsProfileOpen(!isProfileOpen)}
-            className={`flex items-center justify-between w-full px-4 py-3 text-sm transition-colors border-none bg-transparent cursor-pointer ${
-              isProfileOpen
-                ? 'text-primary font-bold'
-                : 'text-textMain dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
-            }`}
+            className={`flex items-center justify-between w-full px-4 py-3 text-sm transition-colors border-none bg-transparent cursor-pointer ${isProfileOpen
+              ? 'text-primary font-bold'
+              : 'text-textMain dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
+              }`}
           >
             <div className="flex items-center gap-3">
               <User size={18} />
@@ -191,44 +183,50 @@ const SidebarContent = ({
               <Link
                 to="/profile/personal-data"
                 onClick={onItemClick}
-                className={`flex items-center gap-3 pl-8 pr-4 py-2.5 text-xs no-underline transition-colors ${
-                  activeItem === 'Datos Personales'
-                    ? 'text-primary font-bold bg-primary/5 dark:bg-primary/10'
-                    : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-                }`}
+                className={`flex items-center gap-3 pl-8 pr-4 py-2.5 text-xs no-underline transition-colors ${activeItem === 'Datos Personales'
+                  ? 'text-primary font-bold bg-primary/5 dark:bg-primary/10'
+                  : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  }`}
               >
                 <IdCard size={14} /> {t('sidebar.personal_data')}
               </Link>
               <Link
                 to="/profile/links"
                 onClick={onItemClick}
-                className={`flex items-center gap-3 pl-8 pr-4 py-2.5 text-xs no-underline transition-colors ${
-                  activeItem === 'Enlaces'
-                    ? 'text-primary font-bold bg-primary/5 dark:bg-primary/10'
-                    : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-                }`}
+                className={`flex items-center gap-3 pl-8 pr-4 py-2.5 text-xs no-underline transition-colors ${activeItem === 'Enlaces'
+                  ? 'text-primary font-bold bg-primary/5 dark:bg-primary/10'
+                  : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  }`}
               >
-                <Link2 size={14} /> {t('sidebar.links_privacy')}
+                <Link2 size={14} /> Enlaces
+              </Link>
+              <Link
+                to="/profile/privacy"
+                onClick={onItemClick}
+                className={`flex items-center gap-3 pl-8 pr-4 py-2.5 text-xs no-underline transition-colors ${activeItem === 'Privacidad'
+                  ? 'text-primary font-bold bg-primary/5 dark:bg-primary/10'
+                  : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  }`}
+              >
+                <Shield size={14} /> Privacidad
               </Link>
               <Link
                 to="/profile/appearance"
                 onClick={onItemClick}
-                className={`flex items-center gap-3 pl-8 pr-4 py-2.5 text-xs no-underline transition-colors ${
-                  activeItem === 'Apariencia'
-                    ? 'text-primary font-bold bg-primary/5 dark:bg-primary/10'
-                    : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-                }`}
+                className={`flex items-center gap-3 pl-8 pr-4 py-2.5 text-xs no-underline transition-colors ${activeItem === 'Apariencia'
+                  ? 'text-primary font-bold bg-primary/5 dark:bg-primary/10'
+                  : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  }`}
               >
                 <Palette size={14} /> {t('sidebar.appearance')}
               </Link>
               <Link
                 to="/profile/notifications"
                 onClick={onItemClick}
-                className={`flex items-center gap-3 pl-8 pr-4 py-2.5 text-xs no-underline transition-colors ${
-                  activeItem === 'Notificaciones'
-                    ? 'text-primary font-bold bg-primary/5 dark:bg-primary/10'
-                    : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-                }`}
+                className={`flex items-center gap-3 pl-8 pr-4 py-2.5 text-xs no-underline transition-colors ${activeItem === 'Notificaciones'
+                  ? 'text-primary font-bold bg-primary/5 dark:bg-primary/10'
+                  : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  }`}
               >
                 <BellRing size={14} /> {t('sidebar.notifications')}
               </Link>
@@ -246,8 +244,8 @@ const Sidebar = ({ activeItem = 'Dashboard' }: SidebarProps) => {
 
   const [isProfileOpen, setIsProfileOpen] = useState(
     activeItem.includes('Perfil') ||
-      ['Datos Personales', 'Enlaces', 'Apariencia', 'Notificaciones'].includes(activeItem) ||
-      pathname.startsWith('/profile')
+    ['Datos Personales', 'Enlaces', 'Privacidad', 'Apariencia', 'Notificaciones'].includes(activeItem) ||
+    pathname.startsWith('/profile')
   )
 
   const [isMobileOpen, setIsMobileOpen] = useState(false)
@@ -285,9 +283,8 @@ const Sidebar = ({ activeItem = 'Dashboard' }: SidebarProps) => {
       )}
 
       <div
-        className={`md:hidden fixed top-0 left-0 h-full w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 z-50 flex flex-col overflow-y-auto shadow-xl transform transition-transform duration-300 ${
-          isMobileOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
+        className={`md:hidden fixed top-0 left-0 h-full w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 z-50 flex flex-col overflow-y-auto shadow-xl transform transition-transform duration-300 ${isMobileOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
       >
         <div className="flex items-center justify-between px-4 py-3 bg-navbar text-white">
           <span className="font-bold text-base tracking-wide">NEXUM</span>

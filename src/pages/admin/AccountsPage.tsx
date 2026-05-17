@@ -163,11 +163,10 @@ const AccountsPage = () => {
                             </td>
                             <td className="px-6 py-4 text-center">
                               <span
-                                className={`inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                                  u.status === 'Activo'
-                                    ? 'bg-green-100 text-green-700'
-                                    : 'bg-red-50 text-red-600'
-                                }`}
+                                className={`inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${u.status === 'Activo'
+                                  ? 'bg-green-100 text-green-700'
+                                  : 'bg-red-50 text-red-600'
+                                  }`}
                               >
                                 {u.status}
                               </span>

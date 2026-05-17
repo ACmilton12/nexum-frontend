@@ -365,11 +365,10 @@ function CategoriesPage() {
                           </td>
                           <td className="py-5 px-6">
                             <span
-                              className={`px-3 py-1 rounded-full text-[10px] font-bold tracking-widest ${
-                                cat.status === 'ACTIVO'
-                                  ? 'bg-[#e6f4ea] text-[#137333]'
-                                  : 'bg-[#feefe6] text-[#b0602f]'
-                              }`}
+                              className={`px-3 py-1 rounded-full text-[10px] font-bold tracking-widest ${cat.status === 'ACTIVO'
+                                ? 'bg-[#e6f4ea] text-[#137333]'
+                                : 'bg-[#feefe6] text-[#b0602f]'
+                                }`}
                             >
                               {cat.status}
                             </span>

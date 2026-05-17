@@ -461,11 +461,10 @@ function PersonalData() {
                     <button
                       type="submit"
                       disabled={isSaving || !hasChanges}
-                      className={`flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm text-white shadow-lg transition-all ${
-                        isSaving || !hasChanges
-                          ? 'bg-gray-300 dark:bg-slate-700 cursor-not-allowed'
-                          : 'bg-action hover:brightness-110 shadow-red-100'
-                      }`}
+                      className={`flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm text-white shadow-lg transition-all ${isSaving || !hasChanges
+                        ? 'bg-gray-300 dark:bg-slate-700 cursor-not-allowed'
+                        : 'bg-action hover:brightness-110 shadow-red-100'
+                        }`}
                     >
                       <Save size={16} />{' '}
                       {isSaving ? t('profile.saving') : t('profile.save_changes')}

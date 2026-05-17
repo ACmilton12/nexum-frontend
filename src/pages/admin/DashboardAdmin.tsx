@@ -111,7 +111,7 @@ function SkillSuggestionsModal({
   const [toast, setToast] = useState<{ msg: string; ok: boolean } | null>(null)
 
   useEffect(() => {
-    ;(async () => {
+    ; (async () => {
       setLoading(true)
       try {
         const res = await apiFetch<SuggestionsResponse>('/admin/skill-suggestions?status=pending')
@@ -211,11 +211,10 @@ function SkillSuggestionsModal({
                           {s.name}
                         </span>
                         <span
-                          className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
-                            s.type === 'tecnica'
-                              ? 'bg-primary/10 text-primary border-primary/20'
-                              : 'bg-navbar/10 text-navbar border-navbar/20'
-                          }`}
+                          className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${s.type === 'tecnica'
+                            ? 'bg-primary/10 text-primary border-primary/20'
+                            : 'bg-navbar/10 text-navbar border-navbar/20'
+                            }`}
                         >
                           {s.type === 'tecnica' ? 'Técnica' : 'Blanda'}
                         </span>
@@ -333,7 +332,7 @@ function CategorySuggestionsModal({
   const [toast, setToast] = useState<{ msg: string; ok: boolean } | null>(null)
 
   useEffect(() => {
-    ;(async () => {
+    ; (async () => {
       setLoading(true)
       try {
         const res = await apiFetch<CategorySuggestionsResponse>(
@@ -658,7 +657,7 @@ const DashboardAdmin = () => {
 
   // Carga datos al montar
   useEffect(() => {
-    ;(async () => {
+    ; (async () => {
       // Pending suggestions count
       try {
         const token = localStorage.getItem('token') || sessionStorage.getItem('token') || ''
@@ -816,11 +815,10 @@ const DashboardAdmin = () => {
                   Administra cuentas, roles, estados y permisos de los usuarios.
                 </p>
                 <div
-                  className={`text-[11px] px-3 py-1.5 rounded-lg mb-4 inline-block font-medium border ${
-                    inactiveUsers > 0
-                      ? 'bg-action/5 text-action border-action/20'
-                      : 'bg-primary/5 text-primary border-primary/20'
-                  }`}
+                  className={`text-[11px] px-3 py-1.5 rounded-lg mb-4 inline-block font-medium border ${inactiveUsers > 0
+                    ? 'bg-action/5 text-action border-action/20'
+                    : 'bg-primary/5 text-primary border-primary/20'
+                    }`}
                 >
                   {loadingStats
                     ? 'Cargando...'

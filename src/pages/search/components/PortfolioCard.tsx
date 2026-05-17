@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom'
 import { MapPin, Briefcase, Eye } from 'lucide-react'
 import type { SearchResult } from '../../../services/search.service'
+import { useProfileStats } from '../../../hooks/useProfileVisits'
+
 
 interface PortfolioCardProps {
   portfolio: SearchResult
@@ -9,6 +11,11 @@ interface PortfolioCardProps {
 export default function PortfolioCard({ portfolio }: PortfolioCardProps) {
   const { user, profession, location, avatar_url, skills, views_count } = portfolio
   const fullName = `${user.first_name} ${user.last_name}`
+
+  // Obtener estadísticas reales del backend
+  const { stats } = useProfileStats(portfolio.id)
+  const displayVisits = stats?.visits_count ?? views_count ?? 0
+
 
   return (
     <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-300 group flex flex-col h-full">
@@ -64,8 +71,9 @@ export default function PortfolioCard({ portfolio }: PortfolioCardProps) {
       <div className="pt-4 mt-auto border-t border-gray-50 flex items-center justify-between gap-4">
         <div className="flex items-center gap-1 text-gray-400 text-xs">
           <Eye size={14} />
-          <span>{views_count} vistas</span>
+          <span>{displayVisits} vistas</span>
         </div>
+
 
         <Link
           to={`/portfolio/${portfolio.id}`}
