@@ -45,6 +45,7 @@ const Step1Form = ({
   // States for Suggest Category Modal
   const [showSuggestModal, setShowSuggestModal] = useState(false)
   const [suggestedCategoryName, setSuggestedCategoryName] = useState('')
+  const [suggestedCategoryError, setSuggestedCategoryError] = useState('')
   const [suggestedCategoryJustification, setSuggestedCategoryJustification] = useState('')
   const [isSubmittingSuggestion, setIsSubmittingSuggestion] = useState(false)
   const [successMessage, setSuccessMessage] = useState('')
@@ -136,9 +137,19 @@ const Step1Form = ({
 
   const submitCategorySuggestion = async () => {
     if (!suggestedCategoryName.trim()) {
-      alert('El nombre de la categoría es obligatorio.')
+      setSuggestedCategoryError('El nombre de la categoría es obligatorio.')
       return
     }
+
+    const exists = categories.some(
+      (cat) => cat.name.toLowerCase() === suggestedCategoryName.trim().toLowerCase()
+    )
+
+    if (exists) {
+      setSuggestedCategoryError('Esta categoria sugerida ya existe en el sistema')
+      return
+    }
+
     if (!suggestedCategoryJustification.trim()) {
       alert('La justificación es obligatoria.')
       return
@@ -156,6 +167,7 @@ const Step1Form = ({
       setShowSuggestModal(false)
       setCategoryId('') // Reset category so they can save the project
       setSuggestedCategoryName('')
+      setSuggestedCategoryError('')
       setSuggestedCategoryJustification('')
 
       // Ocultar el mensaje después de 5 segundos
@@ -396,6 +408,7 @@ const Step1Form = ({
             onClick={() => {
               setShowSuggestModal(false)
               setCategoryId('')
+              setSuggestedCategoryError('')
             }}
           />
           <div
@@ -406,6 +419,7 @@ const Step1Form = ({
               onClick={() => {
                 setShowSuggestModal(false)
                 setCategoryId('')
+                setSuggestedCategoryError('')
               }}
               className="absolute top-4 right-4 text-gray-400 hover:text-[#C8102E] dark:hover:text-red-400 transition-colors"
             >
@@ -433,11 +447,19 @@ const Step1Form = ({
                 <input
                   type="text"
                   value={suggestedCategoryName}
-                  onChange={(e) => setSuggestedCategoryName(e.target.value)}
-                  className="w-full h-10 px-3 text-sm bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0030871a] focus:border-[#003087] transition-all text-[#1a1a2e] dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600"
+                  onChange={(e) => {
+                    setSuggestedCategoryName(e.target.value)
+                    setSuggestedCategoryError('')
+                  }}
+                  className={`w-full h-10 px-3 text-sm bg-white dark:bg-slate-800 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0030871a] focus:border-[#003087] transition-all text-[#1a1a2e] dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 ${
+                    suggestedCategoryError ? 'border-red-500' : 'border-gray-200 dark:border-gray-700'
+                  }`}
                   placeholder="Ej. Inteligencia Artificial"
                   autoFocus
                 />
+                {suggestedCategoryError && (
+                  <span className="text-red-500 text-[11px] mt-1">{suggestedCategoryError}</span>
+                )}
               </div>
               <div className="flex flex-col gap-1.5">
                 <label className="text-[13px] font-bold text-[#1a1a2e] dark:text-gray-300 transition-colors">
@@ -459,6 +481,7 @@ const Step1Form = ({
                 onClick={() => {
                   setShowSuggestModal(false)
                   setCategoryId('')
+                  setSuggestedCategoryError('')
                 }}
                 className="h-10 px-4 text-[13px] font-bold text-[#1a1a2e] dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 rounded-lg transition-colors"
               >
