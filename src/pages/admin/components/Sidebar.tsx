@@ -15,7 +15,6 @@ import {
   ChevronDown,
   IdCard,
   Link2,
-  Palette,
   BellRing,
   Menu,
   X,
@@ -210,16 +209,7 @@ const SidebarContent = ({
               >
                 <Shield size={14} /> Privacidad
               </Link>
-              <Link
-                to="/profile/appearance"
-                onClick={onItemClick}
-                className={`flex items-center gap-3 pl-8 pr-4 py-2.5 text-xs no-underline transition-colors ${activeItem === 'Apariencia'
-                  ? 'text-primary font-bold bg-primary/5 dark:bg-primary/10'
-                  : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-                  }`}
-              >
-                <Palette size={14} /> {t('sidebar.appearance')}
-              </Link>
+
               <Link
                 to="/profile/notifications"
                 onClick={onItemClick}
@@ -244,7 +234,7 @@ const Sidebar = ({ activeItem = 'Dashboard' }: SidebarProps) => {
 
   const [isProfileOpen, setIsProfileOpen] = useState(
     activeItem.includes('Perfil') ||
-    ['Datos Personales', 'Enlaces', 'Privacidad', 'Apariencia', 'Notificaciones'].includes(activeItem) ||
+    ['Datos Personales', 'Enlaces', 'Privacidad', 'Notificaciones'].includes(activeItem) ||
     pathname.startsWith('/profile')
   )
 

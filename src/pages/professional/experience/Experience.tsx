@@ -3,15 +3,12 @@ import { useTranslation } from 'react-i18next'
 import Sidebar from '../../admin/components/Sidebar'
 import Calendar from '../../../components/ui/Calendar'
 import {
-  ShieldAlert,
-  ExternalLink,
   Loader2,
   AlertCircle,
   CheckCircle2,
   ChevronDown,
   X,
   Check,
-  Clock,
   Calendar as CalendarIcon
 } from 'lucide-react'
 import { createExperience } from '../../../services/experience.service'
@@ -169,46 +166,6 @@ function Experience() {
     setSelectedSkills(selectedSkills.filter((s) => s.id !== skillId))
   }
 
-  const RightPanelContent = () => (
-    <div className="sticky top-6">
-      <Calendar />
-
-      <div className="mt-8">
-        <h3 className="font-bold text-textMain dark:text-gray-100 text-sm mb-4 flex items-center gap-2 uppercase tracking-wider">
-          <ShieldAlert size={16} className="text-action" />
-          {t('dashboard.notifications')}
-        </h3>
-        <div className="space-y-3">
-          <div className="flex items-start gap-2 text-[11px] text-gray-600 dark:text-gray-400 leading-tight bg-gray-50 dark:bg-slate-800 p-3 rounded-lg border border-gray-100 dark:border-gray-700 transition-colors">
-            <Clock size={14} className="text-action mt-0.5 shrink-0" />
-            <span>{t('experience.notification_tip')}</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-8">
-        <h3 className="font-bold text-textMain dark:text-gray-100 text-sm mb-4 uppercase tracking-wider">
-          {t('dashboard.quick_links')}
-        </h3>
-        <div className="space-y-3 text-xs text-primary dark:text-blue-400 transition-colors">
-          <p className="cursor-pointer hover:underline flex items-center justify-between group">
-            <span>📋 {t('dashboard.user_guide')}</span>
-            <ExternalLink
-              size={12}
-              className="opacity-0 group-hover:opacity-100 transition-opacity"
-            />
-          </p>
-          <p className="cursor-pointer hover:underline flex items-center justify-between group">
-            <span>⚙️ {t('sidebar.support')}</span>
-            <ExternalLink
-              size={12}
-              className="opacity-0 group-hover:opacity-100 transition-opacity"
-            />
-          </p>
-        </div>
-      </div>
-    </div>
-  )
 
   return (
     <div className="min-h-screen bg-background dark:bg-slate-900 flex flex-col font-sans transition-colors duration-300">
@@ -632,8 +589,10 @@ function Experience() {
             </div>
           </div>
 
-          <aside className="w-full lg:w-72 p-6 bg-white dark:bg-slate-900 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-800 shrink-0 overflow-y-auto transition-colors duration-300">
-            <RightPanelContent />
+          <aside className="w-[292px] w-full lg:w-72 shrink-0 bg-white dark:bg-slate-900 p-6 flex flex-col gap-6 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-800 overflow-y-auto transition-colors duration-300">
+            <div className="flex flex-col gap-3">
+              <Calendar />
+            </div>
           </aside>
         </main>
 
