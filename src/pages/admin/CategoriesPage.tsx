@@ -321,8 +321,7 @@ function CategoriesPage() {
                                   onClick={() => setShowConfirmModal(true)}
                                   disabled={
                                     actionLoading ||
-                                    !editFormData.name.trim() ||
-                                    !editFormData.description.trim()
+                                    !editFormData.name.trim()
                                   }
                                   className="bg-primary dark:bg-blue-600 text-white px-3 py-1.5 rounded disabled:bg-primary/60 dark:disabled:bg-blue-600/60 font-medium hover:brightness-110 transition-all flex items-center justify-center gap-1 min-w-[70px]"
                                 >
