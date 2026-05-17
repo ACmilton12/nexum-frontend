@@ -5,95 +5,81 @@ import { CheckCircle2, MapPin, Briefcase, Eye } from 'lucide-react'
 import type { FeaturedProfile } from '../types'
 import { getInitials } from '../utils'
 
-const accentColors = ['#003087', '#C8102E', '#001A5E']
-
 function PortfolioCard({ profile, index }: { profile: FeaturedProfile; index: number }) {
   const { t } = useTranslation()
-  const [btnHovered, setBtnHovered] = useState(false)
-  const accentColor = accentColors[index % accentColors.length]
   const initials = getInitials(profile.first_name, profile.last_name)
   const fullName = `${profile.first_name} ${profile.last_name}`
+  
+  // Use a rotating set of beautiful, modern gradients instead of flat solid colors
+  const gradients = [
+    'from-blue-600 to-indigo-800',
+    'from-indigo-600 to-purple-800',
+    'from-slate-700 to-slate-900'
+  ]
+  const bgGradient = gradients[index % gradients.length]
 
   return (
-    <div className="relative rounded-2xl bg-white overflow-hidden flex flex-col h-full border border-gray-100 group shadow-sm transition-all duration-300 hover:shadow-md">
-      {/* Banner Superior */}
-      <div
-        className="h-20 w-full relative"
-        style={{
-          backgroundColor: accentColor,
-          backgroundImage: 'linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px)',
-          backgroundSize: '16px 16px'
-        }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+    <div className="relative rounded-2xl bg-white overflow-hidden flex flex-col h-full border border-gray-100/80 group shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] transition-all duration-500 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.1)] hover:-translate-y-1">
+      {/* Premium Header Banner */}
+      <div className={`h-28 w-full relative overflow-hidden bg-gradient-to-br ${bgGradient}`}>
+        <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
       </div>
 
       <div className="px-6 pb-6 relative flex-1 flex flex-col">
-        {/* Avatar */}
-        <div className="absolute -top-10 left-6 border-4 border-white rounded-full bg-white shadow-sm">
+        {/* Modern Avatar */}
+        <div className="absolute -top-12 left-6 border-4 border-white rounded-2xl bg-white shadow-xl overflow-hidden transition-transform duration-500 group-hover:scale-105 group-hover:-translate-y-1">
           {profile.avatar_url ? (
-            <img src={profile.avatar_url} alt={fullName} className="w-16 h-16 rounded-full object-cover" />
+            <img src={profile.avatar_url} alt={fullName} className="w-20 h-20 object-cover" />
           ) : (
-            <div
-              className="w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-xl"
-              style={{ backgroundColor: accentColor }}
-            >
+            <div className="w-20 h-20 flex items-center justify-center bg-gray-50 text-gray-400 font-bold text-2xl">
               {initials}
             </div>
           )}
-          <div className="absolute bottom-0 right-0 bg-white rounded-full p-0.5 shadow-sm">
-            <CheckCircle2 size={16} className="text-blue-500" fill="#fff" />
-          </div>
         </div>
 
         {/* Info */}
-        <div className="mt-10 mb-5">
-          <h3 className="font-extrabold text-lg text-gray-900 leading-tight mb-1">
-            {fullName}
-          </h3>
-          <p className="text-sm font-semibold mb-2" style={{ color: accentColor }}>
+        <div className="mt-12 mb-6">
+          <div className="flex items-center gap-2 mb-1">
+            <h3 className="font-extrabold text-xl text-textMain tracking-tight line-clamp-1">
+              {fullName}
+            </h3>
+            <CheckCircle2 size={18} className="text-blue-500 flex-shrink-0" fill="#fff" />
+          </div>
+          <p className="text-sm font-semibold text-primary/80 mb-3">
             Profesional Destacado
           </p>
-          <div className="flex items-center gap-1.5 text-gray-500 text-xs font-medium">
-            <MapPin size={12} />
-            {profile.location || "UMSS · Cochabamba, BO"}
+          <div className="flex items-center gap-1.5 text-gray-500 text-sm font-medium">
+            <MapPin size={14} className="text-gray-400" />
+            <span className="line-clamp-1">{profile.location || "UMSS · Cochabamba, BO"}</span>
           </div>
         </div>
 
-        {/* Estadísticas */}
-        <div className="flex items-center gap-4 py-4 border-y border-gray-100/80 mb-5 bg-gray-50/50 -mx-6 px-6">
-          <div className="flex-1">
-            <div className="flex items-center gap-1.5 text-gray-400 text-[10px] font-bold uppercase tracking-wider mb-1">
+        {/* Enhanced Statistics Grid */}
+        <div className="grid grid-cols-2 gap-4 py-5 border-y border-gray-100 mb-6 bg-gray-50/50 -mx-6 px-6">
+          <div className="flex flex-col">
+            <div className="flex items-center gap-1.5 text-gray-400 text-[10px] font-bold uppercase tracking-wider mb-1.5">
               <Briefcase size={12} /> Proyectos
             </div>
-            <div className="font-black text-xl text-gray-800">{profile.projects_count || 0}</div>
+            <div className="font-black text-2xl text-textMain tracking-tight">{profile.projects_count || 0}</div>
           </div>
-          <div className="w-px h-8 bg-gray-200"></div>
-          <div className="flex-1">
-            <div className="flex items-center gap-1.5 text-gray-400 text-[10px] font-bold uppercase tracking-wider mb-1">
+          <div className="flex flex-col border-l border-gray-200 pl-4">
+            <div className="flex items-center gap-1.5 text-gray-400 text-[10px] font-bold uppercase tracking-wider mb-1.5">
               <Eye size={12} /> Visitas
             </div>
-            <div className="font-black text-xl text-gray-800">
+            <div className="font-black text-2xl text-textMain tracking-tight">
               {profile.visits_count ?? '—'}
             </div>
           </div>
         </div>
 
-        {/* CTA */}
+        {/* Refined CTA Button */}
         <div className="mt-auto">
           <Link
             to={`/portfolio/${profile.id}`}
-            className="w-full flex items-center justify-center gap-2 font-bold text-sm py-2.5 rounded-xl transition-all duration-200 no-underline text-center"
-            style={{
-              color: btnHovered ? '#FFFFFF' : '#C8102E',
-              borderColor: '#C8102E',
-              border: '2px solid #C8102E',
-              backgroundColor: btnHovered ? '#C8102E' : 'transparent'
-            }}
-            onMouseEnter={() => setBtnHovered(true)}
-            onMouseLeave={() => setBtnHovered(false)}
+            className="w-full flex items-center justify-center gap-2 font-bold text-sm py-3 rounded-xl transition-all duration-300 text-[#C8102E] border-2 border-[#C8102E] hover:bg-[#C8102E] hover:text-white hover:shadow-lg hover:shadow-[#C8102E]/20"
           >
-            {t('recent.view_portfolio')} →
+            {t('recent.view_portfolio')}
           </Link>
         </div>
       </div>
@@ -241,13 +227,15 @@ export default function RecentPortfolios({
   const { t } = useTranslation()
 
   return (
-    <section className="py-24" style={{ backgroundColor: '#FFFFFF' }}>
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-16">
-          <h2 className="font-extrabold text-3xl lg:text-4xl mb-4" style={{ color: '#1A1A2E' }}>
-            {t('recent.title')}
+    <section className="py-20 sm:py-28 bg-white transition-colors duration-300">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8">
+        <div className="text-center mb-4 md:mb-8">
+          <h2 className="font-extrabold text-3xl sm:text-4xl md:text-5xl tracking-tight text-textMain mb-4">
+            Portafolios más vistos
           </h2>
-          <p className="text-gray-500 max-w-xl mx-auto text-base">{t('recent.subtitle')}</p>
+          <p className="text-gray-500 max-w-2xl mx-auto text-base sm:text-lg font-medium">
+            {t('recent.subtitle')}
+          </p>
         </div>
 
         {loading ? (

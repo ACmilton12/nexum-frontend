@@ -201,28 +201,25 @@ const LoginPage = () => {
           <div className="w-full md:w-1/2 flex flex-col rounded-2xl items-center justify-center p-6 sm:p-8 md:p-10 bg-white">
 
             {/* Logo visible solo en móvil (reemplaza al panel izquierdo) */}
-            <div className="flex md:hidden flex-col items-center mb-4">
-              <img src={logoUmss} alt="Logo UMSS" className="w-12 h-12 object-contain mb-1" />
-              <span className="text-primary font-bold text-xl tracking-wide">NEXUM</span>
+            <div className="flex md:hidden flex-col items-center mb-8">
+              <img src={logoUmss} alt="Logo UMSS" className="w-14 h-14 object-contain mb-3" />
+              <span className="text-primary font-extrabold text-2xl tracking-widest">NEXUM</span>
             </div>
 
-            <p className="text-textMain text-lg font-bold mb-1 text-center">Bienvenido</p>
-            <p className="text-textMain font-bold mb-5 text-center text-sm sm:text-base">
-              Accede a tu cuenta para continuar
-            </p>
+            <div className="w-full max-w-sm mx-auto">
+              <div className="mb-8">
+                <h2 className="text-2xl font-bold text-textMain tracking-tight mb-1.5">
+                  Bienvenido de nuevo
+                </h2>
+                <p className="text-sm text-gray-500">
+                  Ingresa tus credenciales para acceder a tu cuenta
+                </p>
+              </div>
 
-            <div className="w-full bg-white rounded-2xl border border-gray-50 p-5 sm:p-6 shadow-none">
-              <h2 className="text-base sm:text-lg font-bold text-textMain text-center mb-1">
-                Iniciar Sesión
-              </h2>
-              <p className="text-xs text-gray-400 text-center mb-5">
-                Ingresa tus credenciales para continuar
-              </p>
-
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-5">
                 {/* Email */}
                 <div>
-                  <label className="text-sm font-medium text-textMain block mb-1">
+                  <label className="text-sm font-bold text-gray-700 block mb-1.5">
                     Correo electrónico
                   </label>
                   <div className="flex items-center bg-gray-200 border-2 border-transparent rounded-lg px-4 py-2.5 gap-3 focus-within:border-primary focus-within:bg-white transition-colors duration-300">
@@ -236,15 +233,16 @@ const LoginPage = () => {
                         setError('')
                         setErrorEmail('')
                       }}
-                      className="flex-1 outline-none text-sm text-textMain bg-transparent min-w-0 border-none"
+                      className="flex-1 outline-none text-sm text-textMain bg-transparent min-w-0 border-none w-full autofill:shadow-[inset_0_0_0px_1000px_#e5e7eb] focus:autofill:shadow-[inset_0_0_0px_1000px_#ffffff] autofill:[-webkit-text-fill-color:#1A1A2E]"
+                      autoComplete="email"
                     />
                   </div>
-                  {errorEmail && <p className="text-action text-xs mt-1">{errorEmail}</p>}
+                  {errorEmail && <p className="text-red-500 font-semibold text-xs mt-1.5">{errorEmail}</p>}
                 </div>
 
                 {/* Contraseña */}
                 <div>
-                  <label className="text-sm font-medium text-textMain block mb-1">
+                  <label className="text-sm font-bold text-gray-700 block mb-1.5">
                     Contraseña
                   </label>
                   <div className="flex items-center bg-gray-200 border-2 border-transparent rounded-lg px-4 py-2.5 gap-3 focus-within:border-primary focus-within:bg-white transition-colors duration-300">
@@ -258,62 +256,63 @@ const LoginPage = () => {
                         setError('')
                         setErrorPassword('')
                       }}
-                      className="flex-1 outline-none text-sm text-textMain bg-transparent min-w-0 border-none"
+                      className="flex-1 outline-none text-sm text-textMain bg-transparent min-w-0 border-none w-full autofill:shadow-[inset_0_0_0px_1000px_#e5e7eb] focus:autofill:shadow-[inset_0_0_0px_1000px_#ffffff] autofill:[-webkit-text-fill-color:#1A1A2E]"
+                      autoComplete="current-password"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="text-gray-400 hover:text-primary shrink-0 border-none bg-transparent cursor-pointer"
+                      className="text-gray-400 hover:text-primary shrink-0 border-none bg-transparent cursor-pointer transition-colors"
                     >
                       {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                     </button>
                   </div>
 
-                  {errorPassword && <p className="text-action text-xs mt-1">{errorPassword}</p>}
-
-                  {/* Error */}
-                  {error && <p className="text-action text-xs mt-1">{error}</p>}
+                  {errorPassword && <p className="text-red-500 font-semibold text-xs mt-1.5">{errorPassword}</p>}
+                  {error && <p className="text-red-500 font-semibold text-xs mt-1.5">{error}</p>}
                 </div>
 
                 {/* Recordarme y olvidaste contraseña */}
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                  <label className="flex items-center gap-2 text-sm text-textMain cursor-pointer">
+                <div className="flex flex-row items-center justify-between gap-2 pt-1">
+                  <label className="flex items-center gap-2 text-sm text-gray-600 font-semibold cursor-pointer">
                     <input
                       type="checkbox"
                       checked={rememberMe}
                       onChange={(e) => setRememberMe(e.target.checked)}
-                      className="accent-primary"
+                      className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2 cursor-pointer"
                       autoComplete="off"
                     />
                     Recordarme
                   </label>
                   <Link
                     to="/forgot-password"
-                    className="text-sm text-primary font-medium hover:underline no-underline"
+                    className="text-sm text-primary font-bold hover:text-primary/80 hover:underline transition-all"
                   >
                     ¿Olvidaste tu contraseña?
                   </Link>
                 </div>
 
+                {/* Botón */}
+                <div className="pt-2">
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full bg-action text-white py-3.5 rounded-xl font-bold text-sm tracking-wide hover:opacity-90 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 disabled:opacity-60 disabled:pointer-events-none disabled:transform-none border-none cursor-pointer"
+                  >
+                    {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
+                  </button>
+                </div>
+
                 {/* Registro */}
-                <p className="text-center text-sm text-textMain">
+                <p className="text-center text-sm text-gray-600 font-medium mt-6">
                   ¿No tienes cuenta?{' '}
                   <Link
                     to="/register"
-                    className="text-primary font-semibold hover:underline no-underline"
+                    className="text-primary font-bold hover:text-primary/80 hover:underline transition-all ml-1"
                   >
                     Regístrate aquí
                   </Link>
                 </p>
-
-                {/* Botón */}
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full bg-action text-white py-2.5 rounded-xl font-semibold text-sm hover:opacity-90 transition-opacity disabled:opacity-60 border-none cursor-pointer"
-                >
-                  {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
-                </button>
               </form>
             </div>
           </div>
