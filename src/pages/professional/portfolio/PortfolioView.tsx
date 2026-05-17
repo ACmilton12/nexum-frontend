@@ -356,9 +356,11 @@ const PortfolioView = () => {
                   <div className="absolute -top-12 left-8">
                     {personalData?.avatar_url ? (
                       <img
-                        src={`${API_BASE_URL.replace('/api', '')}/storage/${
-                          personalData.avatar_url
-                        }`}
+                        src={
+                          personalData.avatar_url.startsWith('http')
+                            ? personalData.avatar_url
+                            : `${API_BASE_URL.replace('/api', '')}/storage/${personalData.avatar_url}`
+                        }
                         alt="Profile"
                         className="w-24 h-24 rounded-full border-4 border-white dark:border-slate-900 object-cover shadow-lg"
                       />
