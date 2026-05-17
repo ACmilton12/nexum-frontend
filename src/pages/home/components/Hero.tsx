@@ -91,7 +91,7 @@ export default function Hero({
                 { label: t('hero.filter_area') },
                 { label: t('hero.filter_skills') },
                 { label: t('hero.filter_order') }
-              ].map((filter, i) => (
+              ].map((_, i) => (
                 <button
                   key={i}
                   onClick={() => setCurrent(i)}

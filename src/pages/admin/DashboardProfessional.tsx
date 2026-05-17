@@ -222,7 +222,7 @@ const DashboardProfessional = () => {
     }
 
     fetchAll()
-  }, [])
+  }, [i18n.language, t])
 
   return (
     <div className="min-h-screen bg-background dark:bg-slate-900 flex flex-col transition-colors duration-300">

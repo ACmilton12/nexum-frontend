@@ -54,10 +54,10 @@ export default function NuevaHabilidadPanel({
     ? 'text-primary bg-primary/5 border-primary/10'
     : 'text-navbar bg-navbar/5 border-navbar/10'
 
-  const nivelesTecnicos: { key: NivelTecnico; desc: string }[] = [
-    { key: t('skills.basic') as NivelTecnico, desc: t('skills.basic_desc') },
-    { key: t('skills.intermediate') as NivelTecnico, desc: t('skills.intermediate_desc') },
-    { key: t('skills.advanced') as NivelTecnico, desc: t('skills.advanced_desc') }
+  const nivelesTecnicos: { key: NivelTecnico; label: string; desc: string }[] = [
+    { key: 'Básico', label: t('skills.basic', 'Básico'), desc: t('skills.basic_desc', 'Conceptos y uso guiado.') },
+    { key: 'Intermedio', label: t('skills.intermediate', 'Intermedio'), desc: t('skills.intermediate_desc', 'Implementación funcional en proyectos.') },
+    { key: 'Avanzado', label: t('skills.advanced', 'Avanzado'), desc: t('skills.advanced_desc', 'Uso profesional autónomo.') }
   ]
 
   const handleTipoChange = (t: TipoHabilidad) => {
@@ -412,7 +412,7 @@ export default function NuevaHabilidadPanel({
                       <span
                         className={`text-sm font-semibold ${nivelTecnico === n.key ? 'text-primary' : 'text-gray-700 dark:text-gray-200'}`}
                       >
-                        {n.key}
+                        {n.label}
                       </span>
                     </div>
                     <p className="text-xs text-gray-400 dark:text-gray-500 leading-tight">

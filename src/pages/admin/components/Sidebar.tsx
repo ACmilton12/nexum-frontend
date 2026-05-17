@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
 import {
   LayoutDashboard,
   Users,
@@ -19,20 +18,14 @@ import {
   Palette,
   BellRing,
   Menu,
-  X
+  X,
+  Eye
 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import useAuth from '../../../hooks/useAuth'
 
 interface SidebarProps {
   activeItem?: string
-}
-
-interface SidebarContentProps {
-  isAdmin: boolean
-  activeItem: string
-  isProfileOpen: boolean
-  setIsProfileOpen: (open: boolean) => void
-  onItemClick?: () => void
 }
 
 const SidebarContent = ({
@@ -41,28 +34,51 @@ const SidebarContent = ({
   isProfileOpen,
   setIsProfileOpen,
   onItemClick
-}: SidebarContentProps) => {
+}: {
+  isAdmin: boolean
+  activeItem: string
+  isProfileOpen: boolean
+  setIsProfileOpen: (open: boolean) => void
+  onItemClick?: () => void
+}) => {
   const { t } = useTranslation()
-
   const adminItems = [
-    { label: t('sidebar.dashboard'), icon: <LayoutDashboard size={18} />, path: '/admin' },
-    { label: t('sidebar.users'), icon: <Users size={18} />, path: '/admin/usuarios' },
-    { label: t('sidebar.categories'), icon: <Layers size={18} />, path: '/admin/categorias' },
-    { label: t('sidebar.audit'), icon: <Shield size={18} />, path: '/admin/auditoria' },
-    { label: t('sidebar.backups'), icon: <Database size={18} />, path: '/admin/backups' },
     {
-      label: t('sidebar.settings'),
+      label: t('sidebar.dashboard'),
+      icon: <LayoutDashboard size={18} />,
+      path: '/admin',
+      id: 'Dashboard'
+    },
+    {
+      label: t('sidebar.users_mgmt'),
+      icon: <Users size={18} />,
+      path: '/admin/usuarios',
+      id: 'Gestión Usuarios'
+    },
+    {
+      label: t('sidebar.categories'),
+      icon: <Layers size={18} />,
+      path: '/admin/categorias',
+      id: 'Categorías'
+    },
+    {
+      label: t('sidebar.audit'),
+      icon: <Shield size={18} />,
+      path: '/admin/auditoria',
+      id: 'Auditoría'
+    },
+    {
+      label: t('sidebar.backups'),
+      icon: <Database size={18} />,
+      path: '/admin/backups',
+      id: 'Copias de Seguridad'
+    },
+    {
+      label: t('sidebar.system_config'),
       icon: <Settings size={18} />,
-      path: '/admin/configuracion'
+      path: '/admin/configuracion',
+      id: 'Configuración del Sistema'
     }
-  ]
-
-  const professionalItems = [
-    { label: t('sidebar.dashboard'), icon: <LayoutDashboard size={18} />, path: '/dashboard' },
-    { label: t('sidebar.projects'), icon: <FolderOpen size={18} />, path: '/proyectos' },
-    { label: t('sidebar.skills'), icon: <Wrench size={18} />, path: '/profile/habilidades' },
-    { label: t('sidebar.experience'), icon: <Briefcase size={18} />, path: '/experiencia' },
-    { label: t('sidebar.certifications'), icon: <CheckCircle size={18} />, path: '/certificaciones' }
   ]
 
   return (
@@ -70,12 +86,12 @@ const SidebarContent = ({
       {isAdmin ? (
         adminItems.map((item) => (
           <Link
-            key={item.label}
+            key={item.id}
             to={item.path}
             onClick={onItemClick}
-            className={`flex items-center gap-3 px-4 py-3 text-sm transition-colors no-underline ${activeItem === item.label
+            className={`flex items-center gap-3 px-4 py-3 text-sm transition-colors no-underline ${activeItem === item.id
               ? 'bg-primary text-white font-medium'
-              : 'text-textMain hover:bg-gray-100'
+              : 'text-textMain dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
               }`}
           >
             {item.icon}
@@ -84,25 +100,72 @@ const SidebarContent = ({
         ))
       ) : (
         <div className="flex flex-col">
-          {professionalItems.map((item) => (
-            <Link
-              key={item.label}
-              to={item.path}
-              onClick={onItemClick}
-              className={`flex items-center gap-3 px-4 py-3 text-sm no-underline ${activeItem === item.label
-                ? 'bg-primary text-white font-medium'
-                : 'text-textMain hover:bg-gray-100'
-                }`}
-            >
-              {item.icon}
-              {item.label}
-            </Link>
-          ))}
+          <Link
+            to="/dashboard"
+            onClick={onItemClick}
+            className={`flex items-center gap-3 px-4 py-3 text-sm no-underline transition-colors ${activeItem === 'Dashboard'
+              ? 'bg-primary text-white font-medium'
+              : 'text-textMain dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
+              }`}
+          >
+            <LayoutDashboard size={18} /> {t('sidebar.dashboard')}
+          </Link>
+          <Link
+            to="/proyectos"
+            onClick={onItemClick}
+            className={`flex items-center gap-3 px-4 py-3 text-sm no-underline transition-colors ${activeItem === 'Proyectos'
+              ? 'bg-primary text-white font-medium'
+              : 'text-textMain dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
+              }`}
+          >
+            <FolderOpen size={18} /> {t('sidebar.projects')}
+          </Link>
+          <Link
+            to="/profile/habilidades"
+            onClick={onItemClick}
+            className={`flex items-center gap-3 px-4 py-3 text-sm no-underline transition-colors ${activeItem === 'Habilidades'
+              ? 'bg-primary text-white font-medium'
+              : 'text-textMain dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
+              }`}
+          >
+            <Wrench size={18} /> {t('sidebar.skills')}
+          </Link>
+          <Link
+            to="/experiencia"
+            onClick={onItemClick}
+            className={`flex items-center gap-3 px-4 py-3 text-sm no-underline transition-colors ${activeItem === 'Experiencia'
+              ? 'bg-primary text-white font-medium'
+              : 'text-textMain dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
+              }`}
+          >
+            <Briefcase size={18} /> {t('sidebar.experience')}
+          </Link>
+          <Link
+            to="/certificaciones"
+            onClick={onItemClick}
+            className={`flex items-center gap-3 px-4 py-3 text-sm no-underline transition-colors ${activeItem === 'Certificaciones'
+              ? 'bg-primary text-white font-medium'
+              : 'text-textMain dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
+              }`}
+          >
+            <CheckCircle size={18} /> {t('sidebar.certifications')}
+          </Link>
+          <Link
+            to="/portfolio"
+            onClick={onItemClick}
+            className={`flex items-center gap-3 px-4 py-3 text-sm no-underline transition-colors ${activeItem === 'Vista Portafolio'
+              ? 'bg-primary text-white font-medium'
+              : 'text-textMain dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
+              }`}
+          >
+            <Eye size={18} /> Vista Portafolio
+          </Link>
 
-          {/* PERFIL CON DESPLEGABLE */}
           <button
             onClick={() => setIsProfileOpen(!isProfileOpen)}
-            className={`flex items-center justify-between w-full px-4 py-3 text-sm transition-colors border-none bg-transparent cursor-pointer ${isProfileOpen ? 'text-primary font-bold' : 'text-textMain hover:bg-gray-100'
+            className={`flex items-center justify-between w-full px-4 py-3 text-sm transition-colors border-none bg-transparent cursor-pointer ${isProfileOpen
+              ? 'text-primary font-bold'
+              : 'text-textMain dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
               }`}
           >
             <div className="flex items-center gap-3">
@@ -116,33 +179,43 @@ const SidebarContent = ({
           </button>
 
           {isProfileOpen && (
-            <div className="bg-gray-50 flex flex-col border-l-4 border-primary/20 ml-2 animate-fadeIn">
+            <div className="bg-gray-50 dark:bg-gray-800 flex flex-col border-l-4 border-primary/20 ml-2 animate-fadeIn">
               <Link
                 to="/profile/personal-data"
                 onClick={onItemClick}
-                className={`flex items-center gap-3 pl-8 pr-4 py-2.5 text-xs no-underline ${activeItem === t('sidebar.personalData')
-                  ? 'text-primary font-bold bg-primary/5'
-                  : 'text-gray-500 hover:bg-gray-100'
+                className={`flex items-center gap-3 pl-8 pr-4 py-2.5 text-xs no-underline transition-colors ${activeItem === 'Datos Personales'
+                  ? 'text-primary font-bold bg-primary/5 dark:bg-primary/10'
+                  : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                   }`}
               >
-                <IdCard size={14} /> {t('sidebar.personalData')}
+                <IdCard size={14} /> {t('sidebar.personal_data')}
               </Link>
               <Link
                 to="/profile/links"
                 onClick={onItemClick}
-                className={`flex items-center gap-3 pl-8 pr-4 py-2.5 text-xs no-underline ${activeItem === t('sidebar.links')
-                  ? 'text-primary font-bold bg-primary/5'
-                  : 'text-gray-500 hover:bg-gray-100'
+                className={`flex items-center gap-3 pl-8 pr-4 py-2.5 text-xs no-underline transition-colors ${activeItem === 'Enlaces'
+                  ? 'text-primary font-bold bg-primary/5 dark:bg-primary/10'
+                  : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                   }`}
               >
-                <Link2 size={14} /> {t('sidebar.links')}
+                <Link2 size={14} /> Enlaces
+              </Link>
+              <Link
+                to="/profile/privacy"
+                onClick={onItemClick}
+                className={`flex items-center gap-3 pl-8 pr-4 py-2.5 text-xs no-underline transition-colors ${activeItem === 'Privacidad'
+                  ? 'text-primary font-bold bg-primary/5 dark:bg-primary/10'
+                  : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  }`}
+              >
+                <Shield size={14} /> Privacidad
               </Link>
               <Link
                 to="/profile/appearance"
                 onClick={onItemClick}
-                className={`flex items-center gap-3 pl-8 pr-4 py-2.5 text-xs no-underline ${activeItem === t('sidebar.appearance')
-                  ? 'text-primary font-bold bg-primary/5'
-                  : 'text-gray-500 hover:bg-gray-100'
+                className={`flex items-center gap-3 pl-8 pr-4 py-2.5 text-xs no-underline transition-colors ${activeItem === 'Apariencia'
+                  ? 'text-primary font-bold bg-primary/5 dark:bg-primary/10'
+                  : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                   }`}
               >
                 <Palette size={14} /> {t('sidebar.appearance')}
@@ -150,9 +223,9 @@ const SidebarContent = ({
               <Link
                 to="/profile/notifications"
                 onClick={onItemClick}
-                className={`flex items-center gap-3 pl-8 pr-4 py-2.5 text-xs no-underline ${activeItem === t('sidebar.notifications')
-                  ? 'text-primary font-bold bg-primary/5'
-                  : 'text-gray-500 hover:bg-gray-100'
+                className={`flex items-center gap-3 pl-8 pr-4 py-2.5 text-xs no-underline transition-colors ${activeItem === 'Notificaciones'
+                  ? 'text-primary font-bold bg-primary/5 dark:bg-primary/10'
+                  : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                   }`}
               >
                 <BellRing size={14} /> {t('sidebar.notifications')}
@@ -168,23 +241,15 @@ const SidebarContent = ({
 const Sidebar = ({ activeItem = 'Dashboard' }: SidebarProps) => {
   const { isAdmin } = useAuth()
   const { pathname } = useLocation()
-  const { t } = useTranslation()
 
   const [isProfileOpen, setIsProfileOpen] = useState(
-    activeItem.includes(t('sidebar.profile')) ||
-    [
-      t('sidebar.personalData'),
-      t('sidebar.links'),
-      t('sidebar.appearance'),
-      t('sidebar.notifications')
-    ].includes(activeItem) ||
+    activeItem.includes('Perfil') ||
+    ['Datos Personales', 'Enlaces', 'Privacidad', 'Apariencia', 'Notificaciones'].includes(activeItem) ||
     pathname.startsWith('/profile')
   )
 
-  // Estado del menú hamburguesa (solo móvil)
   const [isMobileOpen, setIsMobileOpen] = useState(false)
 
-  // Bloquear scroll del body cuando el menú móvil está abierto
   useEffect(() => {
     if (isMobileOpen) {
       document.body.style.overflow = 'hidden'
@@ -202,7 +267,6 @@ const Sidebar = ({ activeItem = 'Dashboard' }: SidebarProps) => {
 
   return (
     <>
-      {/* ── BOTÓN HAMBURGUESA (solo móvil) ── */}
       <button
         onClick={() => setIsMobileOpen(true)}
         className="md:hidden fixed top-3 left-4 z-40 bg-navbar text-white p-2 rounded-md shadow-md border-none cursor-pointer"
@@ -211,7 +275,6 @@ const Sidebar = ({ activeItem = 'Dashboard' }: SidebarProps) => {
         <Menu size={20} />
       </button>
 
-      {/* ── OVERLAY oscuro al abrir en móvil ── */}
       {isMobileOpen && (
         <div
           className="md:hidden fixed inset-0 bg-black/50 z-40 transition-opacity"
@@ -219,12 +282,10 @@ const Sidebar = ({ activeItem = 'Dashboard' }: SidebarProps) => {
         />
       )}
 
-      {/* ── SIDEBAR MÓVIL (drawer desde la izquierda) ── */}
       <div
-        className={`md:hidden fixed top-0 left-0 h-full w-64 bg-white border-r border-gray-200 z-50 flex flex-col overflow-y-auto shadow-xl transform transition-transform duration-300 ${isMobileOpen ? 'translate-x-0' : '-translate-x-full'
+        className={`md:hidden fixed top-0 left-0 h-full w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 z-50 flex flex-col overflow-y-auto shadow-xl transform transition-transform duration-300 ${isMobileOpen ? 'translate-x-0' : '-translate-x-full'
           }`}
       >
-        {/* Header del drawer móvil */}
         <div className="flex items-center justify-between px-4 py-3 bg-navbar text-white">
           <span className="font-bold text-base tracking-wide">NEXUM</span>
           <button
@@ -245,8 +306,7 @@ const Sidebar = ({ activeItem = 'Dashboard' }: SidebarProps) => {
         />
       </div>
 
-      {/* ── SIDEBAR DESKTOP (fijo en la izquierda, visible desde md) ── */}
-      <div className="hidden md:flex w-64 bg-white border-r border-gray-200 flex-shrink-0 self-stretch overflow-y-auto">
+      <div className="hidden md:flex w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 flex-shrink-0 self-stretch overflow-y-auto transition-colors">
         <SidebarContent
           isAdmin={isAdmin}
           activeItem={activeItem}

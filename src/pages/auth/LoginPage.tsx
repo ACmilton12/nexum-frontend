@@ -24,6 +24,18 @@ const LoginPage = () => {
   const handleCloseToast = useCallback(() => setToast(null), [])
   const navigate = useNavigate()
 
+  const [idx, setIdx] = useState(0);
+  const slides = [
+    { img: prueba11, title: "Tu portafolio profesional ", desc: "Conecta con oportunidades y muestra tu talento al mundo" },
+    { img: prueba09, title: "Proyectos que hablan por ti", desc: "Sube tu trabajo y déjalo brillar ante los empleadores" },
+    { img: prueba10, title: "Verificado por UMSS · FCyT", desc: "Tu perfil con respaldo académico real" },
+  ];
+
+  useEffect(() => {
+    const t = setInterval(() => setIdx(i => (i + 1) % slides.length), 5000);
+    return () => clearInterval(t);
+  }, [slides.length]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setErrorEmail('')
@@ -89,8 +101,8 @@ const LoginPage = () => {
           navigate('/home')
         }
       }, 1200);
-    } catch (err: any) {
-      let rawMessage = err?.message || "Credenciales inválidas. Verifica tus datos e inténtalo nuevamente.";
+    } catch (err: unknown) {
+      let rawMessage = (err as Error)?.message || "Credenciales inválidas. Verifica tus datos e inténtalo nuevamente.";
 
       // Traducción de errores comunes del backend
       if (
@@ -148,26 +160,12 @@ const LoginPage = () => {
           <div className="hidden md:flex w-full md:w-1/2 rounded-none rounded-r-[120px] bg-primary flex-col items-center justify-center p-10 text-white shadow-2xl relative z-10">
 
             {/* Carrusel */}
-            {(() => {
-              const [idx, setIdx] = useState(0);
-              const slides = [
-                { img: prueba11, title: "Tu portafolio profesional ", desc: "Conecta con oportunidades y muestra tu talento al mundo" },
-                { img: prueba09, title: "Proyectos que hablan por ti", desc: "Sube tu trabajo y déjalo brillar ante los empleadores" },
-                { img: prueba10, title: "Verificado por UMSS · FCyT", desc: "Tu perfil con respaldo académico real" },
-              ];
-
-              useEffect(() => {
-                const t = setInterval(() => setIdx(i => (i + 1) % slides.length), 5000);
-                return () => clearInterval(t);
-              }, []);
-
-              return (
-                <div className="flex flex-col items-center w-full">
-                  <img
-                    key={idx}
-                    src={slides[idx].img}
-                    alt="Ilustración Nexum"
-                    className="w-48 h-48 lg:w-64 lg:h-64 object-contain mb-8 transition-opacity duration-500"
+            <div className="flex flex-col items-center w-full">
+              <img
+                key={idx}
+                src={slides[idx].img}
+                alt="Ilustración Nexum"
+                className="w-48 h-48 lg:w-64 lg:h-64 object-contain mb-8 transition-opacity duration-500"
                   />
                   <h2 className="text-xl lg:text-2xl font-bold text-center mb-2">
                     {slides[idx].title}
@@ -193,9 +191,7 @@ const LoginPage = () => {
                       />
                     ))}
                   </div>
-                </div>
-              );
-            })()}
+            </div>
 
             <div className="flex items-center justify-end w-full mt-4">
               <span className="text-white font-bold text-lg">Nexum</span>

@@ -136,8 +136,8 @@ function Privacy() {
       setOriginalShowCertifications(showCertifications);
       setLastUpdated(new Date());
       setToast({ message: 'Privacidad actualizada con éxito', type: 'success' });
-    } catch (error: any) {
-      setToast({ message: 'Error al actualizar: ' + error.message, type: 'error' });
+    } catch (error: unknown) {
+      setToast({ message: 'Error al actualizar: ' + (error as Error).message, type: 'error' });
     } finally {
       setIsSaving(false);
     }

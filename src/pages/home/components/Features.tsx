@@ -1,9 +1,9 @@
-import { useState } from 'react'
+
 import { useTranslation } from 'react-i18next'
 import type { Feature } from '../types'
 
 function FeatureCard({ feat }: { feat: Feature }) {
-  const [hovered, setHovered] = useState(false)
+
   return (
     <div className="group relative bg-white rounded-[24px] p-8 sm:p-10 border border-gray-200 shadow-sm hover:shadow-xl hover:border-blue-300 hover:-translate-y-1 transition-all duration-300 overflow-hidden z-10">
       {/* Glow effect on hover */}

@@ -22,6 +22,7 @@ export default function SearchPage() {
 
   const q = searchParams.get('q') || ''
   const area = searchParams.get('area') || ''
+  const skillsStr = searchParams.getAll('skills').join(',')
   const skills = searchParams.getAll('skills')
   const page = parseInt(searchParams.get('page') || '1')
 
@@ -44,7 +45,8 @@ export default function SearchPage() {
     } finally {
       setLoading(false)
     }
-  }, [q, area, JSON.stringify(skills), page])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [q, area, skillsStr, page, t])
 
   useEffect(() => {
     fetchResults()

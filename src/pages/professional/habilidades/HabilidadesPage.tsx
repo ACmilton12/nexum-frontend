@@ -63,7 +63,7 @@ export default function HabilidadesPage() {
         setLoadingSkills(false)
       }
     })()
-  }, [])
+  }, [t])
 
   useEffect(() => {
     if (!mostrandoPanel || Object.keys(catalogoPorCategoria).length > 0) return
@@ -92,7 +92,7 @@ export default function HabilidadesPage() {
           setLoadingCatalog(false)
         }
       })()
-  }, [mostrandoPanel, catalogoPorCategoria])
+  }, [mostrandoPanel, catalogoPorCategoria, t])
 
   const handleGuardarNuevo = async (skillId: number, nivel: NivelHabilidad | null) => {
     setSavingNew(true)
