@@ -271,7 +271,7 @@ function Links() {
 
   if (loading) {
     return (
-      <div className="h-full bg-background flex flex-col font-sans overflow-hidden">
+      <div className="flex-1 w-full bg-background dark:bg-slate-900 flex flex-col font-sans overflow-hidden transition-colors duration-300">
         <div className="flex flex-1 overflow-hidden relative">
           <Sidebar activeItem="Enlaces" />
           <main className="flex-1 flex flex-col lg:flex-row overflow-hidden">
@@ -295,25 +295,25 @@ function Links() {
   ];
 
   return (
-    <div className="h-full bg-background flex flex-col overflow-hidden">
+    <div className="flex-1 w-full bg-background dark:bg-slate-900 flex flex-col overflow-hidden transition-colors duration-300">
       <div className="flex flex-1 overflow-hidden">
         <Sidebar activeItem="Enlaces" />
 
         <main className="flex-1 flex flex-col lg:flex-row overflow-hidden">
           <div className="flex-1 p-4 pl-14 sm:pl-6 md:p-6 overflow-y-auto">
             <div className="mb-6">
-              <h1 className="text-xl sm:text-2xl font-bold text-textMain mb-1">
+              <h1 className="text-xl sm:text-2xl font-bold text-textMain dark:text-white mb-1">
                 Enlaces del Portafolio
               </h1>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-500 dark:text-gray-400">
                 Pega tus enlaces (LinkedIn, GitHub, Kaggle, etc.) y los detectaremos automáticamente.
               </p>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden transition-colors">
               <div className="p-6 sm:p-8">
                 <form onSubmit={handleAddLink} className="flex gap-2 mb-6">
-                  <div className="flex-1 flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 bg-gray-50/50 hover:border-gray-300 transition-colors focus-within:border-primary focus-within:bg-white">
+                  <div className="flex-1 flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-slate-900 hover:border-gray-300 dark:hover:border-gray-600 transition-colors focus-within:border-primary dark:focus-within:border-blue-500 focus-within:bg-white dark:focus-within:bg-slate-800">
                     <Globe size={14} className="text-gray-400 shrink-0" />
                     <input
                       type="url"
@@ -321,7 +321,7 @@ function Links() {
                       onChange={(e) => setNewUrl(e.target.value)}
                       placeholder="Pega la URL de tu red o sitio web..."
                       disabled={isAdding || additionalLinks.length >= 10}
-                      className="flex-1 outline-none text-sm text-gray-700 placeholder:text-gray-300 bg-transparent disabled:opacity-60"
+                      className="flex-1 outline-none text-sm text-gray-700 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-500 bg-transparent disabled:opacity-60"
                       required
                     />
                   </div>
@@ -340,7 +340,7 @@ function Links() {
                 </form>
 
                 {additionalLinks.length >= 10 && (
-                  <div className="flex items-center gap-2 mb-4 p-2.5 bg-amber-50 border border-amber-200 rounded-lg text-amber-700 text-xs font-medium">
+                  <div className="flex items-center gap-2 mb-4 p-2.5 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg text-amber-700 dark:text-amber-400 text-xs font-medium transition-colors">
                     <AlertTriangle size={13} className="shrink-0" />
                     Límite de 10 enlaces adicionales alcanzado.
                   </div>
@@ -353,11 +353,11 @@ function Links() {
                   </div>
                 ) : allLinks.length === 0 ? (
                   <div className="text-center py-8">
-                    <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-3">
-                      <Link2 size={20} className="text-gray-300" />
+                    <div className="w-12 h-12 rounded-full bg-gray-100 dark:bg-slate-700 flex items-center justify-center mx-auto mb-3 transition-colors">
+                      <Link2 size={20} className="text-gray-300 dark:text-gray-500" />
                     </div>
                     <p className="text-sm text-gray-400 font-medium">Sin enlaces configurados</p>
-                    <p className="text-xs text-gray-300 mt-0.5">
+                    <p className="text-xs text-gray-300 dark:text-gray-500 mt-0.5">
                       Pega un enlace arriba y se detectará la plataforma automáticamente.
                     </p>
                   </div>
@@ -368,21 +368,21 @@ function Links() {
                       return (
                         <div
                           key={link.id}
-                          className="group flex items-center gap-4 p-3 rounded-xl border border-gray-100 bg-white hover:border-gray-200 hover:shadow-sm transition-all"
+                          className="group flex items-center gap-4 p-3 rounded-xl border border-gray-100 dark:border-gray-700 bg-white dark:bg-slate-900 hover:border-gray-200 dark:hover:border-gray-600 hover:shadow-sm transition-all"
                         >
                           <div className={`w-10 h-10 flex items-center justify-center rounded-full bg-slate-900 ${meta.color} shadow-sm shrink-0`}>
                             {meta.svg}
                           </div>
 
                           <div className="flex-1 flex flex-col justify-center min-w-0">
-                            <span className="text-[11px] font-bold text-gray-800 uppercase tracking-wider mb-0.5">
+                            <span className="text-[11px] font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider mb-0.5">
                               {link.platform || 'Sitio Web'}
                             </span>
                             <a
                               href={link.url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-sm text-gray-500 hover:text-primary truncate transition-colors flex items-center gap-1.5 no-underline"
+                              className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-blue-400 truncate transition-colors flex items-center gap-1.5 no-underline"
                               title={link.url}
                             >
                               <span className="truncate">{link.url}</span>
@@ -393,7 +393,7 @@ function Links() {
                           <button
                             onClick={() => handleDeleteLink(link.id, link.type)}
                             disabled={deletingId === link.id}
-                            className="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors disabled:opacity-60 border-none bg-transparent cursor-pointer shrink-0"
+                            className="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors disabled:opacity-60 border-none bg-transparent cursor-pointer shrink-0"
                             title="Eliminar"
                           >
                             {deletingId === link.id ? (

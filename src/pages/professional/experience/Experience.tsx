@@ -632,8 +632,10 @@ function Experience() {
             </div>
           </div>
 
-          <aside className="w-full lg:w-72 p-6 bg-white dark:bg-slate-900 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-800 shrink-0 overflow-y-auto transition-colors duration-300">
-            <RightPanelContent />
+          <aside className="w-[292px] w-full lg:w-72 shrink-0 bg-white dark:bg-slate-900 p-6 flex flex-col gap-6 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-800 overflow-y-auto transition-colors duration-300">
+            <div className="flex flex-col gap-3">
+              <Calendar />
+            </div>
           </aside>
         </main>
 

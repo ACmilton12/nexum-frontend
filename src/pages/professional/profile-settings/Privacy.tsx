@@ -159,7 +159,7 @@ function Privacy() {
 
   if (loading) {
     return (
-      <div className="h-full bg-background flex flex-col font-sans overflow-hidden">
+      <div className="flex-1 w-full bg-background dark:bg-slate-900 flex flex-col font-sans overflow-hidden transition-colors duration-300">
         <div className="flex flex-1 overflow-hidden relative">
           <Sidebar activeItem="Privacidad" />
           <main className="flex-1 flex flex-col lg:flex-row overflow-hidden">
@@ -181,7 +181,7 @@ function Privacy() {
     : 'No disponible';
 
   return (
-    <div className="h-full bg-background flex flex-col overflow-hidden">
+    <div className="flex-1 w-full bg-background dark:bg-slate-900 flex flex-col overflow-hidden transition-colors duration-300">
       <div className="flex flex-1 overflow-hidden">
         <Sidebar activeItem="Privacidad" />
 
@@ -195,10 +195,10 @@ function Privacy() {
                   <Clock size={16} />
                   <span>Última actualización: {formattedDate}</span>
                 </div>
-                <h1 className="text-3xl font-bold text-textMain mb-2">
+                <h1 className="text-3xl font-bold text-textMain dark:text-white mb-2">
                   Privacidad
                 </h1>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
                   Gestiona quién puede ver tu portafolio y qué información compartes.
                 </p>
               </div>
@@ -207,7 +207,7 @@ function Privacy() {
                 <button 
                   onClick={handleDiscard}
                   disabled={!hasChanges || isSaving}
-                  className="px-6 py-2.5 rounded-full border border-gray-300 text-textMain bg-transparent hover:bg-gray-100 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-6 py-2.5 rounded-full border border-gray-300 dark:border-gray-600 text-textMain dark:text-gray-200 bg-transparent hover:bg-gray-100 dark:hover:bg-slate-800 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Descartar
                 </button>
@@ -224,26 +224,26 @@ function Privacy() {
 
             <div className="space-y-6">
               {/* Card 1: Visibilidad Global */}
-              <div className="bg-white rounded-xl p-6 sm:p-8 shadow-sm border border-gray-100">
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-6 sm:p-8 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors">
                 <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
                   <div className="flex gap-4">
-                    <div className="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center shrink-0">
+                    <div className="w-12 h-12 rounded-full border border-gray-200 dark:border-gray-700 dark:bg-slate-900 flex items-center justify-center shrink-0">
                       <Globe className="text-primary" size={24} />
                     </div>
                     <div>
-                      <h3 className="text-lg font-bold text-textMain mb-1">
+                      <h3 className="text-lg font-bold text-textMain dark:text-white mb-1">
                         Visibilidad Global
                       </h3>
-                      <p className="text-sm text-gray-500 mb-3 max-w-xl">
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mb-3 max-w-xl">
                         Controla si tu portafolio puede ser visto por cualquier persona con el enlace o si está completamente oculto.
                       </p>
                       {isPublic ? (
-                        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#edf7ed] border border-[#c3e6cb] text-[#2e7d32] text-xs font-semibold">
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#edf7ed] dark:bg-green-900/20 border border-[#c3e6cb] dark:border-green-800/50 text-[#2e7d32] dark:text-green-400 text-xs font-semibold">
                           <CheckCircle size={15} />
                           Público · Visible
                         </div>
                       ) : (
-                        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-100 border border-gray-200 text-gray-600 text-xs font-semibold">
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-100 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 text-xs font-semibold">
                           <Lock size={15} />
                           Privado · Oculto
                         </div>
@@ -262,28 +262,28 @@ function Privacy() {
               </div>
 
               {/* Card 2: Link público */}
-              <div className="bg-white rounded-xl p-6 sm:p-8 shadow-sm border border-gray-100">
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-6 sm:p-8 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors">
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <div className="w-12 h-12 rounded-full border border-blue-100 bg-blue-50 flex items-center justify-center shrink-0">
-                    <Link2 className="text-primary" size={24} />
+                  <div className="w-12 h-12 rounded-full border border-blue-100 dark:border-blue-900/50 bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center shrink-0">
+                    <Link2 className="text-primary dark:text-blue-400" size={24} />
                   </div>
                   
                   <div className="flex-1">
-                    <h3 className="text-lg font-bold text-textMain mb-1">
+                    <h3 className="text-lg font-bold text-textMain dark:text-white mb-1">
                       Link público de tu portafolio
                     </h3>
-                    <p className="text-sm text-gray-500 mb-4">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
                       Comparte este enlace con reclutadores o quien quieras
                     </p>
                     
                     <div className="flex flex-col sm:flex-row gap-3">
-                      <div className={`flex-1 px-4 py-2.5 rounded-lg border text-sm flex items-center overflow-hidden ${!isPublic ? 'bg-gray-50 border-gray-200 text-gray-400' : 'bg-gray-50 border-gray-200 text-gray-600'}`}>
+                      <div className={`flex-1 px-4 py-2.5 rounded-lg border text-sm flex items-center overflow-hidden transition-colors ${!isPublic ? 'bg-gray-50 dark:bg-slate-900 border-gray-200 dark:border-gray-700 text-gray-400 dark:text-gray-600' : 'bg-gray-50 dark:bg-slate-900 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300'}`}>
                         {isPublic && portfolioId ? (
                           <a 
                             href={profileUrl}
                             target="_blank" 
                             rel="noopener noreferrer"
-                            className="hover:text-action hover:underline truncate transition-colors"
+                            className="hover:text-action dark:hover:text-blue-400 hover:underline truncate transition-colors"
                             title="Abrir portafolio en una nueva pestaña"
                           >
                             {profileUrl}
@@ -297,7 +297,7 @@ function Privacy() {
                         onClick={handleCopy}
                         disabled={!isPublic || !portfolioId || copied}
                         className={`flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg text-sm font-medium transition-colors sm:w-40 border-none cursor-pointer
-                          ${!isPublic || !portfolioId ? 'bg-[#7a96b8] text-white opacity-80 cursor-not-allowed'
+                          ${!isPublic || !portfolioId ? 'bg-[#7a96b8] dark:bg-slate-700 text-white dark:text-gray-400 opacity-80 cursor-not-allowed'
                           : copied ? 'bg-[#3b7c2b] text-white' : 'bg-primary text-white hover:opacity-90'}`}
                       >
                         {copied ? (
@@ -313,7 +313,7 @@ function Privacy() {
                     </div>
 
                     {!isPublic && (
-                      <div className="mt-5 p-3.5 bg-[#fef9f0] border-l-4 border-[#f0a04b] text-[#8a613c] text-sm font-medium">
+                      <div className="mt-5 p-3.5 bg-[#fef9f0] dark:bg-amber-900/10 border-l-4 border-[#f0a04b] text-[#8a613c] dark:text-amber-500 text-sm font-medium transition-colors">
                         Activa la visibilidad pública para poder compartir tu portafolio
                       </div>
                     )}
@@ -322,30 +322,30 @@ function Privacy() {
               </div>
 
               {/* Card 3: Privacidad por Sección */}
-              <div className="bg-white rounded-xl p-6 sm:p-8 shadow-sm border border-gray-100">
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-6 sm:p-8 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors">
                 <div className="mb-6">
-                  <h3 className="text-xl font-bold text-textMain mb-2">
+                  <h3 className="text-xl font-bold text-textMain dark:text-white mb-2">
                     Privacidad por Sección
                   </h3>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
                     Activa o desactiva secciones específicas. Solo aplica cuando el portafolio es público.
                   </p>
                 </div>
 
-                <div className="border border-gray-100 rounded-xl overflow-hidden mb-6">
-                  <div className="flex items-center justify-between gap-3 p-4 sm:p-5 border-b border-gray-100">
+                <div className="border border-gray-100 dark:border-gray-700 rounded-xl overflow-hidden mb-6 transition-colors">
+                  <div className="flex items-center justify-between gap-3 p-4 sm:p-5 border-b border-gray-100 dark:border-gray-700 transition-colors">
                     <div className="flex items-center gap-3 sm:gap-4 min-w-0">
-                      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shrink-0 bg-blue-50">
-                        <Folder size={16} className="text-blue-600" />
+                      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shrink-0 bg-blue-50 dark:bg-slate-900">
+                        <Folder size={16} className="text-blue-600 dark:text-blue-400" />
                       </div>
                       <div className="min-w-0">
                         <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                          <h4 className="font-semibold text-textMain text-sm">Proyectos</h4>
-                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider ${showProjects ? 'bg-green-100/60 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
+                          <h4 className="font-semibold text-textMain dark:text-white text-sm">Proyectos</h4>
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider transition-colors ${showProjects ? 'bg-green-100/60 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-gray-100 dark:bg-slate-700 text-gray-500 dark:text-gray-400'}`}>
                             {showProjects ? 'VISIBLE' : 'OCULTO'}
                           </span>
                         </div>
-                        <p className="text-xs text-gray-500 truncate">Repositorios y proyectos destacados</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">Repositorios y proyectos destacados</p>
                       </div>
                     </div>
                     <div className="shrink-0">
@@ -353,19 +353,19 @@ function Privacy() {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between gap-3 p-4 sm:p-5 border-b border-gray-100">
+                  <div className="flex items-center justify-between gap-3 p-4 sm:p-5 border-b border-gray-100 dark:border-gray-700 transition-colors">
                     <div className="flex items-center gap-3 sm:gap-4 min-w-0">
-                      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shrink-0 bg-orange-50">
-                        <Star size={16} className="text-orange-500" />
+                      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shrink-0 bg-orange-50 dark:bg-slate-900">
+                        <Star size={16} className="text-orange-500 dark:text-orange-400" />
                       </div>
                       <div className="min-w-0">
                         <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                          <h4 className="font-semibold text-textMain text-sm">Habilidades</h4>
-                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider ${showSkills ? 'bg-green-100/60 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
+                          <h4 className="font-semibold text-textMain dark:text-white text-sm">Habilidades</h4>
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider transition-colors ${showSkills ? 'bg-green-100/60 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-gray-100 dark:bg-slate-700 text-gray-500 dark:text-gray-400'}`}>
                             {showSkills ? 'VISIBLE' : 'OCULTO'}
                           </span>
                         </div>
-                        <p className="text-xs text-gray-500 truncate">Tecnologías y competencias técnicas</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">Tecnologías y competencias técnicas</p>
                       </div>
                     </div>
                     <div className="shrink-0">
@@ -373,19 +373,19 @@ function Privacy() {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between gap-3 p-4 sm:p-5 border-b border-gray-100">
+                  <div className="flex items-center justify-between gap-3 p-4 sm:p-5 border-b border-gray-100 dark:border-gray-700 transition-colors">
                     <div className="flex items-center gap-3 sm:gap-4 min-w-0">
-                      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shrink-0 bg-purple-50">
-                        <Briefcase size={16} className="text-purple-600" />
+                      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shrink-0 bg-purple-50 dark:bg-slate-900">
+                        <Briefcase size={16} className="text-purple-600 dark:text-purple-400" />
                       </div>
                       <div className="min-w-0">
                         <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                          <h4 className="font-semibold text-textMain text-sm">Experiencia</h4>
-                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider ${showExperience ? 'bg-green-100/60 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
+                          <h4 className="font-semibold text-textMain dark:text-white text-sm">Experiencia</h4>
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider transition-colors ${showExperience ? 'bg-green-100/60 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-gray-100 dark:bg-slate-700 text-gray-500 dark:text-gray-400'}`}>
                             {showExperience ? 'VISIBLE' : 'OCULTO'}
                           </span>
                         </div>
-                        <p className="text-xs text-gray-500 truncate">Historial laboral y roles</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">Historial laboral y roles</p>
                       </div>
                     </div>
                     <div className="shrink-0">
@@ -395,17 +395,17 @@ function Privacy() {
 
                   <div className="flex items-center justify-between gap-3 p-4 sm:p-5">
                     <div className="flex items-center gap-3 sm:gap-4 min-w-0">
-                      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shrink-0 bg-green-50">
-                        <Award size={16} className="text-green-600" />
+                      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shrink-0 bg-green-50 dark:bg-slate-900">
+                        <Award size={16} className="text-green-600 dark:text-green-400" />
                       </div>
                       <div className="min-w-0">
                         <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                          <h4 className="font-semibold text-textMain text-sm">Certificaciones</h4>
-                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider ${showCertifications ? 'bg-green-100/60 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
+                          <h4 className="font-semibold text-textMain dark:text-white text-sm">Certificaciones</h4>
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider transition-colors ${showCertifications ? 'bg-green-100/60 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-gray-100 dark:bg-slate-700 text-gray-500 dark:text-gray-400'}`}>
                             {showCertifications ? 'VISIBLE' : 'OCULTO'}
                           </span>
                         </div>
-                        <p className="text-xs text-gray-500 truncate">Cursos y certificados obtenidos</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">Cursos y certificados obtenidos</p>
                       </div>
                     </div>
                     <div className="shrink-0">
@@ -414,7 +414,7 @@ function Privacy() {
                   </div>
                 </div>
 
-                <div className="flex gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100 text-gray-600">
+                <div className="flex gap-3 p-4 bg-gray-50 dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-gray-700 text-gray-600 dark:text-gray-400 transition-colors">
                   <Info className="shrink-0 mt-0.5" size={18} />
                   <p className="text-sm">
                     Las secciones ocultas se omiten completamente del servidor. Si tu perfil es privado, la configuración global anulará estos valores y devolverá un error 404 a todos los visitantes.
