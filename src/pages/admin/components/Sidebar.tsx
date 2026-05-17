@@ -15,7 +15,6 @@ import {
   ChevronDown,
   IdCard,
   Link2,
-  Palette,
   BellRing,
   Menu,
   X,
