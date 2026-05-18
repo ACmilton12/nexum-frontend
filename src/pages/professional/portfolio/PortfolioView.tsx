@@ -357,8 +357,8 @@ const PortfolioView = () => {
                     {personalData?.avatar_url ? (
                       <img
                         src={
-                          personalData.avatar_url.startsWith('http')
-                            ? personalData.avatar_url
+                          personalData.avatar_url.includes('http')
+                            ? personalData.avatar_url.trim()
                             : `${API_BASE_URL.replace('/api', '')}/storage/${personalData.avatar_url}`
                         }
                         alt="Profile"
