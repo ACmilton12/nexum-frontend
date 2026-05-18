@@ -6,13 +6,19 @@ import type { GlobalStats } from '../types'
 export default function Hero({
   stats,
   onSearch: _onSearch,
+  searchTerm: externalSearchTerm = ''
 }: {
   stats: GlobalStats;
   onSearch?: (term: string) => void;
+  searchTerm?: string;
 }) {
   const { t } = useTranslation()
   const [current, setCurrent] = useState(0)
-  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTerm, setSearchTerm] = useState(externalSearchTerm)
+
+  useEffect(() => {
+    setSearchTerm(externalSearchTerm)
+  }, [externalSearchTerm])
 
   const slides = [
     { color: '#C8102E' },

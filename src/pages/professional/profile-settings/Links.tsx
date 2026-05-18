@@ -170,13 +170,48 @@ function Links() {
 
   const handleAddLink = async (e: React.FormEvent) => {
     e.preventDefault();
-    const trimmed = newUrl.trim();
+    let trimmed = newUrl.trim();
     if (!trimmed) return;
     
-    setIsAdding(true);
+    // Regex para validar un dominio real (ej. pagina.com, www.pagina.bo, https://pagina.org)
+    const domainRegex = /^(?:https?:\/\/)?(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{2,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/;
     
+    if (!domainRegex.test(trimmed)) {
+      setToast({ message: 'Por favor, ingresa un enlace válido con dominio (ej. tusitio.com)', type: 'error' });
+      return;
+    }
+
+    // Autocompletar protocolo si el usuario no lo ingresó
+    if (!/^https?:\/\//i.test(trimmed)) {
+      trimmed = `https://${trimmed}`;
+    }
+
     const isLinkedin = trimmed.includes('linkedin.com');
     const isGithub = trimmed.includes('github.com');
+
+    // 1. Validar que la URL no esté duplicada exactamente
+    const allExistingUrls = [
+      mainLinks.linkedin,
+      mainLinks.github,
+      ...additionalLinks.map(l => l.url)
+    ].filter(Boolean).map(u => u.toLowerCase());
+
+    if (allExistingUrls.includes(trimmed.toLowerCase())) {
+      setToast({ message: 'Este enlace ya ha sido registrado previamente', type: 'error' });
+      return;
+    }
+
+    // 2. Validar que no se dupliquen las plataformas principales (Github/LinkedIn) si ya existen
+    if (isLinkedin && mainLinks.linkedin) {
+      setToast({ message: 'Ya tienes un enlace de LinkedIn. Elimínalo primero para agregar uno nuevo', type: 'error' });
+      return;
+    }
+    if (isGithub && mainLinks.github) {
+      setToast({ message: 'Ya tienes un enlace de GitHub. Elimínalo primero para agregar uno nuevo', type: 'error' });
+      return;
+    }
+
+    setIsAdding(true);
     
     try {
       if (isLinkedin || isGithub) {
@@ -316,7 +351,7 @@ function Links() {
                   <div className="flex-1 flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 bg-gray-50/50 hover:border-gray-300 transition-colors focus-within:border-primary focus-within:bg-white">
                     <Globe size={14} className="text-gray-400 shrink-0" />
                     <input
-                      type="url"
+                      type="text"
                       value={newUrl}
                       onChange={(e) => setNewUrl(e.target.value)}
                       placeholder="Pega la URL de tu red o sitio web..."

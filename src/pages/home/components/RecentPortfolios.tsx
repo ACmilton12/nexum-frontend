@@ -131,7 +131,7 @@ function DraggableCarousel({ profiles }: { profiles: FeaturedProfile[] }) {
   }
 
   return (
-    <div className="relative w-full py-16 flex justify-center items-center h-[600px] overflow-hidden">
+    <div className="relative w-full py-4 flex justify-center items-center h-[420px] overflow-hidden">
       <style>{`
         .cine-container {
           perspective: 1200px;
@@ -227,7 +227,7 @@ export default function RecentPortfolios({
   const { t } = useTranslation()
 
   return (
-    <section className="py-20 sm:py-28 bg-white transition-colors duration-300">
+    <section className="pt-10 pb-20 sm:pt-14 sm:pb-28 bg-[#ccd4da] transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-6 sm:px-8">
         <div className="text-center mb-4 md:mb-8">
           <h2 className="font-extrabold text-3xl sm:text-4xl md:text-5xl tracking-tight text-textMain mb-4">

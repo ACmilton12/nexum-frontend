@@ -20,6 +20,7 @@ import Certifications from '../pages/professional/certifications/Certifications'
 import ProfileVisitorsPage from '../pages/professional/visitors/ProfileVisitorsPage'
 import ProtectedRoute from './ProtectedRoute'
 import Home from '../pages/Home'
+import BuscarProfesionales from '../pages/BuscarProfesionales'
 import ProjectsPage from '../pages/professional/projects/ProjectsPage'
 import HomeDirectory from '../pages/professional/HomeDirectory'
 import PublicProfile from '../pages/professional/PublicProfile'
@@ -173,7 +174,7 @@ const AppRouter = () => {
         <Routes>
           {/* ── Página de inicio ─────────────────────────────── */}
           <Route path="/" element={<Home />} />
-          <Route path="/Home" element={<Home />} />
+          <Route path="/Home" element={<BuscarProfesionales />} />
 
           {/* ── Rutas públicas ───────────────────────────────── */}
           <Route path="/register" element={<RegisterPage />} />
