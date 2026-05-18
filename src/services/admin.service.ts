@@ -123,6 +123,11 @@ export const getActivityLogs = async (params: { user_id?: number; per_page?: num
           last_name?: string
           email?: string
         }
+        subject?: {
+          first_name?: string
+          last_name?: string
+          email?: string
+        }
       }) => {
         const attributes = log.properties?.attributes || {}
         const old = log.properties?.old || {}
@@ -143,9 +148,18 @@ export const getActivityLogs = async (params: { user_id?: number; per_page?: num
           displayName = String(attributes.email || old.email)
         }
 
+        let affectedUser = null
+        if (log.subject) {
+          affectedUser =
+            log.subject.first_name || log.subject.last_name
+              ? `${log.subject.first_name || ''} ${log.subject.last_name || ''}`.trim()
+              : log.subject.email || 'Usuario'
+        }
+
         return {
           id: log.id,
           user_name: displayName,
+          affected_user: affectedUser,
           event: log.event,
           timestamp: new Date(log.created_at).toLocaleString('es-ES', {
             day: '2-digit',

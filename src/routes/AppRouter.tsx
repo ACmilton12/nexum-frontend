@@ -4,6 +4,7 @@ import LoginPage from '../pages/auth/LoginPage'
 import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage'
 import ResetPasswordPage from '../pages/auth/ResetPasswordPage'
 import RegisterPage from '../pages/auth/RegisterPage'
+import EmailVerified from '../pages/auth/EmailVerified'
 import RolesPage from '../pages/admin/RolesPage'
 import AccountsPage from '../pages/admin/AccountsPage'
 import Navbar from '../components/ui/Navbar'
@@ -140,6 +141,7 @@ const ROUTES_WITHOUT_LAYOUT = [
   '/register',
   '/forgot-password',
   '/reset-password',
+  '/email-verified',
   '/portfolio',
   '/search',
   '/habilidades'
@@ -181,6 +183,7 @@ const AppRouter = () => {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route path="/email-verified" element={<EmailVerified />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/portfolio/:id" element={<PublicPortfolioPage />} />
           <Route path="/imprimir/:id?" element={<PrintPortfolio />} />
