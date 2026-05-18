@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { Mail, Lock, Eye, EyeOff, ArrowLeft } from 'lucide-react'
 import { loginService } from '../../services/auth.service'
 import Toast from '../../components/ui/Toast'
@@ -35,6 +35,25 @@ const LoginPage = () => {
     const t = setInterval(() => setIdx(i => (i + 1) % slides.length), 5000);
     return () => clearInterval(t);
   }, [slides.length]);
+
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    const status = searchParams.get('status');
+    if (status) {
+      if (status === 'success') {
+        setToast({ mensaje: '¡Email verificado exitosamente! Ahora puedes iniciar sesión.', tipo: 'success' });
+      } else if (status === 'already-verified') {
+        setToast({ mensaje: 'Tu cuenta ya se encuentra verificada.', tipo: 'info' });
+      } else if (status === 'error') {
+        setToast({ mensaje: 'Link de verificación inválido o expirado. Solicita uno nuevo.', tipo: 'error' });
+      }
+      
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.delete('status');
+      setSearchParams(newSearchParams, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
