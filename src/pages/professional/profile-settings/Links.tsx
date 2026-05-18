@@ -172,16 +172,15 @@ function Links() {
     e.preventDefault();
     let trimmed = newUrl.trim();
     if (!trimmed) return;
-    
-    // Regex para validar un dominio real (ej. pagina.com, www.pagina.bo, https://pagina.org)
-    const domainRegex = /^(?:https?:\/\/)?(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{2,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/;
-    
+
+    // Regex corregido sin escapes innecesarios
+    const domainRegex = /^(?:https?:\/\/)?(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{2,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&/=]*)$/;
+
     if (!domainRegex.test(trimmed)) {
       setToast({ message: 'Por favor, ingresa un enlace válido con dominio (ej. tusitio.com)', type: 'error' });
       return;
     }
 
-    // Autocompletar protocolo si el usuario no lo ingresó
     if (!/^https?:\/\//i.test(trimmed)) {
       trimmed = `https://${trimmed}`;
     }
@@ -189,7 +188,6 @@ function Links() {
     const isLinkedin = trimmed.includes('linkedin.com');
     const isGithub = trimmed.includes('github.com');
 
-    // 1. Validar que la URL no esté duplicada exactamente
     const allExistingUrls = [
       mainLinks.linkedin,
       mainLinks.github,
@@ -201,7 +199,6 @@ function Links() {
       return;
     }
 
-    // 2. Validar que no se dupliquen las plataformas principales (Github/LinkedIn) si ya existen
     if (isLinkedin && mainLinks.linkedin) {
       setToast({ message: 'Ya tienes un enlace de LinkedIn. Elimínalo primero para agregar uno nuevo', type: 'error' });
       return;
@@ -212,14 +209,14 @@ function Links() {
     }
 
     setIsAdding(true);
-    
+
     try {
       if (isLinkedin || isGithub) {
         const updatedLinks = {
           ...mainLinks,
           ...(isLinkedin ? { linkedin: trimmed } : { github: trimmed })
         };
-        
+
         await updateLinksPrivacyData({
           nombre,
           apellido,
@@ -227,7 +224,7 @@ function Links() {
           github: updatedLinks.github,
           global_privacy: isPublic ? 'public' : 'private'
         });
-        
+
         setMainLinks(updatedLinks);
         setNewUrl('');
         setToast({ message: 'Enlace principal actualizado correctamente', type: 'success' });
@@ -270,7 +267,7 @@ function Links() {
           ...mainLinks,
           ...(id === 'linkedin' ? { linkedin: '' } : { github: '' })
         };
-        
+
         await updateLinksPrivacyData({
           nombre,
           apellido,
@@ -278,7 +275,7 @@ function Links() {
           github: updatedLinks.github,
           global_privacy: isPublic ? 'public' : 'private'
         });
-        
+
         setMainLinks(updatedLinks);
         setToast({ message: 'Enlace eliminado', type: 'success' });
       } else {

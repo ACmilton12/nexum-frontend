@@ -131,6 +131,7 @@ export default function Home() {
   const [searchResults, setSearchResults] = useState<SearchResult[]>([])
   const [meta, setMeta] = useState<PaginationMeta | null>(null)
   const [loading, setLoading] = useState(false)
+  const [hasSearched, setHasSearched] = useState(false)
   const [searchParams, setSearchParams] = useState({
     q: '',
     area: '',
@@ -158,8 +159,20 @@ export default function Home() {
   }
 
   const handleSearch = (term: string) => {
-    const newParams = { ...searchParams, q: term, page: 1 }
+    const trimmed = term.trim()
+
+    // Si el término está vacío, limpiar resultados y volver al inicio
+    if (!trimmed) {
+      setSearchParams({ q: '', area: '', skills: [], page: 1 })
+      setSearchResults([])
+      setMeta(null)
+      setHasSearched(false)
+      return
+    }
+
+    const newParams = { ...searchParams, q: trimmed, page: 1 }
     setSearchParams(newParams)
+    setHasSearched(true)
     executeSearch(newParams)
 
     // Scroll a resultados
@@ -176,8 +189,18 @@ export default function Home() {
   }
 
   const handleFilterChange = (filters: { q: string; area: string; skills: string[] }) => {
+    // Si todos los filtros están vacíos, limpiar todo
+    if (!filters.q.trim() && !filters.area.trim() && filters.skills.length === 0) {
+      setSearchParams({ q: '', area: '', skills: [], page: 1 })
+      setSearchResults([])
+      setMeta(null)
+      setHasSearched(false)
+      return
+    }
+
     const newParams = { ...searchParams, ...filters, page: 1 }
     setSearchParams(newParams)
+    setHasSearched(true)
     executeSearch(newParams)
   }
 
@@ -186,7 +209,7 @@ export default function Home() {
       <Navbar />
       <Hero stats={stats} onSearch={handleSearch} searchTerm={searchParams.q} />
 
-      {(searchResults.length > 0 || loading || searchParams.q) && (
+      {hasSearched && (
         <SearchResults
           results={searchResults}
           meta={meta}

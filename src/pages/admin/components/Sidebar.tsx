@@ -235,7 +235,7 @@ const Sidebar = ({ activeItem = 'Dashboard' }: SidebarProps) => {
   const [isProfileOpen, setIsProfileOpen] = useState(
     activeItem.includes('Perfil') ||
     ['Datos Personales', 'Enlaces', 'Privacidad', 'Notificaciones'].includes(activeItem) ||
-    pathname.startsWith('/profile')
+    (pathname.startsWith('/profile') && pathname !== '/profile/habilidades')
   )
 
   const [isMobileOpen, setIsMobileOpen] = useState(false)
