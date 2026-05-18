@@ -49,6 +49,7 @@ export default function Navbar() {
         <div className="hidden md:flex flex-1 items-center justify-center gap-10">
           <Link
             to="/"
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             className="text-white text-xs font-bold tracking-widest hover:text-gray-300 transition-colors duration-200 no-underline"
           >
             {t('navbar.home').toUpperCase()}

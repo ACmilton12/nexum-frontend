@@ -21,6 +21,7 @@ import Certifications from '../pages/professional/certifications/Certifications'
 import ProfileVisitorsPage from '../pages/professional/visitors/ProfileVisitorsPage'
 import ProtectedRoute from './ProtectedRoute'
 import Home from '../pages/Home'
+import BuscarProfesionales from '../pages/BuscarProfesionales'
 import ProjectsPage from '../pages/professional/projects/ProjectsPage'
 import HomeDirectory from '../pages/professional/HomeDirectory'
 import PublicProfile from '../pages/professional/PublicProfile'
@@ -156,6 +157,22 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
   if (hideLayout) return <>{children}</>
 
+  const isWorkspaceRoute =
+    lowerPath.startsWith('/admin') ||
+    lowerPath.startsWith('/profile') ||
+    lowerPath.startsWith('/directorio') ||
+    ['/dashboard', '/proyectos', '/experiencia', '/certificaciones', '/visitantes', '/portfolio'].includes(lowerPath)
+
+  if (isWorkspaceRoute) {
+    return (
+      <div className="h-screen max-h-screen flex flex-col overflow-hidden bg-background dark:bg-slate-900 transition-colors duration-300">
+        <Navbar />
+        <Breadcrumbs />
+        <div className="flex-grow flex flex-col overflow-hidden">{children}</div>
+      </div>
+    )
+  }
+
   /* Conflicto 2 resuelto: HEAD tiene dark mode y Footer */
   return (
     <div className="min-h-screen flex flex-col transition-colors duration-300">
@@ -175,7 +192,7 @@ const AppRouter = () => {
         <Routes>
           {/* ── Página de inicio ─────────────────────────────── */}
           <Route path="/" element={<Home />} />
-          <Route path="/Home" element={<Home />} />
+          <Route path="/Home" element={<BuscarProfesionales />} />
 
           {/* ── Rutas públicas ───────────────────────────────── */}
           <Route path="/register" element={<RegisterPage />} />

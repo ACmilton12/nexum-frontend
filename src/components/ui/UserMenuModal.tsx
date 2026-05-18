@@ -46,7 +46,8 @@ const UserMenuModal = ({
     localStorage.removeItem('user')
     sessionStorage.removeItem('token')
     sessionStorage.removeItem('user')
-    navigate('/login')
+    navigate('/')
+    window.location.reload()
   }
 
   return (
