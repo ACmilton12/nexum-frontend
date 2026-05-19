@@ -30,7 +30,44 @@ const PrintPortfolio = () => {
         if (id) {
           // Si hay ID, es un portafolio público o específico
           const data = await getPublicPortfolio(id)
-          setPortfolio(data)
+          setPortfolio({
+            ...data,
+            additional_links: data.additional_links || [],
+            projects: (data.projects || []).filter((p: any) => !p.archived),
+            skills: (data.skills || []).map((s: any) => ({
+              id: s.id,
+              name: s.name,
+              category: s.category,
+              level:
+                s.level === 'basico'
+                  ? 'Básico'
+                  : s.level === 'intermedio'
+                    ? 'Intermedio'
+                    : s.level === 'avanzado'
+                      ? 'Avanzado'
+                      : s.level === 'experto'
+                        ? 'Experto'
+                        : s.level || 'Básico'
+            })),
+            work_experiences: (data.work_experiences || []).map((e: any) => ({
+              id: e.id,
+              company: e.company,
+              position: e.position,
+              description: e.description || '',
+              start_date: e.start_date,
+              end_date: e.end_date || undefined,
+              is_current: !e.end_date,
+              location: e.location || ''
+            })),
+            certifications: (data.certifications || []).map((c: any) => ({
+              id: c.id,
+              name: c.name,
+              issuing_organization: c.issuing_organization,
+              issue_date: c.issue_date,
+              expiration_date: c.expiration_date || undefined,
+              image_url: c.image_url || undefined
+            }))
+          })
         } else {
           // Si no hay ID, es el del usuario logueado
           const token = localStorage.getItem('token') || sessionStorage.getItem('token')
@@ -61,7 +98,9 @@ const PrintPortfolio = () => {
                 Authorization: `Bearer ${token}`,
                 Accept: 'application/json'
               }
-            }).then((r) => r.json()).catch(() => ({ data: [] }))
+            })
+              .then((r) => r.json())
+              .catch(() => ({ data: [] }))
           ])
 
           // Map the data to the FullPortfolio structure
@@ -175,7 +214,17 @@ const PrintPortfolio = () => {
     )
   }
 
-  const { user, profession, biography, location, phone, avatar_url, linkedin_url, github_url, additional_links } = portfolio
+  const {
+    user,
+    profession,
+    biography,
+    location,
+    phone,
+    avatar_url,
+    linkedin_url,
+    github_url,
+    additional_links
+  } = portfolio
 
   const socialLinks = [
     ...(linkedin_url ? [{ id: 'linkedin', url: linkedin_url, platform: 'linkedin' }] : []),
@@ -184,7 +233,10 @@ const PrintPortfolio = () => {
   ]
 
   const renderClassicTemplate = () => (
-    <div id="portfolio-content" className="bg-white max-w-4xl mx-auto print:max-w-full font-serif border-t-8 border-[#333333] px-12 py-16">
+    <div
+      id="portfolio-content"
+      className="bg-white max-w-4xl mx-auto print:max-w-full font-serif border-t-8 border-[#333333] px-12 py-16"
+    >
       <div className="flex flex-col md:flex-row justify-between items-start border-b-2 border-gray-300 pb-8 mb-8">
         <div>
           <h1 className="text-4xl font-bold text-gray-900 mb-2 uppercase tracking-wide">
@@ -194,9 +246,19 @@ const PrintPortfolio = () => {
             {profession || t('portfolio_view.default_profession', 'Profesional')}
           </p>
           <div className="space-y-1 text-sm text-gray-600">
-            {location && <p className="flex items-center gap-2"><MapPin size={14} /> {location}</p>}
-            <p className="flex items-center gap-2"><Mail size={14} /> {user.email}</p>
-            {phone && <p className="flex items-center gap-2"><Phone size={14} /> {phone}</p>}
+            {location && (
+              <p className="flex items-center gap-2">
+                <MapPin size={14} /> {location}
+              </p>
+            )}
+            <p className="flex items-center gap-2">
+              <Mail size={14} /> {user.email}
+            </p>
+            {phone && (
+              <p className="flex items-center gap-2">
+                <Phone size={14} /> {phone}
+              </p>
+            )}
           </div>
         </div>
         {avatar_url && (
@@ -233,7 +295,9 @@ const PrintPortfolio = () => {
                     </span>
                   </div>
                   <p className="text-gray-700 font-bold text-sm mb-2">{exp.company}</p>
-                  <p className="text-gray-600 text-sm leading-relaxed text-justify">{exp.description}</p>
+                  <p className="text-gray-600 text-sm leading-relaxed text-justify">
+                    {exp.description}
+                  </p>
                 </div>
               ))}
             </div>
@@ -248,7 +312,9 @@ const PrintPortfolio = () => {
               </h3>
               <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
                 {portfolio.skills.map((s) => (
-                  <li key={s.id}><span className="font-bold">{s.name}</span> - {s.level}</li>
+                  <li key={s.id}>
+                    <span className="font-bold">{s.name}</span> - {s.level}
+                  </li>
                 ))}
               </ul>
             </section>
@@ -265,7 +331,10 @@ const PrintPortfolio = () => {
                     <h4 className="text-sm font-bold text-gray-900">{cert.name}</h4>
                     <p className="text-sm text-gray-600">{cert.issuing_organization}</p>
                     <p className="text-xs text-gray-500">
-                      {new Date(cert.issue_date).toLocaleDateString(i18n.language, { month: 'short', year: 'numeric' })}
+                      {new Date(cert.issue_date).toLocaleDateString(i18n.language, {
+                        month: 'short',
+                        year: 'numeric'
+                      })}
                     </p>
                   </div>
                 ))}
@@ -283,10 +352,12 @@ const PrintPortfolio = () => {
               {portfolio.projects.map((project) => (
                 <div key={project.id}>
                   <h4 className="text-base font-bold text-gray-900 mb-1">{project.title}</h4>
-                  <p className="text-gray-700 text-sm leading-relaxed text-justify mb-2">{project.description}</p>
+                  <p className="text-gray-700 text-sm leading-relaxed text-justify mb-2">
+                    {project.description}
+                  </p>
                   {project.skills && project.skills.length > 0 && (
                     <p className="text-xs text-gray-600 italic">
-                      Tecnologías: {project.skills.map(s => s.name).join(', ')}
+                      Tecnologías: {project.skills.map((s) => s.name).join(', ')}
                     </p>
                   )}
                 </div>
@@ -307,7 +378,12 @@ const PrintPortfolio = () => {
                   <div key={link.id} className="flex items-center gap-2 text-sm">
                     <span className={`${meta.color} shrink-0`}>{meta.svg}</span>
                     <span className="font-bold text-gray-700 capitalize">{link.platform}:</span>
-                    <a href={link.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline break-all">
+                    <a
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline break-all"
+                    >
                       {link.url}
                     </a>
                   </div>
@@ -317,7 +393,7 @@ const PrintPortfolio = () => {
           </section>
         )}
       </div>
-      
+
       <div className="mt-16 pt-6 border-t border-gray-300 text-center">
         <p className="text-xs text-gray-500 uppercase tracking-widest">
           Generado vía Nexum UMSS • {new Date().toLocaleDateString(i18n.language)}
@@ -327,10 +403,17 @@ const PrintPortfolio = () => {
   )
 
   const renderMinimalistTemplate = () => (
-    <div id="portfolio-content" className="bg-[#fafafa] max-w-4xl mx-auto print:max-w-full font-sans px-16 py-20 text-[#262626]">
+    <div
+      id="portfolio-content"
+      className="bg-[#fafafa] max-w-4xl mx-auto print:max-w-full font-sans px-16 py-20 text-[#262626]"
+    >
       <div className="text-center mb-16">
         {avatar_url && (
-          <img src={avatar_url} alt={user.first_name} className="w-24 h-24 rounded-full mx-auto mb-6 object-cover grayscale opacity-90" />
+          <img
+            src={avatar_url}
+            alt={user.first_name}
+            className="w-24 h-24 rounded-full mx-auto mb-6 object-cover grayscale opacity-90"
+          />
         )}
         <h1 className="text-5xl font-light tracking-tight mb-3">
           {user.first_name} <span className="font-bold">{user.last_name}</span>
@@ -338,7 +421,7 @@ const PrintPortfolio = () => {
         <p className="text-lg text-[#737373] tracking-widest uppercase text-sm">
           {profession || t('portfolio_view.default_profession', 'Profesional')}
         </p>
-        
+
         <div className="flex justify-center gap-6 mt-6 text-sm text-[#737373]">
           {location && <span>{location}</span>}
           <span>{user.email}</span>
@@ -349,9 +432,7 @@ const PrintPortfolio = () => {
       <div className="max-w-2xl mx-auto space-y-16">
         {biography && (
           <section className="text-center">
-            <p className="text-[#525252] leading-relaxed text-base font-light">
-              {biography}
-            </p>
+            <p className="text-[#525252] leading-relaxed text-base font-light">{biography}</p>
           </section>
         )}
 
@@ -364,12 +445,15 @@ const PrintPortfolio = () => {
               {portfolio.work_experiences.map((exp) => (
                 <div key={exp.id} className="grid grid-cols-[1fr_3fr] gap-8">
                   <div className="text-right text-sm text-[#a3a3a3] pt-1">
-                    {exp.start_date.substring(0,4)} — {exp.end_date ? exp.end_date.substring(0,4) : 'Presente'}
+                    {exp.start_date.substring(0, 4)} —{' '}
+                    {exp.end_date ? exp.end_date.substring(0, 4) : 'Presente'}
                   </div>
                   <div>
                     <h4 className="font-bold text-lg text-[#262626] mb-1">{exp.position}</h4>
                     <p className="text-[#737373] mb-3">{exp.company}</p>
-                    <p className="text-[#525252] text-sm leading-relaxed font-light">{exp.description}</p>
+                    <p className="text-[#525252] text-sm leading-relaxed font-light">
+                      {exp.description}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -384,7 +468,10 @@ const PrintPortfolio = () => {
             </h3>
             <div className="flex flex-wrap justify-center gap-3">
               {portfolio.skills.map((s) => (
-                <span key={s.id} className="px-4 py-2 border border-[#e5e5e5] rounded-full text-sm text-[#525252] bg-white">
+                <span
+                  key={s.id}
+                  className="px-4 py-2 border border-[#e5e5e5] rounded-full text-sm text-[#525252] bg-white"
+                >
                   {s.name}
                 </span>
               ))}
@@ -450,9 +537,19 @@ const PrintPortfolio = () => {
             {profession || t('portfolio_view.default_profession', 'Profesional')}
           </p>
           <div className="flex flex-wrap justify-center md:justify-start gap-4 text-sm opacity-80">
-            {location && <div className="flex items-center gap-1.5"><MapPin size={16} /> {location}</div>}
-            <div className="flex items-center gap-1.5"><Mail size={16} /> {user.email}</div>
-            {phone && <div className="flex items-center gap-1.5"><Phone size={16} /> {phone}</div>}
+            {location && (
+              <div className="flex items-center gap-1.5">
+                <MapPin size={16} /> {location}
+              </div>
+            )}
+            <div className="flex items-center gap-1.5">
+              <Mail size={16} /> {user.email}
+            </div>
+            {phone && (
+              <div className="flex items-center gap-1.5">
+                <Phone size={16} /> {phone}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -486,7 +583,9 @@ const PrintPortfolio = () => {
                     </span>
                   </div>
                   <p className="text-[#C8102E] font-bold text-sm mb-2">{exp.company}</p>
-                  <p className="text-gray-500 text-xs leading-relaxed text-justify">{exp.description}</p>
+                  <p className="text-gray-500 text-xs leading-relaxed text-justify">
+                    {exp.description}
+                  </p>
                 </div>
               ))}
             </div>
@@ -507,7 +606,19 @@ const PrintPortfolio = () => {
                       <span className="text-[#C8102E]">{s.level}</span>
                     </div>
                     <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
-                      <div className="h-full bg-[#C8102E]" style={{ width: s.level === 'Experto' ? '100%' : s.level === 'Avanzado' ? '75%' : s.level === 'Intermedio' ? '50%' : '25%' }}></div>
+                      <div
+                        className="h-full bg-[#C8102E]"
+                        style={{
+                          width:
+                            s.level === 'Experto'
+                              ? '100%'
+                              : s.level === 'Avanzado'
+                                ? '75%'
+                                : s.level === 'Intermedio'
+                                  ? '50%'
+                                  : '25%'
+                        }}
+                      ></div>
                     </div>
                   </div>
                 ))}
@@ -528,7 +639,10 @@ const PrintPortfolio = () => {
                       <h4 className="text-sm font-bold text-gray-900">{cert.name}</h4>
                       <p className="text-xs text-gray-500">{cert.issuing_organization}</p>
                       <p className="text-[10px] text-gray-400 font-bold uppercase mt-0.5">
-                        {new Date(cert.issue_date).toLocaleDateString(i18n.language, { month: 'long', year: 'numeric' })}
+                        {new Date(cert.issue_date).toLocaleDateString(i18n.language, {
+                          month: 'long',
+                          year: 'numeric'
+                        })}
                       </p>
                     </div>
                   </div>
@@ -545,11 +659,17 @@ const PrintPortfolio = () => {
             </h3>
             <div className="space-y-6">
               {portfolio.projects.map((project) => (
-                <div key={project.id} className="p-6 rounded-2xl border border-gray-100 bg-gray-50/50">
+                <div
+                  key={project.id}
+                  className="p-6 rounded-2xl border border-gray-100 bg-gray-50/50"
+                >
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-3">
                     <h4 className="text-base font-bold text-gray-900">{project.title}</h4>
                     <span className="text-[10px] font-bold text-gray-400 uppercase bg-white px-2 py-1 rounded-md border border-gray-100">
-                      {new Date(project.created_at).toLocaleDateString(i18n.language, { month: 'long', year: 'numeric' })}
+                      {new Date(project.created_at).toLocaleDateString(i18n.language, {
+                        month: 'long',
+                        year: 'numeric'
+                      })}
                     </span>
                   </div>
                   <p className="text-[10px] font-bold text-[#C8102E] uppercase mb-3 tracking-wider">
@@ -560,9 +680,16 @@ const PrintPortfolio = () => {
                   </p>
                   {project.skills && project.skills.length > 0 && (
                     <div className="flex flex-wrap gap-1.5">
-                      <span className="text-[9px] font-black text-gray-400 uppercase mr-1 mt-0.5">Tecnologías:</span>
+                      <span className="text-[9px] font-black text-gray-400 uppercase mr-1 mt-0.5">
+                        Tecnologías:
+                      </span>
                       {project.skills.map((skill) => (
-                        <span key={skill.id} className="px-2 py-0.5 rounded-md bg-white text-gray-600 text-[9px] font-bold border border-gray-200 shadow-sm">{skill.name}</span>
+                        <span
+                          key={skill.id}
+                          className="px-2 py-0.5 rounded-md bg-white text-gray-600 text-[9px] font-bold border border-gray-200 shadow-sm"
+                        >
+                          {skill.name}
+                        </span>
                       ))}
                     </div>
                   )}
@@ -581,13 +708,23 @@ const PrintPortfolio = () => {
               {socialLinks.map((link) => {
                 const meta = PLATFORM_ICONS[link.platform?.toLowerCase()] || PLATFORM_ICONS.website
                 return (
-                  <div key={link.id} className="flex items-center gap-3 p-4 rounded-xl border border-gray-100 bg-gray-50/50 hover:bg-gray-50 transition-colors">
+                  <div
+                    key={link.id}
+                    className="flex items-center gap-3 p-4 rounded-xl border border-gray-100 bg-gray-50/50 hover:bg-gray-50 transition-colors"
+                  >
                     <div className="w-8 h-8 rounded-lg bg-[#1a1a2e]/5 flex items-center justify-center text-[#C8102E] shrink-0">
                       {meta.svg}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <span className="text-[10px] font-black text-gray-400 uppercase block tracking-wider mb-0.5">{link.platform}</span>
-                      <a href={link.url} target="_blank" rel="noopener noreferrer" className="text-[#1a1a2e] font-bold text-xs hover:text-[#C8102E] transition-colors hover:underline block truncate">
+                      <span className="text-[10px] font-black text-gray-400 uppercase block tracking-wider mb-0.5">
+                        {link.platform}
+                      </span>
+                      <a
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[#1a1a2e] font-bold text-xs hover:text-[#C8102E] transition-colors hover:underline block truncate"
+                      >
                         {link.url}
                       </a>
                     </div>
@@ -601,7 +738,8 @@ const PrintPortfolio = () => {
 
       <div className="bg-gray-50 p-6 border-t border-gray-100 text-center">
         <p className="text-[10px] text-gray-400 font-medium uppercase tracking-widest flex items-center justify-center gap-2">
-          <Globe size={12} /> Generado via Nexum UMSS • {new Date().toLocaleDateString(i18n.language)}
+          <Globe size={12} /> Generado via Nexum UMSS •{' '}
+          {new Date().toLocaleDateString(i18n.language)}
         </p>
       </div>
     </div>
@@ -638,7 +776,11 @@ const PrintPortfolio = () => {
 
       <div className="max-w-5xl mx-auto pb-20">
         <main className="flex-1 py-10 px-4 sm:px-6 print:py-0 print:px-0">
-          {template === 'classic' ? renderClassicTemplate() : template === 'minimalist' ? renderMinimalistTemplate() : renderModernTemplate()}
+          {template === 'classic'
+            ? renderClassicTemplate()
+            : template === 'minimalist'
+              ? renderMinimalistTemplate()
+              : renderModernTemplate()}
         </main>
       </div>
     </div>
