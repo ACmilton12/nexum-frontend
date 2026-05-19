@@ -12,7 +12,7 @@ import Footer from '../home/components/Footer'
 import PdfTemplateModal from '../../components/modals/PdfTemplateModal'
 
 export default function PublicPortfolioPage() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { id } = useParams<{ id: string }>()
   const [portfolio, setPortfolio] = useState<FullPortfolio | null>(null)
   const [loading, setLoading] = useState(true)
@@ -22,6 +22,12 @@ export default function PublicPortfolioPage() {
 
   useRecordVisit(portfolio?.id || null)
   const { stats } = useProfileStats(portfolio?.id || null)
+
+  const getTranslatedLevel = (level: string) => {
+    if (!level) return '';
+    const normalized = level.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    return t(`skills.levels.${normalized}`, level);
+  }
 
   useEffect(() => {
     const fetchPortfolio = async () => {
@@ -220,7 +226,7 @@ export default function PublicPortfolioPage() {
                 <div>
                   <h3 className="text-slate-900 text-sm font-bold mb-4 flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-cyan-400"></span>
-                    Habilidades Técnicas
+                    {t('portfolio_view.technical_skills')}
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[250px] overflow-y-auto pr-2" style={{ scrollbarWidth: 'thin', scrollbarColor: '#22d3ee transparent' }}>
                     {habilidadesTecnicas.length > 0 ? (
@@ -233,13 +239,13 @@ export default function PublicPortfolioPage() {
                             )}
                           </div>
                           <span className="text-[10px] font-black px-2 py-1 rounded bg-blue-50 text-[#003087] whitespace-nowrap">
-                            {skill.level}
+                            {getTranslatedLevel(skill.level)}
                           </span>
                         </div>
                       ))
                     ) : (
                       <div className="col-span-full py-10 text-center bg-white rounded-2xl border-2 border-dashed border-slate-200">
-                        <p className="text-slate-600 font-bold text-sm mb-1">Sin habilidades técnicas</p>
+                        <p className="text-slate-600 font-bold text-sm mb-1">{t('portfolio_view.no_technical')}</p>
                       </div>
                     )}
                   </div>
@@ -249,7 +255,7 @@ export default function PublicPortfolioPage() {
                 <div>
                   <h3 className="text-slate-900 text-sm font-bold mb-4 flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-purple-400"></span>
-                    Habilidades Blandas
+                    {t('portfolio_view.soft_skills')}
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[250px] overflow-y-auto pr-2" style={{ scrollbarWidth: 'thin', scrollbarColor: '#c084fc transparent' }}>
                     {habilidadesBlandas.length > 0 ? (
@@ -262,13 +268,13 @@ export default function PublicPortfolioPage() {
                             )}
                           </div>
                           <span className="text-[10px] font-black px-2 py-1 rounded bg-purple-50 text-purple-700 whitespace-nowrap">
-                            {skill.level}
+                            {getTranslatedLevel(skill.level)}
                           </span>
                         </div>
                       ))
                     ) : (
                       <div className="col-span-full py-10 text-center bg-white rounded-2xl border-2 border-dashed border-slate-200">
-                        <p className="text-slate-600 font-bold text-sm mb-1">Sin habilidades blandas</p>
+                        <p className="text-slate-600 font-bold text-sm mb-1">{t('portfolio_view.no_soft')}</p>
                       </div>
                     )}
                   </div>
@@ -289,10 +295,10 @@ export default function PublicPortfolioPage() {
                     <div key={exp.id} className="bg-white rounded-xl border-l-4 border-[#003087] shadow-lg hover:-translate-y-1 transition-all duration-300 p-6">
                       <div className="flex justify-between items-start mb-4">
                         <span className="text-[10px] font-black uppercase tracking-wider text-[#003087]">
-                          {exp.is_current ? 'Actual' : 'Anterior'}
+                          {exp.is_current ? t('portfolio_view.actual') : t('portfolio_view.previous')}
                         </span>
                         <span className="text-[10px] font-bold text-slate-400">
-                          {new Date(exp.start_date).toLocaleDateString('es-ES', { month: 'short', year: 'numeric' })} - {exp.end_date ? new Date(exp.end_date).toLocaleDateString('es-ES', { month: 'short', year: 'numeric' }) : t('portfolio_view.present')}
+                          {new Date(exp.start_date).toLocaleDateString(i18n.language, { month: 'short', year: 'numeric' })} - {exp.end_date ? new Date(exp.end_date).toLocaleDateString(i18n.language, { month: 'short', year: 'numeric' }) : t('portfolio_view.present')}
                         </span>
                       </div>
                       <h3 className="font-bold text-slate-900 text-base mb-1">{exp.position}</h3>
@@ -373,7 +379,7 @@ export default function PublicPortfolioPage() {
                       <h3 className="font-bold text-slate-900 text-base mb-3">{cert.name}</h3>
                       <p className="text-[#003087] text-xs font-bold mb-2">{cert.issuing_organization}</p>
                       <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-3">
-                        {new Date(cert.issue_date).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}
+                        {new Date(cert.issue_date).toLocaleDateString(i18n.language, { month: 'long', year: 'numeric' })}
                       </p>
                       {cert.credential_url && (
                         <a href={cert.credential_url} target="_blank" rel="noopener noreferrer"

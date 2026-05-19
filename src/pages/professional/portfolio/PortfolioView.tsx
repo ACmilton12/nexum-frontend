@@ -109,6 +109,12 @@ const PortfolioView = () => {
   const navigate = useNavigate()
   const [isModalOpen, setIsModalOpen] = useState(false)
 
+  const getTranslatedLevel = (level: string) => {
+    if (!level) return '';
+    const normalized = level.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    return t(`skills.levels.${normalized}`, level);
+  }
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -447,7 +453,7 @@ const PortfolioView = () => {
                                 )}
                               </div>
                               <span className="text-[10px] font-black px-2 py-1 rounded bg-blue-50 dark:bg-cyan-900/50 text-[#003087] dark:text-cyan-300 whitespace-nowrap">
-                                {skill.level}
+                                {getTranslatedLevel(skill.level)}
                               </span>
                             </div>
                           ))
@@ -480,7 +486,7 @@ const PortfolioView = () => {
                                 )}
                               </div>
                               <span className="text-[10px] font-black px-2 py-1 rounded bg-purple-50 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 whitespace-nowrap">
-                                {skill.level}
+                                {getTranslatedLevel(skill.level)}
                               </span>
                             </div>
                           ))

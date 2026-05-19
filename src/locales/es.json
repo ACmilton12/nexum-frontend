@@ -480,7 +480,12 @@
     "cancel_btn": "Cancelar",
     "basic_desc": "Conceptos y uso guiado.",
     "intermediate_desc": "Implementación funcional en proyectos.",
-    "advanced_desc": "Uso profesional autónomo."
+    "advanced_desc": "Uso profesional autónomo.",
+    "levels": {
+      "basico": "Básico",
+      "intermedio": "Intermedio",
+      "avanzado": "Avanzado"
+    }
   },
   "portfolio_view": {
     "loading": "Cargando portafolio profesional...",
@@ -560,6 +565,8 @@
     "no_email": "Sin email",
     "location_unspecified": "Ubicación no especificada",
     "professional": "PROFESIONAL",
-    "user_default": "Usuario Nexum"
+    "user_default": "Usuario Nexum",
+    "previous": "Anterior",
+    "actual": "Actual"
   }
 }

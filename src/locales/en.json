@@ -480,7 +480,12 @@
     "cancel_btn": "Cancel",
     "basic_desc": "Concepts and guided use.",
     "intermediate_desc": "Functional implementation in projects.",
-    "advanced_desc": "Autonomous professional use."
+    "advanced_desc": "Autonomous professional use.",
+    "levels": {
+      "basico": "Basic",
+      "intermedio": "Intermediate",
+      "avanzado": "Advanced"
+    }
   },
   "portfolio_view": {
     "loading": "Loading professional portfolio...",
@@ -560,6 +565,8 @@
     "no_email": "No email",
     "location_unspecified": "Location not specified",
     "professional": "PROFESSIONAL",
-    "user_default": "Nexum User"
+    "user_default": "Nexum User",
+    "previous": "Previous",
+    "actual": "Current"
   }
 }
