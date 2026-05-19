@@ -26,7 +26,7 @@ function PortfolioCard({ profile, index }: { profile: FeaturedProfile; index: nu
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
         {/* Mensaje hint en el banner */}
         <div className="absolute bottom-2 right-3 flex items-center gap-1 text-white/80 text-[10px] font-semibold">
-          <span>Presiona la tarjeta para ver el portafolio</span>
+          <span>{t('recent.click_card_hint')}</span>
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
         </div>
       </div>

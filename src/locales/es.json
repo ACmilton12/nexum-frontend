@@ -187,7 +187,8 @@
     "views": "Visitas",
     "university": "Universidad Mayor de San Simón",
     "no_views": "Aún no hay portafolios con visitas registradas.",
-    "featured_pro": "Profesional Destacado"
+    "featured_pro": "Profesional Destacado",
+    "click_card_hint": "Presiona la tarjeta para ver el portafolio"
   },
   "cta": {
     "title": "¿Eres profesional de software?",

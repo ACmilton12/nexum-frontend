@@ -187,7 +187,8 @@
     "views": "Views",
     "university": "Mayor de San Simón University",
     "no_views": "No portfolios with registered views yet.",
-    "featured_pro": "Featured Professional"
+    "featured_pro": "Featured Professional",
+    "click_card_hint": "Press the card to view the portfolio"
   },
   "cta": {
     "title": "Are you a software professional?",
