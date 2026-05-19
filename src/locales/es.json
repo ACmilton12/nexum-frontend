@@ -190,8 +190,28 @@
   },
   "cta": {
     "title": "¿Eres profesional de software?",
-    "subtitle": "Crea tu portafolio institucional hoy mismo y destaca en tu área con una presencia digital profesional.",
-    "start": "Comenzar ahora"
+    "subtitle": "Crea tu portafolio institucional hoy y destaca en tu sector con una presencia digital profesional.",
+    "start": "Empieza ahora"
+  },
+  "print": {
+    "modal_title": "Seleccionar Plantilla",
+    "modal_desc": "Elige el diseño para tu portafolio PDF",
+    "cancel": "Cancelar",
+    "download": "Generar PDF",
+    "templates": {
+      "classic": {
+        "name": "Clásica",
+        "desc": "Formal y estructurada. Ideal para entornos corporativos."
+      },
+      "modern": {
+        "name": "Moderna",
+        "desc": "Cabecera oscura con acentos de color. Atractiva y tecnológica."
+      },
+      "minimalist": {
+        "name": "Minimalista",
+        "desc": "Limpia y elegante con amplios espacios en blanco."
+      }
+    }
   },
   "university_strip": {
     "backed_by": "Respaldado por la Universidad Mayor de San Simón",

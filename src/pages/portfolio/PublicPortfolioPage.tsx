@@ -9,6 +9,7 @@ import { useRecordVisit, useProfileStats } from '../../hooks/useProfileVisits'
 import PLATFORM_ICONS from '../../components/icons/SocialIcons'
 import Navbar from '../home/components/Navbar'
 import Footer from '../home/components/Footer'
+import PdfTemplateModal from '../../components/modals/PdfTemplateModal'
 
 export default function PublicPortfolioPage() {
   const { t } = useTranslation()
@@ -17,6 +18,7 @@ export default function PublicPortfolioPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [additionalLinks, setAdditionalLinks] = useState<AdditionalLink[]>([])
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   useRecordVisit(portfolio?.id || null)
   const { stats } = useProfileStats(portfolio?.id || null)
@@ -168,13 +170,13 @@ export default function PublicPortfolioPage() {
               {/* Right side Actions and Stats Stack */}
               <div className="flex flex-col items-stretch md:items-end gap-3 w-full md:w-auto self-stretch mt-4 md:mt-0">
                 {/* Download PDF button instead of Edit */}
-                <Link
-                  to={`/imprimir/${id}`}
-                  className="flex items-center justify-center gap-2 px-4 py-2 bg-[#003087] hover:bg-blue-800 text-white rounded-lg text-xs font-bold transition-all duration-300 shadow-lg no-underline w-full md:w-56"
+                <button
+                  onClick={() => setIsModalOpen(true)}
+                  className="flex items-center justify-center gap-2 px-4 py-2 bg-[#003087] hover:bg-blue-800 text-white rounded-lg text-xs font-bold transition-all duration-300 shadow-lg no-underline w-full md:w-56 cursor-pointer"
                 >
                   <Download size={14} />
                   {t('portfolio_view.download_pdf')}
-                </Link>
+                </button>
 
                 {/* STATS PANEL (Horizontal Row on both Desktop and Mobile) */}
                 <div className="flex flex-wrap md:flex-nowrap gap-2 w-full mt-1 justify-start md:justify-end">
@@ -395,6 +397,11 @@ export default function PublicPortfolioPage() {
       </main>
 
       <Footer />
+      <PdfTemplateModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        portfolioId={id}
+      />
     </div>
   )
 }

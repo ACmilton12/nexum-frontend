@@ -17,6 +17,7 @@ import { useTranslation } from 'react-i18next'
 import Sidebar from './components/Sidebar'
 import Calendar from '../../components/ui/Calendar'
 import Toast from '../../components/ui/Toast'
+import PdfTemplateModal from '../../components/modals/PdfTemplateModal'
 import { getProjects } from '../../services/project.service'
 import { getPortfolioSkills } from '../../services/habilidades.service'
 import { getExperiences } from '../../services/experience.service'
@@ -117,6 +118,7 @@ const DashboardProfessional = () => {
   const [viewsCount, setViewsCount] = useState(0)
   const [recentVisitors, setRecentVisitors] = useState<ProfileVisitor[]>([])
   const [showStats, setShowStats] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const [projectsCount, setProjectsCount] = useState<number | null>(null)
   const [skillsCount, setSkillsCount] = useState<number | null>(null)
   const [experienceCount, setExperienceCount] = useState<number | null>(null)
@@ -393,12 +395,12 @@ const DashboardProfessional = () => {
                   >
                     <ExternalLink size={14} /> {t('dashboard.portfolio.view_online')}
                   </Link>
-                  <Link
-                    to="/imprimir"
-                    className="bg-white text-gray-700 dark:text-gray-300 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 text-sm px-4 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-600 transition-all shadow-sm flex items-center gap-2 no-underline font-medium"
+                  <button
+                    onClick={() => setIsModalOpen(true)}
+                    className="bg-white text-gray-700 dark:text-gray-300 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 text-sm px-4 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-600 transition-all shadow-sm flex items-center gap-2 no-underline font-medium cursor-pointer"
                   >
                     <FileText size={14} className="text-action" /> {t('dashboard.portfolio.export_pdf')}
-                  </Link>
+                  </button>
                 </div>
               </div>
 
@@ -469,6 +471,11 @@ const DashboardProfessional = () => {
       </div>
 
       {toast && <Toast message={toast.mensaje} type={toast.tipo} onClose={handleCloseToast} />}
+      <PdfTemplateModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        portfolioId={portfolioId}
+      />
     </div>
   )
 }

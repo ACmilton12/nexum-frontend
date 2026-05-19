@@ -188,9 +188,29 @@
     "featured_pro": "Profissional em Destaque"
   },
   "cta": {
-    "title": "Você é um profesional de software?",
-    "subtitle": "Crie seu portfólio institucional hoje mesmo e se destaque na sua área com uma presença digital profissional.",
+    "title": "Você é um profissional de software?",
+    "subtitle": "Crie seu portfólio institucional hoje e destaque-se no seu setor com uma presença digital profissional.",
     "start": "Começar agora"
+  },
+  "print": {
+    "modal_title": "Selecionar Modelo",
+    "modal_desc": "Escolha o design para o seu portfólio em PDF",
+    "cancel": "Cancelar",
+    "download": "Gerar PDF",
+    "templates": {
+      "classic": {
+        "name": "Clássico",
+        "desc": "Formal e estruturado. Ideal para ambientes corporativos."
+      },
+      "modern": {
+        "name": "Moderno",
+        "desc": "Cabeçalho escuro com toques de cor. Atraente e tecnológico."
+      },
+      "minimalist": {
+        "name": "Minimalista",
+        "desc": "Limpo e elegante com amplos espaços em branco."
+      }
+    }
   },
   "university_strip": {
     "backed_by": "Apoiado pela Universidade Mayor de San Simón",

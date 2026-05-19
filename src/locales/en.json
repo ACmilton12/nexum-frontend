@@ -193,6 +193,26 @@
     "subtitle": "Create your institutional portfolio today and stand out in your field with a professional digital presence.",
     "start": "Get started now"
   },
+  "print": {
+    "modal_title": "Select Template",
+    "modal_desc": "Choose the design for your PDF portfolio",
+    "cancel": "Cancel",
+    "download": "Generate PDF",
+    "templates": {
+      "classic": {
+        "name": "Classic",
+        "desc": "Formal and structured. Ideal for corporate environments."
+      },
+      "modern": {
+        "name": "Modern",
+        "desc": "Dark header with color accents. Attractive and technological."
+      },
+      "minimalist": {
+        "name": "Minimalist",
+        "desc": "Clean and elegant with ample white space."
+      }
+    }
+  },
   "university_strip": {
     "backed_by": "Backed by the Mayor de San Simón University",
     "dept": "Informatics & Systems Dept."
