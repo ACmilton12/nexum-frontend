@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Upload,
   FileImage,
@@ -72,6 +73,7 @@ interface Step2FilesProps {
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
 const StorageIndicator = ({ usedBytes }: { usedBytes: number }) => {
+  const { t } = useTranslation()
   const usedMB = toMB(usedBytes)
   const pct = Math.min((usedMB / MAX_STORAGE_MB) * 100, 100)
   const isWarn = pct >= 80
@@ -94,7 +96,7 @@ const StorageIndicator = ({ usedBytes }: { usedBytes: number }) => {
             }
           />
           <span className="text-[12px] font-bold text-[#1a1a2e] dark:text-gray-300">
-            Uso de almacenamiento
+            {t('projects.modal.indicator_title')}
           </span>
         </div>
         <span className={`text-[11px] font-semibold ${color}`}>
@@ -121,81 +123,85 @@ const FileItem = ({
   onRemove: (f: UploadedFile) => void
   onPreview: (f: UploadedFile) => void
   isRemoving: boolean
-}) => (
-  <div className="flex items-center gap-3 px-3 py-2.5 bg-white dark:bg-slate-800 border border-gray-100 dark:border-gray-700 rounded-lg hover:border-gray-200 dark:hover:border-gray-600 transition-all group">
-    <div className="flex-shrink-0">{getFileIcon(file.mimeType)}</div>
-    <div className="flex-1 min-w-0">
-      <div className="flex items-center justify-between gap-2 mb-1">
-        <p className="text-[12px] font-semibold text-[#1a1a2e] dark:text-white truncate">
-          {file.name}
-        </p>
-        <span className="text-[10px] text-[#5b6472] dark:text-gray-500 flex-shrink-0">
-          {file.size === 0 ? '? MB' : `${formatMB(file.size)} MB`}
-        </span>
+}) => {
+  const { t } = useTranslation()
+  return (
+    <div className="flex items-center gap-3 px-3 py-2.5 bg-white dark:bg-slate-800 border border-gray-100 dark:border-gray-700 rounded-lg hover:border-gray-200 dark:hover:border-gray-600 transition-all group">
+      <div className="flex-shrink-0">{getFileIcon(file.mimeType)}</div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center justify-between gap-2 mb-1">
+          <p className="text-[12px] font-semibold text-[#1a1a2e] dark:text-white truncate">
+            {file.name}
+          </p>
+          <span className="text-[10px] text-[#5b6472] dark:text-gray-500 flex-shrink-0">
+            {file.size === 0 ? '? MB' : `${formatMB(file.size)} MB`}
+          </span>
+        </div>
+        {file.status === 'uploading' && (
+          <div className="w-full h-1 bg-gray-100 dark:bg-slate-700 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-[#003087] rounded-full transition-all duration-300"
+              style={{ width: `${file.progress}%` }}
+            />
+          </div>
+        )}
+        {file.status === 'success' && (
+          <div className="flex items-center gap-1">
+            <CheckCircle size={11} className="text-emerald-500" />
+            <span className="text-[11px] text-emerald-600 font-medium">{t('projects.modal.uploaded_success')}</span>
+          </div>
+        )}
+        {file.status === 'error' && (
+          <div className="flex items-center gap-1">
+            <AlertCircle size={11} className="text-[#C8102E]" />
+            <span className="text-[11px] text-[#C8102E] font-medium">{file.errorMessage}</span>
+          </div>
+        )}
       </div>
-      {file.status === 'uploading' && (
-        <div className="w-full h-1 bg-gray-100 dark:bg-slate-700 rounded-full overflow-hidden">
-          <div
-            className="h-full bg-[#003087] rounded-full transition-all duration-300"
-            style={{ width: `${file.progress}%` }}
-          />
-        </div>
-      )}
-      {file.status === 'success' && (
-        <div className="flex items-center gap-1">
-          <CheckCircle size={11} className="text-emerald-500" />
-          <span className="text-[11px] text-emerald-600 font-medium">Subido correctamente</span>
-        </div>
-      )}
-      {file.status === 'error' && (
-        <div className="flex items-center gap-1">
-          <AlertCircle size={11} className="text-[#C8102E]" />
-          <span className="text-[11px] text-[#C8102E] font-medium">{file.errorMessage}</span>
-        </div>
-      )}
+      <div className="flex items-center gap-2 flex-shrink-0">
+        {file.status === 'uploading' && (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#eef3f8] dark:bg-blue-900/30 text-[#003087] dark:text-blue-400 text-[10px] font-bold">
+            <Loader2 size={10} className="animate-spin" /> {t('projects.modal.uploading_status')}
+          </span>
+        )}
+        {file.status === 'success' && (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold">
+            <Check size={10} /> {t('projects.modal.success_status')}
+          </span>
+        )}
+        {file.status === 'error' && (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-red-50 dark:bg-red-900/20 text-[#C8102E] text-[10px] font-bold">
+            <AlertCircle size={10} /> {t('projects.modal.error_status')}
+          </span>
+        )}
+        {file.status === 'success' && (
+          <button
+            type="button"
+            onClick={() => onPreview(file)}
+            title={t('projects.modal.view_file_title')}
+            className="flex items-center justify-center w-7 h-7 rounded-md bg-[#eef3f8] dark:bg-blue-900/20 text-[#003087] dark:text-blue-400 hover:bg-[#d8e4f2] dark:hover:bg-blue-900/40 transition-all shadow-sm"
+          >
+            <Eye size={14} />
+          </button>
+        )}
+        {file.status !== 'uploading' && (
+          <button
+            type="button"
+            disabled={isRemoving}
+            onClick={() => onRemove(file)}
+            title={t('projects.modal.delete_file_title')}
+            className="flex items-center justify-center w-7 h-7 rounded-md bg-red-50 dark:bg-red-900/20 text-[#C8102E] hover:bg-red-100 dark:hover:bg-red-900/40 transition-all shadow-sm disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {isRemoving ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
+          </button>
+        )}
+      </div>
     </div>
-    <div className="flex items-center gap-2 flex-shrink-0">
-      {file.status === 'uploading' && (
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#eef3f8] dark:bg-blue-900/30 text-[#003087] dark:text-blue-400 text-[10px] font-bold">
-          <Loader2 size={10} className="animate-spin" /> Uploading
-        </span>
-      )}
-      {file.status === 'success' && (
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold">
-          <Check size={10} /> Success
-        </span>
-      )}
-      {file.status === 'error' && (
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-red-50 dark:bg-red-900/20 text-[#C8102E] text-[10px] font-bold">
-          <AlertCircle size={10} /> Error
-        </span>
-      )}
-      {file.status === 'success' && (
-        <button
-          type="button"
-          onClick={() => onPreview(file)}
-          title="Ver archivo"
-          className="flex items-center justify-center w-7 h-7 rounded-md bg-[#eef3f8] dark:bg-blue-900/20 text-[#003087] dark:text-blue-400 hover:bg-[#d8e4f2] dark:hover:bg-blue-900/40 transition-all shadow-sm"
-        >
-          <Eye size={14} />
-        </button>
-      )}
-      {file.status !== 'uploading' && (
-        <button
-          type="button"
-          disabled={isRemoving}
-          onClick={() => onRemove(file)}
-          title="Eliminar archivo"
-          className="flex items-center justify-center w-7 h-7 rounded-md bg-red-50 dark:bg-red-900/20 text-[#C8102E] hover:bg-red-100 dark:hover:bg-red-900/40 transition-all shadow-sm disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          {isRemoving ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
-        </button>
-      )}
-    </div>
-  </div>
-)
+  )
+}
 
 const FormatErrorModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
+  const { t } = useTranslation()
   if (!isOpen) return null
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -206,11 +212,10 @@ const FormatErrorModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
         </div>
         <div className="text-center">
           <h3 className="text-[15px] font-bold text-[#1a1a2e] dark:text-white mb-1">
-            Formato no permitido
+            {t('projects.modal.format_error_title')}
           </h3>
           <p className="text-[13px] text-[#5b6472] dark:text-gray-400 leading-relaxed">
-            Solo se aceptan archivos{' '}
-            <span className="font-semibold text-[#1a1a2e] dark:text-white">{ALLOWED_LABEL}</span>.
+            {t('projects.modal.format_error_desc', { formats: ALLOWED_LABEL })}
           </p>
         </div>
         <button
@@ -218,7 +223,7 @@ const FormatErrorModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
           onClick={onClose}
           className="w-full h-10 bg-[#003087] text-white text-[13px] font-bold rounded-lg hover:brightness-110 transition-all"
         >
-          Entendido
+          {t('projects.modal.format_error_ok')}
         </button>
       </div>
     </div>
@@ -234,6 +239,7 @@ const ConfirmNoFilesModal = ({
   onConfirm: () => void
   onCancel: () => void
 }) => {
+  const { t } = useTranslation()
   if (!isOpen) return null
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -244,11 +250,10 @@ const ConfirmNoFilesModal = ({
         </div>
         <div className="text-center">
           <h3 className="text-[15px] font-bold text-[#1a1a2e] dark:text-white mb-1">
-            ¿Guardar sin archivos?
+            {t('projects.modal.confirm_no_files_title')}
           </h3>
           <p className="text-[13px] text-[#5b6472] dark:text-gray-400 leading-relaxed">
-            No has subido ninguna imagen o documento. ¿Estás seguro de que deseas guardar sin
-            archivos adjuntos?
+            {t('projects.modal.confirm_no_files_desc')}
           </p>
         </div>
         <div className="flex gap-3 w-full">
@@ -257,14 +262,14 @@ const ConfirmNoFilesModal = ({
             onClick={onCancel}
             className="flex-1 h-10 bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 text-[#1a1a2e] dark:text-gray-200 text-[13px] font-bold rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 transition-all"
           >
-            No, agregar archivos
+            {t('projects.modal.confirm_no_files_cancel')}
           </button>
           <button
             type="button"
             onClick={onConfirm}
             className="flex-1 h-10 bg-[#003087] text-white text-[13px] font-bold rounded-lg hover:brightness-110 transition-all"
           >
-            Sí, guardar
+            {t('projects.modal.confirm_no_files_confirm')}
           </button>
         </div>
       </div>
@@ -279,6 +284,7 @@ const FilePreviewModal = ({
   file: UploadedFile | null
   onClose: () => void
 }) => {
+  const { t } = useTranslation()
   const [blobUrl, setBlobUrl] = useState<string>('')
   const [isLoading, setIsLoading] = useState(true)
 
@@ -345,7 +351,7 @@ const FilePreviewModal = ({
             <div className="flex flex-col items-center gap-3">
               <Loader2 size={32} className="animate-spin text-[#003087] dark:text-blue-400" />
               <p className="text-[13px] font-bold text-[#5b6472] dark:text-gray-400">
-                Cargando vista previa...
+                {t('projects.modal.preview_loading')}
               </p>
             </div>
           ) : isPdf ? (
@@ -376,6 +382,7 @@ const ConfirmDeleteFileModal = ({
   onConfirm: () => void
   onCancel: () => void
 }) => {
+  const { t } = useTranslation()
   if (!file) return null
   return (
     <div className="fixed inset-0 z-[70] flex items-center justify-center">
@@ -386,12 +393,10 @@ const ConfirmDeleteFileModal = ({
         </div>
         <div className="text-center">
           <h3 className="text-[15px] font-bold text-[#1a1a2e] dark:text-white mb-1">
-            ¿Eliminar archivo?
+            {t('projects.modal.confirm_delete_file_title')}
           </h3>
           <p className="text-[13px] text-[#5b6472] dark:text-gray-400 leading-relaxed">
-            Estás a punto de eliminar{' '}
-            <span className="font-semibold text-[#1a1a2e] dark:text-white">{file.name}</span>. Esta
-            acción es inmediata y no se puede deshacer.
+            {t('projects.modal.confirm_delete_file_desc', { name: file.name })}
           </p>
         </div>
         <div className="flex gap-3 w-full">
@@ -400,14 +405,14 @@ const ConfirmDeleteFileModal = ({
             onClick={onCancel}
             className="flex-1 h-10 bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 text-[#1a1a2e] dark:text-gray-200 text-[13px] font-bold rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 transition-all"
           >
-            Cancelar
+            {t('projects.modal.cancel_btn')}
           </button>
           <button
             type="button"
             onClick={onConfirm}
             className="flex-1 h-10 bg-[#C8102E] text-white text-[13px] font-bold rounded-lg hover:brightness-110 transition-all"
           >
-            Eliminar
+            {t('projects.modal.delete_btn')}
           </button>
         </div>
       </div>
@@ -431,6 +436,7 @@ const Step2Files = ({
   onConfirmNoFilesCancel,
   onToast
 }: Step2FilesProps) => {
+  const { t } = useTranslation()
   const [isDragOver, setIsDragOver] = useState(false)
   const [removingId, setRemovingId] = useState<string | null>(null)
   const [previewFile, setPreviewFile] = useState<UploadedFile | null>(null)
@@ -466,9 +472,9 @@ const Step2Files = ({
       let errorMessage: string | undefined
 
       if (file.type === 'application/pdf' && sizeMB > MAX_PDF_MB) {
-        errorMessage = `Excede el límite de ${MAX_PDF_MB} MB para PDF`
+        errorMessage = t('projects.modal.error_pdf_limit', { max: MAX_PDF_MB })
       } else if (file.type !== 'application/pdf' && sizeMB > MAX_IMAGE_MB) {
-        errorMessage = `Excede el límite de ${MAX_IMAGE_MB} MB para imágenes`
+        errorMessage = t('projects.modal.error_image_limit', { max: MAX_IMAGE_MB })
       }
 
       const localId = `${Date.now()}-${Math.random()}`
@@ -510,7 +516,7 @@ const Step2Files = ({
                       ...f,
                       status: 'error',
                       progress: 0,
-                      errorMessage: err.message || 'Error al subir'
+                      errorMessage: err.message || t('projects.modal.error_upload')
                     }
                   : f
               )
@@ -518,7 +524,7 @@ const Step2Files = ({
           })
       }
     },
-    [projectId, onFilesChange, storageFull, maxFilesReached, onShowFormatError]
+    [projectId, onFilesChange, storageFull, maxFilesReached, onShowFormatError, t]
   )
 
   const handleDrop = useCallback(
@@ -547,10 +553,10 @@ const Step2Files = ({
       try {
         setRemovingId(fileToDelete.id)
         await deleteProjectFile(projectId, fileToDelete.backendId)
-        onToast('Archivo eliminado exitosamente.', 'success')
+        onToast(t('projects.modal.toast_file_deleted'), 'success')
       } catch (err: unknown) {
         const error = err as { message?: string }
-        onToast(error.message || 'Error al eliminar el archivo.', 'error')
+        onToast(error.message || t('projects.modal.toast_file_delete_error'), 'error')
         setRemovingId(null)
         setFileToDelete(null)
         return
@@ -564,7 +570,7 @@ const Step2Files = ({
 
   const handleSave = () => {
     if (hasUploading) {
-      onToast('Espera a que terminen de subir todos los archivos.', 'error')
+      onToast(t('projects.modal.toast_step2_toast_uploading'), 'error')
       return
     }
     if (successFiles.length === 0) {
@@ -579,10 +585,10 @@ const Step2Files = ({
       <div className="flex flex-col gap-4 w-full max-w-[520px] max-h-[75vh] overflow-y-auto pr-1">
         <div className="flex flex-col sm:flex-row justify-between items-start gap-3 sm:gap-4">
           <p className="text-[14px] text-[#5b6472] dark:text-gray-400 leading-relaxed">
-            Adjunta imágenes o documentos PDF como evidencia digital de tu proyecto.
+            {t('projects.modal.step2_subtitle')}
           </p>
           <span className="bg-[#eef3f8] dark:bg-slate-800 text-[#003087] dark:text-blue-400 px-3 py-1.5 rounded-md text-[13px] font-bold flex-shrink-0 self-start sm:self-auto transition-colors">
-            Archivos
+            {t('projects.modal.files_badge')}
           </span>
         </div>
 
@@ -590,7 +596,7 @@ const Step2Files = ({
           <span
             className={`text-[11px] font-semibold ${maxFilesReached ? 'text-[#C8102E]' : 'text-[#5b6472] dark:text-gray-500'}`}
           >
-            {uploadedFiles.filter((f) => f.status !== 'error').length} / {MAX_FILES} archivos
+            {t('projects.modal.files_limit', { count: uploadedFiles.filter((f) => f.status !== 'error').length, max: MAX_FILES })}
           </span>
         </div>
 
@@ -622,13 +628,13 @@ const Step2Files = ({
           <div className="text-center">
             <p className="text-[13px] font-semibold text-[#1a1a2e] dark:text-white">
               {storageFull
-                ? 'Almacenamiento lleno'
+                ? t('projects.modal.storage_full')
                 : maxFilesReached
-                  ? `Máximo de ${MAX_FILES} archivos alcanzado`
-                  : 'Arrastra archivos o haz clic para seleccionar'}
+                  ? t('projects.modal.files_max_reached', { max: MAX_FILES })
+                  : t('projects.modal.dropzone_active')}
             </p>
             <p className="text-[11px] text-[#5b6472] dark:text-gray-400 mt-0.5">
-              Formatos: {ALLOWED_LABEL} · Imágenes ≤ {MAX_IMAGE_MB} MB · PDF ≤ {MAX_PDF_MB} MB
+              {t('projects.modal.dropzone_desc', { formats: ALLOWED_LABEL, imgMax: MAX_IMAGE_MB, pdfMax: MAX_PDF_MB })}
             </p>
           </div>
           <input
@@ -645,7 +651,7 @@ const Step2Files = ({
           <div className="flex items-center gap-2 px-3 py-2 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30 rounded-lg">
             <AlertCircle size={14} className="text-[#C8102E] flex-shrink-0" />
             <p className="text-[12px] text-[#C8102E] font-medium">
-              Has alcanzado el límite de almacenamiento disponible ({MAX_STORAGE_MB} MB).
+              {t('projects.modal.storage_warning', { max: MAX_STORAGE_MB })}
             </p>
           </div>
         )}
@@ -672,7 +678,7 @@ const Step2Files = ({
             onClick={onBack}
             className="w-full sm:w-auto h-10 px-5 text-[14px] font-bold text-[#1a1a2e] dark:text-gray-300 bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors flex items-center justify-center gap-2"
           >
-            <ChevronLeft size={14} /> Atrás
+            <ChevronLeft size={14} /> {t('projects.modal.back_btn')}
           </button>
           <button
             type="button"
@@ -684,10 +690,10 @@ const Step2Files = ({
           >
             {hasUploading ? (
               <>
-                <Loader2 size={14} className="animate-spin" /> Subiendo...
+                <Loader2 size={14} className="animate-spin" /> {t('projects.modal.submitting_status')}
               </>
             ) : (
-              'Guardar Proyecto'
+              t('projects.modal.save_project_btn')
             )}
           </button>
         </div>
