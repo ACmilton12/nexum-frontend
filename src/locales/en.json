@@ -100,7 +100,8 @@
     "loading": "Loading...",
     "error": "Something went wrong",
     "back": "Go back",
-    "view_more": "View more"
+    "view_more": "View more",
+    "calendar": "Calendar"
   },
   "footer": {
     "description": "Institutional platform for digital portfolios for professionals.",

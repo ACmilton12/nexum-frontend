@@ -1,23 +1,77 @@
+import { useTranslation } from 'react-i18next'
+
 const Calendar = () => {
+  const { t, i18n } = useTranslation()
   const today = new Date()
   const year = today.getFullYear()
   const month = today.getMonth()
   const todayDate = today.getDate()
 
-  const monthNames = [
-    "Enero",
-    "Febrero",
-    "Marzo",
-    "Abril",
-    "Mayo",
-    "Junio",
-    "Julio",
-    "Agosto",
-    "Septiembre",
-    "Octubre",
-    "Noviembre",
-    "Diciembre",
-  ];
+  // Detect current language (default to Spanish)
+  const currentLang = i18n.language?.startsWith('en')
+    ? 'en'
+    : i18n.language?.startsWith('pt')
+      ? 'pt'
+      : 'es'
+
+  // Translation dictionaries for months and weekdays
+  const locales = {
+    es: {
+      weekdays: ["L", "M", "M", "J", "V", "S", "D"],
+      months: [
+        "Enero",
+        "Febrero",
+        "Marzo",
+        "Abril",
+        "Mayo",
+        "Junio",
+        "Julio",
+        "Agosto",
+        "Septiembre",
+        "Octubre",
+        "Noviembre",
+        "Diciembre"
+      ]
+    },
+    en: {
+      weekdays: ["M", "T", "W", "T", "F", "S", "S"],
+      months: [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+      ]
+    },
+    pt: {
+      weekdays: ["S", "T", "Q", "Q", "S", "S", "D"],
+      months: [
+        "Janeiro",
+        "Fevereiro",
+        "Março",
+        "Abril",
+        "Maio",
+        "Junho",
+        "Julho",
+        "Agosto",
+        "Setembro",
+        "Outubro",
+        "Novembro",
+        "Dezembro"
+      ]
+    }
+  }
+
+  const activeLocale = locales[currentLang] || locales.es
+  const monthNames = activeLocale.months
+  const weekdays = activeLocale.weekdays
 
   // Primer día del mes
   const firstDay = new Date(year, month, 1).getDay();
@@ -72,7 +126,7 @@ const Calendar = () => {
     >
       {/* TÍTULO */}
       <h3 className="font-semibold text-textMain dark:text-gray-100 mb-2">
-        Calendario
+        {t('common.calendar', 'Calendario')}
       </h3>
 
       {/* FECHA */}
@@ -82,7 +136,7 @@ const Calendar = () => {
 
       {/* DÍAS SEMANA */}
       <div className="grid grid-cols-7 text-xs text-center text-gray-400 dark:text-gray-500 mb-2">
-        {["L", "M", "M", "J", "V", "S", "D"].map((d, i) => (
+        {weekdays.map((d, i) => (
           <span key={i}>{d}</span>
         ))}
       </div>

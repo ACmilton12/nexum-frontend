@@ -100,7 +100,8 @@
     "loading": "Cargando...",
     "error": "Algo salió mal",
     "back": "Regresar",
-    "view_more": "Ver más"
+    "view_more": "Ver más",
+    "calendar": "Calendario"
   },
   "footer": {
     "description": "Plataforma institucional de portafolios digitales para profesionales.",
