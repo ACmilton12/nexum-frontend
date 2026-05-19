@@ -225,17 +225,9 @@ const PortfolioView = () => {
     fetchData()
   }, [])
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center transition-colors duration-300">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-4 border-[#003087] dark:border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
-
-          <p className="text-slate-600 dark:text-slate-400 font-medium">Cargando portafolio...</p>
-        </div>
-      </div>
-    )
-  }
+  const SkeletonPulse = ({ className }: { className: string }) => (
+    <div className={`bg-slate-200 dark:bg-slate-800 animate-pulse ${className}`} />
+  )
 
   const stats = [
     { label: t('portfolio_view.stats_views'), value: profileStats?.visits_count || 0 }
@@ -258,7 +250,7 @@ const PortfolioView = () => {
           {/* CONTENIDO */}
           <div className="flex-1 p-4 pl-14 sm:pl-6 md:p-8 overflow-y-auto">
             <div className="max-w-5xl mx-auto space-y-6 pb-12">
-              {privacy.global_privacy === 'private' && (
+              {!loading && privacy.global_privacy === 'private' && (
                 <div className="bg-amber-50 dark:bg-amber-500/10 border-l-4 border-amber-500 rounded-r-xl p-4 flex items-start gap-3 shadow-sm">
                   <Lock className="text-amber-500 shrink-0 mt-0.5" size={20} />
                   <div>
@@ -272,11 +264,13 @@ const PortfolioView = () => {
 
               {/* HEADER */}
               <div className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-800">
-                <div className="h-40 w-full bg-gradient-to-r from-[#001A5E] via-[#003087] to-[#C8102E] dark:from-slate-900 dark:via-slate-800 dark:to-cyan-900"></div>
+                <div className="h-40 w-full bg-gradient-to-r from-[#001A5E] via-[#003087] to-[#C8102E] dark:from-slate-900 dark:via-slate-800 dark:to-cyan-900 animate-gradient"></div>
 
                 <div className="px-8 pb-8 relative">
                   <div className="absolute -top-12 left-8">
-                    {personalData?.avatar_url ? (
+                    {loading ? (
+                      <div className="w-24 h-24 rounded-full border-4 border-white dark:border-slate-900 bg-slate-200 dark:bg-slate-800 animate-pulse shadow-lg" />
+                    ) : personalData?.avatar_url ? (
                       <img
                         src={
                           personalData.avatar_url.startsWith('http')
@@ -295,95 +289,125 @@ const PortfolioView = () => {
                   </div>
 
                   <div className="pt-16 flex flex-col md:flex-row justify-between items-start gap-4">
-                    <div>
-                      <h1 className="text-3xl font-black text-slate-900 dark:text-white">
-                        {personalData?.user?.first_name || personalData?.user?.last_name
-                          ? `${personalData.user.first_name || ''} ${personalData.user.last_name || ''
-                            }`.trim()
-                          : t('portfolio_view.user_default')}
-                      </h1>
-
-                      <p className="text-[#003087] dark:text-cyan-400 text-sm font-semibold uppercase tracking-wider mt-1">
-                        {personalData?.profession || t('portfolio_view.professional')}
-                      </p>
-
-                      <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500 dark:text-slate-400 text-xs mt-3">
-                        <MapPin size={14} />
-                        <span>{personalData?.location || t('portfolio_view.location_unspecified')}</span>
+                    {loading ? (
+                      <div className="space-y-3 flex-grow max-w-md">
+                        <SkeletonPulse className="w-64 h-8 rounded-lg" />
+                        <SkeletonPulse className="w-40 h-4 rounded-lg" />
+                        <div className="flex items-center gap-2 mt-2">
+                          <SkeletonPulse className="w-4 h-4 rounded-full" />
+                          <SkeletonPulse className="w-32 h-3 rounded-lg" />
+                        </div>
+                        <div className="flex gap-3 mt-4">
+                          <SkeletonPulse className="w-28 h-8 rounded-lg" />
+                          <SkeletonPulse className="w-36 h-8 rounded-lg" />
+                        </div>
                       </div>
+                    ) : (
+                      <div>
+                        <h1 className="text-3xl font-black text-slate-900 dark:text-white">
+                          {personalData?.user?.first_name || personalData?.user?.last_name
+                            ? `${personalData.user.first_name || ''} ${personalData.user.last_name || ''
+                              }`.trim()
+                            : t('portfolio_view.user_default')}
+                        </h1>
 
-                      <div className="flex flex-col gap-3 mt-5">
-                        <div className="flex flex-wrap gap-3">
-                          <div className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs shadow-sm">
-                            <Phone size={14} className="text-[#003087] dark:text-cyan-400" />
-                            <span>{personalData?.phone || t('portfolio_view.no_phone')}</span>
-                          </div>
+                        <p className="text-[#003087] dark:text-cyan-400 text-sm font-semibold uppercase tracking-wider mt-1">
+                          {personalData?.profession || t('portfolio_view.professional')}
+                        </p>
 
-                          <div className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs shadow-sm">
-                            <Mail size={14} className="text-[#003087] dark:text-cyan-400" />
-                            <span>{personalData?.user?.email || t('portfolio_view.no_email')}</span>
-                          </div>
+                        <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500 dark:text-slate-400 text-xs mt-3">
+                          <MapPin size={14} />
+                          <span>{personalData?.location || t('portfolio_view.location_unspecified')}</span>
                         </div>
 
-                        {(mainLinks.linkedin || mainLinks.github || additionalLinks.length > 0) && (
-                          <div className="flex flex-wrap items-center gap-2.5">
-                            {(() => {
-                              const linksToRender = [
-                                ...(mainLinks.linkedin ? [{ id: 'linkedin', url: mainLinks.linkedin, platform: 'linkedin' }] : []),
-                                ...(mainLinks.github ? [{ id: 'github', url: mainLinks.github, platform: 'github' }] : []),
-                                ...additionalLinks
-                              ];
+                        <div className="flex flex-col gap-3 mt-5">
+                          <div className="flex flex-wrap gap-3">
+                            <div className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs shadow-sm">
+                              <Phone size={14} className="text-[#003087] dark:text-cyan-400" />
+                              <span>{personalData?.phone || t('portfolio_view.no_phone')}</span>
+                            </div>
 
-                              return linksToRender.map(link => {
-                                const meta = PLATFORM_ICONS[link.platform?.toLowerCase() || 'website'] || PLATFORM_ICONS.website;
-                                return (
-                                  <a key={link.id} href={link.url} target="_blank" rel="noopener noreferrer" title={link.platform || 'Sitio Web'}
-                                    className={`w-9 h-9 flex items-center justify-center bg-white dark:bg-slate-800 rounded-full border border-slate-200 dark:border-slate-700 ${meta.color} hover:bg-slate-100 dark:hover:bg-slate-700 ${meta.hoverColor} hover:scale-110 transition-all shadow-sm`}>
-                                    {meta.svg}
-                                  </a>
-                                );
-                              });
-                            })()}
+                            <div className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs shadow-sm">
+                              <Mail size={14} className="text-[#003087] dark:text-cyan-400" />
+                              <span>{personalData?.user?.email || t('portfolio_view.no_email')}</span>
+                            </div>
                           </div>
-                        )}
+
+                          {(mainLinks.linkedin || mainLinks.github || additionalLinks.length > 0) && (
+                            <div className="flex flex-wrap items-center gap-2.5">
+                              {(() => {
+                                const linksToRender = [
+                                  ...(mainLinks.linkedin ? [{ id: 'linkedin', url: mainLinks.linkedin, platform: 'linkedin' }] : []),
+                                  ...(mainLinks.github ? [{ id: 'github', url: mainLinks.github, platform: 'github' }] : []),
+                                  ...additionalLinks
+                                ];
+
+                                return linksToRender.map(link => {
+                                  const meta = PLATFORM_ICONS[link.platform?.toLowerCase() || 'website'] || PLATFORM_ICONS.website;
+                                  return (
+                                    <a key={link.id} href={link.url} target="_blank" rel="noopener noreferrer" title={link.platform || 'Sitio Web'}
+                                      className={`w-9 h-9 flex items-center justify-center bg-white dark:bg-slate-800 rounded-full border border-slate-200 dark:border-slate-700 ${meta.color} hover:bg-slate-100 dark:hover:bg-slate-700 ${meta.hoverColor} hover:scale-110 transition-all shadow-sm`}>
+                                      {meta.svg}
+                                    </a>
+                                  );
+                                });
+                              })()}
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </div>
+                    )}
 
                     {/* Right side Actions and Stats Stack */}
-                    <div className="flex flex-col items-stretch md:items-end gap-3 w-full md:w-auto self-stretch mt-4 md:mt-0">
-                      <button
-                        onClick={() => navigate('/profile/personal-data')}
-                        className="flex items-center justify-center gap-2 px-4 py-2 bg-[#003087] dark:bg-cyan-500 hover:bg-blue-800 dark:hover:bg-cyan-400 text-white dark:text-slate-950 rounded-lg text-xs font-bold transition-all duration-300 shadow-lg w-full md:w-56"
-                      >
-                        <Edit3 size={14} />
-                        {t('portfolio_view.edit_info')}
-                      </button>
-
-                      <button
-                        onClick={() => setIsModalOpen(true)}
-                        className="flex items-center justify-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-all duration-300 shadow-lg w-full md:w-56 cursor-pointer border-none"
-                      >
-                        <Download size={14} />
-                        {t('portfolio_view.download_pdf', 'Descargar PDF')}
-                      </button>
-
-                      {/* STATS PANEL (Horizontal Row on both Desktop and Mobile) */}
-                      <div className="flex flex-wrap md:flex-nowrap gap-2 w-full mt-1 justify-start md:justify-end">
-                        {stats.map((stat, idx) => (
-                          <div
-                            key={idx}
-                            className="flex-1 md:flex-initial bg-slate-50 dark:bg-slate-800 rounded-xl p-3 px-4 flex flex-col items-center justify-center border border-slate-200 dark:border-slate-700 shadow-sm min-w-[90px] md:min-w-[100px]"
-                          >
-                            <span className="text-xl font-black text-[#003087] dark:text-cyan-400 mb-0.5">
-                              {stat.value}
-                            </span>
-                            <span className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest text-center">
-                              {stat.label}
-                            </span>
-                          </div>
-                        ))}
+                    {loading ? (
+                      <div className="flex flex-col items-stretch md:items-end gap-3 w-full md:w-auto self-stretch mt-4 md:mt-0">
+                        <SkeletonPulse className="h-8 rounded-lg w-full md:w-56" />
+                        <SkeletonPulse className="h-8 rounded-lg w-full md:w-56" />
+                        <div className="flex gap-2 w-full mt-1 justify-start md:justify-end">
+                          {[1, 2, 3, 4].map(n => (
+                            <div key={n} className="flex-grow md:flex-initial bg-slate-50 dark:bg-slate-800 rounded-xl p-3 px-4 flex flex-col items-center justify-center border border-slate-200 dark:border-slate-700 shadow-sm min-w-[90px] md:min-w-[100px] gap-2">
+                              <SkeletonPulse className="w-8 h-6 rounded" />
+                              <SkeletonPulse className="w-12 h-2.5 rounded" />
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    </div>
+                    ) : (
+                      <div className="flex flex-col items-stretch md:items-end gap-3 w-full md:w-auto self-stretch mt-4 md:mt-0">
+                        <button
+                          onClick={() => navigate('/profile/personal-data')}
+                          className="flex items-center justify-center gap-2 px-4 py-2 bg-[#003087] dark:bg-cyan-500 hover:bg-blue-800 dark:hover:bg-cyan-400 text-white dark:text-slate-950 rounded-lg text-xs font-bold transition-all duration-300 shadow-lg w-full md:w-56"
+                        >
+                          <Edit3 size={14} />
+                          {t('portfolio_view.edit_info')}
+                        </button>
+
+                        <button
+                          onClick={() => setIsModalOpen(true)}
+                          className="flex items-center justify-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-all duration-300 shadow-lg w-full md:w-56 cursor-pointer border-none"
+                        >
+                          <Download size={14} />
+                          {t('portfolio_view.download_pdf', 'Descargar PDF')}
+                        </button>
+
+                        {/* STATS PANEL */}
+                        <div className="flex flex-wrap md:flex-nowrap gap-2 w-full mt-1 justify-start md:justify-end">
+                          {stats.map((stat, idx) => (
+                            <div
+                              key={idx}
+                              className="flex-1 md:flex-initial bg-slate-50 dark:bg-slate-800 rounded-xl p-3 px-4 flex flex-col items-center justify-center border border-slate-200 dark:border-slate-700 shadow-sm min-w-[90px] md:min-w-[100px]"
+                            >
+                              <span className="text-xl font-black text-[#003087] dark:text-cyan-400 mb-0.5">
+                                {stat.value}
+                              </span>
+                              <span className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest text-center">
+                                {stat.label}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -393,24 +417,32 @@ const PortfolioView = () => {
                 <div className="flex justify-between items-center mb-2">
                   <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{t('portfolio_view.about_me')}</h2>
 
-                  <button
-                    onClick={() => navigate('/profile/personal-data')}
-                    className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-[#003087] dark:text-cyan-400 rounded-lg text-xs font-bold transition-all"
-                  >
-                    <Edit3 size={14} />
-                    {t('portfolio_view.edit')}
-                  </button>
+                  {!loading && (
+                    <button
+                      onClick={() => navigate('/profile/personal-data')}
+                      className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-[#003087] dark:text-cyan-400 rounded-lg text-xs font-bold transition-all"
+                    >
+                      <Edit3 size={14} />
+                      {t('portfolio_view.edit')}
+                    </button>
+                  )}
                 </div>
 
                 <p className="text-[#003087] dark:text-cyan-400 text-[10px] font-bold uppercase tracking-widest mb-8">
                   {t('portfolio_view.my_profile')}
                 </p>
 
-                <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed mb-8">
-                  {personalData?.biography || t('portfolio_view.no_bio')}
-                </p>
-
-
+                {loading ? (
+                  <div className="space-y-3 py-2">
+                    <SkeletonPulse className="w-full h-4 rounded" />
+                    <SkeletonPulse className="w-full h-4 rounded" />
+                    <SkeletonPulse className="w-3/4 h-4 rounded" />
+                  </div>
+                ) : (
+                  <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed mb-8">
+                    {personalData?.biography || t('portfolio_view.no_bio')}
+                  </p>
+                )}
               </div>
 
               {/* HABILIDADES */}
@@ -440,7 +472,19 @@ const PortfolioView = () => {
                         {t('portfolio_view.technical_skills')}
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[250px] overflow-y-auto pr-2" style={{ scrollbarWidth: 'thin', scrollbarColor: '#22d3ee transparent' }}>
-                        {habilidadesTecnicas.length > 0 ? (
+                        {loading ? (
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                            {[1, 2].map(n => (
+                              <div key={n} className="bg-white dark:bg-slate-800 rounded-xl p-4 flex items-center justify-between border border-slate-200 dark:border-slate-700">
+                                <div className="space-y-2 flex-grow pr-4">
+                                  <SkeletonPulse className="w-24 h-4 rounded" />
+                                  <SkeletonPulse className="w-16 h-3 rounded" />
+                                </div>
+                                <SkeletonPulse className="w-14 h-5 rounded" />
+                              </div>
+                            ))}
+                          </div>
+                        ) : habilidadesTecnicas.length > 0 ? (
                           habilidadesTecnicas.map((skill, idx) => (
                             <div
                               key={idx}
@@ -473,7 +517,19 @@ const PortfolioView = () => {
                         {t('portfolio_view.soft_skills')}
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[250px] overflow-y-auto pr-2" style={{ scrollbarWidth: 'thin', scrollbarColor: '#c084fc transparent' }}>
-                        {habilidadesBlandas.length > 0 ? (
+                        {loading ? (
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                            {[1, 2].map(n => (
+                              <div key={n} className="bg-white dark:bg-slate-800 rounded-xl p-4 flex items-center justify-between border border-slate-200 dark:border-slate-700">
+                                <div className="space-y-2 flex-grow pr-4">
+                                  <SkeletonPulse className="w-24 h-4 rounded" />
+                                  <SkeletonPulse className="w-16 h-3 rounded" />
+                                </div>
+                                <SkeletonPulse className="w-14 h-5 rounded" />
+                              </div>
+                            ))}
+                          </div>
+                        ) : habilidadesBlandas.length > 0 ? (
                           habilidadesBlandas.map((skill, idx) => (
                             <div
                               key={idx}
@@ -522,7 +578,22 @@ const PortfolioView = () => {
                   </p>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {experiences.length > 0 ? (
+                    {loading ? (
+                      [1, 2, 3].map(n => (
+                        <div key={n} className="bg-white dark:bg-slate-800 rounded-xl border-l-4 border-slate-200 dark:border-slate-700 p-6 space-y-4">
+                          <div className="flex justify-between items-center">
+                            <SkeletonPulse className="w-12 h-3 rounded" />
+                            <SkeletonPulse className="w-16 h-3 rounded" />
+                          </div>
+                          <SkeletonPulse className="w-32 h-4 rounded" />
+                          <SkeletonPulse className="w-20 h-3 rounded" />
+                          <div className="space-y-2">
+                            <SkeletonPulse className="w-full h-3 rounded" />
+                            <SkeletonPulse className="w-5/6 h-3 rounded" />
+                          </div>
+                        </div>
+                      ))
+                    ) : experiences.length > 0 ? (
                       experiences.map((exp, idx) => (
                         <div
                           key={idx}
@@ -580,7 +651,25 @@ const PortfolioView = () => {
                   </p>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {projects.length > 0 ? (
+                    {loading ? (
+                      [1, 2, 3].map(n => (
+                        <div key={n} className="bg-white dark:bg-slate-800 rounded-xl border-l-4 border-slate-200 dark:border-slate-700 p-6 space-y-4">
+                          <div className="flex gap-2">
+                            <SkeletonPulse className="w-14 h-4 rounded" />
+                            <SkeletonPulse className="w-10 h-4 rounded" />
+                          </div>
+                          <SkeletonPulse className="w-40 h-4 rounded" />
+                          <div className="space-y-2">
+                            <SkeletonPulse className="w-full h-3 rounded" />
+                            <SkeletonPulse className="w-5/6 h-3 rounded" />
+                          </div>
+                          <div className="flex justify-between items-center mt-2">
+                            <SkeletonPulse className="w-12 h-3 rounded" />
+                            <SkeletonPulse className="w-10 h-3 rounded" />
+                          </div>
+                        </div>
+                      ))
+                    ) : projects.length > 0 ? (
                       projects.map((project, idx) => (
                         <div
                           key={idx}
@@ -654,7 +743,18 @@ const PortfolioView = () => {
                   </p>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {certifications.length > 0 ? (
+                    {loading ? (
+                      [1, 2, 3].map(n => (
+                        <div key={n} className="bg-white dark:bg-slate-800 rounded-xl border-l-4 border-slate-200 dark:border-slate-700 p-6 space-y-4">
+                          <SkeletonPulse className="w-36 h-4 rounded" />
+                          <SkeletonPulse className="w-full h-3 rounded" />
+                          <div className="flex gap-2">
+                            <SkeletonPulse className="w-12 h-4 rounded" />
+                            <SkeletonPulse className="w-14 h-4 rounded" />
+                          </div>
+                        </div>
+                      ))
+                    ) : certifications.length > 0 ? (
                       certifications.map((cert, idx) => (
                         <div
                           key={idx}
