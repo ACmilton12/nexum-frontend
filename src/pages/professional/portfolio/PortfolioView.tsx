@@ -13,12 +13,14 @@ import {
   Briefcase,
   Lock,
   Folder,
-  Award
+  Award,
+  Download
 } from 'lucide-react'
 import PLATFORM_ICONS from '../../../components/icons/SocialIcons'
 import Sidebar from '../../admin/components/Sidebar'
 import Calendar from '../../../components/ui/Calendar'
 import Navbar from '../../../components/ui/Navbar'
+import PdfTemplateModal from '../../../components/modals/PdfTemplateModal'
 
 import { getPersonalData } from '../../../services/datapersonal.service'
 import { getPortfolioSkills } from '../../../services/habilidades.service'
@@ -105,6 +107,7 @@ const PortfolioView = () => {
   const { stats: profileStats } = useProfileStats(portfolioId)
 
   const navigate = useNavigate()
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -349,6 +352,14 @@ const PortfolioView = () => {
                       >
                         <Edit3 size={14} />
                         Editar Información
+                      </button>
+
+                      <button
+                        onClick={() => setIsModalOpen(true)}
+                        className="flex items-center justify-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-all duration-300 shadow-lg w-full md:w-56 cursor-pointer border-none"
+                      >
+                        <Download size={14} />
+                        {t('portfolio_view.download_pdf', 'Descargar PDF')}
                       </button>
 
                       {/* STATS PANEL (Horizontal Row on both Desktop and Mobile) */}
@@ -733,6 +744,11 @@ const PortfolioView = () => {
           </aside>
         </main>
       </div>
+      <PdfTemplateModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        portfolioId={portfolioId}
+      />
     </div>
   )
 }
