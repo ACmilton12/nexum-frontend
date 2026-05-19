@@ -10,6 +10,51 @@
     "logout": "Logout",
     "select_language": "Select Language"
   },
+  "auth": {
+    "login": {
+      "welcome_back": "Welcome back",
+      "enter_credentials": "Enter your credentials to access your account",
+      "email_label": "Email",
+      "email_placeholder": "name@example.com",
+      "password_label": "Password",
+      "password_placeholder": "••••••••••",
+      "remember_me": "Remember me",
+      "forgot_password": "Forgot your password?",
+      "submit_btn": "Log In",
+      "loading_btn": "Logging in...",
+      "no_account": "Don't have an account?",
+      "register_here": "Register here",
+      "carousel": {
+        "slide1_title": "Your professional portfolio",
+        "slide1_desc": "Connect with opportunities and show your talent to the world",
+        "slide2_title": "Projects that speak for you",
+        "slide2_desc": "Upload your work and let it shine to employers",
+        "slide3_title": "Verified by UMSS · FCyT",
+        "slide3_desc": "Your profile with real academic backing"
+      },
+      "errors": {
+        "email_required": "Email is required.",
+        "password_required": "Password is required.",
+        "email_invalid": "Enter a valid email address.",
+        "password_short": "Password must be at least 6 characters.",
+        "invalid_credentials": "Invalid credentials. Check your email and password.",
+        "too_many_attempts": "Too many attempts. Please try again later.",
+        "deactivated": "Your account was deactivated. Contact the administrator: admin@nexum.com",
+        "network": "Could not connect to the server. Check your internet connection."
+      },
+      "toasts": {
+        "fill_all": "Please complete all fields.",
+        "enter_email": "Enter your email address.",
+        "invalid_email_format": "Invalid email format.",
+        "enter_password": "Enter your password.",
+        "password_too_short": "Password is too short.",
+        "welcome": "Welcome, {{name}}! Logging in...",
+        "verified_success": "Email verified successfully! You can now log in.",
+        "already_verified": "Your account is already verified.",
+        "verify_error": "Invalid or expired verification link. Request a new one."
+      }
+    }
+  },
   "hero": {
     "badge": "UMSS University Talent",
     "title_start": "Find the ",
@@ -25,7 +70,20 @@
     },
     "filter_area": "Area: Software Development",
     "filter_skills": "Skills: React, Node.js",
-    "filter_order": "Sort by: Relevance"
+    "filter_order": "Sort by: Relevance",
+    "slides": {
+      "slide1": {
+        "title": "DISCOVER AND CREATE A WORLD-CLASS PORTFOLIO"
+      },
+      "slide2": {
+        "title": "THE BOOST YOUR CAREER NEEDS!",
+        "description": "The UMSS technological ecosystem to connect university talent with the world."
+      },
+      "slide3": {
+        "title": "Boost Your Professional Future",
+        "description": "Start creating, managing, and sharing your digital portfolio on NEXUM."
+      }
+    }
   },
   "features": {
     "title": "Why choose Nexum?",
@@ -42,7 +100,8 @@
     "loading": "Loading...",
     "error": "Something went wrong",
     "back": "Go back",
-    "view_more": "View more"
+    "view_more": "View more",
+    "calendar": "Calendar"
   },
   "footer": {
     "description": "Institutional platform for digital portfolios for professionals.",
@@ -89,7 +148,9 @@
     "technical_skills": "Technical skills",
     "skills_placeholder_detailed": "Add skill + Enter",
     "apply_filters": "Apply Filters",
-    "clear_all": "Clear all"
+    "clear_all": "Clear all",
+    "show_all": "Show all portfolios",
+    "for": "for"
   },
   "features_list": {
     "title": "System Features",
@@ -121,16 +182,40 @@
   },
   "recent": {
     "title": "Recent Portfolios",
+    "most_viewed": "Most viewed portfolios",
     "subtitle": "Get to know the work of our professionals.",
     "view_portfolio": "View portfolio",
     "projects": "Projects",
     "views": "Views",
-    "university": "Mayor de San Simón University"
+    "university": "Mayor de San Simón University",
+    "no_views": "No portfolios with registered views yet.",
+    "featured_pro": "Featured Professional",
+    "click_card_hint": "Press the card to view the portfolio"
   },
   "cta": {
     "title": "Are you a software professional?",
     "subtitle": "Create your institutional portfolio today and stand out in your field with a professional digital presence.",
     "start": "Get started now"
+  },
+  "print": {
+    "modal_title": "Select Template",
+    "modal_desc": "Choose the design for your PDF portfolio",
+    "cancel": "Cancel",
+    "download": "Generate PDF",
+    "templates": {
+      "classic": {
+        "name": "Classic",
+        "desc": "Formal and structured. Ideal for corporate environments."
+      },
+      "modern": {
+        "name": "Modern",
+        "desc": "Dark header with color accents. Attractive and technological."
+      },
+      "minimalist": {
+        "name": "Minimalist",
+        "desc": "Clean and elegant with ample white space."
+      }
+    }
   },
   "university_strip": {
     "backed_by": "Backed by the Mayor de San Simón University",
@@ -151,7 +236,12 @@
     "personal_data": "Personal Data",
     "links_privacy": "Links & Privacy",
     "appearance": "Appearance",
-    "notifications": "Notifications"
+    "notifications": "Notifications",
+    "portfolio_view": "Portfolio View",
+    "links": "Links",
+    "privacy": "Privacy",
+    "open_menu": "Open menu",
+    "close_menu": "Close menu"
   },
   "dashboard": {
     "title": "Professional Dashboard",
@@ -279,7 +369,84 @@
     "toast_delete_success": "Project deleted successfully.",
     "toast_delete_error": "Could not delete project.",
     "uncategorized": "Uncategorized",
-    "unspecified_skills": "Unspecified"
+    "unspecified_skills": "Unspecified",
+    "modal": {
+      "new_title": "New project",
+      "edit_title": "Edit project",
+      "step1_subtitle": "Complete the main information to add a new project to your professional portfolio.",
+      "create_badge": "Create",
+      "edit_badge": "Edit",
+      "title_label": "Project Title",
+      "title_placeholder": "e.g., Intelligent Tutoring System",
+      "category_label": "Category",
+      "category_select": "Select a category",
+      "category_desc": "Select a category to classify and facilitate project search.",
+      "category_others": "Others",
+      "description_label": "Description",
+      "description_placeholder": "Platform to connect students with tutors...",
+      "url_label": "Project Link",
+      "url_placeholder": "https://github.com/user/repository",
+      "skills_label": "Technologies",
+      "skills_placeholder": "e.g., React, Python...",
+      "loading_skills": "Loading skills...",
+      "cancel_btn": "Cancel",
+      "delete_btn": "Delete",
+      "saving_lbl": "Saving...",
+      "next_btn": "Next",
+      "error_title_req": "Project title is required.",
+      "error_cat_invalid": "Please select a valid category before continuing. The suggested category is under review.",
+      "error_url_invalid": "Enter a valid GitHub link (e.g., https://github.com/user/repo)",
+      "suggest_title": "Suggest a new category",
+      "suggest_desc": "If you don't find a suitable category, you can suggest a new one. An administrator will review it.",
+      "suggest_name_label": "Category Name",
+      "suggest_name_placeholder": "e.g., Artificial Intelligence",
+      "suggest_just_label": "Justification",
+      "suggest_just_placeholder": "Why this category should be added...",
+      "suggest_send_btn": "Send suggestion",
+      "suggest_sending": "Sending...",
+      "suggest_success": "Suggestion saved: \"{{name}}\". It will be sent upon project completion.",
+      "suggest_error_name_req": "Category name is required.",
+      "suggest_error_exists": "This suggested category already exists in the system.",
+      "suggest_error_just_req": "Justification is required.",
+      "suggest_error_api": "Error sending suggestion",
+      "step2_subtitle": "Attach images or PDF documents as digital evidence of your project.",
+      "files_badge": "Files",
+      "files_limit": "{{count}} / {{max}} files",
+      "storage_full": "Storage full",
+      "files_max_reached": "Maximum of {{max}} files reached",
+      "dropzone_active": "Drag files or click to select",
+      "dropzone_desc": "Formats: {{formats}} · Images ≤ {{imgMax}} MB · PDF ≤ {{pdfMax}} MB",
+      "storage_warning": "You have reached the available storage limit ({{max}} MB).",
+      "indicator_title": "Storage usage",
+      "uploaded_success": "Uploaded successfully",
+      "uploading_status": "Uploading",
+      "success_status": "Success",
+      "error_status": "Error",
+      "view_file_title": "View file",
+      "delete_file_title": "Delete file",
+      "format_error_title": "Format not allowed",
+      "format_error_desc": "Only {{formats}} files are accepted.",
+      "format_error_ok": "Understood",
+      "confirm_no_files_title": "Save without files?",
+      "confirm_no_files_desc": "You have not uploaded any image or document. Are you sure you want to save without attachments?",
+      "confirm_no_files_cancel": "No, add files",
+      "confirm_no_files_confirm": "Yes, save",
+      "preview_loading": "Loading preview...",
+      "confirm_delete_file_title": "Delete file?",
+      "confirm_delete_file_desc": "You are about to delete {{name}}. This action is immediate and cannot be undone.",
+      "toast_step1_success": "Project updated. Now you can attach files.",
+      "toast_step1_error": "Error saving project.",
+      "toast_step2_toast_uploading": "Please wait for all files to finish uploading.",
+      "toast_step2_success": "Project saved successfully!",
+      "toast_file_deleted": "File deleted successfully.",
+      "toast_file_delete_error": "Error deleting file.",
+      "error_pdf_limit": "Exceeds the limit of {{max}} MB for PDF",
+      "error_image_limit": "Exceeds the limit of {{max}} MB for images",
+      "error_upload": "Error uploading",
+      "back_btn": "Back",
+      "save_project_btn": "Save Project",
+      "submitting_status": "Uploading..."
+    }
   },
   "experience": {
     "title": "Experience",
@@ -399,6 +566,105 @@
     "cancel_btn": "Cancel",
     "basic_desc": "Concepts and guided use.",
     "intermediate_desc": "Functional implementation in projects.",
-    "advanced_desc": "Autonomous professional use."
+    "advanced_desc": "Autonomous professional use.",
+    "levels": {
+      "basico": "Basic",
+      "intermedio": "Intermediate",
+      "avanzado": "Advanced"
+    }
+  },
+  "portfolio_view": {
+    "loading": "Loading professional portfolio...",
+    "error_title": "Oops! Something went wrong",
+    "error_private": "This portfolio is private by the user's decision.",
+    "error_not_found": "We couldn't find this portfolio.",
+    "back_home": "Go back to home",
+    "badge_talent": "UMSS Talent",
+    "views_label": "Views",
+    "default_profession": "Technology Specialist",
+    "default_location": "Cochabamba, Bolivia",
+    "university": "Universidad Mayor de San Simón",
+    "download_pdf": "Download PDF",
+    "contact": "Contact",
+    "profile_section": "Professional Profile",
+    "no_biography": "This professional has not yet written their public bio.",
+    "projects_label": "Projects",
+    "skills_label": "Skills",
+    "contact_info": "Contact Information",
+    "email": "Email",
+    "phone": "Phone",
+    "professional_networks": "Professional Networks",
+    "tab_projects": "Projects",
+    "tab_skills": "Skills",
+    "tab_experience": "Career",
+    "tab_certifications": "Certificates",
+    "project_default_category": "Project",
+    "visit_project": "Visit Project",
+    "no_projects": "No public projects to show.",
+    "no_skills": "No public skills listed.",
+    "no_experience": "No career history registered.",
+    "no_certifications": "No public certifications to show.",
+    "view_credential": "View credential",
+    "remote": "Remote",
+    "on_site": "On-site",
+    "hybrid": "Hybrid",
+    "present": "Present",
+    "private_warning_title": "Private Portfolio",
+    "private_warning_desc": "Your portfolio is currently hidden from the public. Visitors won't be able to access this link. This view is only for you.",
+    "about_me": "About Me",
+    "my_profile": "MY PROFESSIONAL PROFILE",
+    "no_bio": "No biography available.",
+    "edit": "Edit",
+    "edit_info": "Edit Information",
+    "skills_title": "Skills",
+    "skills_subtitle": "TECHNOLOGIES & COMPETENCIES",
+    "technical_skills": "Technical Skills",
+    "soft_skills": "Soft Skills",
+    "no_technical": "No technical skills",
+    "add_tech": "Add technologies to your profile.",
+    "no_soft": "No soft skills",
+    "add_soft": "Add competencies to your profile.",
+    "experience_title": "Experience",
+    "experience_subtitle": "WORK HISTORY",
+    "no_exp": "No work history",
+    "add_exp": "Register your professional experience.",
+    "projects_title": "Projects",
+    "projects_subtitle": "FEATURED PORTFOLIO",
+    "no_proj": "No featured projects",
+    "add_proj": "Add projects to showcase your work.",
+    "certs_title": "Certifications",
+    "certs_subtitle": "ACHIEVEMENTS & COMPLETED COURSES",
+    "no_certs": "No certifications",
+    "add_certs": "Register your achievements and completed courses.",
+    "stats_views": "VIEWS",
+    "stats_projects": "PROJECTS",
+    "stats_tech": "TECHNOLOGIES",
+    "stats_exp": "EXPERIENCE",
+    "notifications": "NOTIFICATIONS",
+    "auto_preload": "Automatic preload",
+    "auto_preload_desc": "of registered data.",
+    "quick_links": "Quick links",
+    "configure_profile": "Configure profile",
+    "public_view": "Public profile view",
+    "loading_portfolio": "Loading portfolio...",
+    "no_phone": "No phone",
+    "no_email": "No email",
+    "location_unspecified": "Location not specified",
+    "professional": "PROFESSIONAL",
+    "user_default": "Nexum User",
+    "previous": "Previous",
+    "actual": "Current",
+    "published": "PUBLISHED",
+    "verified": "VERIFIED",
+    "loading_doc": "Preparing document...",
+    "error_title": "Error",
+    "no_info": "No information found.",
+    "back": "Back",
+    "technologies": "Technologies",
+    "generated_via": "Generated via Nexum UMSS",
+    "generating_pdf": "Generating PDF...",
+    "download_pdf": "Download PDF",
+    "return": "Go back",
+    "error_generating_pdf": "There was an error generating the PDF. Please try again."
   }
 }

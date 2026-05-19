@@ -5,13 +5,12 @@ import './i18n'
 import App from './App.tsx'
 
 // Aplicar tema antes del primer renderizado para evitar el flash blanco
-if (
-  localStorage.getItem('theme') === 'dark' ||
-  (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)
-) {
+// Por defecto el sistema inicia en modo claro si el usuario no tiene preferencia guardada
+if (localStorage.getItem('theme') === 'dark') {
   document.documentElement.classList.add('dark')
 } else {
   document.documentElement.classList.remove('dark')
+  localStorage.setItem('theme', 'light') // Opcional, pero asegura consistencia
 }
 
 createRoot(document.getElementById('root')!).render(

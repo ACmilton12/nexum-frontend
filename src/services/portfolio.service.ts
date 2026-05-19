@@ -35,7 +35,8 @@ export interface PortfolioSkill {
   id: number
   name: string
   category: string
-  level: 'Básico' | 'Intermedio' | 'Avanzado' | 'Experto'
+  level: string
+  type?: string
 }
 
 export interface PortfolioCertification {
@@ -62,6 +63,12 @@ export interface WorkExperience {
   skills?: { name: string }[]
 }
 
+export interface AdditionalLink {
+  id: number
+  url: string
+  platform: string
+}
+
 export interface FullPortfolio {
   id: number
   user: PortfolioUser
@@ -73,14 +80,22 @@ export interface FullPortfolio {
   linkedin_url: string | null
   github_url: string | null
   design_pattern: string
+  global_privacy: 'public' | 'private'
   views_count: number
+
   created_at: string
   updated_at: string
+  show_projects?: boolean
+  show_skills?: boolean
+  show_experience?: boolean
+  show_certifications?: boolean
   projects?: PortfolioProject[]
   skills?: PortfolioSkill[]
   certifications?: PortfolioCertification[]
   work_experiences?: WorkExperience[]
+  additional_links?: AdditionalLink[]
 }
+
 
 const getToken = () => localStorage.getItem('token') || sessionStorage.getItem('token')
 
@@ -107,4 +122,19 @@ export const getPublicPortfolio = async (id: string | number): Promise<FullPortf
   }
 
   return await response.json()
+}
+
+export const getPublicPortfolioLinks = async (id: string | number): Promise<AdditionalLink[]> => {
+  const token = getToken()
+  const headers: HeadersInit = { Accept: 'application/json' }
+  if (token) headers['Authorization'] = `Bearer ${token}`
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/portfolios/${id}/links`, { method: 'GET', headers })
+    if (!response.ok) return []
+    const json = await response.json()
+    return json.data || json || []
+  } catch {
+    return []
+  }
 }

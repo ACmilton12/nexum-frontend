@@ -24,8 +24,8 @@ export default function BackupsPage() {
         const logs = await getActivityLogs()
         // Filtrar logs de eventos de backup
         const backupLogs = logs.data
-          .filter((log: any) => log.event === 'backup.generated')
-          .map((log: any) => ({
+          .filter((log: { event?: string }) => log.event === 'backup.generated')
+          .map((log: { id: string | number, timestamp: string, properties?: { filename?: string } }) => ({
             id: log.id.toString(),
             name: log.properties?.filename || 'backup_db.sql',
             size: 'N/A',
@@ -61,8 +61,8 @@ export default function BackupsPage() {
 
       setBackups([newBackup, ...backups])
       setToast({ mensaje: 'Copia de seguridad generada y descargada con éxito.', tipo: 'success' })
-    } catch (error: any) {
-      setToast({ mensaje: error.message || 'Error al generar el backup.', tipo: 'error' })
+    } catch (error: unknown) {
+      setToast({ mensaje: (error as Error).message || 'Error al generar el backup.', tipo: 'error' })
     } finally {
       setLoading(false)
     }
@@ -78,7 +78,7 @@ export default function BackupsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background dark:bg-slate-900 flex flex-col transition-colors duration-300">
+    <div className="h-screen max-h-screen bg-background dark:bg-slate-900 flex flex-col transition-colors duration-300 overflow-hidden">
       <div className="flex flex-1 overflow-hidden">
         <Sidebar activeItem="Copias de Seguridad" />
 
@@ -218,11 +218,10 @@ export default function BackupsPage() {
                           </td>
                           <td className="px-6 py-4">
                             <span
-                              className={`px-2.5 py-1 text-[11px] font-bold rounded-full ${
-                                backup.type === 'Automático'
-                                  ? 'bg-primary/10 text-primary'
-                                  : 'bg-navbar/10 text-navbar'
-                              }`}
+                              className={`px-2.5 py-1 text-[11px] font-bold rounded-full ${backup.type === 'Automático'
+                                ? 'bg-primary/10 text-primary'
+                                : 'bg-navbar/10 text-navbar'
+                                }`}
                             >
                               {backup.type}
                             </span>

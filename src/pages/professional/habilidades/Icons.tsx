@@ -87,9 +87,9 @@ export function IconSpinner({ className = '' }: { className?: string }) {
 export function SkillIcon({ tipo }: { tipo: TipoHabilidad }) {
   if (tipo === 'Técnica') {
     return (
-      <div className="w-7 h-7 rounded-md bg-primary/10 flex items-center justify-center flex-shrink-0">
+      <div className="w-7 h-7 rounded-md bg-primary/10 dark:bg-blue-900/40 flex items-center justify-center flex-shrink-0">
         <svg
-          className="w-4 h-4 text-primary"
+          className="w-4 h-4 text-primary dark:text-blue-400"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -105,9 +105,9 @@ export function SkillIcon({ tipo }: { tipo: TipoHabilidad }) {
     )
   }
   return (
-    <div className="w-7 h-7 rounded-md bg-navbar/10 flex items-center justify-center flex-shrink-0">
+    <div className="w-7 h-7 rounded-md bg-navbar/10 dark:bg-blue-900/40 flex items-center justify-center flex-shrink-0">
       <svg
-        className="w-4 h-4 text-navbar"
+        className="w-4 h-4 text-navbar dark:text-blue-400"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"

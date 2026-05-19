@@ -3,9 +3,6 @@ import { useTranslation } from 'react-i18next'
 import Sidebar from '../../admin/components/Sidebar'
 import Calendar from '../../../components/ui/Calendar'
 import {
-  ShieldCheck,
-  Settings,
-  FileText,
   Upload,
   Loader2,
   AlertCircle,
@@ -17,45 +14,6 @@ import {
   updateCertificationImage
 } from '../../../services/certification.service'
 
-const RightPanelContent = () => {
-  const { t } = useTranslation()
-  return (
-    <div className="sticky top-6 space-y-8">
-      <div>
-        <Calendar />
-      </div>
-
-      <div>
-        <h3 className="font-bold text-textMain dark:text-gray-100 text-sm mb-4 flex items-center gap-2 uppercase tracking-wider">
-          <ShieldCheck size={18} className="text-action" />
-          {t('dashboard.notifications')}
-        </h3>
-        <div className="space-y-3">
-          <div className="flex items-start gap-2 text-xs text-gray-600 dark:text-gray-400 leading-relaxed bg-gray-50 dark:bg-slate-800 p-3 rounded-lg border border-gray-100 dark:border-gray-700 transition-colors">
-            <span className="mt-0.5 shrink-0 bg-white dark:bg-slate-900 p-1 rounded shadow-sm">
-              <FileText size={14} className="text-gray-600 dark:text-gray-400" />
-            </span>
-            <span>{t('certifications.notification_tip')}</span>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <h3 className="font-bold text-textMain dark:text-gray-100 text-sm mb-4 uppercase tracking-wider">
-          {t('dashboard.quick_links')}
-        </h3>
-        <div className="space-y-3">
-          <div className="flex items-center gap-2 text-sm text-primary dark:text-blue-400 cursor-pointer hover:underline transition-all group">
-            <Settings size={16} className="text-gray-500 dark:text-gray-400" />
-            <span className="font-medium text-gray-700 dark:text-gray-300 group-hover:text-primary dark:group-hover:text-blue-300">
-              {t('profile.config_profile')}
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
 
 function Certifications() {
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -202,7 +160,7 @@ function Certifications() {
   }
 
   return (
-    <div className="min-h-screen bg-background dark:bg-slate-900 flex flex-col font-sans transition-colors duration-300">
+    <div className="h-full max-h-full bg-background dark:bg-slate-900 flex flex-col font-sans transition-colors duration-300 overflow-hidden">
       <div className="flex flex-1 overflow-hidden relative">
         <Sidebar activeItem="Certificaciones" />
 
@@ -465,8 +423,10 @@ function Certifications() {
             </div>
           </div>
 
-          <aside className="w-full lg:w-72 p-6 bg-white dark:bg-slate-900 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-800 shrink-0 shadow-lg overflow-y-auto transition-colors duration-300">
-            <RightPanelContent />
+          <aside className="w-[292px] w-full lg:w-72 shrink-0 bg-white dark:bg-slate-900 p-6 flex flex-col gap-6 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-800 overflow-y-auto transition-colors duration-300">
+            <div className="flex flex-col gap-3">
+              <Calendar />
+            </div>
           </aside>
         </main>
 

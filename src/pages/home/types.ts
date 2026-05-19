@@ -1,17 +1,23 @@
+import type { ReactNode } from 'react'
+
 export interface Feature {
-  icon: string
+  icon: ReactNode
   title: string
   description: string
 }
 
 export interface FeaturedProfile {
-  id: number
+  id?: number
+  portfolio_id?: number
+  user_id?: number
   first_name: string
   last_name: string
   location: string | null
   avatar_url: string | null
   projects_count: number
+  visits_count?: number
 }
+
 
 export interface GlobalStats {
   total_users: number

@@ -44,20 +44,20 @@ export default function NuevaHabilidadPanel({
   const [modalSugerencia, setModalSugerencia] = useState(false)
 
   const isTecnica = tipo === 'Técnica'
-  const accentBorder = isTecnica ? 'border-primary' : 'border-navbar'
-  const accentBg = isTecnica ? 'bg-primary/5' : 'bg-navbar/5'
-  const accentText = isTecnica ? 'text-primary' : 'text-navbar'
+  const accentBorder = isTecnica ? 'border-primary dark:border-blue-400' : 'border-navbar dark:border-blue-300'
+  const accentBg = isTecnica ? 'bg-primary/5 dark:bg-blue-900/20' : 'bg-navbar/5 dark:bg-blue-900/20'
+  const accentText = isTecnica ? 'text-primary dark:text-blue-400' : 'text-navbar dark:text-blue-300'
   const accentBadge = isTecnica
-    ? 'text-primary bg-primary/10 border-primary/20'
-    : 'text-navbar bg-navbar/10 border-navbar/20'
+    ? 'text-primary dark:text-blue-400 bg-primary/10 dark:bg-blue-900/30 border-primary/20 dark:border-blue-800/50'
+    : 'text-navbar dark:text-blue-300 bg-navbar/10 dark:bg-blue-900/30 border-navbar/20 dark:border-blue-800/50'
   const accentTag = isTecnica
-    ? 'text-primary bg-primary/5 border-primary/10'
-    : 'text-navbar bg-navbar/5 border-navbar/10'
+    ? 'text-primary dark:text-blue-400 bg-primary/5 dark:bg-blue-900/20 border-primary/10 dark:border-blue-800/30'
+    : 'text-navbar dark:text-blue-300 bg-navbar/5 dark:bg-blue-900/20 border-navbar/10 dark:border-blue-800/30'
 
-  const nivelesTecnicos: { key: NivelTecnico; desc: string }[] = [
-    { key: t('skills.basic') as NivelTecnico, desc: t('skills.basic_desc') },
-    { key: t('skills.intermediate') as NivelTecnico, desc: t('skills.intermediate_desc') },
-    { key: t('skills.advanced') as NivelTecnico, desc: t('skills.advanced_desc') }
+  const nivelesTecnicos: { key: NivelTecnico; label: string; desc: string }[] = [
+    { key: 'Básico', label: t('skills.basic', 'Básico'), desc: t('skills.basic_desc', 'Conceptos y uso guiado.') },
+    { key: 'Intermedio', label: t('skills.intermediate', 'Intermedio'), desc: t('skills.intermediate_desc', 'Implementación funcional en proyectos.') },
+    { key: 'Avanzado', label: t('skills.advanced', 'Avanzado'), desc: t('skills.advanced_desc', 'Uso profesional autónomo.') }
   ]
 
   const handleTipoChange = (t: TipoHabilidad) => {
@@ -143,7 +143,7 @@ export default function NuevaHabilidadPanel({
                 key={t_item}
                 onClick={() => handleTipoChange(t_item)}
                 disabled={saving}
-                className={`px-3 py-1 text-xs font-bold rounded-md transition-all disabled:opacity-50 ${tipo === t_item ? (isTecnica ? 'bg-white dark:bg-slate-800 text-primary shadow-sm' : 'bg-white dark:bg-slate-800 text-navbar shadow-sm') : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'}`}
+                className={`px-3 py-1 text-xs font-bold rounded-md transition-all disabled:opacity-50 ${tipo === t_item ? 'bg-white dark:bg-slate-800 text-primary dark:text-blue-400 shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'}`}
               >
                 {t_item === 'Técnica' ? t('skills.technical') : t('skills.soft')}
               </button>
@@ -286,7 +286,7 @@ export default function NuevaHabilidadPanel({
                         >
                           <div className="flex items-center gap-3">
                             <div
-                              className={`w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 ${isSelected ? (isTecnica ? 'bg-primary/10' : 'bg-navbar/10') : 'bg-gray-100 dark:bg-slate-800'}`}
+                              className={`w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 ${isSelected ? (isTecnica ? 'bg-primary/10 dark:bg-blue-900/40' : 'bg-navbar/10 dark:bg-blue-900/40') : 'bg-gray-100 dark:bg-slate-800'}`}
                             >
                               {isTecnica ? (
                                 <svg
@@ -405,14 +405,14 @@ export default function NuevaHabilidadPanel({
                     type="button"
                     disabled={saving}
                     onClick={() => setNivelTecnico(n.key)}
-                    className={`text-left p-3.5 rounded-xl border-2 transition-all disabled:opacity-50 ${nivelTecnico === n.key ? 'border-primary bg-primary/5 dark:bg-primary/10' : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-900 hover:border-gray-300 dark:hover:border-gray-600'}`}
+                    className={`text-left p-3.5 rounded-xl border-2 transition-all disabled:opacity-50 ${nivelTecnico === n.key ? 'border-primary dark:border-blue-400 bg-primary/5 dark:bg-blue-900/20' : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-900 hover:border-gray-300 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-slate-800'}`}
                   >
                     <div className="flex items-center gap-2 mb-1">
                       <div className={`w-2 h-2 rounded-full flex-shrink-0 ${NIVEL_DOT[n.key]}`} />
                       <span
-                        className={`text-sm font-semibold ${nivelTecnico === n.key ? 'text-primary' : 'text-gray-700 dark:text-gray-200'}`}
+                        className={`text-sm font-semibold ${nivelTecnico === n.key ? 'text-primary dark:text-blue-400' : 'text-gray-700 dark:text-gray-200'}`}
                       >
-                        {n.key}
+                        {n.label}
                       </span>
                     </div>
                     <p className="text-xs text-gray-400 dark:text-gray-500 leading-tight">
@@ -485,6 +485,7 @@ export default function NuevaHabilidadPanel({
           nombreInicial={busqueda.trim()}
           tipo={tipo}
           categoriaKey={categoriaSeleccionada}
+          catalogoPorCategoria={catalogoPorCategoria}
           onCancel={() => setModalSugerencia(false)}
           onToast={onToast}
         />

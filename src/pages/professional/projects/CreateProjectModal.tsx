@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import Modal from '../../../components/ui/Modal'
 import {
   createProject,
@@ -28,6 +29,7 @@ const CreateProjectModal = ({
   onDelete,
   onSuccess
 }: CreateProjectModalProps) => {
+  const { t } = useTranslation()
   const [currentStep, setCurrentStep] = useState(1)
   const [createdProjectId, setCreatedProjectId] = useState<number | null>(null)
   const [isSaving, setIsSaving] = useState(false)
@@ -147,7 +149,7 @@ const CreateProjectModal = ({
         // We are updating an existing project (either from edit, or one we just created but went back to step 1)
         await updateProject(activeProject.id, payload)
         projectId = activeProject.id
-        showToast('Proyecto actualizado. Ahora puedes adjuntar archivos.', 'success')
+        showToast(t('projects.modal.toast_step1_success'), 'success')
       } else {
         const created = await createProject(payload)
         projectId = created.id
@@ -162,8 +164,8 @@ const CreateProjectModal = ({
           const error = err as { message?: string }
           console.error('Error sending category suggestion:', error)
           alert(
-            'El proyecto se guardó, pero la sugerencia de categoría falló: ' +
-              (error.message || 'Error desconocido')
+            t('projects.modal.suggest_error_api') + ': ' +
+              (error.message || 'Error')
           )
         }
       }
@@ -173,7 +175,7 @@ const CreateProjectModal = ({
     } catch (err: unknown) {
       const error = err as { message?: string }
       console.error(error)
-      showToast(error.message || 'Error al guardar el proyecto.', 'error')
+      showToast(error.message || t('projects.modal.toast_step1_error'), 'error')
     } finally {
       setIsSaving(false)
       setPendingStep1Data(null)
@@ -181,9 +183,9 @@ const CreateProjectModal = ({
   }
 
   const handleStep2Save = () => {
-    showToast('¡Proyecto guardado completamente!', 'success')
+    showToast(t('projects.modal.toast_step2_success'), 'success')
     if (onSuccess) {
-      onSuccess(projectToEdit ? 'Proyecto actualizado con éxito.' : 'Proyecto creado con éxito.')
+      onSuccess(projectToEdit ? t('projects.modal.edit_title') : t('projects.modal.new_title'))
     }
     // Esperamos un momento para que el usuario lea el mensaje de éxito antes de cerrar
     setTimeout(() => {
@@ -196,7 +198,7 @@ const CreateProjectModal = ({
       <Modal
         isOpen={isOpen}
         onClose={onClose}
-        title={projectToEdit ? 'Editar proyecto' : 'Nuevo proyecto'}
+        title={projectToEdit ? t('projects.modal.edit_title') : t('projects.modal.new_title')}
       >
         <div className="flex flex-col gap-5">
           {currentStep === 1 && (

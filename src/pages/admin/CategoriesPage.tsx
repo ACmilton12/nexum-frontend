@@ -167,7 +167,7 @@ function CategoriesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background dark:bg-slate-900 flex flex-col font-sans transition-colors duration-300">
+    <div className="h-screen max-h-screen bg-background dark:bg-slate-900 flex flex-col font-sans transition-colors duration-300 overflow-hidden">
       <div className="flex flex-1 overflow-hidden relative">
         <Sidebar activeItem="Categorías" />
 
@@ -321,8 +321,7 @@ function CategoriesPage() {
                                   onClick={() => setShowConfirmModal(true)}
                                   disabled={
                                     actionLoading ||
-                                    !editFormData.name.trim() ||
-                                    !editFormData.description.trim()
+                                    !editFormData.name.trim()
                                   }
                                   className="bg-primary dark:bg-blue-600 text-white px-3 py-1.5 rounded disabled:bg-primary/60 dark:disabled:bg-blue-600/60 font-medium hover:brightness-110 transition-all flex items-center justify-center gap-1 min-w-[70px]"
                                 >
@@ -365,11 +364,10 @@ function CategoriesPage() {
                           </td>
                           <td className="py-5 px-6">
                             <span
-                              className={`px-3 py-1 rounded-full text-[10px] font-bold tracking-widest ${
-                                cat.status === 'ACTIVO'
-                                  ? 'bg-[#e6f4ea] text-[#137333]'
-                                  : 'bg-[#feefe6] text-[#b0602f]'
-                              }`}
+                              className={`px-3 py-1 rounded-full text-[10px] font-bold tracking-widest ${cat.status === 'ACTIVO'
+                                ? 'bg-[#e6f4ea] text-[#137333]'
+                                : 'bg-[#feefe6] text-[#b0602f]'
+                                }`}
                             >
                               {cat.status}
                             </span>

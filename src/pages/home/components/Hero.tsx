@@ -2,21 +2,43 @@ import React, { useState, useEffect } from 'react'
 import { Search, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import type { GlobalStats } from '../types'
+import portada1 from '../../../assets/portada1.png'
+import portada2 from '../../../assets/portada2.png'
+import portada3 from '../../../assets/portada3.png'
 
 export default function Hero({
-  onSearch
+  stats,
+  onSearch: _onSearch,
+  searchTerm: externalSearchTerm = ''
 }: {
-  stats: GlobalStats
-  onSearch?: (term: string) => void
+  stats: GlobalStats;
+  onSearch?: (term: string) => void;
+  searchTerm?: string;
 }) {
   const { t } = useTranslation()
   const [current, setCurrent] = useState(0)
-  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTerm, setSearchTerm] = useState(externalSearchTerm)
+
+  useEffect(() => {
+    setSearchTerm(externalSearchTerm)
+  }, [externalSearchTerm])
 
   const slides = [
-    { color: '#C8102E' }, // Rojo
-    { color: '#111111' }, // Negro (ligeramente suavizado)
-    { color: '#003087' } // Azul UMSS
+    { 
+      image: portada1,
+      title: t('hero.slides.slide1.title'),
+      description: t('hero.description')
+    },
+    { 
+      image: portada2,
+      title: t('hero.slides.slide2.title'),
+      description: t('hero.slides.slide2.description')
+    },
+    { 
+      image: portada3,
+      title: t('hero.slides.slide3.title'),
+      description: t('hero.slides.slide3.description')
+    }
   ]
 
   useEffect(() => {
@@ -27,11 +49,11 @@ export default function Hero({
   const prev = () => setCurrent((c) => (c - 1 + slides.length) % slides.length)
   const next = () => setCurrent((c) => (c + 1) % slides.length)
 
-  const handleSearchSubmit = (e?: React.FormEvent) => {
-    e?.preventDefault()
-    if (onSearch) {
-      onSearch(searchTerm)
-    }
+  const formatNumber = (n: number) => n?.toLocaleString()
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (_onSearch) _onSearch(searchTerm)
   }
 
   return (
@@ -40,16 +62,18 @@ export default function Hero({
       {slides.map((slide, index) => (
         <div
           key={index}
-          className={`absolute inset-0 transition-opacity duration-1000 flex items-center justify-center ${index === current ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
-          style={{ backgroundColor: slide.color }}
+          className={`absolute inset-0 transition-opacity duration-1000 flex items-center justify-center bg-cover bg-center ${index === current ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+          style={{ backgroundImage: `url(${slide.image})` }}
         >
-          <div className="max-w-5xl w-full px-6 text-center text-white mt-10">
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold mb-4 tracking-tight">
-              {t('hero.title_start')}{' '}
-              <span className="text-white/80">{t('hero.title_accent')}</span> {t('hero.title_end')}
+          {/* Overlay oscuro para mejorar contraste */}
+          <div className="absolute inset-0 bg-black/60 z-0"></div>
+
+          <div className="relative z-10 max-w-5xl w-full px-6 text-center text-white mt-10">
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold mb-4 tracking-tight drop-shadow-md">
+              {slide.title}
             </h1>
             <p className="text-base md:text-xl opacity-90 mb-10 max-w-3xl mx-auto font-medium">
-              {t('hero.description')}
+              {slide.description}
             </p>
 
             {/* Buscador */}
@@ -74,51 +98,53 @@ export default function Hero({
               </div>
             </form>
 
+            {/* Stats */}
+            <div className="flex flex-col items-center mb-6">
+              <div className="text-white font-black text-2xl sm:text-3xl tracking-tight leading-none mb-1">
+                {formatNumber(stats.total_users) || "—"}
+              </div>
+              <div className="text-blue-200/70 text-[10px] sm:text-xs font-bold uppercase tracking-widest">
+                {t('hero.stats.users', 'Usuarios')}
+              </div>
+            </div>
+
             {/* Filtros */}
             <div className="flex flex-wrap justify-center gap-3 opacity-95">
               {[
-                { label: t('hero.filter_area'), active: false },
-                { label: t('hero.filter_skills'), active: false },
-                { label: t('hero.filter_order'), active: false }
-              ].map((filter, i) => (
+                { label: t('hero.filter_area') },
+                { label: t('hero.filter_skills') },
+                { label: t('hero.filter_order') }
+              ].map((_, i) => (
                 <button
                   key={i}
-                  className="px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white text-xs md:text-sm font-bold hover:bg-white/20 transition-all backdrop-blur-sm flex items-center gap-2"
-                >
-                  {filter.label}
-                  <span className="text-[10px]">▼</span>
-                </button>
+                  onClick={() => setCurrent(i)}
+                  className="rounded-full transition-all duration-500 cursor-pointer border-0 shadow-lg"
+                  style={{
+                    width: i === current ? "32px" : "10px",
+                    height: "10px",
+                    backgroundColor:
+                      i === current ? "#ffffff" : "rgba(255,255,255,0.4)",
+                  }}
+                />
               ))}
             </div>
           </div>
         </div>
       ))}
 
-      {/* Flechas de Navegación */}
+      {/* Flechas de navegación */}
       <button
         onClick={prev}
-        className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-20 w-12 h-12 flex items-center justify-center rounded-full text-white/70 hover:text-white hover:bg-white/10 transition-all border-none bg-transparent cursor-pointer"
+        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white/20 hover:bg-white/40 text-white rounded-full p-2 transition-all"
       >
-        <ChevronLeft size={48} strokeWidth={1.5} />
+        <ChevronLeft size={24} />
       </button>
       <button
         onClick={next}
-        className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-20 w-12 h-12 flex items-center justify-center rounded-full text-white/70 hover:text-white hover:bg-white/10 transition-all border-none bg-transparent cursor-pointer"
+        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white/20 hover:bg-white/40 text-white rounded-full p-2 transition-all"
       >
-        <ChevronRight size={48} strokeWidth={1.5} />
+        <ChevronRight size={24} />
       </button>
-
-      {/* Indicadores (Dots) */}
-      <div className="absolute bottom-10 left-0 right-0 z-20 flex justify-center gap-3">
-        {slides.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setCurrent(i)}
-            className={`transition-all duration-300 border-none cursor-pointer ${i === current ? 'w-8 bg-white' : 'w-2 bg-white/40'}`}
-            style={{ height: '6px', borderRadius: '3px' }}
-          />
-        ))}
-      </div>
     </section>
   )
 }

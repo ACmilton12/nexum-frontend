@@ -26,12 +26,14 @@ const ConfirmCreateModal: React.FC<ConfirmCreateModalProps> = ({
         </div>
 
         {/* Title */}
-        <h2 className="text-[20px] font-bold text-[#1a1a2e] dark:text-white mb-3">{title}</h2>
+        <h2 className="text-[20px] font-bold text-[#1a1a2e] dark:text-white mb-3">
+          {title}
+        </h2>
 
         {/* Description */}
         <p className="text-[14px] text-[#5b6472] dark:text-gray-400 leading-relaxed mb-8">
-          ¿Deseas registrar un nuevo proyecto en tu portafolio? Esto abrirá el formulario para que
-          puedas completar los detalles técnicos y subir evidencias.
+          ¿Deseas registrar un nuevo proyecto en tu portafolio?
+          Esto abrirá el formulario para que puedas completar los detalles técnicos y subir evidencias.
         </p>
 
         {/* Buttons */}
@@ -50,7 +52,7 @@ const ConfirmCreateModal: React.FC<ConfirmCreateModalProps> = ({
           </button>
         </div>
       </div>
-    </Modal>
+    </Modal >
   )
 }
 

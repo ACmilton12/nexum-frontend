@@ -17,6 +17,7 @@ import autoTable from 'jspdf-autotable'
 interface AuditLog {
   id: number
   user_name: string
+  affected_user?: string | null
   event: string
   timestamp: string
   detail: string
@@ -204,7 +205,7 @@ const AuditPage = () => {
     return map[key] || key
   }
 
-  const formatValue = (key: string, value: any) => {
+  const formatValue = (key: string, value: unknown) => {
     if (value === undefined || value === null || value === 'null') return 'No especificado'
 
     // Si el valor es booleano o string 'true'/'false'
@@ -236,7 +237,7 @@ const AuditPage = () => {
           month: 'short',
           year: 'numeric'
         })
-      } catch (e) {
+      } catch {
         // Si falla, retornamos el string original
       }
     }
@@ -600,13 +601,25 @@ const AuditPage = () => {
                 >
                   <ShieldCheck size={28} />
                 </div>
-                <div className="flex-1">
-                  <p className="text-xs text-gray-400 dark:text-gray-500 font-medium uppercase tracking-wider mb-1">
-                    Usuario Responsable
-                  </p>
-                  <p className="font-bold text-gray-900 dark:text-white text-lg">
-                    {selectedLog.user_name}
-                  </p>
+                <div className="flex-1 flex flex-col sm:flex-row gap-6">
+                  <div>
+                    <p className="text-xs text-gray-400 dark:text-gray-500 font-medium uppercase tracking-wider mb-1">
+                      Usuario Responsable
+                    </p>
+                    <p className="font-bold text-gray-900 dark:text-white text-lg">
+                      {selectedLog.user_name}
+                    </p>
+                  </div>
+                  {selectedLog.affected_user && selectedLog.affected_user !== selectedLog.user_name && (
+                    <div className="border-l-0 sm:border-l border-gray-200 dark:border-gray-700 pl-0 sm:pl-6">
+                      <p className="text-xs text-blue-500 dark:text-blue-400 font-medium uppercase tracking-wider mb-1">
+                        Usuario Afectado
+                      </p>
+                      <p className="font-bold text-blue-700 dark:text-blue-300 text-lg">
+                        {selectedLog.affected_user}
+                      </p>
+                    </div>
+                  )}
                 </div>
                 <div className="mt-4 sm:mt-0 sm:ml-auto sm:text-right shrink-0">
                   <span

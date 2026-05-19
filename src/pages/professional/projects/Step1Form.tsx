@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { X, ChevronDown, Check, Loader2, Send } from 'lucide-react'
 import {
   getCategories,
@@ -31,6 +32,7 @@ const Step1Form = ({
   isSaving,
   onSuggestCategory
 }: Step1FormProps) => {
+  const { t } = useTranslation()
   const [availableSkills, setAvailableSkills] = useState<Skill[]>([])
   const [categories, setCategories] = useState<ProjectCategory[]>([])
   const [selectedSkills, setSelectedSkills] = useState<Skill[]>([])
@@ -45,6 +47,7 @@ const Step1Form = ({
   // States for Suggest Category Modal
   const [showSuggestModal, setShowSuggestModal] = useState(false)
   const [suggestedCategoryName, setSuggestedCategoryName] = useState('')
+  const [suggestedCategoryError, setSuggestedCategoryError] = useState('')
   const [suggestedCategoryJustification, setSuggestedCategoryJustification] = useState('')
   const [isSubmittingSuggestion, setIsSubmittingSuggestion] = useState(false)
   const [successMessage, setSuccessMessage] = useState('')
@@ -97,7 +100,7 @@ const Step1Form = ({
 
   const handleProjectUrlBlur = () => {
     if (projectUrl && !isValidGithubUrl(projectUrl)) {
-      setProjectUrlError('Ingresa un enlace valido de GitHub (ej. https://github.com/usuario/repo)')
+      setProjectUrlError(t('projects.modal.error_url_invalid'))
     } else {
       setProjectUrlError('')
     }
@@ -106,13 +109,11 @@ const Step1Form = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!title.trim()) {
-      alert('El título del proyecto es obligatorio.')
+      alert(t('projects.modal.error_title_req'))
       return
     }
     if (categoryId === 'otros') {
-      alert(
-        'Por favor selecciona una categoría válida antes de continuar. La categoría sugerida está en revisión.'
-      )
+      alert(t('projects.modal.error_cat_invalid'))
       return
     }
     await onSubmit({
@@ -136,11 +137,21 @@ const Step1Form = ({
 
   const submitCategorySuggestion = async () => {
     if (!suggestedCategoryName.trim()) {
-      alert('El nombre de la categoría es obligatorio.')
+      setSuggestedCategoryError(t('projects.modal.suggest_error_name_req'))
       return
     }
+
+    const exists = categories.some(
+      (cat) => cat.name.toLowerCase() === suggestedCategoryName.trim().toLowerCase()
+    )
+
+    if (exists) {
+      setSuggestedCategoryError(t('projects.modal.suggest_error_exists'))
+      return
+    }
+
     if (!suggestedCategoryJustification.trim()) {
-      alert('La justificación es obligatoria.')
+      alert(t('projects.modal.suggest_error_just_req'))
       return
     }
 
@@ -151,17 +162,18 @@ const Step1Form = ({
       }
 
       setSuccessMessage(
-        `Sugerencia guardada: "${suggestedCategoryName}". Se enviará al completar el proyecto.`
+        t('projects.modal.suggest_success', { name: suggestedCategoryName })
       )
       setShowSuggestModal(false)
       setCategoryId('') // Reset category so they can save the project
       setSuggestedCategoryName('')
+      setSuggestedCategoryError('')
       setSuggestedCategoryJustification('')
 
       // Ocultar el mensaje después de 5 segundos
       setTimeout(() => setSuccessMessage(''), 5000)
     } catch {
-      alert('Error al enviar la sugerencia')
+      alert(t('projects.modal.suggest_error_api'))
     } finally {
       setIsSubmittingSuggestion(false)
     }
@@ -171,11 +183,10 @@ const Step1Form = ({
     <div className="flex flex-col gap-5 w-full max-w-[520px]">
       <div className="flex flex-col sm:flex-row justify-between items-start gap-3 sm:gap-4">
         <p className="text-[14px] text-[#5b6472] dark:text-gray-400 leading-relaxed">
-          Completa la información principal para agregar un nuevo proyecto a tu portafolio
-          profesional.
+          {t('projects.modal.step1_subtitle')}
         </p>
         <span className="bg-[#eef3f8] dark:bg-slate-800 text-[#003087] dark:text-blue-400 px-3 py-1.5 rounded-md text-[13px] font-bold flex-shrink-0 self-start sm:self-auto transition-colors">
-          {projectToEdit ? 'Editar' : 'Crear'}
+          {projectToEdit ? t('projects.modal.edit_badge') : t('projects.modal.create_badge')}
         </span>
       </div>
 
@@ -189,7 +200,7 @@ const Step1Form = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
           <div className="flex flex-col gap-1.5">
             <label className="text-[13px] font-bold text-[#1a1a2e] dark:text-gray-300 transition-colors">
-              Título del proyecto
+              {t('projects.modal.title_label')}
             </label>
             <input
               type="text"
@@ -197,12 +208,12 @@ const Step1Form = ({
               onChange={(e) => setTitle(e.target.value)}
               required
               className="w-full h-10 px-3 text-sm bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0030871a] focus:border-[#003087] transition-all text-[#1a1a2e] dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600"
-              placeholder="Ej. Sistema de Tutorías Inteligentes"
+              placeholder={t('projects.modal.title_placeholder')}
             />
           </div>
           <div className="flex flex-col gap-1.5">
             <label className="text-[13px] font-bold text-[#1a1a2e] dark:text-gray-300 transition-colors">
-              Categoría
+              {t('projects.modal.category_label')}
             </label>
             <select
               value={categoryId}
@@ -210,7 +221,7 @@ const Step1Form = ({
               className="w-full h-10 px-3 text-sm bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0030871a] focus:border-[#003087] transition-all cursor-pointer text-[#1a1a2e] dark:text-white"
             >
               <option value="" disabled className="dark:bg-slate-800">
-                Selecciona una categoría
+                {t('projects.modal.category_select')}
               </option>
               {categories.map((c) => (
                 <option key={c.id} value={c.id} className="dark:bg-slate-800">
@@ -218,31 +229,31 @@ const Step1Form = ({
                 </option>
               ))}
               <option value="otros" className="dark:bg-slate-800">
-                Otros
+                {t('projects.modal.category_others')}
               </option>
             </select>
             <p className="text-[11px] text-[#5b6472] dark:text-gray-500 mt-0.5 leading-relaxed transition-colors">
-              Selecciona una categoría para clasificar y facilitar la búsqueda del proyecto.
+              {t('projects.modal.category_desc')}
             </p>
           </div>
         </div>
 
         <div className="flex flex-col gap-1.5 -mt-2">
           <label className="text-[13px] font-bold text-[#1a1a2e] dark:text-gray-300 transition-colors">
-            Descripción
+            {t('projects.modal.description_label')}
           </label>
           <textarea
             rows={4}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             className="w-full p-3 text-sm bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0030871a] focus:border-[#003087] transition-all resize-none text-[#1a1a2e] dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600"
-            placeholder="Plataforma para conectar estudiantes con tutores..."
+            placeholder={t('projects.modal.description_placeholder')}
           />
         </div>
 
         <div className="flex flex-col gap-1.5">
           <label className="text-[13px] font-bold text-[#1a1a2e] dark:text-gray-300 transition-colors">
-            Enlace del proyecto
+            {t('projects.modal.url_label')}
           </label>
           <input
             type="text"
@@ -257,7 +268,7 @@ const Step1Form = ({
                 ? 'border-red-400 focus:border-red-400 focus:ring-red-100'
                 : 'border-gray-200 dark:border-gray-700 focus:border-[#003087]'
             }`}
-            placeholder="https://github.com/usuario/repositorio"
+            placeholder={t('projects.modal.url_placeholder')}
           />
           {projectUrlError && (
             <p className="text-[11px] text-red-500 mt-0.5 leading-relaxed flex items-center gap-1">
@@ -268,7 +279,7 @@ const Step1Form = ({
 
         <div className="flex flex-col gap-1.5 mt-1" ref={dropdownRef}>
           <label className="text-[13px] font-bold text-[#1a1a2e] dark:text-gray-300 transition-colors">
-            Tecnologías
+            {t('projects.modal.skills_label')}
           </label>
           <div className="relative">
             <div
@@ -282,7 +293,7 @@ const Step1Form = ({
               <div className="flex flex-wrap gap-1.5 flex-1">
                 {selectedSkills.length === 0 ? (
                   <span className="text-[#5b6472] dark:text-gray-600 select-none">
-                    Ej. React, Python...
+                    {t('projects.modal.skills_placeholder')}
                   </span>
                 ) : (
                   selectedSkills.map((skill) => (
@@ -310,7 +321,7 @@ const Step1Form = ({
               <div className="absolute z-20 w-full mt-1 bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl max-h-48 overflow-y-auto py-1">
                 {availableSkills.length === 0 && (
                   <div className="px-3 py-2 text-sm text-gray-400 dark:text-gray-600">
-                    Cargando habilidades...
+                    {t('projects.modal.loading_skills')}
                   </div>
                 )}
                 {availableSkills.map((skill) => {
@@ -350,7 +361,7 @@ const Step1Form = ({
             onClick={onCancel}
             className="w-full sm:w-auto h-10 px-5 text-[14px] font-bold text-[#1a1a2e] dark:text-gray-300 bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors"
           >
-            Cancelar
+            {t('projects.modal.cancel_btn')}
           </button>
           <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
             {projectToEdit && onDelete && (
@@ -362,7 +373,7 @@ const Step1Form = ({
                 }}
                 className="w-full sm:w-auto h-10 px-6 text-[14px] font-bold text-white bg-[#c8102e] rounded-lg hover:brightness-110 transition-all shadow-sm"
               >
-                Eliminar
+                {t('projects.modal.delete_btn')}
               </button>
             )}
             <button
@@ -376,11 +387,11 @@ const Step1Form = ({
             >
               {isSaving ? (
                 <>
-                  <Loader2 size={14} className="animate-spin" /> Guardando...
+                  <Loader2 size={14} className="animate-spin" /> {t('projects.modal.saving_lbl')}
                 </>
               ) : (
                 <>
-                  Siguiente <ChevronDown size={14} className="-rotate-90" />
+                  {t('projects.modal.next_btn')} <ChevronDown size={14} className="-rotate-90" />
                 </>
               )}
             </button>
@@ -396,6 +407,7 @@ const Step1Form = ({
             onClick={() => {
               setShowSuggestModal(false)
               setCategoryId('')
+              setSuggestedCategoryError('')
             }}
           />
           <div
@@ -406,6 +418,7 @@ const Step1Form = ({
               onClick={() => {
                 setShowSuggestModal(false)
                 setCategoryId('')
+                setSuggestedCategoryError('')
               }}
               className="absolute top-4 right-4 text-gray-400 hover:text-[#C8102E] dark:hover:text-red-400 transition-colors"
             >
@@ -416,39 +429,46 @@ const Step1Form = ({
                 <Send size={18} className="text-[#003087] dark:text-blue-400" />
               </div>
               <h3 className="text-[16px] font-bold text-[#1a1a2e] dark:text-white transition-colors">
-                Sugerir nueva categoría
+                {t('projects.modal.suggest_title')}
               </h3>
             </div>
 
             <p className="text-[13px] text-[#5b6472] dark:text-gray-400 leading-relaxed mb-1 transition-colors">
-              Si no encuentras una categoría adecuada, puedes sugerir una nueva. Un administrador la
-              revisará.
+              {t('projects.modal.suggest_desc')}
             </p>
 
             <div className="flex flex-col gap-3">
               <div className="flex flex-col gap-1.5">
                 <label className="text-[13px] font-bold text-[#1a1a2e] dark:text-gray-300 transition-colors">
-                  Nombre de la categoría
+                  {t('projects.modal.suggest_name_label')}
                 </label>
                 <input
                   type="text"
                   value={suggestedCategoryName}
-                  onChange={(e) => setSuggestedCategoryName(e.target.value)}
-                  className="w-full h-10 px-3 text-sm bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0030871a] focus:border-[#003087] transition-all text-[#1a1a2e] dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600"
-                  placeholder="Ej. Inteligencia Artificial"
+                  onChange={(e) => {
+                    setSuggestedCategoryName(e.target.value)
+                    setSuggestedCategoryError('')
+                  }}
+                  className={`w-full h-10 px-3 text-sm bg-white dark:bg-slate-800 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0030871a] focus:border-[#003087] transition-all text-[#1a1a2e] dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 ${
+                    suggestedCategoryError ? 'border-red-500' : 'border-gray-200 dark:border-gray-700'
+                  }`}
+                  placeholder={t('projects.modal.suggest_name_placeholder')}
                   autoFocus
                 />
+                {suggestedCategoryError && (
+                  <span className="text-red-500 text-[11px] mt-1">{suggestedCategoryError}</span>
+                )}
               </div>
               <div className="flex flex-col gap-1.5">
                 <label className="text-[13px] font-bold text-[#1a1a2e] dark:text-gray-300 transition-colors">
-                  Justificación
+                  {t('projects.modal.suggest_just_label')}
                 </label>
                 <textarea
                   rows={3}
                   value={suggestedCategoryJustification}
                   onChange={(e) => setSuggestedCategoryJustification(e.target.value)}
                   className="w-full p-3 text-sm bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0030871a] focus:border-[#003087] transition-all resize-none text-[#1a1a2e] dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600"
-                  placeholder="Por qué debería añadirse esta categoría..."
+                  placeholder={t('projects.modal.suggest_just_placeholder')}
                 />
               </div>
             </div>
@@ -459,10 +479,11 @@ const Step1Form = ({
                 onClick={() => {
                   setShowSuggestModal(false)
                   setCategoryId('')
+                  setSuggestedCategoryError('')
                 }}
                 className="h-10 px-4 text-[13px] font-bold text-[#1a1a2e] dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 rounded-lg transition-colors"
               >
-                Cancelar
+                {t('projects.modal.cancel_btn')}
               </button>
               <button
                 type="button"
@@ -476,10 +497,10 @@ const Step1Form = ({
               >
                 {isSubmittingSuggestion ? (
                   <>
-                    <Loader2 size={14} className="animate-spin" /> Enviando...
+                    <Loader2 size={14} className="animate-spin" /> {t('projects.modal.suggest_sending')}
                   </>
                 ) : (
-                  'Enviar sugerencia'
+                  t('projects.modal.suggest_send_btn')
                 )}
               </button>
             </div>

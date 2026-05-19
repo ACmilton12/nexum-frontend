@@ -93,13 +93,13 @@ export default function SkillChip({
               ? t('skills.edit_disabled_tip', 'Re-habilita la habilidad para poder editarla')
               : t('skills.edit_tip', 'Cambiar nivel')
         }
-        className={`ml-1 p-0.5 rounded transition-colors disabled:cursor-not-allowed ${
+        className={`ml-1 p-1.5 rounded-md transition-all duration-200 disabled:cursor-not-allowed border ${
           isPending || isDisabled
-            ? 'text-gray-300 dark:text-gray-700'
-            : 'text-gray-400 dark:text-gray-500 hover:text-primary dark:hover:text-blue-400'
+            ? 'text-gray-300 dark:text-gray-700 border-transparent bg-transparent'
+            : 'text-blue-600 bg-blue-50 border-blue-100 hover:bg-blue-100 hover:text-blue-700 hover:border-blue-200 dark:text-blue-400 dark:bg-blue-900/20 dark:border-blue-800/30 dark:hover:bg-blue-900/40 shadow-sm'
         }`}
       >
-        <IconEdit />
+        <IconEdit className="w-4 h-4" />
       </button>
 
       {/* Botón deshabilitar / re-habilitar */}
@@ -113,20 +113,20 @@ export default function SkillChip({
               ? t('skills.enable_tip', 'Re-habilitar habilidad')
               : t('skills.disable_tip', 'Deshabilitar habilidad')
         }
-        className={`p-0.5 rounded transition-colors disabled:cursor-not-allowed ${
+        className={`p-1.5 rounded-md transition-all duration-200 disabled:cursor-not-allowed border ${
           isPending
-            ? 'text-gray-300 dark:text-gray-700'
+            ? 'text-gray-300 dark:text-gray-700 border-transparent bg-transparent'
             : isDisabled
-              ? 'text-gray-400 dark:text-gray-500 hover:text-primary dark:hover:text-blue-400'
-              : 'text-gray-400 dark:text-gray-500 hover:text-action dark:hover:text-red-400'
+              ? 'text-green-600 bg-green-50 border-green-100 hover:bg-green-100 hover:text-green-700 hover:border-green-200 dark:text-green-400 dark:bg-green-900/20 dark:border-green-800/30 dark:hover:bg-green-900/40 shadow-sm'
+              : 'text-gray-500 bg-gray-50 border-gray-200 hover:bg-red-50 hover:text-red-600 hover:border-red-200 dark:text-gray-400 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-red-900/30 dark:hover:text-red-400 shadow-sm'
         }`}
       >
         {toggling ? (
-          <IconSpinner className="w-3.5 h-3.5 text-action" />
+          <IconSpinner className="w-4 h-4 text-action" />
         ) : isDisabled ? (
-          <IconEye />
+          <IconEye className="w-4 h-4" />
         ) : (
-          <IconEyeOff />
+          <IconEyeOff className="w-4 h-4" />
         )}
       </button>
     </div>
