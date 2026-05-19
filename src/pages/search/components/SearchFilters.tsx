@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Search as SearchIcon, X, Filter } from 'lucide-react'
 
@@ -20,6 +20,13 @@ export default function SearchFilters({
   const [area, setArea] = useState(initialArea)
   const [skillInput, setSkillInput] = useState('')
   const [skills, setSkills] = useState<string[]>(initialSkills)
+
+  // Sincronizar el estado local cuando los props iniciales cambian desde afuera (ej. al limpiar en Hero)
+  useEffect(() => {
+    setQ(initialQuery)
+    setArea(initialArea)
+    setSkills(initialSkills)
+  }, [initialQuery, initialArea, initialSkills])
 
   const handleAddSkill = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && skillInput.trim()) {

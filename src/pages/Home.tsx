@@ -56,7 +56,6 @@ function SearchResults({
           {/* Sidebar Filtros */}
           <aside className="lg:col-span-1">
             <SearchFilters
-              key={`${q}_${area}_${skills.join(',')}`}
               initialQuery={q}
               initialArea={area}
               initialSkills={skills}
@@ -161,8 +160,8 @@ export default function Home() {
   const handleSearch = (term: string) => {
     const trimmed = term.trim()
 
-    // Si el término está vacío, limpiar resultados y volver al inicio
-    if (!trimmed) {
+    // Si el término está vacío y no hay otros filtros, limpiar resultados y volver al inicio
+    if (!trimmed && !searchParams.area.trim() && searchParams.skills.length === 0) {
       setSearchParams({ q: '', area: '', skills: [], page: 1 })
       setSearchResults([])
       setMeta(null)
