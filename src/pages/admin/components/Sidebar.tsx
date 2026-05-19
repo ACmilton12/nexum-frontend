@@ -157,7 +157,7 @@ const SidebarContent = ({
               : 'text-textMain dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
               }`}
           >
-            <Eye size={18} /> Vista Portafolio
+            <Eye size={18} /> {t('sidebar.portfolio_view')}
           </Link>
 
           <button
@@ -197,7 +197,7 @@ const SidebarContent = ({
                   : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                   }`}
               >
-                <Link2 size={14} /> Enlaces
+                <Link2 size={14} /> {t('sidebar.links')}
               </Link>
               <Link
                 to="/profile/privacy"
@@ -207,7 +207,7 @@ const SidebarContent = ({
                   : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                   }`}
               >
-                <Shield size={14} /> Privacidad
+                <Shield size={14} /> {t('sidebar.privacy')}
               </Link>
 
               <Link

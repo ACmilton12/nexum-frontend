@@ -232,7 +232,10 @@
     "personal_data": "Datos Personales",
     "links_privacy": "Enlaces y Privacidad",
     "appearance": "Apariencia",
-    "notifications": "Notificaciones"
+    "notifications": "Notificaciones",
+    "portfolio_view": "Vista Portafolio",
+    "links": "Enlaces",
+    "privacy": "Privacidad"
   },
   "dashboard": {
     "title": "Dashboard Profesional",

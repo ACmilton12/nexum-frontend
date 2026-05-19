@@ -231,7 +231,10 @@
     "personal_data": "Dados Pessoais",
     "links_privacy": "Links e Privacidade",
     "appearance": "Aparência",
-    "notifications": "Notificações"
+    "notifications": "Notificações",
+    "portfolio_view": "Visualizar Portfólio",
+    "links": "Links",
+    "privacy": "Privacidade"
   },
   "dashboard": {
     "title": "Dashboard Profissional",
