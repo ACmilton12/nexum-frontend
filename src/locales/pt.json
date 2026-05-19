@@ -147,7 +147,9 @@
     "technical_skills": "Habilidades técnicas",
     "skills_placeholder_detailed": "Adicionar habilidade + Enter",
     "apply_filters": "Aplicar Filtros",
-    "clear_all": "Limpar tudo"
+    "clear_all": "Limpar tudo",
+    "show_all": "Mostrar todos os portfólios",
+    "for": "para"
   },
   "features_list": {
     "title": "Funcionalidades do Sistema",
@@ -236,7 +238,9 @@
     "notifications": "Notificações",
     "portfolio_view": "Visualizar Portfólio",
     "links": "Links",
-    "privacy": "Privacidade"
+    "privacy": "Privacidade",
+    "open_menu": "Abrir menu",
+    "close_menu": "Fechar menu"
   },
   "dashboard": {
     "title": "Dashboard Profissional",
@@ -651,6 +655,8 @@
     "professional": "PROFISSIONAL",
     "user_default": "Usuário Nexum",
     "previous": "Anterior",
-    "actual": "Atual"
+    "actual": "Atual",
+    "published": "PUBLICADO",
+    "verified": "VERIFICADO"
   }
 }

@@ -229,6 +229,7 @@ const SidebarContent = ({
 }
 
 const Sidebar = ({ activeItem = 'Dashboard' }: SidebarProps) => {
+  const { t } = useTranslation()
   const { isAdmin } = useAuth()
   const { pathname } = useLocation()
 
@@ -260,7 +261,7 @@ const Sidebar = ({ activeItem = 'Dashboard' }: SidebarProps) => {
       <button
         onClick={() => setIsMobileOpen(true)}
         className="md:hidden fixed top-3 left-4 z-40 bg-navbar text-white p-2 rounded-md shadow-md border-none cursor-pointer"
-        aria-label="Abrir menú"
+        aria-label={t('sidebar.open_menu', 'Abrir menú')}
       >
         <Menu size={20} />
       </button>
@@ -280,7 +281,7 @@ const Sidebar = ({ activeItem = 'Dashboard' }: SidebarProps) => {
           <span className="font-bold text-base tracking-wide">NEXUM</span>
           <button
             onClick={closeMobileMenu}
-            aria-label="Cerrar menú"
+            aria-label={t('sidebar.close_menu', 'Cerrar menú')}
             className="hover:opacity-80 transition-opacity border-none bg-transparent text-white cursor-pointer"
           >
             <X size={20} />

@@ -54,6 +54,8 @@ interface Experience {
   period: string;
   status: string;
   description: string;
+  startDate?: string;
+  endDate?: string | null;
 }
 
 interface Project {
@@ -86,7 +88,7 @@ interface AdditionalLink {
 }
 
 const PortfolioView = () => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [personalData, setPersonalData] = useState<PersonalData | null>(null)
   const [techSkills, setTechSkills] = useState<TechSkill[]>([])
   const [experiences, setExperiences] = useState<Experience[]>([])
@@ -174,7 +176,9 @@ const PortfolioView = () => {
               : 'Presente'
               }`,
             status: e.end_date ? 'Anterior' : 'Actual',
-            description: e.description || ''
+            description: e.description || '',
+            startDate: e.start_date || '',
+            endDate: e.end_date || null
           }))
         )
 
@@ -592,30 +596,41 @@ const PortfolioView = () => {
                             <SkeletonPulse className="w-5/6 h-3 rounded" />
                           </div>
                         </div>
-                      ))
-                    ) : experiences.length > 0 ? (
-                      experiences.map((exp, idx) => (
-                        <div
-                          key={idx}
-                          className="bg-white dark:bg-slate-800 rounded-xl border-l-4 border-[#003087] dark:border-cyan-400 shadow-lg hover:shadow-cyan-500/10 hover:-translate-y-1 transition-all duration-300 p-6"
-                        >
-                          <div className="flex justify-between items-start mb-4">
-                            <span className="text-[10px] font-black uppercase tracking-wider text-[#003087] dark:text-cyan-400">
-                              {exp.status}
-                            </span>
+                      ))                    ) : experiences.length > 0 ? (
+                      experiences.map((exp, idx) => {
+                        const formattedStatus = exp.startDate
+                          ? (exp.endDate ? t('portfolio_view.previous', 'Anterior') : t('portfolio_view.actual', 'Actual'))
+                          : exp.status;
 
-                            <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 dark:text-slate-400">{exp.period}</span>
+                        const formattedPeriod = exp.startDate
+                          ? `${new Date(exp.startDate).toLocaleDateString(i18n.language || 'es', { month: 'short', year: 'numeric' })} - ${exp.endDate
+                              ? new Date(exp.endDate).toLocaleDateString(i18n.language || 'es', { month: 'short', year: 'numeric' })
+                              : t('portfolio_view.present', 'Presente')}`
+                          : exp.period;
+
+                        return (
+                          <div
+                            key={idx}
+                            className="bg-white dark:bg-slate-800 rounded-xl border-l-4 border-[#003087] dark:border-cyan-400 shadow-lg hover:shadow-cyan-500/10 hover:-translate-y-1 transition-all duration-300 p-6"
+                          >
+                            <div className="flex justify-between items-start mb-4">
+                              <span className="text-[10px] font-black uppercase tracking-wider text-[#003087] dark:text-cyan-400">
+                                {formattedStatus}
+                              </span>
+
+                              <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 dark:text-slate-400">{formattedPeriod}</span>
+                            </div>
+
+                            <h3 className="font-bold text-slate-900 dark:text-white text-base mb-1">{exp.role}</h3>
+
+                            <p className="text-[#003087] dark:text-cyan-400 text-xs font-bold mb-4">{exp.company}</p>
+
+                            <p className="text-slate-600 dark:text-slate-300 text-[11px] leading-relaxed">
+                              {exp.description}
+                            </p>
                           </div>
-
-                          <h3 className="font-bold text-slate-900 dark:text-white text-base mb-1">{exp.role}</h3>
-
-                          <p className="text-[#003087] dark:text-cyan-400 text-xs font-bold mb-4">{exp.company}</p>
-
-                          <p className="text-slate-600 dark:text-slate-300 text-[11px] leading-relaxed">
-                            {exp.description}
-                          </p>
-                        </div>
-                      ))
+                        );
+                      })
                     ) : (
                       <div className="col-span-full py-12 text-center bg-white dark:bg-slate-800 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700">
                         <Briefcase size={32} className="mx-auto text-slate-400 dark:text-slate-500 mb-3" />
@@ -681,7 +696,11 @@ const PortfolioView = () => {
                                 key={tIdx}
                                 className="text-[9px] font-black px-2 py-1 rounded-md uppercase bg-slate-100 dark:bg-slate-700 text-[#003087] dark:text-cyan-300"
                               >
-                                {tag}
+                                {tag === 'PUBLICADO'
+                                  ? t('portfolio_view.published', 'PUBLICADO')
+                                  : tag === 'VERIFICADO'
+                                    ? t('portfolio_view.verified', 'VERIFICADO')
+                                    : tag}
                               </span>
                             ))}
                           </div>

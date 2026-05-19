@@ -148,7 +148,9 @@
     "technical_skills": "Technical skills",
     "skills_placeholder_detailed": "Add skill + Enter",
     "apply_filters": "Apply Filters",
-    "clear_all": "Clear all"
+    "clear_all": "Clear all",
+    "show_all": "Show all portfolios",
+    "for": "for"
   },
   "features_list": {
     "title": "System Features",
@@ -237,7 +239,9 @@
     "notifications": "Notifications",
     "portfolio_view": "Portfolio View",
     "links": "Links",
-    "privacy": "Privacy"
+    "privacy": "Privacy",
+    "open_menu": "Open menu",
+    "close_menu": "Close menu"
   },
   "dashboard": {
     "title": "Professional Dashboard",
@@ -649,6 +653,8 @@
     "professional": "PROFESSIONAL",
     "user_default": "Nexum User",
     "previous": "Previous",
-    "actual": "Current"
+    "actual": "Current",
+    "published": "PUBLISHED",
+    "verified": "VERIFIED"
   }
 }

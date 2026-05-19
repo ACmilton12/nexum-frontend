@@ -96,7 +96,7 @@ export default function BuscarProfesionales() {
             </h2>
             <p className="text-gray-500">
               {hasSearched 
-                ? `${t('search.description', 'Explora perfiles públicos y encuentra especialistas')} para "${searchTerm}"`
+                ? `${t('search.description', 'Explora perfiles públicos y encuentra especialistas')} ${t('search.for', 'para')} "${searchTerm}"`
                 : t('search.explore_desc', 'Encuentra y conecta con el mejor talento de la comunidad.')
               }
             </p>
@@ -106,7 +106,7 @@ export default function BuscarProfesionales() {
                 className="mt-4 inline-flex items-center gap-1.5 px-4 py-2 bg-white hover:bg-gray-50 text-gray-700 text-xs font-bold rounded-xl shadow-sm border border-gray-200 transition-all cursor-pointer active:scale-95"
               >
                 <X size={14} className="text-gray-400" />
-                Mostrar todos los portafolios
+                {t('search.show_all', 'Mostrar todos los portafolios')}
               </button>
             )}
           </div>
@@ -147,7 +147,7 @@ export default function BuscarProfesionales() {
                     onClick={handleClearSearch}
                     className="bg-[#C8102E] hover:bg-[#a50d25] text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-md transition-all cursor-pointer active:scale-95 border-none"
                   >
-                    Ver todos los portafolios
+                    {t('search.view_all', 'Ver todos los portafolios')}
                   </button>
                 </div>
               ) : (
