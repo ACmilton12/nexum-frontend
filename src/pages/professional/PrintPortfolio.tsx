@@ -10,6 +10,7 @@ import { getPortfolioSkills } from '../../services/habilidades.service'
 import { getExperiences } from '../../services/experience.service'
 import { getCertifications } from '../../services/certification.service'
 import { API_BASE_URL } from '../../utils/constants'
+import PLATFORM_ICONS from '../../components/icons/SocialIcons'
 
 const PrintPortfolio = () => {
   const { id } = useParams<{ id: string }>()
@@ -50,16 +51,23 @@ const PrintPortfolio = () => {
           const basic = result.data
 
           // Fetch other sections in parallel
-          const [projects, skills, experiences, certifications] = await Promise.all([
+          const [projects, skills, experiences, certifications, linksData] = await Promise.all([
             getProjects().catch(() => []),
             getPortfolioSkills().catch(() => []),
             getExperiences().catch(() => []),
-            getCertifications().catch(() => [])
+            getCertifications().catch(() => []),
+            fetch(`${API_BASE_URL}/portfolio/links`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: 'application/json'
+              }
+            }).then((r) => r.json()).catch(() => ({ data: [] }))
           ])
 
           // Map the data to the FullPortfolio structure
           setPortfolio({
             ...basic,
+            additional_links: linksData?.data || [],
             projects: projects.filter((p) => !p.archived),
             skills: skills.map((s) => ({
               id: s.id,
@@ -167,7 +175,13 @@ const PrintPortfolio = () => {
     )
   }
 
-  const { user, profession, biography, location, phone, avatar_url } = portfolio
+  const { user, profession, biography, location, phone, avatar_url, linkedin_url, github_url, additional_links } = portfolio
+
+  const socialLinks = [
+    ...(linkedin_url ? [{ id: 'linkedin', url: linkedin_url, platform: 'linkedin' }] : []),
+    ...(github_url ? [{ id: 'github', url: github_url, platform: 'github' }] : []),
+    ...(additional_links || []).map((l: any) => ({ id: l.id, url: l.url, platform: l.platform }))
+  ]
 
   const renderClassicTemplate = () => (
     <div id="portfolio-content" className="bg-white max-w-4xl mx-auto print:max-w-full font-serif border-t-8 border-[#333333] px-12 py-16">
@@ -280,6 +294,28 @@ const PrintPortfolio = () => {
             </div>
           </section>
         )}
+
+        {socialLinks.length > 0 && (
+          <section>
+            <h3 className="text-lg font-bold text-gray-900 uppercase tracking-widest border-b border-gray-300 pb-2 mb-4">
+              {t('portfolio_view.professional_networks', 'Redes Profesionales')}
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {socialLinks.map((link) => {
+                const meta = PLATFORM_ICONS[link.platform?.toLowerCase()] || PLATFORM_ICONS.website
+                return (
+                  <div key={link.id} className="flex items-center gap-2 text-sm">
+                    <span className={`${meta.color} shrink-0`}>{meta.svg}</span>
+                    <span className="font-bold text-gray-700 capitalize">{link.platform}:</span>
+                    <a href={link.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline break-all">
+                      {link.url}
+                    </a>
+                  </div>
+                )
+              })}
+            </div>
+          </section>
+        )}
       </div>
       
       <div className="mt-16 pt-6 border-t border-gray-300 text-center">
@@ -352,6 +388,31 @@ const PrintPortfolio = () => {
                   {s.name}
                 </span>
               ))}
+            </div>
+          </section>
+        )}
+
+        {socialLinks.length > 0 && (
+          <section className="mt-8 pt-6 border-t border-[#e5e5e5]">
+            <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-[#a3a3a3] mb-6 text-center">
+              {t('portfolio_view.professional_networks', 'Redes Profesionales')}
+            </h3>
+            <div className="flex flex-wrap justify-center gap-x-8 gap-y-3 text-sm">
+              {socialLinks.map((link) => {
+                const meta = PLATFORM_ICONS[link.platform?.toLowerCase()] || PLATFORM_ICONS.website
+                return (
+                  <a
+                    key={link.id}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#525252] hover:text-[#262626] transition-colors no-underline flex items-center gap-1.5"
+                  >
+                    <span className={`${meta.color} shrink-0`}>{meta.svg}</span>
+                    <span className="font-medium capitalize">{link.platform}</span>
+                  </a>
+                )
+              })}
             </div>
           </section>
         )}
@@ -507,6 +568,32 @@ const PrintPortfolio = () => {
                   )}
                 </div>
               ))}
+            </div>
+          </section>
+        )}
+
+        {socialLinks.length > 0 && (
+          <section>
+            <h3 className="text-lg font-black text-[#1a1a2e] uppercase tracking-widest border-b-2 border-[#C8102E] pb-2 mb-6">
+              {t('portfolio_view.professional_networks', 'Redes Profesionales')}
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {socialLinks.map((link) => {
+                const meta = PLATFORM_ICONS[link.platform?.toLowerCase()] || PLATFORM_ICONS.website
+                return (
+                  <div key={link.id} className="flex items-center gap-3 p-4 rounded-xl border border-gray-100 bg-gray-50/50 hover:bg-gray-50 transition-colors">
+                    <div className="w-8 h-8 rounded-lg bg-[#1a1a2e]/5 flex items-center justify-center text-[#C8102E] shrink-0">
+                      {meta.svg}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <span className="text-[10px] font-black text-gray-400 uppercase block tracking-wider mb-0.5">{link.platform}</span>
+                      <a href={link.url} target="_blank" rel="noopener noreferrer" className="text-[#1a1a2e] font-bold text-xs hover:text-[#C8102E] transition-colors hover:underline block truncate">
+                        {link.url}
+                      </a>
+                    </div>
+                  </div>
+                )
+              })}
             </div>
           </section>
         )}
