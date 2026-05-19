@@ -25,7 +25,20 @@
     },
     "filter_area": "Área: Desarrollo de Software",
     "filter_skills": "Habilidades: React, Node.js",
-    "filter_order": "Ordenar: Relevancia"
+    "filter_order": "Ordenar: Relevancia",
+    "slides": {
+      "slide1": {
+        "title": "DESCUBRE Y CREA PORTAFOLIO DE CLASE MUNDIAL"
+      },
+      "slide2": {
+        "title": "¡EL IMPULSO QUE TU CARRERA NECESITA!",
+        "description": "El ecosistema tecnológico de la UMSS para conectar el talento universitario con el mundo."
+      },
+      "slide3": {
+        "title": "Impulsa tu Futuro Profesional",
+        "description": "Empieza a crear, gestionar y compartir tu portafolio digital en NEXUM."
+      }
+    }
   },
   "features": {
     "title": "¿Por qué elegir Nexum?",
@@ -121,11 +134,14 @@
   },
   "recent": {
     "title": "Portafolios recientes",
+    "most_viewed": "Portafolios más vistos",
     "subtitle": "Conoce el trabajo de los profesionales.",
     "view_portfolio": "Ver portafolio",
     "projects": "Proyectos",
     "views": "Visitas",
-    "university": "Universidad Mayor de San Simón"
+    "university": "Universidad Mayor de San Simón",
+    "no_views": "Aún no hay portafolios con visitas registradas.",
+    "featured_pro": "Profesional Destacado"
   },
   "cta": {
     "title": "¿Eres profesional de software?",

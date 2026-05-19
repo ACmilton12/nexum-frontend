@@ -51,7 +51,7 @@ function PortfolioCard({ profile, index }: { profile: FeaturedProfile; index: nu
             </h3>
             <CheckCircle2 size={18} className="text-blue-500 flex-shrink-0" fill="#fff" />
           </div>
-          <p className="text-sm font-semibold text-primary/80 mb-3">Profesional Destacado</p>
+          <p className="text-sm font-semibold text-primary/80 mb-3">{t('recent.featured_pro')}</p>
           <div className="flex items-center gap-1.5 text-gray-500 text-sm font-medium">
             <MapPin size={14} className="text-gray-400" />
             <span className="line-clamp-1">{profile.location || 'UMSS · Cochabamba, BO'}</span>
@@ -62,13 +62,13 @@ function PortfolioCard({ profile, index }: { profile: FeaturedProfile; index: nu
         <div className="grid grid-cols-2 gap-4 py-5 border-y border-gray-100 mb-6 bg-gray-50/50 -mx-6 px-6">
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5 text-gray-400 text-[10px] font-bold uppercase tracking-wider mb-1.5">
-              <Briefcase size={12} /> Proyectos
+              <Briefcase size={12} /> {t('recent.projects')}
             </div>
             <div className="font-black text-2xl text-textMain tracking-tight">{profile.projects_count || 0}</div>
           </div>
           <div className="flex flex-col border-l border-gray-200 pl-4">
             <div className="flex items-center gap-1.5 text-gray-400 text-[10px] font-bold uppercase tracking-wider mb-1.5">
-              <Eye size={12} /> Visitas
+              <Eye size={12} /> {t('recent.views')}
             </div>
             <div className="font-black text-2xl text-textMain tracking-tight">
               {profile.visits_count ?? '—'}
@@ -253,7 +253,7 @@ export default function RecentPortfolios({
       <div className="max-w-7xl mx-auto px-6 sm:px-8">
         <div className="text-center mb-4 md:mb-8">
           <h2 className="font-extrabold text-3xl sm:text-4xl md:text-5xl tracking-tight text-textMain mb-4">
-            Portafolios más vistos
+            {t('recent.most_viewed')}
           </h2>
           <p className="text-gray-500 max-w-2xl mx-auto text-base sm:text-lg font-medium">
             {t('recent.subtitle')}
@@ -282,7 +282,7 @@ export default function RecentPortfolios({
           </div>
         ) : profiles.length === 0 ? (
           <p className="text-center text-gray-400 py-16">
-            Aún no hay portafolios con visitas registradas.
+            {t('recent.no_views')}
           </p>
         ) : (
           <DraggableCarousel profiles={profiles} />

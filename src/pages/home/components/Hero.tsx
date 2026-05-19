@@ -26,18 +26,18 @@ export default function Hero({
   const slides = [
     { 
       image: portada1,
-      title: 'DESCUBRE Y CREA PORTAFOLIO DE CLASE MUNDIAL',
+      title: t('hero.slides.slide1.title'),
       description: t('hero.description')
     },
     { 
       image: portada2,
-      title: '¡EL IMPULSO QUE TU CARRERA NECESITA!',
-      description: 'El ecosistema tecnológico de la UMSS para conectar el talento universitario con el mundo.'
+      title: t('hero.slides.slide2.title'),
+      description: t('hero.slides.slide2.description')
     },
     { 
       image: portada3,
-      title: 'Impulsa tu Futuro Profesional',
-      description: 'Empieza a crear, gestionar y compartir tu portafolio digital en NEXUM.'
+      title: t('hero.slides.slide3.title'),
+      description: t('hero.slides.slide3.description')
     }
   ]
 

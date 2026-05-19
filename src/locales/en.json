@@ -25,7 +25,20 @@
     },
     "filter_area": "Area: Software Development",
     "filter_skills": "Skills: React, Node.js",
-    "filter_order": "Sort by: Relevance"
+    "filter_order": "Sort by: Relevance",
+    "slides": {
+      "slide1": {
+        "title": "DISCOVER AND CREATE A WORLD-CLASS PORTFOLIO"
+      },
+      "slide2": {
+        "title": "THE BOOST YOUR CAREER NEEDS!",
+        "description": "The UMSS technological ecosystem to connect university talent with the world."
+      },
+      "slide3": {
+        "title": "Boost Your Professional Future",
+        "description": "Start creating, managing, and sharing your digital portfolio on NEXUM."
+      }
+    }
   },
   "features": {
     "title": "Why choose Nexum?",
@@ -121,11 +134,14 @@
   },
   "recent": {
     "title": "Recent Portfolios",
+    "most_viewed": "Most viewed portfolios",
     "subtitle": "Get to know the work of our professionals.",
     "view_portfolio": "View portfolio",
     "projects": "Projects",
     "views": "Views",
-    "university": "Mayor de San Simón University"
+    "university": "Mayor de San Simón University",
+    "no_views": "No portfolios with registered views yet.",
+    "featured_pro": "Featured Professional"
   },
   "cta": {
     "title": "Are you a software professional?",
