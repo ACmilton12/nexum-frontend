@@ -18,6 +18,7 @@ import {
 import PLATFORM_ICONS from '../../../components/icons/SocialIcons'
 import Sidebar from '../../admin/components/Sidebar'
 import Calendar from '../../../components/ui/Calendar'
+import Navbar from '../../../components/ui/Navbar'
 
 import { getPersonalData } from '../../../services/datapersonal.service'
 import { getPortfolioSkills } from '../../../services/habilidades.service'
@@ -240,6 +241,7 @@ const PortfolioView = () => {
 
   return (
     <div className="h-full max-h-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors duration-300 overflow-hidden">
+      <Navbar />
       <div className="flex flex-1 overflow-hidden relative">
         <Sidebar activeItem="Vista Portafolio" />
 
