@@ -235,9 +235,6 @@ function PersonalData() {
       <div className="sticky top-6 space-y-8">
         {/* Calendario */}
         <div>
-          <h3 className="font-bold text-textMain dark:text-white text-sm mb-4 uppercase tracking-wider">
-            {t('sidebar.calendar', 'Calendario')}
-          </h3>
           <Calendar />
         </div>
 

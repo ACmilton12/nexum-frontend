@@ -241,7 +241,13 @@
     "links": "Enlaces",
     "privacy": "Privacidad",
     "open_menu": "Abrir menú",
-    "close_menu": "Cerrar menú"
+    "close_menu": "Cerrar menú",
+    "main_menu": "Menú principal",
+    "profile_config": "Configuración de perfil",
+    "admin": "Administración",
+    "roles": "Roles",
+    "visitors": "Visitantes",
+    "portfolio": "Portafolio"
   },
   "dashboard": {
     "title": "Dashboard Profesional",
@@ -657,13 +663,11 @@
     "published": "PUBLICADO",
     "verified": "VERIFICADO",
     "loading_doc": "Preparando documento...",
-    "error_title": "Error",
     "no_info": "No se encontró información.",
     "back": "Volver",
     "technologies": "Tecnologías",
     "generated_via": "Generado vía Nexum UMSS",
     "generating_pdf": "Generando PDF...",
-    "download_pdf": "Descargar PDF",
     "return": "Regresar",
     "error_generating_pdf": "Hubo un error al generar el PDF. Por favor intenta de nuevo."
   }

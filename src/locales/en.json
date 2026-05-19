@@ -241,7 +241,13 @@
     "links": "Links",
     "privacy": "Privacy",
     "open_menu": "Open menu",
-    "close_menu": "Close menu"
+    "close_menu": "Close menu",
+    "main_menu": "Main Menu",
+    "profile_config": "Profile Configuration",
+    "admin": "Administration",
+    "roles": "Roles",
+    "visitors": "Visitors",
+    "portfolio": "Portfolio"
   },
   "dashboard": {
     "title": "Professional Dashboard",
@@ -657,13 +663,11 @@
     "published": "PUBLISHED",
     "verified": "VERIFIED",
     "loading_doc": "Preparing document...",
-    "error_title": "Error",
     "no_info": "No information found.",
     "back": "Back",
     "technologies": "Technologies",
     "generated_via": "Generated via Nexum UMSS",
     "generating_pdf": "Generating PDF...",
-    "download_pdf": "Download PDF",
     "return": "Go back",
     "error_generating_pdf": "There was an error generating the PDF. Please try again."
   }
