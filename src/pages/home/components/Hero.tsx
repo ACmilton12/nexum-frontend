@@ -104,7 +104,7 @@ export default function Hero({
                 {formatNumber(stats.total_users) || "—"}
               </div>
               <div className="text-blue-200/70 text-[10px] sm:text-xs font-bold uppercase tracking-widest">
-                Usuarios
+                {t('hero.stats.users', 'Usuarios')}
               </div>
             </div>
 

@@ -23,6 +23,12 @@ const PrintPortfolio = () => {
   const { t, i18n } = useTranslation()
   const template = searchParams.get('template') || 'modern'
 
+  const getTranslatedSkillLevel = (level: string) => {
+    if (!level) return '';
+    const normalized = level.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    return t(`skills.levels.${normalized}`, level);
+  }
+
   useEffect(() => {
     const fetchPortfolio = async () => {
       setLoading(true)
@@ -143,7 +149,7 @@ const PrintPortfolio = () => {
         }
       } catch (err) {
         console.error('Print Error:', err)
-        setError(err instanceof Error ? err.message : 'Error al cargar los datos')
+        setError(err instanceof Error ? err.message : t('portfolio_view.error_results', 'Error al cargar los datos'))
       } finally {
         setLoading(false)
       }
@@ -177,7 +183,7 @@ const PrintPortfolio = () => {
       pdf.save(`Portafolio_${portfolio?.user.first_name}_${portfolio?.user.last_name}.pdf`)
     } catch (err) {
       console.error('Error generating PDF:', err)
-      alert('Hubo un error al generar el PDF. Por favor intenta de nuevo.')
+      alert(t('portfolio_view.error_generating_pdf', 'Hubo un error al generar el PDF. Por favor intenta de nuevo.'))
     } finally {
       setIsExporting(false)
     }
@@ -188,7 +194,7 @@ const PrintPortfolio = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="w-10 h-10 text-primary animate-spin" />
-          <p className="text-gray-500 font-medium">Preparando documento...</p>
+          <p className="text-gray-500 font-medium">{t('portfolio_view.loading_doc', 'Preparando documento...')}</p>
         </div>
       </div>
     )
@@ -201,13 +207,13 @@ const PrintPortfolio = () => {
           <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
             <Award size={32} />
           </div>
-          <h2 className="text-xl font-bold text-gray-900 mb-2">Error</h2>
-          <p className="text-gray-500 mb-6">{error || 'No se encontró información.'}</p>
+          <h2 className="text-xl font-bold text-gray-900 mb-2">{t('portfolio_view.error_title', 'Error')}</h2>
+          <p className="text-gray-500 mb-6">{error || t('portfolio_view.no_info', 'No se encontró información.')}</p>
           <button
             onClick={() => navigate(-1)}
             className="w-full py-3 bg-primary text-white rounded-xl font-bold shadow-lg"
           >
-            Volver
+            {t('portfolio_view.back', 'Volver')}
           </button>
         </div>
       </div>
@@ -291,7 +297,7 @@ const PrintPortfolio = () => {
                   <div className="flex justify-between items-baseline mb-1">
                     <h4 className="font-bold text-gray-900 text-base">{exp.position}</h4>
                     <span className="text-sm font-medium text-gray-600">
-                      {exp.start_date} — {exp.end_date || 'Presente'}
+                      {exp.start_date} — {exp.end_date || t('portfolio_view.present', 'Presente')}
                     </span>
                   </div>
                   <p className="text-gray-700 font-bold text-sm mb-2">{exp.company}</p>
@@ -313,7 +319,7 @@ const PrintPortfolio = () => {
               <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
                 {portfolio.skills.map((s) => (
                   <li key={s.id}>
-                    <span className="font-bold">{s.name}</span> - {s.level}
+                    <span className="font-bold">{s.name}</span> - {getTranslatedSkillLevel(s.level)}
                   </li>
                 ))}
               </ul>
@@ -357,7 +363,7 @@ const PrintPortfolio = () => {
                   </p>
                   {project.skills && project.skills.length > 0 && (
                     <p className="text-xs text-gray-600 italic">
-                      Tecnologías: {project.skills.map((s) => s.name).join(', ')}
+                      {t('portfolio_view.technologies', 'Tecnologías')}: {project.skills.map((s) => s.name).join(', ')}
                     </p>
                   )}
                 </div>
@@ -396,7 +402,7 @@ const PrintPortfolio = () => {
 
       <div className="mt-16 pt-6 border-t border-gray-300 text-center">
         <p className="text-xs text-gray-500 uppercase tracking-widest">
-          Generado vía Nexum UMSS • {new Date().toLocaleDateString(i18n.language)}
+          {t('portfolio_view.generated_via', 'Generado vía Nexum UMSS')} • {new Date().toLocaleDateString(i18n.language)}
         </p>
       </div>
     </div>
@@ -446,7 +452,7 @@ const PrintPortfolio = () => {
                 <div key={exp.id} className="grid grid-cols-[1fr_3fr] gap-8">
                   <div className="text-right text-sm text-[#a3a3a3] pt-1">
                     {exp.start_date.substring(0, 4)} —{' '}
-                    {exp.end_date ? exp.end_date.substring(0, 4) : 'Presente'}
+                    {exp.end_date ? exp.end_date.substring(0, 4) : t('portfolio_view.present', 'Presente')}
                   </div>
                   <div>
                     <h4 className="font-bold text-lg text-[#262626] mb-1">{exp.position}</h4>
@@ -590,7 +596,7 @@ const PrintPortfolio = () => {
                   <div className="flex flex-col md:flex-row md:items-center justify-between mb-2">
                     <h4 className="font-bold text-gray-900">{exp.position}</h4>
                     <span className="text-xs font-bold text-gray-400">
-                      {exp.start_date} — {exp.end_date || 'Presente'}
+                      {exp.start_date} — {exp.end_date || t('portfolio_view.present', 'Presente')}
                     </span>
                   </div>
                   <p className="text-[#C8102E] font-bold text-sm mb-2">{exp.company}</p>
@@ -614,7 +620,7 @@ const PrintPortfolio = () => {
                   <div key={s.id} className="space-y-1">
                     <div className="flex justify-between text-xs font-bold uppercase">
                       <span className="text-gray-700">{s.name}</span>
-                      <span className="text-[#C8102E]">{s.level}</span>
+                      <span className="text-[#C8102E]">{getTranslatedSkillLevel(s.level)}</span>
                     </div>
                     <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
                       <div
@@ -684,7 +690,7 @@ const PrintPortfolio = () => {
                     </span>
                   </div>
                   <p className="text-[10px] font-bold text-[#C8102E] uppercase mb-3 tracking-wider">
-                    {project.category?.name || 'Proyecto General'}
+                    {project.category?.name || t('portfolio_view.project_default_category', 'Proyecto')}
                   </p>
                   <p className="text-gray-600 text-xs leading-relaxed mb-4 text-justify">
                     {project.description}
@@ -692,7 +698,7 @@ const PrintPortfolio = () => {
                   {project.skills && project.skills.length > 0 && (
                     <div className="flex flex-wrap gap-1.5">
                       <span className="text-[9px] font-black text-gray-400 uppercase mr-1 mt-0.5">
-                        Tecnologías:
+                        {t('portfolio_view.technologies', 'Tecnologías')}:
                       </span>
                       {project.skills.map((skill) => (
                         <span
@@ -749,7 +755,7 @@ const PrintPortfolio = () => {
 
       <div className="bg-gray-50 p-6 border-t border-gray-100 text-center">
         <p className="text-[10px] text-gray-400 font-medium uppercase tracking-widest flex items-center justify-center gap-2">
-          <Globe size={12} /> Generado via Nexum UMSS •{' '}
+          <Globe size={12} /> {t('portfolio_view.generated_via', 'Generado vía Nexum UMSS')} •{' '}
           {new Date().toLocaleDateString(i18n.language)}
         </p>
       </div>
@@ -765,7 +771,7 @@ const PrintPortfolio = () => {
             onClick={() => navigate(-1)}
             className="text-gray-500 font-bold hover:text-primary transition-colors flex items-center gap-2 text-sm cursor-pointer border-none bg-transparent"
           >
-            <ArrowLeft size={18} /> {t('print.cancel', 'Regresar')}
+            <ArrowLeft size={18} /> {t('portfolio_view.return', 'Regresar')}
           </button>
           <button
             onClick={handleDownloadPDF}
@@ -774,11 +780,11 @@ const PrintPortfolio = () => {
           >
             {isExporting ? (
               <>
-                <Loader2 size={18} className="animate-spin" /> Generando PDF...
+                <Loader2 size={18} className="animate-spin" /> {t('portfolio_view.generating_pdf', 'Generando PDF...')}
               </>
             ) : (
               <>
-                <Download size={18} /> {t('print.download', 'Descargar PDF')}
+                <Download size={18} /> {t('portfolio_view.download_pdf', 'Descargar PDF')}
               </>
             )}
           </button>

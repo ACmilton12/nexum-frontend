@@ -655,6 +655,16 @@
     "previous": "Anterior",
     "actual": "Actual",
     "published": "PUBLICADO",
-    "verified": "VERIFICADO"
+    "verified": "VERIFICADO",
+    "loading_doc": "Preparando documento...",
+    "error_title": "Error",
+    "no_info": "No se encontró información.",
+    "back": "Volver",
+    "technologies": "Tecnologías",
+    "generated_via": "Generado vía Nexum UMSS",
+    "generating_pdf": "Generando PDF...",
+    "download_pdf": "Descargar PDF",
+    "return": "Regresar",
+    "error_generating_pdf": "Hubo un error al generar el PDF. Por favor intenta de nuevo."
   }
 }
