@@ -232,12 +232,12 @@ const PortfolioView = () => {
   }
 
   const stats = [
-    { label: 'VISTAS', value: profileStats?.visits_count || 0 }
+    { label: t('portfolio_view.stats_views'), value: profileStats?.visits_count || 0 }
   ]
 
-  if (privacy.show_projects) stats.push({ label: 'PROYECTOS', value: projects.length })
-  if (privacy.show_skills) stats.push({ label: 'TECNOLOGÍAS', value: techSkills.length })
-  if (privacy.show_experience) stats.push({ label: 'EXPERIENCIA', value: experiences.length })
+  if (privacy.show_projects) stats.push({ label: t('portfolio_view.stats_projects'), value: projects.length })
+  if (privacy.show_skills) stats.push({ label: t('portfolio_view.stats_tech'), value: techSkills.length })
+  if (privacy.show_experience) stats.push({ label: t('portfolio_view.stats_exp'), value: experiences.length })
 
   const habilidadesTecnicas = techSkills.filter(s => s.type === 'tecnica')
   const habilidadesBlandas = techSkills.filter(s => s.type !== 'tecnica')
@@ -256,10 +256,9 @@ const PortfolioView = () => {
                 <div className="bg-amber-50 dark:bg-amber-500/10 border-l-4 border-amber-500 rounded-r-xl p-4 flex items-start gap-3 shadow-sm">
                   <Lock className="text-amber-500 shrink-0 mt-0.5" size={20} />
                   <div>
-                    <h3 className="text-amber-500 font-bold text-sm">Portafolio Privado</h3>
+                    <h3 className="text-amber-500 font-bold text-sm">{t('portfolio_view.private_warning_title')}</h3>
                     <p className="text-slate-400 dark:text-slate-400 text-xs mt-1 leading-relaxed">
-                      Actualmente tu portafolio está <span className="font-bold text-slate-600 dark:text-slate-300">oculto al público</span>.
-                      Los visitantes no podrán acceder a este enlace. Esta vista es solo para ti.
+                      {t('portfolio_view.private_warning_desc')}
                     </p>
                   </div>
                 </div>
@@ -295,28 +294,28 @@ const PortfolioView = () => {
                         {personalData?.user?.first_name || personalData?.user?.last_name
                           ? `${personalData.user.first_name || ''} ${personalData.user.last_name || ''
                             }`.trim()
-                          : 'Usuario Nexum'}
+                          : t('portfolio_view.user_default')}
                       </h1>
 
                       <p className="text-[#003087] dark:text-cyan-400 text-sm font-semibold uppercase tracking-wider mt-1">
-                        {personalData?.profession || 'PROFESIONAL'}
+                        {personalData?.profession || t('portfolio_view.professional')}
                       </p>
 
                       <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500 dark:text-slate-400 text-xs mt-3">
                         <MapPin size={14} />
-                        <span>{personalData?.location || 'Ubicación no especificada'}</span>
+                        <span>{personalData?.location || t('portfolio_view.location_unspecified')}</span>
                       </div>
 
                       <div className="flex flex-col gap-3 mt-5">
                         <div className="flex flex-wrap gap-3">
                           <div className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs shadow-sm">
                             <Phone size={14} className="text-[#003087] dark:text-cyan-400" />
-                            <span>{personalData?.phone || 'Sin teléfono'}</span>
+                            <span>{personalData?.phone || t('portfolio_view.no_phone')}</span>
                           </div>
 
                           <div className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs shadow-sm">
                             <Mail size={14} className="text-[#003087] dark:text-cyan-400" />
-                            <span>{personalData?.user?.email || 'Sin email'}</span>
+                            <span>{personalData?.user?.email || t('portfolio_view.no_email')}</span>
                           </div>
                         </div>
 
@@ -351,7 +350,7 @@ const PortfolioView = () => {
                         className="flex items-center justify-center gap-2 px-4 py-2 bg-[#003087] dark:bg-cyan-500 hover:bg-blue-800 dark:hover:bg-cyan-400 text-white dark:text-slate-950 rounded-lg text-xs font-bold transition-all duration-300 shadow-lg w-full md:w-56"
                       >
                         <Edit3 size={14} />
-                        Editar Información
+                        {t('portfolio_view.edit_info')}
                       </button>
 
                       <button
@@ -386,23 +385,23 @@ const PortfolioView = () => {
               {/* ACERCA DE MI */}
               <div className="bg-white dark:bg-slate-900 rounded-2xl p-8 shadow-xl border border-slate-200 dark:border-slate-800">
                 <div className="flex justify-between items-center mb-2">
-                  <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Acerca de mí</h2>
+                  <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{t('portfolio_view.about_me')}</h2>
 
                   <button
                     onClick={() => navigate('/profile/personal-data')}
                     className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-[#003087] dark:text-cyan-400 rounded-lg text-xs font-bold transition-all"
                   >
                     <Edit3 size={14} />
-                    Editar
+                    {t('portfolio_view.edit')}
                   </button>
                 </div>
 
                 <p className="text-[#003087] dark:text-cyan-400 text-[10px] font-bold uppercase tracking-widest mb-8">
-                  MI PERFIL PROFESIONAL
+                  {t('portfolio_view.my_profile')}
                 </p>
 
                 <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed mb-8">
-                  {personalData?.biography || 'Sin biografía disponible.'}
+                  {personalData?.biography || t('portfolio_view.no_bio')}
                 </p>
 
 
@@ -412,19 +411,19 @@ const PortfolioView = () => {
               {privacy.show_skills && (
                 <div className="bg-white dark:bg-slate-900 rounded-2xl p-8 shadow-xl border border-slate-200 dark:border-slate-800">
                   <div className="flex justify-between items-center mb-2">
-                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Habilidades</h2>
+                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{t('portfolio_view.skills_title')}</h2>
 
                     <button
                       onClick={() => navigate('/profile/habilidades')}
                       className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-[#003087] dark:text-cyan-400 rounded-lg text-xs font-bold transition-all"
                     >
                       <Edit3 size={14} />
-                      Editar
+                      {t('portfolio_view.edit')}
                     </button>
                   </div>
 
                   <p className="text-[#003087] dark:text-cyan-400 text-[10px] font-bold uppercase tracking-widest mb-8">
-                    TECNOLOGÍAS Y COMPETENCIAS
+                    {t('portfolio_view.skills_subtitle')}
                   </p>
 
                   <div className="space-y-8">
@@ -432,7 +431,7 @@ const PortfolioView = () => {
                     <div>
                       <h3 className="text-slate-900 dark:text-white text-sm font-bold mb-4 flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-cyan-400"></span>
-                        Habilidades Técnicas
+                        {t('portfolio_view.technical_skills')}
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[250px] overflow-y-auto pr-2" style={{ scrollbarWidth: 'thin', scrollbarColor: '#22d3ee transparent' }}>
                         {habilidadesTecnicas.length > 0 ? (
@@ -454,8 +453,8 @@ const PortfolioView = () => {
                           ))
                         ) : (
                           <div className="col-span-full py-10 text-center bg-white dark:bg-slate-800 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700">
-                            <p className="text-slate-600 dark:text-slate-300 font-bold text-sm mb-1">Sin habilidades técnicas</p>
-                            <p className="text-slate-400 dark:text-slate-500 text-xs">Agrega tecnologías a tu perfil.</p>
+                            <p className="text-slate-600 dark:text-slate-300 font-bold text-sm mb-1">{t('portfolio_view.no_technical')}</p>
+                            <p className="text-slate-400 dark:text-slate-500 text-xs">{t('portfolio_view.add_tech')}</p>
                           </div>
                         )}
                       </div>
@@ -465,7 +464,7 @@ const PortfolioView = () => {
                     <div>
                       <h3 className="text-slate-900 dark:text-white text-sm font-bold mb-4 flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-purple-400"></span>
-                        Habilidades Blandas
+                        {t('portfolio_view.soft_skills')}
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[250px] overflow-y-auto pr-2" style={{ scrollbarWidth: 'thin', scrollbarColor: '#c084fc transparent' }}>
                         {habilidadesBlandas.length > 0 ? (
@@ -487,8 +486,8 @@ const PortfolioView = () => {
                           ))
                         ) : (
                           <div className="col-span-full py-10 text-center bg-white dark:bg-slate-800 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700">
-                            <p className="text-slate-600 dark:text-slate-300 font-bold text-sm mb-1">Sin habilidades blandas</p>
-                            <p className="text-slate-400 dark:text-slate-500 text-xs">Agrega competencias a tu perfil.</p>
+                            <p className="text-slate-600 dark:text-slate-300 font-bold text-sm mb-1">{t('portfolio_view.no_soft')}</p>
+                            <p className="text-slate-400 dark:text-slate-500 text-xs">{t('portfolio_view.add_soft')}</p>
                           </div>
                         )}
                       </div>
@@ -501,19 +500,19 @@ const PortfolioView = () => {
               {privacy.show_experience && (
                 <div className="bg-white dark:bg-slate-900 rounded-2xl p-8 shadow-xl border border-slate-200 dark:border-slate-800">
                   <div className="flex justify-between items-center mb-2">
-                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Experiencia</h2>
+                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{t('portfolio_view.experience_title')}</h2>
 
                     <button
                       onClick={() => navigate('/experiencia')}
                       className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-[#003087] dark:text-cyan-400 rounded-lg text-xs font-bold transition-all"
                     >
                       <Edit3 size={14} />
-                      Editar
+                      {t('portfolio_view.edit')}
                     </button>
                   </div>
 
                   <p className="text-[#003087] dark:text-cyan-400 text-[10px] font-bold uppercase tracking-widest mb-8">
-                    TRAYECTORIA LABORAL
+                    {t('portfolio_view.experience_subtitle')}
                   </p>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -545,10 +544,10 @@ const PortfolioView = () => {
                         <Briefcase size={32} className="mx-auto text-slate-400 dark:text-slate-500 mb-3" />
 
                         <p className="text-slate-600 dark:text-slate-300 font-bold text-sm mb-1">
-                          Sin trayectoria laboral
+                          {t('portfolio_view.no_exp')}
                         </p>
 
-                        <p className="text-slate-400 dark:text-slate-500 text-xs">Registra tu experiencia profesional.</p>
+                        <p className="text-slate-400 dark:text-slate-500 text-xs">{t('portfolio_view.add_exp')}</p>
                       </div>
                     )}
                   </div>
@@ -559,19 +558,19 @@ const PortfolioView = () => {
               {privacy.show_projects && (
                 <div className="bg-white dark:bg-slate-900 rounded-2xl p-8 shadow-xl border border-slate-200 dark:border-slate-800">
                   <div className="flex justify-between items-center mb-2">
-                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Proyectos</h2>
+                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{t('portfolio_view.projects_title')}</h2>
 
                     <button
                       onClick={() => navigate('/proyectos')}
                       className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-[#003087] dark:text-cyan-400 rounded-lg text-xs font-bold transition-all"
                     >
                       <Edit3 size={14} />
-                      Editar
+                      {t('portfolio_view.edit')}
                     </button>
                   </div>
 
                   <p className="text-[#003087] dark:text-cyan-400 text-[10px] font-bold uppercase tracking-widest mb-8">
-                    PORTAFOLIO DESTACADO
+                    {t('portfolio_view.projects_subtitle')}
                   </p>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -620,9 +619,9 @@ const PortfolioView = () => {
                       <div className="col-span-full py-12 text-center bg-white dark:bg-slate-800 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700">
                         <Folder size={32} className="mx-auto text-slate-400 dark:text-slate-500 mb-3" />
                         <p className="text-slate-600 dark:text-slate-300 font-bold text-sm mb-1">
-                          Sin proyectos destacados
+                          {t('portfolio_view.no_proj')}
                         </p>
-                        <p className="text-slate-400 dark:text-slate-500 text-xs">Añade proyectos para mostrar tu trabajo.</p>
+                        <p className="text-slate-400 dark:text-slate-500 text-xs">{t('portfolio_view.add_proj')}</p>
                       </div>
                     )}
                   </div>
@@ -633,19 +632,19 @@ const PortfolioView = () => {
               {privacy.show_certifications && (
                 <div className="bg-white dark:bg-slate-900 rounded-2xl p-8 shadow-xl border border-slate-200 dark:border-slate-800">
                   <div className="flex justify-between items-center mb-2">
-                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Certificaciones</h2>
+                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{t('portfolio_view.certs_title')}</h2>
 
                     <button
                       onClick={() => navigate('/certificaciones')}
                       className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-[#003087] dark:text-cyan-400 rounded-lg text-xs font-bold transition-all"
                     >
                       <Edit3 size={14} />
-                      Editar
+                      {t('portfolio_view.edit')}
                     </button>
                   </div>
 
                   <p className="text-[#003087] dark:text-cyan-400 text-[10px] font-bold uppercase tracking-widest mb-8">
-                    LOGROS Y CURSOS COMPLETADOS
+                    {t('portfolio_view.certs_subtitle')}
                   </p>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -677,9 +676,9 @@ const PortfolioView = () => {
                       <div className="col-span-full py-12 text-center bg-white dark:bg-slate-800 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700">
                         <Award size={32} className="mx-auto text-slate-400 dark:text-slate-500 mb-3" />
                         <p className="text-slate-600 dark:text-slate-300 font-bold text-sm mb-1">
-                          Sin certificaciones
+                          {t('portfolio_view.no_certs')}
                         </p>
-                        <p className="text-slate-400 dark:text-slate-500 text-xs">Registra tus logros y cursos completados.</p>
+                        <p className="text-slate-400 dark:text-slate-500 text-xs">{t('portfolio_view.add_certs')}</p>
                       </div>
                     )}
                   </div>
@@ -696,7 +695,7 @@ const PortfolioView = () => {
               <div className="mt-8">
                 <h3 className="font-bold text-slate-900 dark:text-white text-[11px] mb-4 flex items-center gap-2 uppercase tracking-widest">
                   <ShieldAlert size={14} className="text-[#003087] dark:text-cyan-400" />
-                  NOTIFICACIONES
+                  {t('portfolio_view.notifications')}
                 </h3>
 
                 <div className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 flex items-start gap-3">
@@ -705,15 +704,14 @@ const PortfolioView = () => {
                   </div>
 
                   <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
-                    <span className="font-bold text-slate-900 dark:text-white">Precarga automática</span> de datos
-                    registrados.
+                    <span className="font-bold text-slate-900 dark:text-white">{t('portfolio_view.auto_preload')}</span> {t('portfolio_view.auto_preload_desc')}
                   </p>
                 </div>
               </div>
 
               <div className="mt-10">
                 <h3 className="font-bold text-slate-900 dark:text-white text-[11px] mb-4 uppercase tracking-widest">
-                  Enlaces rápidos
+                  {t('portfolio_view.quick_links')}
                 </h3>
 
                 <div className="space-y-4">
