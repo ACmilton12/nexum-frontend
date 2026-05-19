@@ -9,6 +9,51 @@
     "logout": "Sair",
     "select_language": "Selecionar Idioma"
   },
+  "auth": {
+    "login": {
+      "welcome_back": "Bem-vindo de volta",
+      "enter_credentials": "Insira suas credenciais para acessar sua conta",
+      "email_label": "E-mail",
+      "email_placeholder": "nome@exemplo.com",
+      "password_label": "Senha",
+      "password_placeholder": "••••••••••",
+      "remember_me": "Lembrar de mim",
+      "forgot_password": "Esqueceu sua senha?",
+      "submit_btn": "Entrar",
+      "loading_btn": "Entrando...",
+      "no_account": "Não tem uma conta?",
+      "register_here": "Registre-se aqui",
+      "carousel": {
+        "slide1_title": "Seu portfólio profissional",
+        "slide1_desc": "Conecte-se com oportunidades e mostre seu talento ao mundo",
+        "slide2_title": "Projetos que falam por você",
+        "slide2_desc": "Envie seu trabalho e deixe-o brilhar para os empregadores",
+        "slide3_title": "Verificado por UMSS · FCyT",
+        "slide3_desc": "Seu perfil com real respaldo acadêmico"
+      },
+      "errors": {
+        "email_required": "O e-mail é obrigatório.",
+        "password_required": "A senha é obrigatória.",
+        "email_invalid": "Insira um e-mail válido.",
+        "password_short": "A senha deve ter pelo menos 6 caracteres.",
+        "invalid_credentials": "Credenciais inválidas. Verifique seu e-mail e senha.",
+        "too_many_attempts": "Muitas tentativas. Por favor, tente mais tarde.",
+        "deactivated": "Sua conta foi desativada. Contate o administrador: admin@nexum.com",
+        "network": "Não foi possível conectar ao servidor. Verifique sua conexão com a internet."
+      },
+      "toasts": {
+        "fill_all": "Por favor, preencha todos os campos.",
+        "enter_email": "Insira seu e-mail.",
+        "invalid_email_format": "O formato do e-mail é inválido.",
+        "enter_password": "Insira sua senha.",
+        "password_too_short": "A senha é muito curta.",
+        "welcome": "Bem-vindo(a), {{name}}! Entrando...",
+        "verified_success": "E-mail verificado com sucesso! Agora você pode entrar.",
+        "already_verified": "Sua conta já está verificada.",
+        "verify_error": "Link de verificação inválido ou expirado. Solicite um novo."
+      }
+    }
+  },
   "hero": {
     "badge": "Talento Universitário da UMSS",
     "title_start": "Encontre o ",

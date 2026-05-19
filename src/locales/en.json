@@ -10,6 +10,51 @@
     "logout": "Logout",
     "select_language": "Select Language"
   },
+  "auth": {
+    "login": {
+      "welcome_back": "Welcome back",
+      "enter_credentials": "Enter your credentials to access your account",
+      "email_label": "Email",
+      "email_placeholder": "name@example.com",
+      "password_label": "Password",
+      "password_placeholder": "••••••••••",
+      "remember_me": "Remember me",
+      "forgot_password": "Forgot your password?",
+      "submit_btn": "Log In",
+      "loading_btn": "Logging in...",
+      "no_account": "Don't have an account?",
+      "register_here": "Register here",
+      "carousel": {
+        "slide1_title": "Your professional portfolio",
+        "slide1_desc": "Connect with opportunities and show your talent to the world",
+        "slide2_title": "Projects that speak for you",
+        "slide2_desc": "Upload your work and let it shine to employers",
+        "slide3_title": "Verified by UMSS · FCyT",
+        "slide3_desc": "Your profile with real academic backing"
+      },
+      "errors": {
+        "email_required": "Email is required.",
+        "password_required": "Password is required.",
+        "email_invalid": "Enter a valid email address.",
+        "password_short": "Password must be at least 6 characters.",
+        "invalid_credentials": "Invalid credentials. Check your email and password.",
+        "too_many_attempts": "Too many attempts. Please try again later.",
+        "deactivated": "Your account was deactivated. Contact the administrator: admin@nexum.com",
+        "network": "Could not connect to the server. Check your internet connection."
+      },
+      "toasts": {
+        "fill_all": "Please complete all fields.",
+        "enter_email": "Enter your email address.",
+        "invalid_email_format": "Invalid email format.",
+        "enter_password": "Enter your password.",
+        "password_too_short": "Password is too short.",
+        "welcome": "Welcome, {{name}}! Logging in...",
+        "verified_success": "Email verified successfully! You can now log in.",
+        "already_verified": "Your account is already verified.",
+        "verify_error": "Invalid or expired verification link. Request a new one."
+      }
+    }
+  },
   "hero": {
     "badge": "UMSS University Talent",
     "title_start": "Find the ",
