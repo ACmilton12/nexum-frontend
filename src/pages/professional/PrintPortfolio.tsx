@@ -734,7 +734,7 @@ const PrintPortfolio = () => {
                         href={link.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-[#1a1a2e] font-bold text-xs hover:text-[#C8102E] transition-colors hover:underline block truncate"
+                        className="text-[#1a1a2e] font-bold text-xs hover:text-[#C8102E] transition-colors hover:underline block break-all"
                       >
                         {link.url}
                       </a>
