@@ -493,10 +493,10 @@ const PrintPortfolio = () => {
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[#525252] hover:text-[#262626] transition-colors no-underline flex items-center gap-1.5"
+                    title={link.platform}
+                    className="text-[#525252] hover:text-[#262626] transition-colors no-underline flex items-center"
                   >
                     <span className={`${meta.color} shrink-0`}>{meta.svg}</span>
-                    <span className="font-medium capitalize">{link.platform}</span>
                   </a>
                 )
               })}
