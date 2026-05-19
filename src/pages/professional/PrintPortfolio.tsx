@@ -481,23 +481,34 @@ const PrintPortfolio = () => {
 
         {socialLinks.length > 0 && (
           <section className="mt-8 pt-6 border-t border-[#e5e5e5]">
-            <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-[#a3a3a3] mb-6 text-center">
+            <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-[#a3a3a3] mb-8 text-center">
               {t('portfolio_view.professional_networks', 'Redes Profesionales')}
             </h3>
-            <div className="flex flex-wrap justify-center gap-x-8 gap-y-3 text-sm">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {socialLinks.map((link) => {
                 const meta = PLATFORM_ICONS[link.platform?.toLowerCase()] || PLATFORM_ICONS.website
                 return (
-                  <a
+                  <div
                     key={link.id}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    title={link.platform}
-                    className="text-[#525252] hover:text-[#262626] transition-colors no-underline flex items-center"
+                    className="flex items-center gap-3 p-4 rounded-xl border border-[#e5e5e5] bg-white hover:bg-gray-50/50 transition-colors"
                   >
-                    <span className={`${meta.color} shrink-0`}>{meta.svg}</span>
-                  </a>
+                    <div className="w-8 h-8 rounded-lg bg-[#262626]/5 flex items-center justify-center text-[#262626] shrink-0">
+                      {meta.svg}
+                    </div>
+                    <div className="min-w-0 flex-1 text-left">
+                      <span className="text-[10px] font-bold text-[#a3a3a3] uppercase block tracking-wider mb-0.5">
+                        {link.platform}
+                      </span>
+                      <a
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[#525252] font-semibold text-xs hover:text-[#262626] transition-colors hover:underline block break-all"
+                      >
+                        {link.url}
+                      </a>
+                    </div>
+                  </div>
                 )
               })}
             </div>
