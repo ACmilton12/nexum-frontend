@@ -5,7 +5,6 @@ import {
   Users,
   Shield,
   Database,
-  Settings,
   FolderOpen,
   Layers,
   Wrench,
@@ -15,8 +14,6 @@ import {
   ChevronDown,
   IdCard,
   Link2,
-  BellRing,
-  Menu,
   X,
   Eye
 } from 'lucide-react'
@@ -71,12 +68,6 @@ const SidebarContent = ({
       icon: <Database size={18} />,
       path: '/admin/backups',
       id: 'Copias de Seguridad'
-    },
-    {
-      label: t('sidebar.system_config'),
-      icon: <Settings size={18} />,
-      path: '/admin/configuracion',
-      id: 'Configuración del Sistema'
     }
   ]
 
@@ -210,16 +201,6 @@ const SidebarContent = ({
                 <Shield size={14} /> {t('sidebar.privacy')}
               </Link>
 
-              <Link
-                to="/profile/notifications"
-                onClick={onItemClick}
-                className={`flex items-center gap-3 pl-8 pr-4 py-2.5 text-xs no-underline transition-colors ${activeItem === 'Notificaciones'
-                  ? 'text-primary font-bold bg-primary/5 dark:bg-primary/10'
-                  : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-                  }`}
-              >
-                <BellRing size={14} /> {t('sidebar.notifications')}
-              </Link>
             </div>
           )}
         </div>
@@ -251,20 +232,19 @@ const Sidebar = ({ activeItem = 'Dashboard' }: SidebarProps) => {
     }
   }, [isMobileOpen])
 
+  // Escuchar el evento del botón hamburguesa en el Navbar
+  useEffect(() => {
+    const handleToggle = () => setIsMobileOpen((prev) => !prev)
+    window.addEventListener('toggle-sidebar', handleToggle)
+    return () => window.removeEventListener('toggle-sidebar', handleToggle)
+  }, [])
+
   const closeMobileMenu = () => {
     setIsMobileOpen(false)
   }
 
   return (
     <>
-      <button
-        onClick={() => setIsMobileOpen(true)}
-        className="md:hidden fixed top-3 left-4 z-40 bg-navbar text-white p-2 rounded-md shadow-md border-none cursor-pointer"
-        aria-label="Abrir menú"
-      >
-        <Menu size={20} />
-      </button>
-
       {isMobileOpen && (
         <div
           className="md:hidden fixed inset-0 bg-black/50 z-40 transition-opacity"

@@ -82,7 +82,7 @@ export default function BackupsPage() {
       <div className="flex flex-1 overflow-hidden">
         <Sidebar activeItem="Copias de Seguridad" />
 
-        <main className="flex-1 flex flex-col overflow-y-auto p-4 sm:p-6 md:p-8 pl-16 md:pl-8 bg-background dark:bg-slate-900 transition-colors duration-300">
+        <main className="flex-1 flex flex-col overflow-y-auto p-4 sm:p-6 md:p-8 bg-background dark:bg-slate-900 transition-colors duration-300">
           <div className="max-w-6xl w-full mx-auto">
             {/* Header */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
@@ -96,7 +96,7 @@ export default function BackupsPage() {
                 </p>
               </div>
 
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-col sm:flex-row gap-3 w-full">
                 {/* Botón de Restaurar (Estático) */}
                 <button
                   onClick={() =>
@@ -106,7 +106,7 @@ export default function BackupsPage() {
                       tipo: 'error'
                     })
                   }
-                  className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 text-sm px-5 py-2.5 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-700 transition-all shadow-sm flex items-center gap-2 font-semibold"
+                  className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 text-sm px-5 py-2.5 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-700 transition-all shadow-sm flex items-center justify-center gap-2 font-semibold w-full sm:w-auto"
                 >
                   <Download className="rotate-180" size={18} />
                   Restaurar Backup
@@ -116,7 +116,7 @@ export default function BackupsPage() {
                 <button
                   onClick={handleGenerateBackup}
                   disabled={loading}
-                  className="bg-action text-white text-sm px-5 py-2.5 rounded-xl hover:opacity-90 transition-all shadow-md flex items-center gap-2 font-semibold disabled:opacity-70 disabled:cursor-not-allowed"
+                  className="bg-action text-white text-sm px-5 py-2.5 rounded-xl hover:opacity-90 transition-all shadow-md flex items-center justify-center gap-2 font-semibold disabled:opacity-70 disabled:cursor-not-allowed w-full sm:w-auto"
                 >
                   {loading ? (
                     <>
@@ -186,14 +186,14 @@ export default function BackupsPage() {
                 </h2>
               </div>
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm text-gray-600 dark:text-gray-400">
+                <table className="w-full text-left text-sm text-gray-600 dark:text-gray-400 min-w-[560px]">
                   <thead className="text-xs text-gray-400 dark:text-gray-500 uppercase bg-gray-50/50 dark:bg-slate-900/50 border-b border-gray-100 dark:border-gray-700">
                     <tr>
-                      <th className="px-6 py-3 font-semibold">Nombre del Archivo</th>
-                      <th className="px-6 py-3 font-semibold">Tipo</th>
-                      <th className="px-6 py-3 font-semibold">Tamaño</th>
-                      <th className="px-6 py-3 font-semibold">Fecha y Hora</th>
-                      <th className="px-6 py-3 font-semibold text-right">Acciones</th>
+                      <th className="px-4 sm:px-6 py-3 font-semibold whitespace-nowrap">Nombre del Archivo</th>
+                      <th className="px-4 sm:px-6 py-3 font-semibold">Tipo</th>
+                      <th className="px-4 sm:px-6 py-3 font-semibold">Tamaño</th>
+                      <th className="px-4 sm:px-6 py-3 font-semibold whitespace-nowrap">Fecha y Hora</th>
+                      <th className="px-4 sm:px-6 py-3 font-semibold text-right">Acciones</th>
                     </tr>
                   </thead>
                   <tbody>

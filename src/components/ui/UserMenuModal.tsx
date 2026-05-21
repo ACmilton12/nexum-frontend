@@ -52,7 +52,7 @@ const UserMenuModal = ({
 
   return (
     <div className="absolute top-full right-0 pt-3 z-50 animate-in fade-in zoom-in duration-200">
-      <div className="w-72 bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-800 text-[#1a1a2e] dark:text-gray-100">
+      <div className="w-72 max-w-[calc(100vw-2rem)] bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-800 text-[#1a1a2e] dark:text-gray-100">
         {/* Cabecera: Info del usuario */}
         <div className="p-5 border-b border-gray-100 dark:border-gray-800 flex flex-col items-center gap-3">
           <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-[#003087] dark:border-blue-500 flex items-center justify-center bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500">

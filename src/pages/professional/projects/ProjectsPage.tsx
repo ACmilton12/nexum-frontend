@@ -149,7 +149,7 @@ const ProjectsPage = () => {
         <Sidebar activeItem="Proyectos" />
 
         <main className="flex-1 flex flex-col lg:flex-row overflow-hidden">
-          <div className="flex-1 bg-[#C9D1D9] dark:bg-slate-900 p-4 pl-14 sm:pl-6 md:p-8 overflow-y-auto transition-colors duration-300">
+          <div className="flex-1 bg-[#C9D1D9] dark:bg-slate-900 p-4 sm:p-6 md:p-8 overflow-y-auto transition-colors duration-300">
             <div className="max-w-[1200px] mx-auto space-y-8">
               {/* Header */}
               <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -407,7 +407,7 @@ const ProjectsPage = () => {
               </div>
             </div>
           </div>
-          <RightWidgets type="profile" className="w-full lg:w-72 shrink-0" />
+          <RightWidgets type="profile" className="hidden lg:block w-72 shrink-0" />
         </main>
       </div>
 

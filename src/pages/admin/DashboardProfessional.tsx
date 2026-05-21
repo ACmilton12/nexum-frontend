@@ -232,7 +232,7 @@ const DashboardProfessional = () => {
         <Sidebar activeItem="Dashboard" />
 
         <main className="flex-1 flex flex-col lg:flex-row overflow-hidden bg-background dark:bg-slate-900 transition-colors duration-300">
-          <div className="flex-1 p-4 pl-14 sm:pl-6 md:p-6 overflow-y-auto">
+          <div className="flex-1 p-4 sm:p-6 md:p-6 overflow-y-auto">
             <h1 className="text-xl sm:text-2xl font-bold text-textMain dark:text-white mb-1">
               {t('dashboard.title')}
             </h1>
@@ -460,7 +460,7 @@ const DashboardProfessional = () => {
           </div>
 
           {/* ASIDE DERECHO */}
-          <aside className="w-full lg:w-64 p-6 bg-white dark:bg-slate-900 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-800 shrink-0 overflow-y-auto transition-colors duration-300">
+          <aside className="hidden lg:block w-64 p-6 bg-white dark:bg-slate-900 lg:border-l border-gray-200 dark:border-gray-800 shrink-0 overflow-y-auto transition-colors duration-300">
             <RightPanelContent
               viewsCount={viewsCount}
               lastProjectName={lastProjectName}
@@ -471,9 +471,9 @@ const DashboardProfessional = () => {
       </div>
 
       {toast && <Toast message={toast.mensaje} type={toast.tipo} onClose={handleCloseToast} />}
-      <PdfTemplateModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
+      <PdfTemplateModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
         portfolioId={portfolioId}
       />
     </div>

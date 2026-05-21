@@ -173,7 +173,7 @@ function Experience() {
         <Sidebar activeItem="Experiencia" />
 
         <main className="flex-1 flex flex-col lg:flex-row overflow-hidden bg-[#cbd5e1] dark:bg-slate-900 transition-colors duration-300">
-          <div className="flex-1 p-4 pl-14 sm:pl-6 md:p-8 overflow-y-auto">
+          <div className="flex-1 p-4 sm:p-6 md:p-8 overflow-y-auto">
             <div className="max-w-4xl mx-auto pt-2">
               <header className="mb-6 flex justify-between items-center">
                 <h1 className="text-2xl font-bold text-textMain dark:text-white">
@@ -589,7 +589,7 @@ function Experience() {
             </div>
           </div>
 
-          <aside className="w-[292px] w-full lg:w-72 shrink-0 bg-white dark:bg-slate-900 p-6 flex flex-col gap-6 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-800 overflow-y-auto transition-colors duration-300">
+          <aside className="hidden lg:flex w-72 shrink-0 bg-white dark:bg-slate-900 p-6 flex-col gap-6 lg:border-l border-gray-200 dark:border-gray-800 overflow-y-auto transition-colors duration-300">
             <div className="flex flex-col gap-3">
               <Calendar />
             </div>

@@ -5,7 +5,7 @@ import {
   AlertTriangle,
   CheckCircle,
   ShieldAlert,
-  ExternalLink,
+
   BookOpen
 } from 'lucide-react'
 import Sidebar from './components/Sidebar'
@@ -604,32 +604,7 @@ const RightPanelContent = ({
       </div>
     </div>
 
-    <div className="mt-8">
-      <h3 className="font-bold text-textMain dark:text-white text-sm mb-4">Enlaces rápidos</h3>
-      <div className="space-y-3 text-xs text-primary dark:text-blue-400">
-        <p className="cursor-pointer hover:underline flex items-center justify-between group">
-          <span>📋 Guía de Usuario</span>
-          <ExternalLink
-            size={12}
-            className="opacity-0 group-hover:opacity-100 transition-opacity"
-          />
-        </p>
-        <p className="cursor-pointer hover:underline flex items-center justify-between group">
-          <span>⚙️ Soporte Técnico</span>
-          <ExternalLink
-            size={12}
-            className="opacity-0 group-hover:opacity-100 transition-opacity"
-          />
-        </p>
-        <p className="cursor-pointer hover:underline flex items-center justify-between group">
-          <span>📄 Políticas UMSS</span>
-          <ExternalLink
-            size={12}
-            className="opacity-0 group-hover:opacity-100 transition-opacity"
-          />
-        </p>
-      </div>
-    </div>
+
   </div>
 )
 
@@ -646,8 +621,9 @@ const DashboardAdmin = () => {
   // Stats dinámicos
   const [totalUsers, setTotalUsers] = useState<number | null>(null)
   const [inactiveUsers, setInactiveUsers] = useState<number>(0)
-  const [newUsersThisWeek, setNewUsersThisWeek] = useState<number>(0)
+
   const [failedLogins, setFailedLogins] = useState<number>(0)
+  const [lastBackupDate, setLastBackupDate] = useState<string | null>(null)
   const [loadingStats, setLoadingStats] = useState(true)
   const [toast, setToast] = useState<{
     mensaje: string
@@ -714,28 +690,27 @@ const DashboardAdmin = () => {
         const users = await getUsers()
         setTotalUsers(users.length)
         setInactiveUsers(users.filter((u: { status: string }) => u.status === 'Inactivo').length)
-        // Usuarios registrados esta semana
-        const oneWeekAgo = new Date()
-        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
-        const newThisWeek = users.filter((u: { registro: string }) => {
-          const parts = u.registro.split('/')
-          if (parts.length === 3) {
-            const registroDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`)
-            return registroDate >= oneWeekAgo
-          }
-          return false
-        })
-        setNewUsersThisWeek(newThisWeek.length)
       } catch {
         setTotalUsers(0)
         setToast({ mensaje: 'No se pudieron cargar los datos de usuarios.', tipo: 'error' })
       }
 
-      // Activity logs — intentos fallidos recientes
+      // Activity logs — intentos fallidos recientes + último backup
       try {
         const logs = await getActivityLogs({ per_page: 100 })
         const failed = logs.data.filter((l: { event: string }) => l.event === 'login_failed')
         setFailedLogins(failed.length)
+
+        // Obtener fecha del último backup real
+        const backupLog = logs.data.find((l: { event: string }) => l.event === 'backup.generated')
+        if (backupLog) {
+          const d = new Date(backupLog.timestamp || backupLog.created_at)
+          setLastBackupDate(
+            d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' }) +
+            ' ' +
+            d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })
+          )
+        }
       } catch {
         setFailedLogins(0)
         setToast({ mensaje: 'No se pudo cargar el historial de actividad.', tipo: 'error' })
@@ -756,7 +731,7 @@ const DashboardAdmin = () => {
         <Sidebar activeItem="Dashboard" />
 
         <main className="flex-1 flex flex-col lg:flex-row overflow-hidden bg-background dark:bg-slate-900 transition-colors duration-300">
-          <div className="flex-1 p-4 pl-14 sm:pl-6 md:p-6 overflow-y-auto">
+          <div className="flex-1 p-4 sm:p-6 md:p-6 overflow-y-auto">
             <h1 className="text-xl sm:text-2xl font-bold text-textMain dark:text-white mb-1">
               Panel de Administración
             </h1>
@@ -774,9 +749,7 @@ const DashboardAdmin = () => {
                   {loadingStats ? '—' : (totalUsers ?? 0)}
                 </p>
                 <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-                  {newUsersThisWeek > 0
-                    ? `+${newUsersThisWeek} esta semana`
-                    : 'Sin nuevos esta semana'}
+                  Total de usuarios en la plataforma
                 </p>
               </div>
               <div className="bg-white dark:bg-slate-800 rounded-xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors">
@@ -847,7 +820,11 @@ const DashboardAdmin = () => {
                   Gestiona y programa los respaldos automáticos de la plataforma.
                 </p>
                 <div className="bg-primary/5 text-primary text-[11px] px-3 py-1.5 rounded-lg mb-4 inline-block font-medium border border-primary/20">
-                  Último backup: hoy 03:00 AM.
+                  {loadingStats
+                    ? 'Cargando...'
+                    : lastBackupDate
+                      ? `Último backup: ${lastBackupDate}`
+                      : 'Sin backups registrados.'}
                 </div>
                 <br />
                 <Link
@@ -965,52 +942,11 @@ const DashboardAdmin = () => {
               </div>
             </div>
 
-            {/* Control de acceso por roles */}
-            <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 mb-6 transition-colors">
-              <h2 className="font-semibold text-textMain dark:text-white mb-4">
-                Control de acceso por roles en la plataforma
-              </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="bg-background dark:bg-slate-900 rounded-xl p-4 border border-gray-50 dark:border-gray-800">
-                  <h3 className="font-medium text-textMain dark:text-white mb-3 text-sm flex items-center gap-2">
-                    <CheckCircle size={14} className="text-primary dark:text-blue-400" />
-                    Rutas del Administrador
-                  </h3>
-                  <div className="space-y-2">
-                    {[
-                      'Dashboard',
-                      'Gestión Usuarios',
-                      'Auditoría',
-                      'Copias de Seguridad',
-                      'Configuración'
-                    ].map((item) => (
-                      <div key={item} className="flex items-center gap-2 text-[13px] text-gray-600">
-                        <div className="w-1 h-1 bg-primary rounded-full" />
-                        {item}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="bg-background dark:bg-slate-900 rounded-xl p-4 border border-gray-50 dark:border-gray-800">
-                  <h3 className="font-medium text-textMain dark:text-white mb-3 text-sm flex items-center gap-2">
-                    <AlertTriangle size={14} className="text-action" />
-                    Rutas restringidas
-                  </h3>
-                  <div className="space-y-2">
-                    {['Proyectos', 'Habilidades', 'Experiencia', 'Portafolio'].map((item) => (
-                      <div key={item} className="flex items-center gap-2 text-[13px] text-gray-600">
-                        <div className="w-1 h-1 bg-action rounded-full" />
-                        {item}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
+
           </div>
 
           {/* Aside derecho */}
-          <aside className="w-full lg:w-64 p-6 bg-white dark:bg-slate-900 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-800 shrink-0 overflow-y-auto transition-colors duration-300">
+          <aside className="hidden lg:block w-64 p-6 bg-white dark:bg-slate-900 lg:border-l border-gray-200 dark:border-gray-800 shrink-0 overflow-y-auto transition-colors duration-300">
             <RightPanelContent
               inactiveUsers={inactiveUsers}
               failedLogins={failedLogins}

@@ -41,9 +41,9 @@ const Toast: React.FC<ToastProps> = ({ message, type, onClose, duration = 3000 }
   const { bgColor, textColor, icon, title } = config[type]
 
   return (
-    <div className={`fixed top-6 right-6 z-[2000] animate-in slide-in-from-right duration-300`}>
+    <div className={`fixed top-4 right-4 left-4 sm:left-auto sm:top-6 sm:right-6 z-[2000] animate-in slide-in-from-right duration-300`}>
       <div
-        className={`${bgColor} ${textColor} shadow-lg border-l-4 border-current rounded-lg p-4 flex items-start gap-3 min-w-[320px]`}
+        className={`${bgColor} ${textColor} shadow-lg border-l-4 border-current rounded-lg p-3 sm:p-4 flex items-start gap-3 w-full sm:w-auto sm:min-w-[320px] sm:max-w-[420px]`}
         style={{ boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }}
       >
         <div className="mt-0.5">{icon}</div>

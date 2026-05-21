@@ -248,7 +248,7 @@ const PortfolioView = () => {
 
         <main className="flex-1 flex flex-col lg:flex-row overflow-hidden bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
           {/* CONTENIDO */}
-          <div className="flex-1 p-4 pl-14 sm:pl-6 md:p-8 overflow-y-auto">
+          <div className="flex-1 p-4 sm:p-6 md:p-8 overflow-y-auto">
             <div className="max-w-5xl mx-auto space-y-6 pb-12">
               {!loading && privacy.global_privacy === 'private' && (
                 <div className="bg-amber-50 dark:bg-amber-500/10 border-l-4 border-amber-500 rounded-r-xl p-4 flex items-start gap-3 shadow-sm">
@@ -794,7 +794,7 @@ const PortfolioView = () => {
           </div>
 
           {/* SIDEBAR DERECHO */}
-          <aside className="w-full lg:w-72 p-6 bg-white dark:bg-slate-900 border-t lg:border-t-0 lg:border-l border-slate-200 dark:border-slate-800 shrink-0 overflow-y-auto">
+          <aside className="hidden lg:block w-72 p-6 bg-white dark:bg-slate-900 lg:border-l border-slate-200 dark:border-slate-800 shrink-0 overflow-y-auto">
             <div className="sticky top-6">
               <Calendar />
 
