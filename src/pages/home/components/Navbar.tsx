@@ -6,7 +6,7 @@ import logoUmss from '../../../assets/logoUmss.png'
 import LanguageSelector from '../../../components/ui/LanguageSelector'
 
 export default function Navbar() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { user } = useAuth()
   const navigate = useNavigate()
   const [scrolled, setScrolled] = useState(false)
@@ -192,17 +192,50 @@ export default function Navbar() {
                   to="/login"
                   className="flex-1 border-2 border-white text-white text-sm font-bold py-2 rounded text-center no-underline"
                 >
-                  Acceder
+                  {t('navbar.login')}
                 </Link>
                 <Link
                   to="/register"
                   className="flex-1 text-white text-sm font-bold py-2 rounded text-center no-underline"
                   style={{ backgroundColor: '#C8102E' }}
                 >
-                  Registrarse
+                  {t('navbar.register')}
                 </Link>
               </>
             )}
+          </div>
+          {/* Selector de idioma en móvil — botones inline */}
+          <div className="pt-3 mt-1 border-t border-white/10">
+            <p className="text-white/50 text-[10px] font-bold uppercase tracking-widest mb-2">
+              {t('navbar.select_language', 'Idioma')}
+            </p>
+            <div className="flex gap-2">
+              {[
+                { code: 'es', label: 'ES', flag: '🇪🇸' },
+                { code: 'en', label: 'EN', flag: '🇺🇸' },
+                { code: 'pt', label: 'PT', flag: '🇧🇷' }
+              ].map((lang) => {
+                const isActive = (i18n.language?.split('-')[0] || 'es') === lang.code
+                return (
+                  <button
+                    key={lang.code}
+                    onClick={() => {
+                      i18n.changeLanguage(lang.code)
+                      localStorage.setItem('i18nextLng', lang.code)
+                    }}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold tracking-wider transition-all border-0 cursor-pointer"
+                    style={{
+                      backgroundColor: isActive ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.05)',
+                      color: isActive ? '#ffffff' : 'rgba(255,255,255,0.6)',
+                      border: isActive ? '1px solid rgba(255,255,255,0.3)' : '1px solid rgba(255,255,255,0.1)'
+                    }}
+                  >
+                    <span>{lang.flag}</span>
+                    <span>{lang.label}</span>
+                  </button>
+                )
+              })}
+            </div>
           </div>
         </div>
       )}

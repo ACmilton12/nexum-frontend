@@ -264,6 +264,23 @@ export default function HabilidadesPage() {
               </button>
             </div>
 
+            {/* Panel nueva habilidad (ahora arriba) */}
+            {mostrandoPanel && (
+              <div className="mb-5 animate-in slide-in-from-top-4 fade-in duration-300">
+                <NuevaHabilidadPanel
+                  tipo={tipoNueva}
+                  onTipoChange={setTipoNueva}
+                  catalogoPorCategoria={catalogoPorCategoria}
+                  skillsExistentes={skills}
+                  loadingCatalog={loadingCatalog}
+                  saving={savingNew}
+                  onSave={handleGuardarNuevo}
+                  onCancel={() => setMostrandoPanel(false)}
+                  onToast={(msg, t) => setToast({ mensaje: msg, tipo: t })}
+                />
+              </div>
+            )}
+
             {/* Habilidades registradas */}
             <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 shadow-md p-5 mb-5 transition-colors duration-300">
               <div className="flex items-center justify-between mb-4">
@@ -353,20 +370,7 @@ export default function HabilidadesPage() {
               )}
             </div>
 
-            {/* Panel nueva habilidad */}
-            {mostrandoPanel && (
-              <NuevaHabilidadPanel
-                tipo={tipoNueva}
-                onTipoChange={setTipoNueva}
-                catalogoPorCategoria={catalogoPorCategoria}
-                skillsExistentes={skills}
-                loadingCatalog={loadingCatalog}
-                saving={savingNew}
-                onSave={handleGuardarNuevo}
-                onCancel={() => setMostrandoPanel(false)}
-                onToast={(msg, t) => setToast({ mensaje: msg, tipo: t })}
-              />
-            )}
+
           </div>
         </main>
       </div>

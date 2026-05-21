@@ -100,6 +100,7 @@ function DraggableCarousel({ profiles }: { profiles: FeaturedProfile[] }) {
   const [hasMoved, setHasMoved] = useState(false)
   const [startX, setStartX] = useState(0)
   const [startProgress, setStartProgress] = useState(0)
+  const [pointerDownTime, setPointerDownTime] = useState(0)
 
   useEffect(() => {
     if (isDragging) return
@@ -117,13 +118,15 @@ function DraggableCarousel({ profiles }: { profiles: FeaturedProfile[] }) {
     setHasMoved(false)
     setStartX(e.clientX)
     setStartProgress(progress)
+    setPointerDownTime(Date.now())
     e.currentTarget.setPointerCapture(e.pointerId)
   }
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!isDragging) return
     const deltaX = e.clientX - startX
-    if (!hasMoved && Math.abs(deltaX) < 8) return
+    // Umbral más amplio en móvil para evitar toques accidentales
+    if (!hasMoved && Math.abs(deltaX) < 15) return
     setHasMoved(true)
     let newProgress = startProgress - (deltaX / 150)
     newProgress = Math.max(0, Math.min(total - 1, newProgress))
@@ -135,17 +138,21 @@ function DraggableCarousel({ profiles }: { profiles: FeaturedProfile[] }) {
     setIsDragging(false)
     e.currentTarget.releasePointerCapture(e.pointerId)
 
+    const elapsed = Date.now() - pointerDownTime
+    const totalDelta = Math.abs(e.clientX - startX)
+
     if (hasMoved) {
       // fue drag, solo redondear
       setProgress(Math.round(progress))
-    } else {
-      // fue click limpio: navegar al card del frente
+    } else if (elapsed < 300 && totalDelta < 10) {
+      // fue click/tap intencional: corto en tiempo y sin desplazamiento
       const frontIndex = Math.round(progress)
       const profile = displayProfiles[frontIndex]
       if (profile?.id) {
         navigate(`/portfolio/${profile.id}`)
       }
     }
+    // Si el dedo estuvo mucho tiempo o se desplazó un poco, no navegar
     setHasMoved(false)
   }
 
@@ -155,7 +162,7 @@ function DraggableCarousel({ profiles }: { profiles: FeaturedProfile[] }) {
         .cine-container {
           perspective: 1200px;
           cursor: pointer;
-          touch-action: pan-y;
+          touch-action: none;
           position: relative;
           width: 320px;
           height: 400px;

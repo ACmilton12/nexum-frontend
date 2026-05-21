@@ -25,9 +25,9 @@ const Toast: React.FC<ToastProps> = ({ message, type, onClose, duration = 3000 }
       title: '¡Éxito!'
     },
     info: {
-      bgColor: 'bg-primary/5',
-      textColor: 'text-primary',
-      icon: <AlertCircle size={20} className="text-primary" />,
+      bgColor: 'bg-blue-50',
+      textColor: 'text-blue-700',
+      icon: <AlertCircle size={20} className="text-blue-700" />,
       title: 'Aviso'
     },
     error: {
