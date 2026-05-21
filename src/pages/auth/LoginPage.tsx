@@ -55,7 +55,7 @@ const LoginPage = () => {
       newSearchParams.delete('status');
       setSearchParams(newSearchParams, { replace: true });
     }
-  }, [searchParams, setSearchParams]);
+  }, [searchParams, setSearchParams, t]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -119,7 +119,7 @@ const LoginPage = () => {
         if (data.user.role === 'admin') {
           navigate('/admin')
         } else {
-          navigate('/home')
+          navigate('/directorio')
         }
       }, 1200);
     } catch (err: unknown) {

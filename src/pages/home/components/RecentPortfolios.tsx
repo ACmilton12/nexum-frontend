@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import useAuth from '../../../hooks/useAuth'
 import { CheckCircle2, MapPin, Briefcase, Eye } from 'lucide-react'
 import type { FeaturedProfile } from '../types'
 import { getInitials } from '../utils'
@@ -247,6 +248,7 @@ export default function RecentPortfolios({
   loading: boolean
 }) {
   const { t } = useTranslation()
+  const { user } = useAuth()
 
   return (
     <section className="pt-10 pb-20 sm:pt-14 sm:pb-28 bg-[#ccd4da] transition-colors duration-300">
@@ -290,7 +292,7 @@ export default function RecentPortfolios({
 
         <div className="text-center mt-10">
           <Link
-            to="/Home"
+            to={user ? '/directorio' : '/Home'}
             className="text-white font-bold px-8 py-3.5 rounded-xl transition-all duration-200 shadow-lg no-underline inline-block"
             style={{ backgroundColor: '#003087' }}
             onMouseEnter={(e) =>

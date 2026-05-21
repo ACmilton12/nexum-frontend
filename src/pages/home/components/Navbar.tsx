@@ -55,7 +55,7 @@ export default function Navbar() {
             {t('navbar.home').toUpperCase()}
           </Link>
           <Link
-            to="/Home"
+            to={user ? '/directorio' : '/Home'}
             className="text-white text-xs font-bold tracking-widest hover:text-gray-300 transition-colors duration-200 no-underline"
           >
             {t('navbar.search').toUpperCase()}
@@ -163,7 +163,7 @@ export default function Navbar() {
           <Link to="/" className="text-white text-xs font-bold tracking-widest no-underline">
             {t('navbar.home').toUpperCase()}
           </Link>
-          <Link to="/Home" className="text-white text-xs font-bold tracking-widest no-underline">
+          <Link to={user ? '/directorio' : '/Home'} className="text-white text-xs font-bold tracking-widest no-underline">
             {t('navbar.search').toUpperCase()}
           </Link>
           <a href="#contacto" className="text-white text-xs font-bold tracking-widest no-underline">

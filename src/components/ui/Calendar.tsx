@@ -119,7 +119,7 @@ const Calendar = () => {
         bg-white dark:bg-gray-900
         border border-gray-200 dark:border-gray-700
         rounded-2xl
-        p-4
+        p-3 sm:p-4
         shadow-sm
         transition-colors
       "

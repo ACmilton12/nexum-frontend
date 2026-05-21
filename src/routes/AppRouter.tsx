@@ -66,32 +66,32 @@ const Breadcrumbs = () => {
   const isProfessionalRoute = ["/dashboard", "/proyectos", "/habilidades", "/experiencia", "/certificaciones", "/visitantes", "/portfolio"].includes(pathname) || pathname.startsWith("/profile")
 
   return (
-    <div className="px-6 md:px-10 py-3 bg-[#eef3f8] dark:bg-slate-900 border-b border-[#ddd] dark:border-slate-800 text-[13px] text-[#666] dark:text-gray-400 transition-colors duration-300">
+    <div className="px-6 md:px-10 py-3 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 text-[13px] text-slate-500 dark:text-gray-400 transition-colors duration-300">
       {pathname === '/' ? (
         <span className="font-bold text-[#003087] dark:text-blue-400">{t('sidebar.main_menu', 'Menú principal')}</span>
       ) : (
         <>
           <Link
             to="/"
-            className="text-[#666] dark:text-gray-400 hover:text-[#003087] dark:hover:text-blue-400 no-underline transition-colors"
+            className="text-slate-500 dark:text-gray-400 hover:text-[#003087] dark:hover:text-blue-400 no-underline transition-colors"
           >
             {t('sidebar.main_menu', 'Menú principal')}
           </Link>
 
           {isProfessionalRoute ? (
             <>
-              <span className="mx-2 text-[#999] dark:text-gray-600">&gt;</span>
-              <span className="text-[#666] dark:text-gray-400">{t('sidebar.profile_config', 'Configuración de perfil')}</span>
+              <span className="mx-2 text-slate-300 dark:text-gray-600">&gt;</span>
+              <span className="text-slate-500 dark:text-gray-400">{t('sidebar.profile_config', 'Configuración de perfil')}</span>
 
               {pathname.startsWith('/profile') && (
                 <>
-                  <span className="mx-2 text-[#999] dark:text-gray-600">&gt;</span>
-                  <span className="text-[#666] dark:text-gray-400">{t('sidebar.profile', 'Perfil')}</span>
+                  <span className="mx-2 text-slate-300 dark:text-gray-600">&gt;</span>
+                  <span className="text-slate-500 dark:text-gray-400">{t('sidebar.profile', 'Perfil')}</span>
                 </>
               )}
 
               {/* Conflicto 1 resuelto: HEAD tiene dark mode, tu rama tiene más rutas */}
-              <span className="mx-2 text-[#999] dark:text-gray-600">&gt;</span>
+              <span className="mx-2 text-slate-300 dark:text-gray-600">&gt;</span>
               <span className="font-bold text-[#003087] dark:text-blue-400">
                 {pathname.includes('dashboard') ? t('sidebar.dashboard', 'Dashboard')
                   : pathname.includes('proyectos') ? t('sidebar.projects', 'Proyectos')
@@ -114,7 +114,7 @@ const Breadcrumbs = () => {
                 name.charAt(0).toUpperCase() + name.slice(1).replace(/-/g, ' ')
               return (
                 <span key={name}>
-                  <span className="mx-2 text-[#999] dark:text-gray-600">&gt;</span>
+                  <span className="mx-2 text-slate-300 dark:text-gray-600">&gt;</span>
                   {isLast ? (
                     <span className="font-bold text-[#003087] dark:text-blue-400">
                       {displayName}
@@ -122,7 +122,7 @@ const Breadcrumbs = () => {
                   ) : (
                     <Link
                       to={routeTo}
-                      className="text-[#666] dark:text-gray-400 hover:text-[#003087] dark:hover:text-blue-400 no-underline transition-colors"
+                      className="text-slate-500 dark:text-gray-400 hover:text-[#003087] dark:hover:text-blue-400 no-underline transition-colors"
                     >
                       {displayName}
                     </Link>
@@ -219,8 +219,8 @@ const AppRouter = () => {
           {/* ── Rutas del profesional ────────────────────────── */}
           {/* Conflicto 3 resuelto: combinamos rutas de ambas versiones */}
           <Route path="/dashboard" element={<ProtectedRoute allowedRole="professional"><RolesPage /></ProtectedRoute>} />
-          <Route path="/directorio" element={<ProtectedRoute allowedRole="professional"><HomeDirectory /></ProtectedRoute>} />
-          <Route path="/directorio/perfil/:id" element={<ProtectedRoute allowedRole="professional"><PublicProfile /></ProtectedRoute>} />
+          <Route path="/directorio" element={<ProtectedRoute allowedRoles={['admin', 'professional']}><HomeDirectory /></ProtectedRoute>} />
+          <Route path="/directorio/perfil/:id" element={<ProtectedRoute allowedRoles={['admin', 'professional']}><PublicProfile /></ProtectedRoute>} />
           <Route path="/proyectos" element={<ProtectedRoute allowedRole="professional"><ProjectsPage /></ProtectedRoute>} />
           <Route path="/experiencia" element={<ProtectedRoute allowedRole="professional"><Experience /></ProtectedRoute>} />
           <Route path="/certificaciones" element={<ProtectedRoute allowedRole="professional"><Certifications /></ProtectedRoute>} />

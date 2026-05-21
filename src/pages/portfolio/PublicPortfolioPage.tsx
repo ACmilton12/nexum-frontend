@@ -29,6 +29,19 @@ export default function PublicPortfolioPage() {
     return t(`skills.levels.${normalized}`, level);
   }
 
+  // Forzar modo claro para los visitantes en esta ruta pública
+  useEffect(() => {
+    const wasDark = document.documentElement.classList.contains('dark')
+    if (wasDark) {
+      document.documentElement.classList.remove('dark')
+    }
+    return () => {
+      if (wasDark) {
+        document.documentElement.classList.add('dark')
+      }
+    }
+  }, [])
+
   useEffect(() => {
     const fetchPortfolio = async () => {
       if (!id) return

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Search as SearchIcon, X, Filter } from 'lucide-react'
 
@@ -21,12 +21,18 @@ export default function SearchFilters({
   const [skillInput, setSkillInput] = useState('')
   const [skills, setSkills] = useState<string[]>(initialSkills)
 
-  // Sincronizar el estado local cuando los props iniciales cambian desde afuera (ej. al limpiar en Hero)
-  useEffect(() => {
+  const [prevProps, setPrevProps] = useState({ initialQuery, initialArea, initialSkills })
+
+  if (
+    initialQuery !== prevProps.initialQuery ||
+    initialArea !== prevProps.initialArea ||
+    initialSkills !== prevProps.initialSkills
+  ) {
+    setPrevProps({ initialQuery, initialArea, initialSkills })
     setQ(initialQuery)
     setArea(initialArea)
     setSkills(initialSkills)
-  }, [initialQuery, initialArea, initialSkills])
+  }
 
   const handleAddSkill = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && skillInput.trim()) {
@@ -51,16 +57,16 @@ export default function SearchFilters({
   }
 
   return (
-    <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm space-y-8 sticky top-24">
+    <div className="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm space-y-8 sticky top-24">
       <div className="flex items-center gap-2 mb-2">
         <Filter size={20} className="text-[#C8102E]" />
-        <h3 className="font-bold text-gray-900">{t('search.advanced_filters')}</h3>
+        <h3 className="font-bold text-gray-900 dark:text-white">{t('search.advanced_filters')}</h3>
       </div>
 
       <div className="space-y-6">
         {/* Búsqueda por Nombre */}
         <div>
-          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">
+          <label className="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-3">
             {t('search.search_by_name')}
           </label>
           <div className="relative">
@@ -71,7 +77,7 @@ export default function SearchFilters({
             <input
               type="text"
               placeholder={t('search.name_placeholder')}
-              className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-sm outline-none focus:border-[#C8102E] transition-all"
+              className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-100 dark:border-slate-700 rounded-xl text-sm outline-none focus:border-[#C8102E] dark:text-white transition-all"
               value={q}
               onChange={(e) => setQ(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleApply()}
@@ -81,13 +87,13 @@ export default function SearchFilters({
 
         {/* Área / Profesión */}
         <div>
-          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">
+          <label className="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-3">
             {t('search.area_specialty')}
           </label>
           <input
             type="text"
             placeholder={t('search.area_placeholder_detailed')}
-            className="w-full px-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-sm outline-none focus:border-[#C8102E] transition-all"
+            className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-100 dark:border-slate-700 rounded-xl text-sm outline-none focus:border-[#C8102E] dark:text-white transition-all"
             value={area}
             onChange={(e) => setArea(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleApply()}
@@ -96,13 +102,13 @@ export default function SearchFilters({
 
         {/* Habilidades */}
         <div>
-          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">
+          <label className="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-3">
             {t('search.technical_skills')}
           </label>
           <input
             type="text"
             placeholder={t('search.skills_placeholder_detailed')}
-            className="w-full px-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-sm outline-none focus:border-[#C8102E] transition-all"
+            className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-100 dark:border-slate-700 rounded-xl text-sm outline-none focus:border-[#C8102E] dark:text-white transition-all"
             value={skillInput}
             onChange={(e) => setSkillInput(e.target.value)}
             onKeyDown={handleAddSkill}
@@ -129,7 +135,7 @@ export default function SearchFilters({
 
       <button
         onClick={handleApply}
-        className="w-full py-3 bg-[#C8102E] text-white rounded-xl font-bold shadow-lg shadow-red-600/20 hover:bg-[#a50d25] transition-all mt-4"
+        className="w-full py-3 bg-[#C8102E] text-white rounded-xl font-bold shadow-lg shadow-red-600/20 hover:bg-[#a50d25] transition-all mt-4 border-none cursor-pointer"
       >
         {t('search.apply_filters')}
       </button>
@@ -141,7 +147,7 @@ export default function SearchFilters({
           setSkills([])
           onSearch({ q: '', area: '', skills: [] })
         }}
-        className="w-full py-2 text-gray-400 text-xs font-bold hover:text-gray-600 transition-colors"
+        className="w-full py-2 text-gray-400 dark:text-gray-500 text-xs font-bold hover:text-gray-600 dark:hover:text-gray-300 transition-colors bg-transparent border-none cursor-pointer"
       >
         {t('search.clear_all')}
       </button>

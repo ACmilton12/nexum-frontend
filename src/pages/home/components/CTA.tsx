@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import useAuth from '../../../hooks/useAuth'
 
 export default function CTA() {
   const { t } = useTranslation()
+  const { user } = useAuth()
 
   return (
     <section className="py-20 relative overflow-hidden" style={{ backgroundColor: '#003087' }}>
@@ -31,7 +33,7 @@ export default function CTA() {
             {t('cta.start')}
           </Link>
           <Link
-            to="/Home"
+            to={user ? '/directorio' : '/Home'}
             className="border-2 border-white/50 hover:border-white text-white font-bold px-8 py-3.5 rounded-xl transition-all duration-200 no-underline"
           >
             {t('recent.view_portfolio')}s

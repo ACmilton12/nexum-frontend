@@ -1,6 +1,6 @@
 {
   "navbar": {
-    "search": "SEARCH PROFESSIONALS",
+    "search": "EXPLORE PROFESSIONALS",
     "contact": "CONTACT",
     "home": "HOME",
     "login": "Login",
@@ -8,7 +8,15 @@
     "dashboard": "Dashboard",
     "profile": "My Profile",
     "logout": "Logout",
-    "select_language": "Select Language"
+    "select_language": "Select Language",
+    "user_menu": {
+      "profile_settings": "Profile Settings",
+      "dark_mode": "Dark Mode",
+      "logout": "Log Out",
+      "role_admin": "Administrator",
+      "role_professional": "Professional",
+      "role_user": "User"
+    }
   },
   "auth": {
     "login": {
@@ -107,7 +115,7 @@
     "description": "Institutional platform for digital portfolios for professionals.",
     "navigation": "Navigation",
     "home": "Home",
-    "search": "Search Professionals",
+    "search": "Explore Professionals",
     "login": "Login",
     "register": "Register",
     "resources": "Resources",
@@ -576,7 +584,23 @@
     "levels": {
       "basico": "Basic",
       "intermedio": "Intermediate",
-      "avanzado": "Advanced"
+      "avanzado": "Advanced",
+      "technical": {
+        "basico": "Basic",
+        "intermedio": "Intermediate",
+        "avanzado": "Advanced",
+        "basico_desc": "Concepts and guided use.",
+        "intermedio_desc": "Functional implementation in projects.",
+        "avanzado_desc": "Autonomous professional use."
+      },
+      "soft": {
+        "formacion": "In training",
+        "desarrollada": "Developed",
+        "fortalecida": "Strengthened",
+        "formacion_desc": "I am actively developing this skill.",
+        "desarrollada_desc": "I apply it confidently in real contexts.",
+        "fortalecida_desc": "It is one of my consolidated strengths."
+      }
     }
   },
   "portfolio_view": {
@@ -670,5 +694,318 @@
     "generating_pdf": "Generating PDF...",
     "return": "Go back",
     "error_generating_pdf": "There was an error generating the PDF. Please try again."
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Administration Panel",
+      "subtitle": "General control of the NEXUM platform",
+      "stats": {
+        "total_users": "Total Registered Users",
+        "total_users_desc": "Total users on the platform",
+        "inactive_users": "Inactive Users",
+        "inactive_users_attention": "Require attention",
+        "inactive_users_all_active": "All active",
+        "failed_logins": "Recent Failed Logins",
+        "failed_logins_check": "Review audit logs",
+        "failed_logins_no_alerts": "No alerts"
+      },
+      "users_card": {
+        "title": "Users Management",
+        "desc": "Manage accounts, roles, statuses, and permissions of users.",
+        "loading": "Loading...",
+        "inactive_count": "{{count}} inactive user.",
+        "inactive_count_plural": "{{count}} inactive users.",
+        "all_active": "All users are active.",
+        "button": "View users"
+      },
+      "backups_card": {
+        "title": "Backups",
+        "desc": "Manage and schedule automatic backups of the platform.",
+        "loading": "Loading...",
+        "last_backup": "Last backup: {{date}}",
+        "no_backups": "No backups registered.",
+        "button": "Manage backups"
+      },
+      "skills_card": {
+        "title": "Skill Suggestions",
+        "desc": "Review user proposed skills before they appear in the catalog.",
+        "loading": "Loading...",
+        "no_pending": "No pending suggestions.",
+        "pending_count": "{{count}} suggestion pending review.",
+        "pending_count_plural": "{{count}} suggestions pending review.",
+        "button": "Review suggestions"
+      },
+      "categories_card": {
+        "title": "Category Suggestions",
+        "desc": "Review user proposed categories to organize projects better.",
+        "loading": "Loading...",
+        "no_pending": "No pending suggestions.",
+        "pending_count": "{{count}} suggestion pending review.",
+        "pending_count_plural": "{{count}} suggestions pending review.",
+        "button": "Review categories"
+      },
+      "notifications": {
+        "title": "Notifications",
+        "inactive_users": "{{count}} inactive user.",
+        "inactive_users_plural": "{{count}} inactive users.",
+        "failed_logins": "{{count}} recent failed access attempt.",
+        "failed_logins_plural": "{{count}} recent failed access attempts.",
+        "pending_skills": "{{count}} pending skill suggestion.",
+        "pending_skills_plural": "{{count}} pending skill suggestions.",
+        "pending_categories": "{{count}} pending category suggestion.",
+        "pending_categories_plural": "{{count}} pending category suggestions."
+      },
+      "skills_modal": {
+        "title": "Skill Suggestions",
+        "subtitle": "Review and approve or reject user suggestions.",
+        "loading": "Loading suggestions...",
+        "no_pending": "No pending suggestions",
+        "all_reviewed": "All suggestions have been reviewed.",
+        "category": "Category:",
+        "user": "User:",
+        "approve": "Approve",
+        "reject": "Reject",
+        "pending_count": "{{count}} pending suggestion",
+        "pending_count_plural": "{{count}} pending suggestions",
+        "close": "Close",
+        "error_load": "Could not load suggestions.",
+        "toast_approved": "Suggestion approved.",
+        "toast_rejected": "Suggestion rejected.",
+        "toast_error": "Error processing the action."
+      },
+      "categories_modal": {
+        "title": "Category Suggestions",
+        "subtitle": "Review and approve or reject suggestions for new categories.",
+        "loading": "Loading suggestions...",
+        "no_pending": "No pending suggestions",
+        "all_reviewed": "All suggestions have been reviewed.",
+        "new_category": "New Category",
+        "project": "Project:",
+        "user": "User:",
+        "approve": "Approve",
+        "reject": "Reject",
+        "pending_count": "{{count}} pending suggestion",
+        "pending_count_plural": "{{count}} pending suggestions",
+        "close": "Close",
+        "error_load": "Could not load category suggestions.",
+        "toast_approved": "Suggestion approved.",
+        "toast_rejected": "Suggestion rejected.",
+        "toast_error": "Error processing the action."
+      },
+      "toasts": {
+        "error_skills": "Could not load pending suggestions.",
+        "error_users": "Could not load user data.",
+        "error_activity": "Could not load activity history.",
+        "success_load": "Administration panel loaded successfully."
+      }
+    },
+    "categories": {
+      "title": "Category Management",
+      "tab": "Categories",
+      "search_placeholder": "Search by name",
+      "filter_status": "All statuses",
+      "status_active": "ACTIVE",
+      "status_inactive": "INACTIVE",
+      "create_button": "Create Category",
+      "table": {
+        "name": "Name",
+        "desc": "Description",
+        "status": "Status",
+        "actions": "Actions",
+        "no_results": "No categories found.",
+        "no_desc": "— no description —"
+      },
+      "form": {
+        "name_placeholder": "Category name",
+        "desc_placeholder": "Short description...",
+        "active_generated": "Active Generated",
+        "save": "Save",
+        "cancel": "Cancel",
+        "saving": "Saving..."
+      },
+      "pagination": {
+        "showing": "Showing {{count}} of {{total}} Categories",
+        "showing_zero": "0 Categories found",
+        "prev": "Previous",
+        "next": "Next"
+      },
+      "confirm": {
+        "title": "Confirm Action",
+        "desc": "Do you want to save the category?",
+        "confirm": "Confirm"
+      },
+      "error": {
+        "load": "Error loading categories",
+        "save": "There was an error saving."
+      },
+      "sidebar": {
+        "calendar": "Calendar"
+      }
+    },
+    "backups": {
+      "title": "Database Backups",
+      "subtitle": "Manage and generate system database backups.",
+      "restore_button": "Restore Backup",
+      "generate_button": "Generate Manual Backup",
+      "generating": "Generating...",
+      "stats": {
+        "total": "Total Backups",
+        "last": "Last Backup",
+        "none": "None",
+        "status": "Status",
+        "status_active": "Automated active"
+      },
+      "table": {
+        "title": "Backup History",
+        "filename": "File Name",
+        "type": "Type",
+        "size": "Size",
+        "date": "Date and Time",
+        "actions": "Actions",
+        "no_backups": "No backups available.",
+        "manual": "Manual",
+        "auto": "Automatic",
+        "download_tooltip": "Download",
+        "delete_tooltip": "Delete"
+      },
+      "toasts": {
+        "restore_info": "Restoration must be performed manually by a database administrator for security.",
+        "generate_success": "Backup successfully generated and downloaded.",
+        "generate_error": "Error generating backup.",
+        "delete_success": "Entry removed from local history.",
+        "download_success": "The file was already downloaded upon generation."
+      }
+    },
+    "users": {
+      "title": "User Management",
+      "subtitle": "Nexum access administration",
+      "filter_all": "All statuses",
+      "filter_active": "Active",
+      "filter_inactive": "Inactive",
+      "filter_button": "Filter",
+      "loading": "Loading database...",
+      "error_load": "Error loading users.",
+      "table": {
+        "user": "User",
+        "email": "Email",
+        "role": "Role",
+        "status": "Status",
+        "registration": "Registration Date",
+        "actions": "Actions",
+        "active": "Active",
+        "inactive": "Inactive",
+        "suspend_tooltip": "Suspend access",
+        "reactivate_tooltip": "Reactivate access"
+      },
+      "pagination_desc": "Showing {{count}} records in total. Scroll horizontally on mobile.",
+      "security": {
+        "title": "Security",
+        "desc": "Deactivation revokes active session tokens and blocks the selected user's login."
+      },
+      "modal": {
+        "title": "Confirm Suspension",
+        "desc": "Are you sure you want to deactivate {{name}}? They will immediately lose access to the platform.",
+        "back": "Go Back",
+        "confirm": "Deactivate"
+      },
+      "toasts": {
+        "error_deactivate": "Error deactivating user.",
+        "error_reactivate": "Error reactivating user."
+      }
+    },
+    "audit": {
+      "title": "Audit Logs",
+      "search_placeholder": "Search by user or ID...",
+      "date_from": "From",
+      "date_to": "To",
+      "export_pdf": "Export PDF",
+      "table": {
+        "user": "User",
+        "event": "Event",
+        "date": "Date/Time",
+        "details": "Details",
+        "loading": "Querying database...",
+        "no_results": "No audit records found.",
+        "error": "Error loading audit history."
+      },
+      "pdf": {
+        "title": "Audit Logs - NEXUM",
+        "generated_at": "Generated on: {{date}}",
+        "filename": "audit_history_{{date}}.pdf"
+      },
+      "events": {
+        "created": "Created",
+        "updated": "Updated",
+        "deleted": "Deleted",
+        "update_role": "Role Updated",
+        "login_failed": "Failed Access",
+        "login": "Successful Login",
+        "logout": "Logged Out",
+        "profile_updated": "Profile Modified",
+        "portfolio_edit": "Portfolio Edited"
+      },
+      "detail_modal": {
+        "title": "Activity Details",
+        "responsible": "Responsible User",
+        "affected": "Affected User",
+        "data_state": "Data and States",
+        "close": "Close Details",
+        "no_structured_details": "No additional structured details for this event.",
+        "no_changes": "No detectable changes.",
+        "field": "Modified Field",
+        "old_value": "Previous Value",
+        "new_value": "New Value",
+        "registered_data": "Registered Data",
+        "value": "Value"
+      },
+      "fields": {
+        "first_name": "First Name",
+        "last_name": "Last Name",
+        "email": "Email",
+        "role": "Role",
+        "is_active": "Account Status",
+        "password": "Password",
+        "biography": "Biography",
+        "phone": "Phone",
+        "location": "Location",
+        "github_url": "GitHub",
+        "linkedin_url": "LinkedIn",
+        "global_privacy": "Privacy",
+        "name": "Project Name",
+        "description": "Description",
+        "deactivated_by_admin": "Account Status",
+        "title": "Title",
+        "company": "Company",
+        "start_date": "Start Date",
+        "end_date": "End Date",
+        "is_current": "Current Job",
+        "issuing_entity": "Issuing Entity",
+        "issue_date": "Issue Date",
+        "expiration_date": "Expiration Date",
+        "image_url": "Image URL",
+        "url": "URL Link",
+        "avatar_path": "Avatar Path",
+        "design_pattern": "Design Pattern",
+        "portfolio_id": "Portfolio ID",
+        "category_id": "Category ID",
+        "user_id": "User ID"
+      },
+      "values": {
+        "unspecified": "Unspecified",
+        "active": "Active",
+        "suspended": "Suspended",
+        "private": "Private",
+        "public": "Public",
+        "yes": "Yes",
+        "no": "No"
+      },
+      "security": {
+        "title": "Security",
+        "desc": "Active system monitoring. All role changes and failed accesses are logged."
+      },
+      "reports": {
+        "title": "Reports"
+      }
+    }
   }
 }

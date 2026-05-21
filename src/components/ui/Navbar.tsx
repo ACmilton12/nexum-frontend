@@ -1,14 +1,16 @@
 import { Link } from 'react-router-dom'
 import logoUmss from '../../assets/logoUmss.png' // Asegúrate de que la ruta sea correcta
-import { User } from 'lucide-react' // Iconos necesarios
+import { User, Menu } from 'lucide-react' // Iconos necesarios
 import { useState } from 'react'
 import UserMenuModal from './UserMenuModal' // Importa el componente del modal
 import useAuth from '../../hooks/useAuth' // Hook para obtener el usuario logueado
 import LanguageSelector from './LanguageSelector'
+import { useTranslation } from 'react-i18next'
 
 const Navbar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const { user } = useAuth()
+  const { user, isAdmin } = useAuth()
+  const { t } = useTranslation()
 
   const isAuthenticated = !!user
   const userName = user
@@ -16,30 +18,63 @@ const Navbar = () => {
     : 'Invitado'
   const userProfession =
     user?.role === 'professional'
-      ? 'Profesional'
+      ? t('navbar.user_menu.role_professional', 'Profesional')
       : user?.role === 'admin'
-        ? 'Administrador'
-        : 'Usuario'
+        ? t('navbar.user_menu.role_admin', 'Administrador')
+        : t('navbar.user_menu.role_user', 'Usuario')
   const userEmail = user?.email || 'Sin correo'
   const userPhoto = user?.avatar_url || '' // Avatar desde la BD o vacío
 
   return (
-    <nav className="w-full bg-[#001A5E] px-6 py-3 flex items-center justify-between z-50 relative">
+    <nav className="w-full bg-[#001A5E] px-3 sm:px-6 py-2 sm:py-3 flex items-center justify-between z-50 relative">
       {' '}
       {/* Azul marino profundo */}
-      {/* Logo y nombre de Nexum */}
-      <Link to="/" className="flex items-center gap-2 cursor-pointer">
-        <div className="flex items-center gap-2">
-          <img
-            src={logoUmss}
-            alt="Logo UMSS"
-            className="w-8 h-8 object-contain rounded-full" // Añadido rounded-full para intentar hacerlo circular
-          />
-          <span className="text-white font-bold text-lg tracking-wide">NEXUM</span>
-        </div>
-      </Link>
+      {/* Hamburger + Logo */}
+      <div className="flex-1 flex items-center gap-2">
+        {/* Botón hamburguesa visible solo en móvil */}
+        <button
+          onClick={() => window.dispatchEvent(new CustomEvent('toggle-sidebar'))}
+          className="md:hidden flex items-center justify-center w-9 h-9 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-colors border-none bg-transparent cursor-pointer"
+          aria-label="Abrir menú"
+        >
+          <Menu size={22} />
+        </button>
+
+        <Link to="/" className="flex items-center gap-2 cursor-pointer no-underline">
+          <div className="flex items-center gap-2">
+            <img
+              src={logoUmss}
+              alt="Logo UMSS"
+              className="w-8 h-8 object-contain rounded-full"
+            />
+            <span className="text-white font-bold text-lg tracking-wide">NEXUM</span>
+          </div>
+        </Link>
+      </div>
+
+      {/* Links — centro */}
+      <div className="hidden md:flex flex-1 items-center justify-center gap-10">
+        <Link
+          to="/"
+          onClick={() => {
+            if (window.location.pathname === '/') {
+              window.scrollTo({ top: 0, behavior: 'smooth' })
+            }
+          }}
+          className="text-white text-xs font-bold tracking-widest hover:text-gray-300 transition-colors duration-200 no-underline"
+        >
+          {t('navbar.home').toUpperCase()}
+        </Link>
+        <Link
+          to={user ? '/directorio' : '/Home'}
+          className="text-white text-xs font-bold tracking-widest hover:text-gray-300 transition-colors duration-200 no-underline"
+        >
+          {t('navbar.search').toUpperCase()}
+        </Link>
+      </div>
+
       {/* Lógica de Usuario */}
-      <div className="flex items-center gap-5">
+      <div className="flex-1 flex items-center justify-end gap-3 sm:gap-5">
         <LanguageSelector />
 
         {/* Separator */}
@@ -65,6 +100,7 @@ const Navbar = () => {
               userProfession={userProfession}
               userPhoto={userPhoto}
               userEmail={userEmail}
+              isAdmin={isAdmin}
             />
           </div>
         )}
