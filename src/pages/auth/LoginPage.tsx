@@ -55,7 +55,7 @@ const LoginPage = () => {
       newSearchParams.delete('status');
       setSearchParams(newSearchParams, { replace: true });
     }
-  }, [searchParams, setSearchParams]);
+  }, [searchParams, setSearchParams, t]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

@@ -39,7 +39,9 @@ const PrintPortfolio = () => {
           setPortfolio({
             ...data,
             additional_links: data.additional_links || [],
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             projects: (data.projects || []).filter((p: any) => !p.archived),
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             skills: (data.skills || []).map((s: any) => ({
               id: s.id,
               name: s.name,
@@ -55,6 +57,7 @@ const PrintPortfolio = () => {
                         ? 'Experto'
                         : s.level || 'Básico'
             })),
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             work_experiences: (data.work_experiences || []).map((e: any) => ({
               id: e.id,
               company: e.company,
@@ -65,6 +68,7 @@ const PrintPortfolio = () => {
               is_current: !e.end_date,
               location: e.location || ''
             })),
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             certifications: (data.certifications || []).map((c: any) => ({
               id: c.id,
               name: c.name,
@@ -235,6 +239,7 @@ const PrintPortfolio = () => {
   const socialLinks = [
     ...(linkedin_url ? [{ id: 'linkedin', url: linkedin_url, platform: 'linkedin' }] : []),
     ...(github_url ? [{ id: 'github', url: github_url, platform: 'github' }] : []),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ...(additional_links || []).map((l: any) => ({ id: l.id, url: l.url, platform: l.platform }))
   ]
 
@@ -424,7 +429,7 @@ const PrintPortfolio = () => {
         <h1 className="text-5xl font-light tracking-tight mb-3">
           {user.first_name} <span className="font-bold">{user.last_name}</span>
         </h1>
-        <p className="text-lg text-[#737373] tracking-widest uppercase text-sm">
+        <p className="text-[#737373] tracking-widest uppercase text-sm">
           {profession || t('portfolio_view.default_profession', 'Profesional')}
         </p>
 
