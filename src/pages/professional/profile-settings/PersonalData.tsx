@@ -286,13 +286,13 @@ function PersonalData() {
         <div className="flex flex-1 overflow-hidden relative">
           <Sidebar activeItem="Datos Personales" />
           <main className="flex-1 flex flex-col lg:flex-row overflow-hidden bg-background dark:bg-slate-900 transition-colors duration-300">
-            <div className="flex-1 p-4 pl-14 sm:pl-6 md:p-8 flex items-center justify-center overflow-y-auto">
+            <div className="flex-1 p-4 sm:p-6 md:p-8 flex items-center justify-center overflow-y-auto">
               <div className="flex flex-col items-center gap-3 text-gray-400 dark:text-gray-500 font-medium">
                 <Loader2 className="animate-spin text-primary" size={32} />
                 <span>{t('profile.loading_profile')}</span>
               </div>
             </div>
-            <aside className="w-full lg:w-72 p-6 bg-white dark:bg-slate-900 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-800 shrink-0 overflow-y-auto transition-colors duration-300">
+            <aside className="hidden lg:block w-72 p-6 bg-white dark:bg-slate-900 lg:border-l border-gray-200 dark:border-gray-800 shrink-0 overflow-y-auto transition-colors duration-300">
               <RightPanelContent />
             </aside>
           </main>
@@ -307,7 +307,7 @@ function PersonalData() {
 
         <main className="flex-1 flex flex-col lg:flex-row overflow-hidden bg-background dark:bg-slate-900 transition-colors duration-300">
           {/* SECCIÓN IZQUIERDA: Formulario */}
-          <div className="flex-1 p-4 pl-14 sm:pl-6 md:p-8 overflow-y-auto">
+          <div className="flex-1 p-4 sm:p-6 md:p-8 overflow-y-auto">
             <header className="mb-8">
               <h1 className="text-xl sm:text-2xl font-bold text-textMain dark:text-white mb-1">
                 {t('profile.personal_data')}
@@ -473,7 +473,7 @@ function PersonalData() {
           </div>
 
           {/* ASIDE DERECHO (ESTILO DASHBOARD ADMIN) */}
-          <aside className="w-full lg:w-72 p-6 bg-white dark:bg-slate-900 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-800 shrink-0 overflow-y-auto transition-colors duration-300">
+          <aside className="hidden lg:block w-72 p-6 bg-white dark:bg-slate-900 lg:border-l border-gray-200 dark:border-gray-800 shrink-0 overflow-y-auto transition-colors duration-300">
             <RightPanelContent />
           </aside>
         </main>

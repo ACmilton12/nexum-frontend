@@ -54,7 +54,7 @@ const LanguageSelector = () => {
       </button>
 
       {isOpen && (
-        <div className="absolute top-full right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-gray-100 dark:border-gray-700 py-2 animate-fadeIn z-[100] transition-colors duration-300">
+        <div className="absolute top-full right-0 mt-2 w-48 max-w-[calc(100vw-1rem)] bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-gray-100 dark:border-gray-700 py-2 animate-fadeIn z-[100] transition-colors duration-300">
           <div className="px-4 py-2 text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest border-b border-gray-50 dark:border-gray-700/50 mb-1">
             {t('navbar.select_language')}
           </div>

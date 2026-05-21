@@ -416,7 +416,7 @@ const AuditPage = () => {
       <Sidebar activeItem="Auditoría" />
 
       <main className="flex-1 flex flex-col lg:flex-row overflow-hidden bg-background dark:bg-slate-900">
-        <div className="flex-1 p-4 pl-14 sm:pl-6 md:p-6 overflow-y-auto">
+        <div className="flex-1 p-4 sm:p-6 md:p-6 overflow-y-auto">
           <h1 className="text-xl sm:text-2xl font-bold text-textMain dark:text-white mb-6">
             Historial de Auditoría
           </h1>
@@ -561,7 +561,7 @@ const AuditPage = () => {
         </div>
 
         {/* ASIDE DERECHO */}
-        <aside className="w-full lg:w-72 p-6 bg-white dark:bg-slate-900 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-800 shrink-0 overflow-y-auto">
+        <aside className="hidden lg:block w-72 p-6 bg-white dark:bg-slate-900 lg:border-l border-gray-200 dark:border-gray-800 shrink-0 overflow-y-auto">
           <RightPanelContent />
         </aside>
       </main>

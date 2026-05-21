@@ -189,21 +189,21 @@ function CategoriesPage() {
               </div>
 
               {/* Toolbar */}
-              <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
-                <div className="flex flex-1 gap-4 w-full md:w-auto">
-                  <div className="relative flex-1 md:max-w-xs">
+              <div className="flex flex-col gap-4 mb-6">
+                <div className="flex flex-col sm:flex-row flex-1 gap-3 w-full">
+                  <div className="relative flex-1">
                     <input
                       type="text"
                       placeholder="Buscar por nombre"
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="w-[200px] md:w-[240px] px-4 py-2 border border-gray-200 dark:border-gray-700 rounded text-sm outline-none bg-white dark:bg-slate-900 text-textMain dark:text-white focus:border-primary dark:focus:border-blue-500"
+                      className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded text-sm outline-none bg-white dark:bg-slate-900 text-textMain dark:text-white focus:border-primary dark:focus:border-blue-500"
                     />
                   </div>
                   <select
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value)}
-                    className="border border-gray-200 dark:border-gray-700 rounded px-4 py-2 text-sm outline-none bg-white dark:bg-slate-900 text-textMain dark:text-white min-w-[180px]"
+                    className="border border-gray-200 dark:border-gray-700 rounded px-4 py-2 text-sm outline-none bg-white dark:bg-slate-900 text-textMain dark:text-white w-full sm:w-auto sm:min-w-[180px]"
                   >
                     <option value="">Todos los estados</option>
                     <option value="ACTIVO">ACTIVO</option>
@@ -213,7 +213,7 @@ function CategoriesPage() {
                 <button
                   onClick={handleCreateNew}
                   disabled={editingId !== null}
-                  className="flex items-center gap-2 bg-primary dark:bg-blue-600 hover:brightness-110 disabled:bg-gray-300 dark:disabled:bg-slate-700 disabled:cursor-not-allowed text-white px-5 py-2.5 rounded-lg font-medium text-sm transition-all shadow-sm md:w-auto justify-center"
+                  className="flex items-center gap-2 bg-primary dark:bg-blue-600 hover:brightness-110 disabled:bg-gray-300 dark:disabled:bg-slate-700 disabled:cursor-not-allowed text-white px-5 py-2.5 rounded-lg font-medium text-sm transition-all shadow-sm w-full sm:w-auto justify-center"
                 >
                   <Plus size={16} /> Crear Categoría
                 </button>
@@ -235,7 +235,7 @@ function CategoriesPage() {
                   </div>
                 )}
 
-                <table className="w-full text-left border-collapse min-w-[700px]">
+                <table className="w-full text-left border-collapse min-w-[600px]">
                   <thead>
                     <tr className="bg-gray-50/50 dark:bg-slate-900/50 border-b border-gray-100 dark:border-gray-700 text-[13px] text-gray-800 dark:text-white font-bold">
                       <th className="py-4 px-6 w-[25%]">Nombre</th>
@@ -392,24 +392,24 @@ function CategoriesPage() {
               </div>
 
               {/* Pagination */}
-              <div className="flex justify-between items-center mt-6 pt-4 text-sm text-gray-500">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mt-6 pt-4 text-sm text-gray-500">
                 <span>
                   {pagination.total > 0
                     ? `Mostrando ${categories.length} de ${pagination.total} Categorías`
                     : '0 Categorías encontradas'}
                 </span>
-                <div className="flex gap-2">
+                <div className="flex gap-2 w-full sm:w-auto">
                   <button
                     onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                     disabled={currentPage === 1 || loading}
-                    className="px-4 py-2 border border-gray-200 dark:border-gray-700 rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-slate-700 bg-white dark:bg-slate-800 text-textMain dark:text-gray-300 transition-colors"
+                    className="flex-1 sm:flex-initial px-4 py-2 border border-gray-200 dark:border-gray-700 rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-slate-700 bg-white dark:bg-slate-800 text-textMain dark:text-gray-300 transition-colors"
                   >
                     Anterior
                   </button>
                   <button
                     onClick={() => setCurrentPage((p) => Math.min(pagination.last_page, p + 1))}
                     disabled={currentPage === pagination.last_page || loading}
-                    className="px-4 py-2 border border-gray-200 dark:border-gray-700 rounded text-gray-800 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-slate-700 bg-white dark:bg-slate-800 font-medium transition-colors"
+                    className="flex-1 sm:flex-initial px-4 py-2 border border-gray-200 dark:border-gray-700 rounded text-gray-800 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-slate-700 bg-white dark:bg-slate-800 font-medium transition-colors"
                   >
                     Siguiente
                   </button>
@@ -419,7 +419,7 @@ function CategoriesPage() {
           </div>
 
           {/* ASIDE DERECHO */}
-          <aside className="w-full lg:w-72 p-6 bg-white dark:bg-slate-900 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-800 shrink-0 overflow-y-auto transition-colors duration-300">
+          <aside className="hidden lg:block w-72 p-6 bg-white dark:bg-slate-900 lg:border-l border-gray-200 dark:border-gray-800 shrink-0 overflow-y-auto transition-colors duration-300">
             <RightPanelContent />
           </aside>
         </main>

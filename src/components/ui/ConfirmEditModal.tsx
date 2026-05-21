@@ -38,7 +38,7 @@ const ConfirmEditModal: React.FC<ConfirmEditModalProps> = ({
         </p>
 
         {/* Buttons */}
-        <div className="flex gap-3 w-full">
+        <div className="flex flex-col-reverse sm:flex-row gap-3 w-full">
           <button
             onClick={onClose}
             className="flex-1 px-6 py-2.5 text-[14px] font-bold text-[#1a1a2e] dark:text-white bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors"

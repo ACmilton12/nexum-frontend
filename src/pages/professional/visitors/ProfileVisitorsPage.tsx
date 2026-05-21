@@ -216,13 +216,13 @@ const ProfileVisitorsPage = () => {
         <div className="flex flex-1 overflow-hidden relative">
           <Sidebar activeItem="Visitantes" />
           <main className="flex-1 flex flex-col lg:flex-row overflow-hidden">
-            <div className="flex-1 p-4 pl-14 sm:pl-6 md:p-8 flex items-center justify-center overflow-y-auto">
+            <div className="flex-1 p-4 sm:p-6 md:p-8 flex items-center justify-center overflow-y-auto">
               <div className="flex flex-col items-center gap-3 text-gray-400 font-medium">
                 <Loader2 className="animate-spin text-primary" size={32} />
                 <span>Cargando visitantes...</span>
               </div>
             </div>
-            <aside className="w-full lg:w-72 p-6 bg-white border-t lg:border-t-0 lg:border-l border-gray-200 shrink-0 overflow-y-auto">
+            <aside className="hidden lg:block w-72 p-6 bg-white lg:border-l border-gray-200 shrink-0 overflow-y-auto">
               {rightPanelContent}
             </aside>
           </main>
@@ -238,7 +238,7 @@ const ProfileVisitorsPage = () => {
         <Sidebar activeItem="Visitantes" />
 
         <main className="flex-1 flex flex-col lg:flex-row overflow-hidden">
-          <div className="flex-1 p-4 pl-14 sm:pl-6 md:p-8 overflow-y-auto">
+          <div className="flex-1 p-4 sm:p-6 md:p-8 overflow-y-auto">
             {/* HEADER */}
             <header className="mb-6">
               <div className="flex items-center justify-between flex-wrap gap-3">
@@ -580,7 +580,7 @@ const ProfileVisitorsPage = () => {
           </div>
 
           {/* ASIDE DERECHO */}
-          <aside className="w-full lg:w-72 p-6 bg-white border-t lg:border-t-0 lg:border-l border-gray-200 shrink-0 overflow-y-auto">
+          <aside className="hidden lg:block w-72 p-6 bg-white lg:border-l border-gray-200 shrink-0 overflow-y-auto">
             {rightPanelContent}
           </aside>
         </main>

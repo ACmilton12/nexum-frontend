@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Filter, UserX, UserCheck, ShieldAlert, ExternalLink } from 'lucide-react'
+import { Filter, UserX, UserCheck, ShieldAlert } from 'lucide-react'
 import Sidebar from './components/Sidebar'
 import useAuth from '../../hooks/useAuth'
 import { getUsers, toggleUserStatus } from '../../services/admin.service'
@@ -78,7 +78,7 @@ const AccountsPage = () => {
         {/* Layout Principal: Columna en móvil, Fila en Desktop (lg) */}
         <main className="flex-1 flex flex-col lg:flex-row overflow-hidden bg-background dark:bg-slate-900 transition-colors duration-300">
           {/* SECCIÓN IZQUIERDA: Listado y Tabla */}
-          <div className="flex-1 p-4 pl-14 sm:pl-6 md:p-6 overflow-y-auto">
+          <div className="flex-1 p-4 sm:p-6 md:p-6 overflow-y-auto">
             {/* Header: Título y Filtros apilables */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
               <div>
@@ -214,7 +214,7 @@ const AccountsPage = () => {
           </div>
 
           {/* PANEL DERECHO: w-full en móvil, w-64 en Desktop */}
-          <aside className="w-full lg:w-64 p-6 bg-white dark:bg-slate-900 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-800 shrink-0 overflow-y-auto transition-colors duration-300">
+          <aside className="hidden lg:block w-64 p-6 bg-white dark:bg-slate-900 lg:border-l border-gray-200 dark:border-gray-800 shrink-0 overflow-y-auto transition-colors duration-300">
             <div className="sticky top-6">
               <Calendar />
 
@@ -229,22 +229,6 @@ const AccountsPage = () => {
                     seleccionado.
                   </p>
                 </div>
-              </div>
-
-              <div className="mt-8">
-                <h3 className="font-bold text-textMain dark:text-white text-sm mb-4">
-                  Enlaces Rápidos
-                </h3>
-                <ul className="space-y-3">
-                  <li className="group flex items-center justify-between text-xs text-primary dark:text-blue-400 cursor-pointer">
-                    <span className="group-hover:underline">Políticas de Privacidad</span>
-                    <ExternalLink size={12} className="opacity-0 group-hover:opacity-100" />
-                  </li>
-                  <li className="group flex items-center justify-between text-xs text-primary dark:text-blue-400 cursor-pointer">
-                    <span className="group-hover:underline">Configuración Global</span>
-                    <ExternalLink size={12} className="opacity-0 group-hover:opacity-100" />
-                  </li>
-                </ul>
               </div>
             </div>
           </aside>
