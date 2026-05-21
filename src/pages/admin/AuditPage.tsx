@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import {
   Search,
   Calendar as CalendarIcon,
@@ -13,6 +13,7 @@ import Calendar from '../../components/ui/Calendar'
 import { getActivityLogs } from '../../services/admin.service'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
+import { useTranslation } from 'react-i18next'
 
 interface AuditLog {
   id: number
@@ -29,6 +30,7 @@ interface AuditLog {
 }
 
 const AuditPage = () => {
+  const { t, i18n } = useTranslation()
   const [logs, setLogs] = useState<AuditLog[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -41,21 +43,21 @@ const AuditPage = () => {
   const dateFromRef = useRef<HTMLInputElement>(null)
   const dateToRef = useRef<HTMLInputElement>(null)
 
-  useEffect(() => {
-    fetchLogs()
-  }, [])
-
-  const fetchLogs = async () => {
+  const fetchLogs = useCallback(async () => {
     try {
       setLoading(true)
       const result = await getActivityLogs({ per_page: 100 })
       setLogs(result.data)
     } catch (err: unknown) {
-      setError((err as Error).message || 'Error al cargar el historial de auditoría.')
+      setError((err as Error).message || t('admin.audit.table.error'))
     } finally {
       setLoading(false)
     }
-  }
+  }, [t])
+
+  useEffect(() => {
+    fetchLogs()
+  }, [fetchLogs])
 
   // Función para abrir el calendario nativo al hacer clic en el diseño personalizado
   const handleOpenCalendar = (ref: React.RefObject<HTMLInputElement | null>) => {
@@ -75,15 +77,20 @@ const AuditPage = () => {
   const handleExportPDF = () => {
     const doc = new jsPDF()
     doc.setFontSize(18)
-    doc.text('Historial de Auditoría - NEXUM', 14, 22)
+    doc.text(t('admin.audit.pdf.title'), 14, 22)
     doc.setFontSize(11)
     doc.setTextColor(100)
-    doc.text(`Generado el: ${new Date().toLocaleString()}`, 14, 30)
+    doc.text(t('admin.audit.pdf.generated_at', { date: new Date().toLocaleString(i18n.language) }), 14, 30)
 
-    const tableColumn = ['Usuario', 'Evento', 'Fecha/Hora', 'Detalle']
+    const tableColumn = [
+      t('admin.audit.table.user'),
+      t('admin.audit.table.event'),
+      t('admin.audit.table.date'),
+      t('admin.audit.table.details')
+    ]
     const tableRows = filteredLogs.map((log) => [
       log.user_name,
-      log.event.toUpperCase(),
+      translateEventName(log.event).toUpperCase(),
       log.timestamp,
       log.detail
     ])
@@ -97,7 +104,8 @@ const AuditPage = () => {
       styles: { fontSize: 8 }
     })
 
-    doc.save(`historial_auditoria_${new Date().toISOString().split('T')[0]}.pdf`)
+    const dateStr = new Date().toISOString().split('T')[0]
+    doc.save(t('admin.audit.pdf.filename', { date: dateStr }))
   }
 
   const filteredLogs = logs.filter((log) => {
@@ -139,28 +147,12 @@ const AuditPage = () => {
   }
 
   const translateEventName = (event: string) => {
-    switch (event.toLowerCase()) {
-      case 'created':
-        return 'Creado'
-      case 'updated':
-        return 'Actualizado'
-      case 'deleted':
-        return 'Eliminado'
-      case 'update_role':
-        return 'Rol Actualizado'
-      case 'login_failed':
-        return 'Acceso Fallido'
-      case 'login':
-        return 'Login Exitoso'
-      case 'logout':
-        return 'Cierre Sesión'
-      case 'profile_updated':
-        return 'Perfil Modificado'
-      case 'portfolio_edit':
-        return 'Portafolio Editado'
-      default:
-        return event.replace(/_/g, ' ')
+    const key = event.toLowerCase()
+    const translated = t(`admin.audit.events.${key}`)
+    if (translated && !translated.startsWith('admin.audit.events.')) {
+      return translated
     }
+    return event.replace(/_/g, ' ')
   }
 
   const formatDateDisplay = (dateStr: string) => {
@@ -170,43 +162,15 @@ const AuditPage = () => {
   }
 
   const translateKey = (key: string) => {
-    const map: Record<string, string> = {
-      first_name: 'Nombre',
-      last_name: 'Apellido',
-      email: 'Email',
-      role: 'Rol',
-      is_active: 'Estado de Cuenta',
-      password: 'Contraseña',
-      biography: 'Biografía',
-      phone: 'Teléfono',
-      location: 'Ubicación',
-      github_url: 'GitHub',
-      linkedin_url: 'LinkedIn',
-      global_privacy: 'Privacidad',
-      name: 'Nombre del Proyecto',
-      description: 'Descripción',
-      deactivated_by_admin: 'Estado de Cuenta',
-      title: 'Título',
-      company: 'Empresa',
-      start_date: 'Fecha de Inicio',
-      end_date: 'Fecha de Fin',
-      is_current: 'Trabajo Actual',
-      issuing_entity: 'Entidad Emisora',
-      issue_date: 'Fecha de Emisión',
-      expiration_date: 'Fecha de Expiración',
-      image_url: 'URL de Imagen',
-      url: 'Enlace URL',
-      avatar_path: 'Ruta de Avatar',
-      design_pattern: 'Patrón de Diseño',
-      portfolio_id: 'ID Portafolio',
-      category_id: 'ID Categoría',
-      user_id: 'ID Usuario'
+    const translated = t(`admin.audit.fields.${key}`)
+    if (translated && !translated.startsWith('admin.audit.fields.')) {
+      return translated
     }
-    return map[key] || key
+    return key
   }
 
   const formatValue = (key: string, value: unknown) => {
-    if (value === undefined || value === null || value === 'null') return 'No especificado'
+    if (value === undefined || value === null || value === 'null') return t('admin.audit.values.unspecified')
 
     // Si el valor es booleano o string 'true'/'false'
     if (
@@ -220,19 +184,19 @@ const AuditPage = () => {
     ) {
       const isTrue = value === true || value === 'true' || value === 1 || value === '1'
 
-      if (key === 'is_active') return isTrue ? 'Activo' : 'Suspendido'
-      if (key === 'deactivated_by_admin') return isTrue ? 'Suspendido' : 'Activo'
-      if (key === 'global_privacy') return isTrue ? 'Privado' : 'Público'
-      if (key === 'is_current') return isTrue ? 'Sí' : 'No'
+      if (key === 'is_active') return isTrue ? t('admin.audit.values.active') : t('admin.audit.values.suspended')
+      if (key === 'deactivated_by_admin') return isTrue ? t('admin.audit.values.suspended') : t('admin.audit.values.active')
+      if (key === 'global_privacy') return isTrue ? t('admin.audit.values.private') : t('admin.audit.values.public')
+      if (key === 'is_current') return isTrue ? t('admin.audit.values.yes') : t('admin.audit.values.no')
 
-      return isTrue ? 'Sí' : 'No'
+      return isTrue ? t('admin.audit.values.yes') : t('admin.audit.values.no')
     }
 
     // Detectar y formatear fechas ISO (ej. 2026-02-01T00:00:00.000000Z)
     if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T/.test(value)) {
       try {
         const date = new Date(value)
-        return date.toLocaleDateString('es-ES', {
+        return date.toLocaleDateString(i18n.language, {
           day: '2-digit',
           month: 'short',
           year: 'numeric'
@@ -250,7 +214,7 @@ const AuditPage = () => {
     if (!props || (!props.attributes && !props.old)) {
       return (
         <div className="p-8 text-center text-gray-500 dark:text-gray-400 bg-gray-50/50 dark:bg-slate-800/50 rounded-2xl border border-dashed border-gray-200 dark:border-gray-700">
-          No hay detalles adicionales estructurados para este evento.
+          {t('admin.audit.detail_modal.no_structured_details')}
         </div>
       )
     }
@@ -278,7 +242,7 @@ const AuditPage = () => {
       if (keys.length === 0)
         return (
           <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-4 bg-gray-50 dark:bg-slate-800 rounded-xl">
-            Sin cambios detectables.
+            {t('admin.audit.detail_modal.no_changes')}
           </p>
         )
 
@@ -287,12 +251,12 @@ const AuditPage = () => {
           <table className="w-full text-sm text-left">
             <thead className="bg-gray-50/80 dark:bg-slate-800 border-b border-gray-200 dark:border-gray-700 text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400">
               <tr>
-                <th className="px-5 py-4 font-bold w-1/3">Campo Modificado</th>
+                <th className="px-5 py-4 font-bold w-1/3">{t('admin.audit.detail_modal.field')}</th>
                 <th className="px-5 py-4 font-bold text-red-600 dark:text-red-400 bg-red-50/50 dark:bg-red-900/20 w-1/3">
-                  Valor Anterior
+                  {t('admin.audit.detail_modal.old_value')}
                 </th>
                 <th className="px-5 py-4 font-bold text-green-600 dark:text-green-400 bg-green-50/50 dark:bg-green-900/20 w-1/3">
-                  Nuevo Valor
+                  {t('admin.audit.detail_modal.new_value')}
                 </th>
               </tr>
             </thead>
@@ -342,12 +306,12 @@ const AuditPage = () => {
     if (keys.length === 0) return null
 
     return (
-      <div className="rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden shadow-sm bg-white dark:bg-slate-900">
+      <div className="rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm bg-white dark:bg-slate-900">
         <table className="w-full text-sm text-left">
           <thead className="bg-blue-50/50 dark:bg-blue-900/20 border-b border-blue-100 dark:border-blue-800 text-xs uppercase tracking-wider text-blue-700 dark:text-blue-300">
             <tr>
-              <th className="px-5 py-4 font-bold w-1/3">Dato Registrado</th>
-              <th className="px-5 py-4 font-bold">Valor</th>
+              <th className="px-5 py-4 font-bold w-1/3">{t('admin.audit.detail_modal.registered_data')}</th>
+              <th className="px-5 py-4 font-bold">{t('admin.audit.detail_modal.value')}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
@@ -373,29 +337,24 @@ const AuditPage = () => {
   const RightPanelContent = () => (
     <div className="sticky top-6 space-y-8">
       <div>
-        <h3 className="font-bold text-textMain dark:text-white mb-4 flex items-center gap-2">
-          <CalendarIcon size={18} className="text-primary" />
-          Calendario
-        </h3>
         <Calendar />
       </div>
 
       <div>
         <h3 className="font-bold text-textMain dark:text-white mb-4 flex items-center gap-2 uppercase tracking-wider text-xs">
           <ShieldCheck size={16} className="text-primary" />
-          Seguridad
+          {t('admin.audit.security.title')}
         </h3>
         <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-800 shadow-sm">
           <p className="text-[11px] text-blue-700 dark:text-blue-300 leading-relaxed">
-            Supervisión activa del sistema. Se registran todos los cambios de roles y accesos
-            fallidos.
+            {t('admin.audit.security.desc')}
           </p>
         </div>
       </div>
 
       <div>
         <h3 className="font-bold text-textMain dark:text-white mb-4 text-xs uppercase tracking-wider">
-          Reportes
+          {t('admin.audit.reports.title')}
         </h3>
         <button
           onClick={handleExportPDF}
@@ -405,7 +364,7 @@ const AuditPage = () => {
             size={18}
             className="text-gray-400 group-hover:text-primary transition-colors"
           />
-          <span className="font-medium">Exportar PDF</span>
+          <span className="font-medium">{t('admin.audit.export_pdf')}</span>
         </button>
       </div>
     </div>
@@ -418,7 +377,7 @@ const AuditPage = () => {
       <main className="flex-1 flex flex-col lg:flex-row overflow-hidden bg-background dark:bg-slate-900">
         <div className="flex-1 p-4 sm:p-6 md:p-6 overflow-y-auto">
           <h1 className="text-xl sm:text-2xl font-bold text-textMain dark:text-white mb-6">
-            Historial de Auditoría
+            {t('admin.audit.title')}
           </h1>
 
           {/* FILTROS RESPONSIVOS */}
@@ -431,7 +390,7 @@ const AuditPage = () => {
               />
               <input
                 type="text"
-                placeholder="Buscar por usuario o ID..."
+                placeholder={t('admin.audit.search_placeholder')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 dark:text-white rounded-xl shadow-sm focus:ring-2 focus:ring-primary/10 outline-none transition-all"
@@ -446,7 +405,7 @@ const AuditPage = () => {
                   className="relative flex-1 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-700 p-1 rounded-md transition-colors"
                   onClick={() => handleOpenCalendar(dateFromRef)}
                 >
-                  <span className="text-gray-400 dark:text-gray-500 block mb-0.5">Desde</span>
+                  <span className="text-gray-400 dark:text-gray-500 block mb-0.5">{t('admin.audit.date_from')}</span>
                   <span className="text-textMain dark:text-gray-200 block text-[13px] font-medium">
                     {formatDateDisplay(dateFrom)}
                   </span>
@@ -466,7 +425,7 @@ const AuditPage = () => {
                   className="relative flex-1 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-700 p-1 rounded-md transition-colors"
                   onClick={() => handleOpenCalendar(dateToRef)}
                 >
-                  <span className="text-gray-400 dark:text-gray-500 block mb-0.5">Hasta</span>
+                  <span className="text-gray-400 dark:text-gray-500 block mb-0.5">{t('admin.audit.date_to')}</span>
                   <span className="text-textMain dark:text-gray-200 block text-[13px] font-medium">
                     {formatDateDisplay(dateTo)}
                   </span>
@@ -493,17 +452,17 @@ const AuditPage = () => {
               <table className="w-full text-sm min-w-[850px]">
                 <thead>
                   <tr className="bg-gray-50/50 dark:bg-slate-900 border-b border-gray-100 dark:border-gray-700 text-gray-500 dark:text-gray-400 uppercase text-[11px] tracking-wider">
-                    <th className="text-left px-6 py-4 font-bold">Usuario</th>
-                    <th className="text-center px-6 py-4 font-bold">Evento</th>
-                    <th className="text-left px-6 py-4 font-bold">Fecha/Hora</th>
-                    <th className="text-left px-6 py-4 font-bold text-center">Detalles</th>
+                    <th className="text-left px-6 py-4 font-bold">{t('admin.audit.table.user')}</th>
+                    <th className="text-center px-6 py-4 font-bold">{t('admin.audit.table.event')}</th>
+                    <th className="text-left px-6 py-4 font-bold">{t('admin.audit.table.date')}</th>
+                    <th className="text-left px-6 py-4 font-bold text-center">{t('admin.audit.table.details')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50 dark:divide-gray-800">
                   {loading ? (
                     <tr>
                       <td colSpan={4} className="p-16 text-center text-gray-400 animate-pulse">
-                        Consultando base de datos...
+                        {t('admin.audit.table.loading')}
                       </td>
                     </tr>
                   ) : error ? (
@@ -536,7 +495,7 @@ const AuditPage = () => {
                             <button
                               onClick={() => setSelectedLog(log)}
                               className="p-1.5 bg-blue-50 dark:bg-slate-800 text-blue-600 dark:text-blue-400 hover:bg-blue-600 hover:text-white rounded-lg transition-all shadow-sm flex shrink-0 items-center justify-center border border-blue-100 dark:border-gray-700 hover:border-blue-600 group tooltip-trigger relative"
-                              title="Ver detalles profundos"
+                              title={t('admin.audit.table.details')}
                             >
                               <Eye
                                 size={18}
@@ -550,7 +509,7 @@ const AuditPage = () => {
                   ) : (
                     <tr>
                       <td colSpan={4} className="p-16 text-center text-gray-400 italic">
-                        No se encontraron registros de auditoría.
+                        {t('admin.audit.table.no_results')}
                       </td>
                     </tr>
                   )}
@@ -573,7 +532,7 @@ const AuditPage = () => {
             <div className="px-6 py-5 sm:px-8 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-white dark:bg-slate-900">
               <div>
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
-                  Detalles de Actividad
+                  {t('admin.audit.detail_modal.title')}
                 </h3>
                 <div className="flex items-center gap-2 mt-1">
                   <span className="text-xs text-gray-500 dark:text-gray-400 font-mono bg-gray-100 dark:bg-slate-800 px-2 py-0.5 rounded-md">
@@ -604,7 +563,7 @@ const AuditPage = () => {
                 <div className="flex-1 flex flex-col sm:flex-row gap-6">
                   <div>
                     <p className="text-xs text-gray-400 dark:text-gray-500 font-medium uppercase tracking-wider mb-1">
-                      Usuario Responsable
+                      {t('admin.audit.detail_modal.responsible')}
                     </p>
                     <p className="font-bold text-gray-900 dark:text-white text-lg">
                       {selectedLog.user_name}
@@ -613,7 +572,7 @@ const AuditPage = () => {
                   {selectedLog.affected_user && selectedLog.affected_user !== selectedLog.user_name && (
                     <div className="border-l-0 sm:border-l border-gray-200 dark:border-gray-700 pl-0 sm:pl-6">
                       <p className="text-xs text-blue-500 dark:text-blue-400 font-medium uppercase tracking-wider mb-1">
-                        Usuario Afectado
+                        {t('admin.audit.detail_modal.affected')}
                       </p>
                       <p className="font-bold text-blue-700 dark:text-blue-300 text-lg">
                         {selectedLog.affected_user}
@@ -632,7 +591,7 @@ const AuditPage = () => {
 
               <div className="mb-4">
                 <h4 className="text-sm font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2 uppercase tracking-wide">
-                  Datos y Estados
+                  {t('admin.audit.detail_modal.data_state')}
                 </h4>
                 {renderChangesTable(selectedLog)}
               </div>
@@ -643,7 +602,7 @@ const AuditPage = () => {
                 onClick={() => setSelectedLog(null)}
                 className="px-8 py-2.5 bg-gray-900 dark:bg-blue-600 text-white text-sm font-medium rounded-xl hover:bg-gray-800 dark:hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg focus:ring-4 focus:ring-gray-200 dark:focus:ring-blue-900"
               >
-                Cerrar Detalles
+                {t('admin.audit.detail_modal.close')}
               </button>
             </div>
           </div>

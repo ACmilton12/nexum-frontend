@@ -18,6 +18,21 @@ const LanguageSelector = () => {
     languages.find((l) => l.code === (i18n.language?.split('-')[0] || 'es')) || languages[0]
 
   const changeLanguage = async (lng: string) => {
+    const updateLocalUser = (storage: Storage) => {
+      const userStr = storage.getItem('user')
+      if (userStr) {
+        try {
+          const user = JSON.parse(userStr)
+          user.locale = lng
+          storage.setItem('user', JSON.stringify(user))
+        } catch (e) {
+          console.error('Error updating local user locale:', e)
+        }
+      }
+    }
+    updateLocalUser(localStorage)
+    updateLocalUser(sessionStorage)
+
     i18n.changeLanguage(lng)
     localStorage.setItem('i18nextLng', lng)
     setIsOpen(false)

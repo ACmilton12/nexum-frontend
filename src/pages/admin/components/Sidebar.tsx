@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import type { MouseEvent } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import {
   LayoutDashboard,
@@ -15,7 +16,9 @@ import {
   IdCard,
   Link2,
   X,
-  Eye
+  Eye,
+  Home,
+  Search
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import useAuth from '../../../hooks/useAuth'
@@ -38,6 +41,31 @@ const SidebarContent = ({
   onItemClick?: () => void
 }) => {
   const { t } = useTranslation()
+  const generalMobileItems = [
+    {
+      label: t('navbar.home'),
+      icon: <Home size={18} />,
+      path: '/',
+      id: 'Inicio',
+      onClick: (e: MouseEvent<HTMLAnchorElement>) => {
+        if (window.location.pathname === '/') {
+          e.preventDefault()
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+        }
+        if (onItemClick) onItemClick()
+      }
+    },
+    {
+      label: t('navbar.search'),
+      icon: <Search size={18} />,
+      path: '/directorio',
+      id: 'Buscar profesionales',
+      onClick: () => {
+        if (onItemClick) onItemClick()
+      }
+    }
+  ]
+
   const adminItems = [
     {
       label: t('sidebar.dashboard'),
@@ -73,6 +101,24 @@ const SidebarContent = ({
 
   return (
     <nav className="py-4 flex-1">
+      {/* Enlaces principales para dispositivos móviles */}
+      <div className="md:hidden flex flex-col border-b border-gray-200 dark:border-gray-800 pb-2 mb-2">
+        {generalMobileItems.map((item) => (
+          <Link
+            key={item.id}
+            to={item.path}
+            onClick={item.onClick}
+            className={`flex items-center gap-3 px-4 py-3 text-sm no-underline transition-colors ${activeItem === item.id
+              ? 'bg-primary text-white font-medium'
+              : 'text-textMain dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
+              }`}
+          >
+            {item.icon}
+            {item.label}
+          </Link>
+        ))}
+      </div>
+
       {isAdmin ? (
         adminItems.map((item) => (
           <Link

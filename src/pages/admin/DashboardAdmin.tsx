@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Users,
   Activity,
@@ -88,6 +89,20 @@ const NIVEL_LABEL: Record<string, string> = {
   fortalecida: 'Fortalecida'
 }
 
+const getLocalizedLevel = (
+  level: string,
+  type: 'tecnica' | 'blanda',
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  t: any
+): string => {
+  if (type === 'tecnica') {
+    return t(`skills.levels.technical.${level}`, NIVEL_LABEL[level] ?? level)
+  } else {
+    const key = level === 'en_formacion' ? 'formacion' : level
+    return t(`skills.levels.soft.${key}`, NIVEL_LABEL[level] ?? level)
+  }
+}
+
 function IconSpinner({ className = '' }: { className?: string }) {
   return (
     <svg className={`animate-spin ${className}`} fill="none" viewBox="0 0 24 24">
@@ -105,6 +120,7 @@ function SkillSuggestionsModal({
   onClose: () => void
   onCountChange: (n: number) => void
 }) {
+  const { t } = useTranslation()
   const [suggestions, setSuggestions] = useState<SkillSuggestion[]>([])
   const [loading, setLoading] = useState(true)
   const [actionId, setActionId] = useState<number | null>(null)
@@ -118,12 +134,12 @@ function SkillSuggestionsModal({
         setSuggestions(res.data)
         onCountChange(res.meta.total)
       } catch {
-        setToast({ msg: 'No se pudieron cargar las sugerencias.', ok: false })
+        setToast({ msg: t('admin.dashboard.skills_modal.error_load', 'No se pudieron cargar las sugerencias.'), ok: false })
       } finally {
         setLoading(false)
       }
     })()
-  }, [onCountChange])
+  }, [onCountChange, t])
 
   const handleAction = async (id: number, action: 'approve' | 'reject') => {
     setActionId(id)
@@ -132,11 +148,13 @@ function SkillSuggestionsModal({
       setSuggestions((prev) => prev.filter((s) => s.id !== id))
       onCountChange(suggestions.length - 1)
       setToast({
-        msg: action === 'approve' ? 'Sugerencia aprobada.' : 'Sugerencia rechazada.',
+        msg: action === 'approve'
+          ? t('admin.dashboard.skills_modal.toast_approved', 'Sugerencia aprobada.')
+          : t('admin.dashboard.skills_modal.toast_rejected', 'Sugerencia rechazada.'),
         ok: action === 'approve'
       })
     } catch {
-      setToast({ msg: 'Error al procesar la acción.', ok: false })
+      setToast({ msg: t('admin.dashboard.skills_modal.toast_error', 'Error al procesar la acción.'), ok: false })
     } finally {
       setActionId(null)
     }
@@ -145,8 +163,8 @@ function SkillSuggestionsModal({
   // Auto-ocultar toast
   useEffect(() => {
     if (!toast) return
-    const t = setTimeout(() => setToast(null), 3000)
-    return () => clearTimeout(t)
+    const timer = setTimeout(() => setToast(null), 3000)
+    return () => clearTimeout(timer)
   }, [toast])
 
   return (
@@ -156,10 +174,10 @@ function SkillSuggestionsModal({
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800 flex-shrink-0">
           <div>
             <h2 className="text-base font-semibold text-gray-900 dark:text-white">
-              Sugerencias de Habilidades
+              {t('admin.dashboard.skills_modal.title', 'Sugerencias de Habilidades')}
             </h2>
             <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
-              Revisa y aprueba o rechaza las sugerencias de los usuarios.
+              {t('admin.dashboard.skills_modal.subtitle', 'Revisa y aprueba o rechaza las sugerencias de los usuarios.')}
             </p>
           </div>
           <button
@@ -182,7 +200,7 @@ function SkillSuggestionsModal({
         <div className="flex-1 overflow-y-auto px-6 py-4">
           {loading ? (
             <div className="flex items-center justify-center gap-2 py-12 text-sm text-gray-400">
-              <IconSpinner className="w-5 h-5 text-gray-400" /> Cargando sugerencias...
+              <IconSpinner className="w-5 h-5 text-gray-400" /> {t('admin.dashboard.skills_modal.loading', 'Cargando sugerencias...')}
             </div>
           ) : suggestions.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-14 gap-3 text-center">
@@ -190,10 +208,10 @@ function SkillSuggestionsModal({
                 <CheckCircle size={24} className="text-primary" />
               </div>
               <p className="text-sm font-semibold text-gray-700 dark:text-gray-200">
-                Sin sugerencias pendientes
+                {t('admin.dashboard.skills_modal.no_pending', 'Sin sugerencias pendientes')}
               </p>
               <p className="text-xs text-gray-400 dark:text-gray-500">
-                Todas las sugerencias han sido revisadas.
+                {t('admin.dashboard.skills_modal.all_reviewed', 'Todas las sugerencias han sido revisadas.')}
               </p>
             </div>
           ) : (
@@ -216,17 +234,17 @@ function SkillSuggestionsModal({
                             : 'bg-navbar/10 text-navbar border-navbar/20'
                             }`}
                         >
-                          {s.type === 'tecnica' ? 'Técnica' : 'Blanda'}
+                          {s.type === 'tecnica' ? t('skills.technical', 'Técnica') : t('skills.soft', 'Blanda')}
                         </span>
                         <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-gray-100 dark:bg-slate-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700">
-                          {NIVEL_LABEL[s.level] ?? s.level}
+                          {getLocalizedLevel(s.level, s.type, t)}
                         </span>
                       </div>
                       <p className="text-xs text-gray-400 mb-1">
-                        <span className="font-medium text-gray-500">Categoría:</span> {s.category}
+                        <span className="font-medium text-gray-500">{t('admin.dashboard.skills_modal.category', 'Categoría:')}</span> {s.category}
                       </p>
                       <p className="text-xs text-gray-400 mb-1">
-                        <span className="font-medium text-gray-500">Usuario:</span> {s.user.name}{' '}
+                        <span className="font-medium text-gray-500">{t('admin.dashboard.skills_modal.user', 'Usuario:')}</span> {s.user.name}{' '}
                         <span className="text-gray-300">·</span> {s.user.email}
                       </p>
                       {s.justification && (
@@ -256,7 +274,7 @@ function SkillSuggestionsModal({
                             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                           </svg>
                         )}
-                        Aprobar
+                        {t('admin.dashboard.skills_modal.approve', 'Aprobar')}
                       </button>
                       <button
                         onClick={() => handleAction(s.id, 'reject')}
@@ -280,7 +298,7 @@ function SkillSuggestionsModal({
                             />
                           </svg>
                         )}
-                        Rechazar
+                        {t('admin.dashboard.skills_modal.reject', 'Rechazar')}
                       </button>
                     </div>
                   </div>
@@ -293,14 +311,13 @@ function SkillSuggestionsModal({
         {/* Footer */}
         <div className="px-6 py-3 border-t border-gray-100 dark:border-gray-800 flex-shrink-0 flex items-center justify-between">
           <p className="text-xs text-gray-400">
-            {suggestions.length} sugerencia{suggestions.length !== 1 ? 's' : ''} pendiente
-            {suggestions.length !== 1 ? 's' : ''}
+            {t('admin.dashboard.skills_modal.pending_count', { count: suggestions.length })}
           </p>
           <button
             onClick={onClose}
             className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-slate-800 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors"
           >
-            Cerrar
+            {t('admin.dashboard.skills_modal.close', 'Cerrar')}
           </button>
         </div>
 
@@ -326,6 +343,7 @@ function CategorySuggestionsModal({
   onClose: () => void
   onCountChange: (n: number) => void
 }) {
+  const { t } = useTranslation()
   const [suggestions, setSuggestions] = useState<CategorySuggestion[]>([])
   const [loading, setLoading] = useState(true)
   const [actionId, setActionId] = useState<number | null>(null)
@@ -341,12 +359,12 @@ function CategorySuggestionsModal({
         setSuggestions(res.data)
         onCountChange(res.meta.total)
       } catch {
-        setToast({ msg: 'No se pudieron cargar las sugerencias de categorías.', ok: false })
+        setToast({ msg: t('admin.dashboard.categories_modal.error_load', 'No se pudieron cargar las sugerencias de categorías.'), ok: false })
       } finally {
         setLoading(false)
       }
     })()
-  }, [onCountChange])
+  }, [onCountChange, t])
 
   const handleAction = async (id: number, action: 'approve' | 'reject') => {
     setActionId(id)
@@ -355,11 +373,13 @@ function CategorySuggestionsModal({
       setSuggestions((prev) => prev.filter((s) => s.id !== id))
       onCountChange(suggestions.length - 1)
       setToast({
-        msg: action === 'approve' ? 'Sugerencia aprobada.' : 'Sugerencia rechazada.',
+        msg: action === 'approve'
+          ? t('admin.dashboard.categories_modal.toast_approved', 'Sugerencia aprobada.')
+          : t('admin.dashboard.categories_modal.toast_rejected', 'Sugerencia rechazada.'),
         ok: action === 'approve'
       })
     } catch {
-      setToast({ msg: 'Error al procesar la acción.', ok: false })
+      setToast({ msg: t('admin.dashboard.categories_modal.toast_error', 'Error al procesar la acción.'), ok: false })
     } finally {
       setActionId(null)
     }
@@ -367,8 +387,8 @@ function CategorySuggestionsModal({
 
   useEffect(() => {
     if (!toast) return
-    const t = setTimeout(() => setToast(null), 3000)
-    return () => clearTimeout(t)
+    const timer = setTimeout(() => setToast(null), 3000)
+    return () => clearTimeout(timer)
   }, [toast])
 
   return (
@@ -378,10 +398,10 @@ function CategorySuggestionsModal({
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800 flex-shrink-0">
           <div>
             <h2 className="text-base font-semibold text-gray-900 dark:text-white">
-              Sugerencias de Categorías
+              {t('admin.dashboard.categories_modal.title', 'Sugerencias de Categorías')}
             </h2>
             <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
-              Revisa y aprueba o rechaza las sugerencias de nuevas categorías.
+              {t('admin.dashboard.categories_modal.subtitle', 'Revisa y aprueba o rechaza las sugerencias de nuevas categorías.')}
             </p>
           </div>
           <button
@@ -404,7 +424,7 @@ function CategorySuggestionsModal({
         <div className="flex-1 overflow-y-auto px-6 py-4">
           {loading ? (
             <div className="flex items-center justify-center gap-2 py-12 text-sm text-gray-400">
-              <IconSpinner className="w-5 h-5 text-gray-400" /> Cargando sugerencias...
+              <IconSpinner className="w-5 h-5 text-gray-400" /> {t('admin.dashboard.categories_modal.loading', 'Cargando sugerencias...')}
             </div>
           ) : suggestions.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-14 gap-3 text-center">
@@ -412,10 +432,10 @@ function CategorySuggestionsModal({
                 <CheckCircle size={24} className="text-primary" />
               </div>
               <p className="text-sm font-semibold text-gray-700 dark:text-gray-200">
-                Sin sugerencias pendientes
+                {t('admin.dashboard.categories_modal.no_pending', 'Sin sugerencias pendientes')}
               </p>
               <p className="text-xs text-gray-400 dark:text-gray-500">
-                Todas las sugerencias han sido revisadas.
+                {t('admin.dashboard.categories_modal.all_reviewed', 'Todas las sugerencias han sido revisadas.')}
               </p>
             </div>
           ) : (
@@ -432,15 +452,15 @@ function CategorySuggestionsModal({
                           {s.name}
                         </span>
                         <span className="text-[10px] font-bold px-2 py-0.5 rounded-full border bg-primary/10 text-primary border-primary/20">
-                          Nueva Categoría
+                          {t('admin.dashboard.categories_modal.new_category', 'Nueva Categoría')}
                         </span>
                       </div>
                       <p className="text-xs text-gray-400 mb-1">
-                        <span className="font-medium text-gray-500">Proyecto:</span>{' '}
+                        <span className="font-medium text-gray-500">{t('admin.dashboard.categories_modal.project', 'Proyecto:')}</span>{' '}
                         {s.project.title}
                       </p>
                       <p className="text-xs text-gray-400 mb-1">
-                        <span className="font-medium text-gray-500">Usuario:</span> {s.user.name}{' '}
+                        <span className="font-medium text-gray-500">{t('admin.dashboard.categories_modal.user', 'Usuario:')}</span> {s.user.name}{' '}
                         <span className="text-gray-300">·</span> {s.user.email}
                       </p>
                       {s.justification && (
@@ -469,7 +489,7 @@ function CategorySuggestionsModal({
                             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                           </svg>
                         )}
-                        Aprobar
+                        {t('admin.dashboard.categories_modal.approve', 'Aprobar')}
                       </button>
                       <button
                         onClick={() => handleAction(s.id, 'reject')}
@@ -493,7 +513,7 @@ function CategorySuggestionsModal({
                             />
                           </svg>
                         )}
-                        Rechazar
+                        {t('admin.dashboard.categories_modal.reject', 'Rechazar')}
                       </button>
                     </div>
                   </div>
@@ -505,14 +525,13 @@ function CategorySuggestionsModal({
 
         <div className="px-6 py-3 border-t border-gray-100 dark:border-gray-800 flex-shrink-0 flex items-center justify-between">
           <p className="text-xs text-gray-400 dark:text-gray-500">
-            {suggestions.length} sugerencia{suggestions.length !== 1 ? 's' : ''} pendiente
-            {suggestions.length !== 1 ? 's' : ''}
+            {t('admin.dashboard.categories_modal.pending_count', { count: suggestions.length })}
           </p>
           <button
             onClick={onClose}
             className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-slate-800 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors"
           >
-            Cerrar
+            {t('admin.dashboard.categories_modal.close', 'Cerrar')}
           </button>
         </div>
 
@@ -529,6 +548,7 @@ function CategorySuggestionsModal({
   )
 }
 
+// ─── Subcomponente fuera del render ───────────────────────────────────────────
 // ─── Subcomponente fuera del render ───────────────────────────────────────────
 const RightPanelContent = ({
   inactiveUsers,
@@ -548,68 +568,67 @@ const RightPanelContent = ({
   pendingCategoryCount: number | null
   onShowSugerencias: () => void
   onShowCategorias: () => void
-}) => (
-  <div className="sticky top-6">
-    <Calendar />
-    <div className="mt-8">
-      <h3 className="font-bold text-textMain dark:text-white text-sm mb-4 flex items-center gap-2">
-        <ShieldAlert size={16} className="text-action" />
-        Notificaciones
-      </h3>
-      <div className="space-y-3">
-        {inactiveUsers > 0 && (
-          <div className="flex items-start gap-2 text-[11px] text-gray-600 dark:text-gray-400 leading-tight">
-            <AlertTriangle size={14} className="text-action shrink-0" />
-            <span>
-              {inactiveUsers} usuario{inactiveUsers !== 1 ? 's' : ''} inactivo
-              {inactiveUsers !== 1 ? 's' : ''}.
-            </span>
-          </div>
-        )}
-        {failedLogins > 0 && (
-          <div className="flex items-start gap-2 text-[11px] text-gray-600 dark:text-gray-400 leading-tight">
-            <AlertTriangle size={14} className="text-action shrink-0" />
-            <span>
-              {failedLogins} intento{failedLogins !== 1 ? 's' : ''} de acceso fallido
-              {failedLogins !== 1 ? 's' : ''} reciente{failedLogins !== 1 ? 's' : ''}.
-            </span>
-          </div>
-        )}
-        {/* Notificación dinámica de sugerencias */}
-        {!loadingCount && !!pendingCount && pendingCount > 0 && (
-          <div
-            onClick={onShowSugerencias}
-            className="flex items-start gap-2 text-[11px] text-action leading-tight cursor-pointer hover:underline"
-          >
-            <BookOpen size={14} className="text-action shrink-0" />
-            <span>
-              {pendingCount} sugerencia{pendingCount !== 1 ? 's' : ''} de habilidades pendiente
-              {pendingCount !== 1 ? 's' : ''}.
-            </span>
-          </div>
-        )}
-        {/* Notificación dinámica de categorías */}
-        {!loadingCategoryCount && !!pendingCategoryCount && pendingCategoryCount > 0 && (
-          <div
-            onClick={onShowCategorias}
-            className="flex items-start gap-2 text-[11px] text-action leading-tight cursor-pointer hover:underline"
-          >
-            <BookOpen size={14} className="text-action shrink-0" />
-            <span>
-              {pendingCategoryCount} sugerencia{pendingCategoryCount !== 1 ? 's' : ''} de categorías
-              pendiente{pendingCategoryCount !== 1 ? 's' : ''}.
-            </span>
-          </div>
-        )}
+}) => {
+  const { t } = useTranslation()
+  return (
+    <div className="sticky top-6">
+      <Calendar />
+      <div className="mt-8">
+        <h3 className="font-bold text-textMain dark:text-white text-sm mb-4 flex items-center gap-2">
+          <ShieldAlert size={16} className="text-action" />
+          {t('admin.dashboard.notifications.title', 'Notificaciones')}
+        </h3>
+        <div className="space-y-3">
+          {inactiveUsers > 0 && (
+            <div className="flex items-start gap-2 text-[11px] text-gray-600 dark:text-gray-400 leading-tight">
+              <AlertTriangle size={14} className="text-action shrink-0" />
+              <span>
+                {t('admin.dashboard.notifications.inactive_users', { count: inactiveUsers })}
+              </span>
+            </div>
+          )}
+          {failedLogins > 0 && (
+            <div className="flex items-start gap-2 text-[11px] text-gray-600 dark:text-gray-400 leading-tight">
+              <AlertTriangle size={14} className="text-action shrink-0" />
+              <span>
+                {t('admin.dashboard.notifications.failed_logins', { count: failedLogins })}
+              </span>
+            </div>
+          )}
+          {/* Notificación dinámica de sugerencias */}
+          {!loadingCount && !!pendingCount && pendingCount > 0 && (
+            <div
+              onClick={onShowSugerencias}
+              className="flex items-start gap-2 text-[11px] text-action leading-tight cursor-pointer hover:underline"
+            >
+              <BookOpen size={14} className="text-action shrink-0" />
+              <span>
+                {t('admin.dashboard.notifications.pending_skills', { count: pendingCount })}
+              </span>
+            </div>
+          )}
+          {/* Notificación dinámica de categorías */}
+          {!loadingCategoryCount && !!pendingCategoryCount && pendingCategoryCount > 0 && (
+            <div
+              onClick={onShowCategorias}
+              className="flex items-start gap-2 text-[11px] text-action leading-tight cursor-pointer hover:underline"
+            >
+              <BookOpen size={14} className="text-action shrink-0" />
+              <span>
+                {t('admin.dashboard.notifications.pending_categories', { count: pendingCategoryCount })}
+              </span>
+            </div>
+          )}
+        </div>
       </div>
     </div>
-
-
-  </div>
-)
+  )
+}
 
 // ─── Dashboard principal ──────────────────────────────────────────────────────
+// ─── Dashboard principal ──────────────────────────────────────────────────────
 const DashboardAdmin = () => {
+  const { t, i18n } = useTranslation()
   const [modalSugerencias, setModalSugerencias] = useState(false)
   const [pendingCount, setPendingCount] = useState<number | null>(null)
   const [loadingCount, setLoadingCount] = useState(true)
@@ -623,7 +642,7 @@ const DashboardAdmin = () => {
   const [inactiveUsers, setInactiveUsers] = useState<number>(0)
 
   const [failedLogins, setFailedLogins] = useState<number>(0)
-  const [lastBackupDate, setLastBackupDate] = useState<string | null>(null)
+  const [lastBackupTimestamp, setLastBackupTimestamp] = useState<string | null>(null)
   const [loadingStats, setLoadingStats] = useState(true)
   const [toast, setToast] = useState<{
     mensaje: string
@@ -655,7 +674,7 @@ const DashboardAdmin = () => {
         }
       } catch {
         setPendingCount(0)
-        setToast({ mensaje: 'No se pudieron cargar las sugerencias pendientes.', tipo: 'error' })
+        setToast({ mensaje: t('admin.dashboard.toasts.error_skills', 'No se pudieron cargar las sugerencias pendientes.'), tipo: 'error' })
       } finally {
         setLoadingCount(false)
       }
@@ -692,7 +711,7 @@ const DashboardAdmin = () => {
         setInactiveUsers(users.filter((u: { status: string }) => u.status === 'Inactivo').length)
       } catch {
         setTotalUsers(0)
-        setToast({ mensaje: 'No se pudieron cargar los datos de usuarios.', tipo: 'error' })
+        setToast({ mensaje: t('admin.dashboard.toasts.error_users', 'No se pudieron cargar los datos de usuarios.'), tipo: 'error' })
       }
 
       // Activity logs — intentos fallidos recientes + último backup
@@ -704,26 +723,21 @@ const DashboardAdmin = () => {
         // Obtener fecha del último backup real
         const backupLog = logs.data.find((l: { event: string }) => l.event === 'backup.generated')
         if (backupLog) {
-          const d = new Date(backupLog.timestamp || backupLog.created_at)
-          setLastBackupDate(
-            d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' }) +
-            ' ' +
-            d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })
-          )
+          setLastBackupTimestamp(backupLog.timestamp || backupLog.created_at)
         }
       } catch {
         setFailedLogins(0)
-        setToast({ mensaje: 'No se pudo cargar el historial de actividad.', tipo: 'error' })
+        setToast({ mensaje: t('admin.dashboard.toasts.error_activity', 'No se pudo cargar el historial de actividad.'), tipo: 'error' })
       }
 
       setLoadingStats(false)
       setToast((prev) =>
         prev === null
-          ? { mensaje: 'Panel de administración cargado correctamente.', tipo: 'success' }
+          ? { mensaje: t('admin.dashboard.toasts.success_load', 'Panel de administración cargado correctamente.'), tipo: 'success' }
           : prev
       )
     })()
-  }, [])
+  }, [t])
 
   return (
     <div className="h-full max-h-full bg-background dark:bg-slate-900 flex flex-col transition-colors duration-300 overflow-hidden">
@@ -733,43 +747,49 @@ const DashboardAdmin = () => {
         <main className="flex-1 flex flex-col lg:flex-row overflow-hidden bg-background dark:bg-slate-900 transition-colors duration-300">
           <div className="flex-1 p-4 sm:p-6 md:p-6 overflow-y-auto">
             <h1 className="text-xl sm:text-2xl font-bold text-textMain dark:text-white mb-1">
-              Panel de Administración
+              {t('admin.dashboard.title', 'Panel de Administración')}
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-5">
-              Control general de la plataforma NEXUM
+              {t('admin.dashboard.subtitle', 'Control general de la plataforma NEXUM')}
             </p>
 
             {/* Cards de estadísticas */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
               <div className="bg-white dark:bg-slate-800 rounded-xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors">
                 <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
-                  Total Usuarios Registrados
+                  {t('admin.dashboard.stats.total_users', 'Total Usuarios Registrados')}
                 </p>
                 <p className="text-3xl font-bold text-primary dark:text-blue-400">
                   {loadingStats ? '—' : (totalUsers ?? 0)}
                 </p>
                 <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-                  Total de usuarios en la plataforma
-                </p>
-              </div>
-              <div className="bg-white dark:bg-slate-800 rounded-xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors">
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Usuarios Inactivos</p>
-                <p className="text-3xl font-bold text-primary dark:text-blue-400">
-                  {loadingStats ? '—' : inactiveUsers}
-                </p>
-                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-                  {inactiveUsers > 0 ? 'Requieren atención' : 'Todos activos'}
+                  {t('admin.dashboard.stats.total_users_desc', 'Total de usuarios en la plataforma')}
                 </p>
               </div>
               <div className="bg-white dark:bg-slate-800 rounded-xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors">
                 <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
-                  Accesos Fallidos Recientes
+                  {t('admin.dashboard.stats.inactive_users', 'Usuarios Inactivos')}
+                </p>
+                <p className="text-3xl font-bold text-primary dark:text-blue-400">
+                  {loadingStats ? '—' : inactiveUsers}
+                </p>
+                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                  {inactiveUsers > 0
+                    ? t('admin.dashboard.stats.inactive_users_attention', 'Requieren atención')
+                    : t('admin.dashboard.stats.inactive_users_all_active', 'Todos activos')}
+                </p>
+              </div>
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors">
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                  {t('admin.dashboard.stats.failed_logins', 'Accesos Fallidos Recientes')}
                 </p>
                 <p className="text-3xl font-bold text-action">
                   {loadingStats ? '—' : failedLogins}
                 </p>
                 <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-                  {failedLogins > 0 ? 'Revisar logs de auditoría' : 'Sin alertas'}
+                  {failedLogins > 0
+                    ? t('admin.dashboard.stats.failed_logins_check', 'Revisar logs de auditoría')
+                    : t('admin.dashboard.stats.failed_logins_no_alerts', 'Sin alertas')}
                 </p>
               </div>
             </div>
@@ -781,11 +801,11 @@ const DashboardAdmin = () => {
                 <div className="flex items-center gap-2 mb-2">
                   <Users size={18} className="text-textMain dark:text-white" />
                   <h2 className="font-semibold text-textMain dark:text-white">
-                    Gestión de Usuarios
+                    {t('admin.dashboard.users_card.title', 'Gestión de Usuarios')}
                   </h2>
                 </div>
                 <p className="text-sm text-gray-500 mb-3 leading-relaxed">
-                  Administra cuentas, roles, estados y permisos de los usuarios.
+                  {t('admin.dashboard.users_card.desc', 'Administra cuentas, roles, estados y permisos de los usuarios.')}
                 </p>
                 <div
                   className={`text-[11px] px-3 py-1.5 rounded-lg mb-4 inline-block font-medium border ${inactiveUsers > 0
@@ -794,17 +814,17 @@ const DashboardAdmin = () => {
                     }`}
                 >
                   {loadingStats
-                    ? 'Cargando...'
+                    ? t('admin.dashboard.users_card.loading', 'Cargando...')
                     : inactiveUsers > 0
-                      ? `${inactiveUsers} usuario${inactiveUsers !== 1 ? 's' : ''} inactivo${inactiveUsers !== 1 ? 's' : ''}.`
-                      : 'Todos los usuarios están activos.'}
+                      ? t('admin.dashboard.users_card.inactive_count', { count: inactiveUsers })
+                      : t('admin.dashboard.users_card.all_active', 'Todos los usuarios están activos.')}
                 </div>
                 <br />
                 <Link
                   to="/admin/usuarios"
                   className="bg-primary text-white text-sm px-4 py-2 rounded-lg hover:opacity-90 transition-all inline-block shadow-sm no-underline"
                 >
-                  Ver usuarios
+                  {t('admin.dashboard.users_card.button', 'Ver usuarios')}
                 </Link>
               </div>
 
@@ -813,25 +833,34 @@ const DashboardAdmin = () => {
                 <div className="flex items-center gap-2 mb-2">
                   <Activity size={18} className="text-textMain dark:text-white" />
                   <h2 className="font-semibold text-textMain dark:text-white">
-                    Copias de Seguridad
+                    {t('admin.dashboard.backups_card.title', 'Copias de Seguridad')}
                   </h2>
                 </div>
                 <p className="text-sm text-gray-500 mb-3 leading-relaxed">
-                  Gestiona y programa los respaldos automáticos de la plataforma.
+                  {t('admin.dashboard.backups_card.desc', 'Gestiona y programa los respaldos automáticos de la plataforma.')}
                 </p>
                 <div className="bg-primary/5 text-primary text-[11px] px-3 py-1.5 rounded-lg mb-4 inline-block font-medium border border-primary/20">
                   {loadingStats
-                    ? 'Cargando...'
-                    : lastBackupDate
-                      ? `Último backup: ${lastBackupDate}`
-                      : 'Sin backups registrados.'}
+                    ? t('admin.dashboard.backups_card.loading', 'Cargando...')
+                    : lastBackupTimestamp
+                      ? t('admin.dashboard.backups_card.last_backup', {
+                          date: (() => {
+                            const d = new Date(lastBackupTimestamp)
+                            return (
+                              d.toLocaleDateString(i18n.language, { day: '2-digit', month: 'short', year: 'numeric' }) +
+                              ' ' +
+                              d.toLocaleTimeString(i18n.language, { hour: '2-digit', minute: '2-digit' })
+                            )
+                          })()
+                        })
+                      : t('admin.dashboard.backups_card.no_backups', 'Sin backups registrados.')}
                 </div>
                 <br />
                 <Link
                   to="/admin/backups"
                   className="bg-action text-white text-sm px-4 py-2 rounded-lg hover:opacity-90 transition-all shadow-sm inline-block no-underline"
                 >
-                  Gestionar backups
+                  {t('admin.dashboard.backups_card.button', 'Gestionar backups')}
                 </Link>
               </div>
 
@@ -842,20 +871,19 @@ const DashboardAdmin = () => {
                     <div className="flex items-center gap-2 mb-2">
                       <BookOpen size={18} className="text-textMain dark:text-white" />
                       <h2 className="font-semibold text-textMain dark:text-white">
-                        Sugerencias de Habilidades
+                        {t('admin.dashboard.skills_card.title', 'Sugerencias de Habilidades')}
                       </h2>
                     </div>
                     <p className="text-sm text-gray-500 mb-3 leading-relaxed">
-                      Revisa las habilidades propuestas por los usuarios antes de que aparezcan en
-                      el catálogo.
+                      {t('admin.dashboard.skills_card.desc', 'Revisa las habilidades propuestas por los usuarios antes de que aparezcan en el catálogo.')}
                     </p>
                     {loadingCount ? (
                       <div className="bg-gray-50 text-gray-400 text-[11px] px-3 py-1.5 rounded-lg mb-4 inline-flex items-center gap-1.5 border border-gray-100">
-                        <IconSpinner className="w-3 h-3" /> Cargando...
+                        <IconSpinner className="w-3 h-3" /> {t('admin.dashboard.skills_card.loading', 'Cargando...')}
                       </div>
                     ) : pendingCount === 0 ? (
                       <div className="bg-primary/5 text-primary text-[11px] px-3 py-1.5 rounded-lg mb-4 inline-flex items-center gap-1.5 font-medium border border-primary/20">
-                        <CheckCircle size={12} /> Sin sugerencias pendientes.
+                        <CheckCircle size={12} /> {t('admin.dashboard.skills_card.no_pending', 'Sin sugerencias pendientes.')}
                       </div>
                     ) : (
                       <div className="bg-action/5 text-action text-[11px] px-3 py-1.5 rounded-lg mb-4 inline-flex items-center gap-1.5 font-medium border border-action/20">
@@ -872,8 +900,7 @@ const DashboardAdmin = () => {
                             d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                           />
                         </svg>
-                        {pendingCount} sugerencia{pendingCount !== 1 ? 's' : ''} pendiente
-                        {pendingCount !== 1 ? 's' : ''} de revisión.
+                        {t('admin.dashboard.skills_card.pending_count', { count: pendingCount })}
                       </div>
                     )}
                     <br />
@@ -882,7 +909,7 @@ const DashboardAdmin = () => {
                       className="bg-primary text-white text-sm px-4 py-2 rounded-lg hover:opacity-90 transition-all shadow-sm inline-flex items-center gap-2 border-none cursor-pointer"
                     >
                       <BookOpen size={14} />
-                      Revisar sugerencias
+                      {t('admin.dashboard.skills_card.button', 'Revisar sugerencias')}
                     </button>
                   </div>
                 </div>
@@ -895,20 +922,19 @@ const DashboardAdmin = () => {
                     <div className="flex items-center gap-2 mb-2">
                       <BookOpen size={18} className="text-textMain dark:text-white" />
                       <h2 className="font-semibold text-textMain dark:text-white">
-                        Sugerencias de Categorías
+                        {t('admin.dashboard.categories_card.title', 'Sugerencias de Categorías')}
                       </h2>
                     </div>
                     <p className="text-sm text-gray-500 mb-3 leading-relaxed">
-                      Revisa las categorías propuestas por los usuarios para organizar mejor los
-                      proyectos.
+                      {t('admin.dashboard.categories_card.desc', 'Revisa las categorías propuestas por los usuarios para organizar mejor los proyectos.')}
                     </p>
                     {loadingCategoryCount ? (
                       <div className="bg-gray-50 text-gray-400 text-[11px] px-3 py-1.5 rounded-lg mb-4 inline-flex items-center gap-1.5 border border-gray-100">
-                        <IconSpinner className="w-3 h-3" /> Cargando...
+                        <IconSpinner className="w-3 h-3" /> {t('admin.dashboard.categories_card.loading', 'Cargando...')}
                       </div>
                     ) : pendingCategoryCount === 0 ? (
                       <div className="bg-primary/5 text-primary text-[11px] px-3 py-1.5 rounded-lg mb-4 inline-flex items-center gap-1.5 font-medium border border-primary/20">
-                        <CheckCircle size={12} /> Sin sugerencias pendientes.
+                        <CheckCircle size={12} /> {t('admin.dashboard.categories_card.no_pending', 'Sin sugerencias pendientes.')}
                       </div>
                     ) : (
                       <div className="bg-action/5 text-action text-[11px] px-3 py-1.5 rounded-lg mb-4 inline-flex items-center gap-1.5 font-medium border border-action/20">
@@ -925,8 +951,7 @@ const DashboardAdmin = () => {
                             d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                           />
                         </svg>
-                        {pendingCategoryCount} sugerencia{pendingCategoryCount !== 1 ? 's' : ''}{' '}
-                        pendiente{pendingCategoryCount !== 1 ? 's' : ''} de revisión.
+                        {t('admin.dashboard.categories_card.pending_count', { count: pendingCategoryCount })}
                       </div>
                     )}
                     <br />
@@ -935,7 +960,7 @@ const DashboardAdmin = () => {
                       className="bg-primary text-white text-sm px-4 py-2 rounded-lg hover:opacity-90 transition-all shadow-sm inline-flex items-center gap-2 border-none cursor-pointer"
                     >
                       <BookOpen size={14} />
-                      Revisar categorías
+                      {t('admin.dashboard.categories_card.button', 'Revisar categorías')}
                     </button>
                   </div>
                 </div>

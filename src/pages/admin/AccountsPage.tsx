@@ -4,6 +4,7 @@ import Sidebar from './components/Sidebar'
 import useAuth from '../../hooks/useAuth'
 import { getUsers, toggleUserStatus } from '../../services/admin.service'
 import Calendar from '../../components/ui/Calendar'
+import { useTranslation } from 'react-i18next'
 
 interface User {
   id: number
@@ -17,6 +18,7 @@ interface User {
 
 const AccountsPage = () => {
   useAuth()
+  const { t } = useTranslation()
   const [users, setUsers] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -32,13 +34,13 @@ const AccountsPage = () => {
         setUsers(data)
       } catch (err: unknown) {
         const error = err as { message?: string }
-        setError(error.message || 'Error al cargar usuarios.')
+        setError(error.message || t('admin.users.error_load', 'Error al cargar usuarios.'))
       } finally {
         setLoading(false)
       }
     }
     fetchUsers()
-  }, [])
+  }, [t])
 
   const handleDesactivar = (u: User) => {
     setSelectedUser(u)
@@ -52,7 +54,7 @@ const AccountsPage = () => {
         setUsers(users.map((u) => (u.id === selectedUser.id ? { ...u, status: 'Inactivo' } : u)))
       } catch (err: unknown) {
         const error = err as { message?: string }
-        alert(error.message || 'Error al desactivar el usuario.')
+        alert(error.message || t('admin.users.toasts.error_deactivate', 'Error al desactivar el usuario.'))
       }
     }
     setShowModal(false)
@@ -65,7 +67,7 @@ const AccountsPage = () => {
       setUsers(users.map((u) => (u.id === id ? { ...u, status: 'Activo' } : u)))
     } catch (err: unknown) {
       const error = err as { message?: string }
-      alert(error.message || 'Error al reactivar el usuario.')
+      alert(error.message || t('admin.users.toasts.error_reactivate', 'Error al reactivar el usuario.'))
     }
   }
 
@@ -83,10 +85,10 @@ const AccountsPage = () => {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
               <div>
                 <h1 className="text-xl sm:text-2xl font-bold text-textMain dark:text-white">
-                  Gestión de Usuarios
+                  {t('admin.users.title', 'Gestión de Usuarios')}
                 </h1>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Administración de accesos Nexum
+                  {t('admin.users.subtitle', 'Administración de accesos Nexum')}
                 </p>
               </div>
 
@@ -96,13 +98,13 @@ const AccountsPage = () => {
                   onChange={(e) => setFilterStatus(e.target.value)}
                   className="flex-1 md:flex-none border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 text-sm text-textMain dark:text-gray-200 outline-none bg-white dark:bg-slate-800 shadow-sm"
                 >
-                  <option value="Todos">Todos los estados</option>
-                  <option value="Activo">Activos</option>
-                  <option value="Inactivo">Inactivos</option>
+                  <option value="Todos">{t('admin.users.filter_all', 'Todos los estados')}</option>
+                  <option value="Activo">{t('admin.users.filter_active', 'Activos')}</option>
+                  <option value="Inactivo">{t('admin.users.filter_inactive', 'Inactivos')}</option>
                 </select>
                 <button className="bg-action text-white p-2 md:px-4 md:py-2 rounded-lg text-sm hover:opacity-90 transition-all flex items-center gap-2">
                   <Filter size={16} />
-                  <span className="hidden sm:inline">Filtrar</span>
+                  <span className="hidden sm:inline">{t('admin.users.filter_button', 'Filtrar')}</span>
                 </button>
               </div>
             </div>
@@ -110,7 +112,7 @@ const AccountsPage = () => {
             {/* Estados de carga y error */}
             {loading && (
               <div className="text-center py-20 text-gray-400 animate-pulse">
-                Cargando base de datos...
+                {t('admin.users.loading', 'Cargando base de datos...')}
               </div>
             )}
             {error && <div className="text-center py-20 text-action font-medium">{error}</div>}
@@ -123,22 +125,22 @@ const AccountsPage = () => {
                     <thead className="bg-gray-50 dark:bg-slate-900/50 border-b border-gray-100 dark:border-gray-700">
                       <tr>
                         <th className="text-left px-6 py-4 text-textMain dark:text-white font-semibold">
-                          Usuario
+                          {t('admin.users.table.user', 'Usuario')}
                         </th>
                         <th className="text-left px-6 py-4 text-textMain dark:text-white font-semibold">
-                          Email
+                          {t('admin.users.table.email', 'Email')}
                         </th>
                         <th className="text-left px-6 py-4 text-textMain dark:text-white font-semibold">
-                          Rol
+                          {t('admin.users.table.role', 'Rol')}
                         </th>
                         <th className="px-6 py-4 text-textMain dark:text-white font-semibold text-center">
-                          Estado
+                          {t('admin.users.table.status', 'Estado')}
                         </th>
                         <th className="text-left px-6 py-4 text-textMain dark:text-white font-semibold">
-                          Registro
+                          {t('admin.users.table.registration', 'Registro')}
                         </th>
                         <th className="text-center px-6 py-4 text-textMain dark:text-white font-semibold">
-                          Acciones
+                          {t('admin.users.table.actions', 'Acciones')}
                         </th>
                       </tr>
                     </thead>
@@ -168,7 +170,7 @@ const AccountsPage = () => {
                                   : 'bg-red-50 text-red-600'
                                   }`}
                               >
-                                {u.status}
+                                {u.status === 'Activo' ? t('admin.users.table.active', 'Activo') : t('admin.users.table.inactive', 'Inactivo')}
                               </span>
                             </td>
                             <td className="px-6 py-4 text-gray-400 dark:text-gray-500 text-xs">
@@ -179,7 +181,7 @@ const AccountsPage = () => {
                                 <button
                                   onClick={() => handleDesactivar(u)}
                                   className="text-action hover:bg-red-50 p-2 rounded-lg transition-colors group"
-                                  title="Suspender acceso"
+                                  title={t('admin.users.table.suspend_tooltip', 'Suspender acceso')}
                                 >
                                   <UserX
                                     size={18}
@@ -190,7 +192,7 @@ const AccountsPage = () => {
                                 <button
                                   onClick={() => handleReactivar(u.id)}
                                   className="text-green-600 hover:bg-green-50 p-2 rounded-lg transition-colors group"
-                                  title="Reactivar acceso"
+                                  title={t('admin.users.table.reactivate_tooltip', 'Reactivar acceso')}
                                 >
                                   <UserCheck
                                     size={18}
@@ -206,7 +208,7 @@ const AccountsPage = () => {
                 </div>
                 <div className="px-6 py-3 bg-gray-50/50 dark:bg-slate-900/50 border-t border-gray-100 dark:border-gray-700">
                   <p className="text-[10px] text-gray-400 dark:text-gray-500 italic">
-                    Mostrando {users.length} registros en total. Deslice lateralmente en móvil.
+                    {t('admin.users.pagination_desc', { count: users.length })}
                   </p>
                 </div>
               </div>
@@ -221,12 +223,11 @@ const AccountsPage = () => {
               <div className="mt-8">
                 <h3 className="font-bold text-textMain dark:text-white text-sm mb-4 flex items-center gap-2">
                   <ShieldAlert size={16} className="text-yellow-500" />
-                  Seguridad
+                  {t('admin.users.security.title', 'Seguridad')}
                 </h3>
                 <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-xl border border-yellow-100 dark:border-yellow-900/30">
                   <p className="text-[11px] text-yellow-800 dark:text-yellow-500 leading-relaxed">
-                    La desactivación revoca tokens de sesión activos y bloquea el login del usuario
-                    seleccionado.
+                    {t('admin.users.security.desc', 'La desactivación revoca tokens de sesión activos y bloquea el login del usuario seleccionado.')}
                   </p>
                 </div>
               </div>
@@ -243,25 +244,23 @@ const AccountsPage = () => {
               <UserX size={24} />
             </div>
             <h2 className="text-lg font-bold text-textMain dark:text-white text-center mb-2">
-              Confirmar Suspensión
+              {t('admin.users.modal.title', 'Confirmar Suspensión')}
             </h2>
             <p className="text-sm text-gray-500 dark:text-gray-400 text-center mb-6 leading-relaxed">
-              ¿Estás seguro de desactivar a{' '}
-              <span className="font-bold text-textMain dark:text-white">{selectedUser.name}</span>?
-              Perderá acceso inmediato a la plataforma.
+              {t('admin.users.modal.desc', { name: selectedUser.name })}
             </p>
             <div className="flex gap-3">
               <button
                 onClick={() => setShowModal(false)}
                 className="flex-1 px-4 py-2.5 text-sm font-semibold text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors"
               >
-                Volver
+                {t('admin.users.modal.back', 'Volver')}
               </button>
               <button
                 onClick={handleConfirmDesactivar}
                 className="flex-1 px-4 py-2.5 text-sm font-semibold bg-action text-white rounded-xl hover:brightness-110 shadow-lg shadow-red-200 transition-all"
               >
-                Desactivar
+                {t('admin.users.modal.confirm', 'Desactivar')}
               </button>
             </div>
           </div>

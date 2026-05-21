@@ -160,7 +160,7 @@ const PrintPortfolio = () => {
     }
 
     fetchPortfolio()
-  }, [id, navigate])
+  }, [id, navigate, t])
 
   const handleDownloadPDF = async () => {
     const element = document.getElementById('portfolio-content')

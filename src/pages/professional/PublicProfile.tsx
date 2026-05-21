@@ -1,398 +1,447 @@
 import { useParams, useNavigate } from 'react-router-dom'
-import { ArrowLeft, Building2, GraduationCap, Award, ExternalLink, Mail } from 'lucide-react'
-
-// === MOCK DATA ===
-const MOCK_PROFILE = {
-  id: 1,
-  firstName: 'Carlos',
-  lastName: 'Mendoza',
-  profession: 'Desarrollador Full Stack Senior',
-  avatarUrl: 'https://ui-avatars.com/api/?name=Carlos+Mendoza&background=003087&color=fff&size=300', // Avatar seguro con iniciales
-
-  socials: {
-    github: 'https://github.com/',
-    linkedin: 'https://linkedin.com/',
-    youtube: 'https://youtube.com/',
-    email: 'carlos.mendoza@email.com'
-  },
-
-  skills: {
-    hard: [
-      'React.js',
-      'Node.js',
-      'TypeScript',
-      'Python',
-      'PostgreSQL',
-      'MongoDB',
-      'AWS',
-      'Docker',
-      'NestJS',
-      'Next.js'
-    ],
-    soft: [
-      'Arquitectura de Software',
-      'Liderazgo Técnico',
-      'Metodologías Ágiles (Scrum)',
-      'Resolución de Problemas',
-      'Mentoría'
-    ]
-  },
-
-  experience: [
-    {
-      id: 1,
-      title: 'Desarrollador Full Stack Senior',
-      company: 'Tech Solutions S.A.',
-      type: 'Jornada completa',
-      dateRange: 'Ene 2022 - Actualidad',
-      location: 'Remoto',
-      description:
-        'Diseño y desarrollo de una plataforma SaaS escalable utilizando React y NestJS. Implementación de CI/CD con GitHub Actions y despliegue en AWS ECS. Reducción del tiempo de carga de la aplicación principal en un 60%.'
-    },
-    {
-      id: 2,
-      title: 'Desarrollador Backend',
-      company: 'Innovate Software Labs',
-      type: 'Jornada completa',
-      dateRange: 'Mar 2019 - Dic 2021',
-      location: 'Madrid, España',
-      description:
-        'Construcción de APIs RESTful de alto rendimiento usando Node.js y Express. Migración de base de datos monolítica a una arquitectura de microservicios. Optimización de consultas complejas en PostgreSQL.'
-    }
-  ],
-
-  education: [
-    {
-      id: 1,
-      school: 'Universidad de Tecnología Avanzada',
-      degree: 'Ingeniería de Software',
-      dateRange: '2014 - 2018'
-    }
-  ],
-
-  projects: [
-    {
-      id: 1,
-      title: 'Sistema de Reservas para Hotel Boutique',
-      type: 'Proyecto Principal',
-      year: '2023',
-      description:
-        'Plataforma web completa que permite a los huéspedes visualizar disponibilidad, realizar reservas y pagos en línea. El panel administrativo incluye gestión de habitaciones, facturación y reportes de ocupación. Stack: React, Node.js, Express, PostgreSQL.',
-      imageUrl:
-        'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=600&auto=format&fit=crop'
-    },
-    {
-      id: 2,
-      title: 'Software de Gestión Odontológica',
-      type: 'Proyecto Freelance',
-      year: '2022',
-      description:
-        'Sistema para clínicas dentales que incluye agenda electrónica, historias clínicas digitales, odontogramas interactivos y control de inventario de insumos médicos. Stack: Next.js, TailwindCSS, NestJS, MongoDB.',
-      imageUrl:
-        'https://images.unsplash.com/photo-1606811841689-23dfddce3e95?q=80&w=600&auto=format&fit=crop'
-    }
-  ],
-
-  certifications: [
-    {
-      id: 1,
-      title: 'AWS Certified Developer – Associate',
-      issuer: 'Amazon Web Services (AWS)',
-      date: 'Nov 2023'
-    },
-    {
-      id: 2,
-      title: 'Meta Front-End Developer Professional Certificate',
-      issuer: 'Coursera',
-      date: 'Ago 2022'
-    }
-  ]
-}
+import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
+import {
+  ArrowLeft,
+  Award,
+  Mail,
+  MapPin,
+  Phone,
+  Briefcase,
+  Loader2,
+  AlertCircle,
+  Folder,
+  Download
+} from 'lucide-react'
+import { getPublicPortfolio, type FullPortfolio, type AdditionalLink } from '../../services/portfolio.service'
+import { useRecordVisit, useProfileStats } from '../../hooks/useProfileVisits'
+import PLATFORM_ICONS from '../../components/icons/SocialIcons'
+import Sidebar from '../admin/components/Sidebar'
+import PdfTemplateModal from '../../components/modals/PdfTemplateModal'
 
 const PublicProfile = () => {
-  useParams()
+  const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+  const { t, i18n } = useTranslation()
 
-  // En un entorno real, haríamos un fetch aquí usando el ID.
-  const profile = MOCK_PROFILE
+  const [portfolio, setPortfolio] = useState<FullPortfolio | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [additionalLinks, setAdditionalLinks] = useState<AdditionalLink[]>([])
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  useRecordVisit(portfolio?.id || null)
+  const { stats } = useProfileStats(portfolio?.id || null)
+
+  const getTranslatedLevel = (level: string) => {
+    if (!level) return ''
+    const normalized = level.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    return t(`skills.levels.${normalized}`, level)
+  }
+
+  useEffect(() => {
+    const fetchPortfolio = async () => {
+      if (!id) return
+      setLoading(true)
+      setError(null)
+      try {
+        const data = await getPublicPortfolio(id)
+        setPortfolio(data)
+        setAdditionalLinks(data.additional_links || [])
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Error al cargar el portafolio')
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchPortfolio()
+  }, [id])
+
+  if (loading) {
+    return (
+      <div className="h-full max-h-full bg-background dark:bg-slate-900 flex flex-col font-sans transition-colors duration-300 overflow-hidden">
+        <div className="flex flex-1 overflow-hidden relative">
+          <Sidebar activeItem="Buscar profesionales" />
+          <main className="flex-grow flex flex-col items-center justify-center p-8 bg-[#F8FAFC] dark:bg-slate-900 transition-colors duration-300">
+            <Loader2 className="w-12 h-12 text-[#003087] animate-spin mb-4" />
+            <p className="text-gray-500 dark:text-gray-400 font-medium">{t('portfolio_view.loading', 'Cargando portafolio...')}</p>
+          </main>
+        </div>
+      </div>
+    )
+  }
+
+  if (error || !portfolio) {
+    return (
+      <div className="h-full max-h-full bg-background dark:bg-slate-900 flex flex-col font-sans transition-colors duration-300 overflow-hidden">
+        <div className="flex flex-1 overflow-hidden relative">
+          <Sidebar activeItem="Buscar profesionales" />
+          <main className="flex-grow flex flex-col items-center justify-center p-8 bg-[#F8FAFC] dark:bg-slate-900 transition-colors duration-300">
+            <div className="w-20 h-20 bg-red-50 dark:bg-red-950/20 rounded-full flex items-center justify-center mb-6">
+              <AlertCircle className="text-[#C8102E] dark:text-red-400" size={40} />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{t('portfolio_view.error_title', 'Error al cargar')}</h2>
+            <p className="text-gray-500 dark:text-gray-400 max-w-md mb-8">{error || t('portfolio_view.error_not_found')}</p>
+            <button
+              onClick={() => navigate('/directorio')}
+              className="px-8 py-3 bg-[#003087] hover:bg-blue-800 text-white rounded-xl font-bold transition-all border-none cursor-pointer"
+            >
+              Volver al Directorio
+            </button>
+          </main>
+        </div>
+      </div>
+    )
+  }
+
+  const { user, profession, biography, location, avatar_url, linkedin_url, github_url, views_count } = portfolio
+
+  // Build stats array
+  const statsList = [
+    { label: t('portfolio_view.stats_views'), value: stats?.visits_count || views_count || 0 }
+  ]
+  if (portfolio.show_projects !== false) statsList.push({ label: t('portfolio_view.stats_projects'), value: portfolio.projects?.length || 0 })
+  if (portfolio.show_skills !== false) statsList.push({ label: t('portfolio_view.stats_tech'), value: portfolio.skills?.length || 0 })
+  if (portfolio.show_experience !== false) statsList.push({ label: t('portfolio_view.stats_exp'), value: portfolio.work_experiences?.length || 0 })
+
+  // All skills split by type
+  const allSkills = portfolio.skills || []
+  const techSkillsMapped = allSkills.map(s => ({
+    ...s,
+    level: s.level?.toUpperCase().replace('_', ' ') || 'N/A',
+  }))
+  const habilidadesTecnicas = techSkillsMapped.filter(s => s.type === 'tecnica')
+  const habilidadesBlandas = techSkillsMapped.filter(s => s.type !== 'tecnica')
+
+  // Build social links
+  const socialLinks: { id: string | number; url: string; platform: string }[] = [
+    ...(linkedin_url ? [{ id: 'linkedin', url: linkedin_url, platform: 'linkedin' }] : []),
+    ...(github_url ? [{ id: 'github', url: github_url, platform: 'github' }] : []),
+    ...additionalLinks.map(l => ({ id: l.id, url: l.url, platform: l.platform }))
+  ]
 
   return (
-    <div className="min-h-screen bg-[#f3f2ef] pb-12 font-sans">
-      {/* Botón flotante para regresar */}
-      <div className="max-w-4xl mx-auto pt-6 px-4 mb-4">
-        <button
-          onClick={() => navigate('/directorio')}
-          className="flex items-center text-[#666] hover:text-[#003087] font-medium transition-colors"
-        >
-          <ArrowLeft size={20} className="mr-2" />
-          Volver al Directorio
-        </button>
-      </div>
+    <div className="h-full max-h-full bg-[#F8FAFC] dark:bg-slate-900 flex flex-col font-sans transition-colors duration-300 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden relative">
+        <Sidebar activeItem="Buscar profesionales" />
 
-      <div className="max-w-4xl mx-auto px-4 flex flex-col gap-4">
-        {/* --- HEADER CARD --- */}
-        <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200">
-          {/* Cover Banner (Color plomo oscuro) */}
-          <div className="h-48 w-full relative bg-slate-700"></div>
-
-          <div className="px-6 pb-6 relative">
-            {/* Avatar */}
-            <div className="absolute -top-16 left-6">
-              <div className="w-32 h-32 rounded-full border-4 border-white overflow-hidden bg-white shadow-sm">
-                <img
-                  src={profile.avatarUrl}
-                  alt={profile.firstName}
-                  className="w-full h-full object-cover"
-                />
+        <main className="flex-grow overflow-y-auto bg-[#F8FAFC] dark:bg-slate-900 transition-colors duration-300">
+          
+          {/* HEADER CARD - FULL WIDTH DE LA COLUMNA DE CONTENIDO */}
+          <div className="w-full bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 shadow-md">
+            
+            {/* Banner gradient */}
+            <div className="h-40 sm:h-48 w-full bg-gradient-to-r from-[#001A5E] via-[#003087] to-[#C8102E] relative">
+              {/* Botón flotante para regresar */}
+              <div className="absolute top-4 left-4 z-10">
+                <button
+                  onClick={() => navigate('/directorio')}
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-white/95 dark:bg-slate-800/95 hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold text-xs rounded-lg transition-all shadow-md border-none cursor-pointer"
+                >
+                  <ArrowLeft size={16} />
+                  Volver
+                </button>
               </div>
             </div>
 
-            {/* User Info Area */}
-            <div className="pt-20 pb-6">
-              <div className="flex items-center justify-between flex-wrap gap-4">
+            <div className="max-w-5xl mx-auto px-4 sm:px-6 md:px-8 pb-8 relative">
+              {/* Avatar overlapping */}
+              <div className="absolute -top-16 left-4 sm:left-6 md:left-8">
+                {avatar_url ? (
+                  <img
+                    src={avatar_url}
+                    alt={user.first_name}
+                    className="w-32 h-32 rounded-full border-4 border-white dark:border-slate-800 object-cover shadow-lg bg-white dark:bg-slate-850"
+                  />
+                ) : (
+                  <div className="w-32 h-32 rounded-full border-4 border-white dark:border-slate-800 bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-200 uppercase text-3xl font-bold">
+                    {user.first_name?.[0]}{user.last_name?.[0]}
+                  </div>
+                )}
+              </div>
+
+              <div className="pt-20 flex flex-col md:flex-row justify-between items-start gap-4">
                 <div>
-                  <h1 className="text-3xl font-bold text-gray-900">
-                    {profile.firstName} {profile.lastName}
+                  <h1 className="text-3xl font-black text-slate-900 dark:text-white">
+                    {user.first_name} {user.last_name}
                   </h1>
-                  <p className="text-gray-700 text-lg mt-1 font-medium">{profile.profession}</p>
+                  <p className="text-[#003087] dark:text-blue-400 text-sm font-semibold uppercase tracking-wider mt-1">
+                    {profession || t('portfolio_view.default_profession')}
+                  </p>
+                  <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500 text-xs mt-3">
+                    <MapPin size={14} />
+                    <span>{location || t('portfolio_view.default_location')}</span>
+                  </div>
+
+                  <div className="flex flex-col gap-3 mt-5">
+                    <div className="flex flex-wrap gap-3">
+                      <div className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs shadow-sm">
+                        <Phone size={14} className="text-[#003087] dark:text-blue-400" />
+                        <span>{portfolio.phone || 'Sin teléfono'}</span>
+                      </div>
+                      <a
+                        href={`mailto:${user.email}`}
+                        className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs shadow-sm no-underline hover:border-[#003087] dark:hover:border-blue-400 transition-colors"
+                      >
+                        <Mail size={14} className="text-[#003087] dark:text-blue-400" />
+                        <span>{user.email}</span>
+                      </a>
+                    </div>
+
+                    {socialLinks.length > 0 && (
+                      <div className="flex flex-wrap items-center gap-2.5">
+                        {socialLinks.map(link => {
+                          const meta = PLATFORM_ICONS[link.platform?.toLowerCase()] || PLATFORM_ICONS.website
+                          return (
+                            <a
+                              key={link.id}
+                              href={link.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              title={link.platform}
+                              className={`w-9 h-9 flex items-center justify-center bg-white dark:bg-slate-900 rounded-full border border-slate-200 dark:border-slate-700 ${meta.color} hover:bg-slate-100 dark:hover:bg-slate-800 ${meta.hoverColor} hover:scale-110 transition-all shadow-sm`}
+                            >
+                              {meta.svg}
+                            </a>
+                          )
+                        })}
+                      </div>
+                    )}
+                  </div>
                 </div>
 
-                {/* Social Icons instead of stats */}
-                <div className="flex items-center gap-3">
-                  <a
-                    href={profile.socials.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full transition-colors"
-                    title="GitHub"
+                {/* Right side Actions and Stats Stack */}
+                <div className="flex flex-col items-stretch md:items-end gap-3 w-full md:w-auto self-stretch mt-4 md:mt-0">
+                  <button
+                    onClick={() => setIsModalOpen(true)}
+                    className="flex items-center justify-center gap-2 px-4 py-2 bg-[#003087] dark:bg-blue-600 hover:bg-blue-800 dark:hover:bg-blue-500 text-white rounded-lg text-xs font-bold transition-all duration-300 shadow-lg no-underline w-full md:w-56 border-none cursor-pointer"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
-                      <path d="M9 18c-4.51 2-5-2-7-2" />
-                    </svg>
-                  </a>
-                  <a
-                    href={profile.socials.linkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-2 bg-[#e8f3ff] hover:bg-[#d0e6ff] text-[#0a66c2] rounded-full transition-colors"
-                    title="LinkedIn"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-                      <rect width="4" height="12" x="2" y="9" />
-                      <circle cx="4" cy="4" r="2" />
-                    </svg>
-                  </a>
-                  <a
-                    href={profile.socials.youtube}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-2 bg-[#ffeded] hover:bg-[#ffdbdb] text-[#ff0000] rounded-full transition-colors"
-                    title="YouTube"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17" />
-                      <path d="m10 15 5-3-5-3z" />
-                    </svg>
-                  </a>
-                  <a
-                    href={`mailto:${profile.socials.email}`}
-                    className="p-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full transition-colors"
-                    title="Email"
-                  >
-                    <Mail size={20} />
-                  </a>
+                    <Download size={14} />
+                    {t('portfolio_view.download_pdf')}
+                  </button>
+
+                  <div className="flex flex-wrap md:flex-nowrap gap-2 w-full mt-1 justify-start md:justify-end">
+                    {statsList.map((stat, idx) => (
+                      <div
+                        key={idx}
+                        className="flex-1 md:flex-initial bg-slate-50 dark:bg-slate-900/50 rounded-xl p-3 px-4 flex flex-col items-center justify-center border border-slate-200 dark:border-slate-700/50 shadow-sm min-w-[90px] md:min-w-[100px]"
+                      >
+                        <span className="text-xl font-black text-[#003087] dark:text-blue-400 mb-0.5">
+                          {stat.value}
+                        </span>
+                        <span className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest text-center">
+                          {stat.label}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* CONTENIDO DEL PERFIL */}
-        <div className="flex flex-col gap-4">
-          {/* --- APTITUDES / HABILIDADES --- */}
-          <section className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-            <h2 className="text-xl font-bold text-gray-900 mb-2">Aptitudes / Habilidades</h2>
-            <p className="text-sm text-gray-500 mb-6 leading-relaxed">
-              Informa sobre tu idoneidad para nuevas oportunidades. El 50 % de los técnicos de
-              selección se basan en las aptitudes para cubrir sus vacantes.
-            </p>
+          {/* REST OF CARDS */}
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 md:px-8 py-8 space-y-6">
 
-            <div className="mb-6">
-              <h3 className="text-sm font-bold text-gray-900 mb-3">Habilidades Técnicas (Duras)</h3>
-              <div className="flex flex-wrap gap-2">
-                {profile.skills.hard.map((skill) => (
-                  <span
-                    key={skill}
-                    className="px-3 py-1.5 bg-[#f3f2ef] text-gray-700 text-sm font-medium rounded-full border border-gray-200"
-                  >
-                    {skill}
-                  </span>
-                ))}
+            {/* ABOUT */}
+            <div className="bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-xl border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{t('portfolio_view.about_me')}</h2>
+              <p className="text-[#003087] dark:text-blue-400 text-[10px] font-bold uppercase tracking-widest mb-8">{t('portfolio_view.my_profile')}</p>
+              <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed whitespace-pre-line">{biography || t('portfolio_view.no_bio')}</p>
+            </div>
+
+            {/* SKILLS */}
+            {portfolio.show_skills !== false && (
+              <div className="bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-xl border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{t('portfolio_view.skills_title')}</h2>
+                <p className="text-[#003087] dark:text-blue-400 text-[10px] font-bold uppercase tracking-widest mb-8">{t('portfolio_view.skills_subtitle')}</p>
+
+                <div className="space-y-8">
+                  {/* TÉCNICAS */}
+                  <div>
+                    <h3 className="text-slate-900 dark:text-white text-sm font-bold mb-4 flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-cyan-400"></span>
+                      {t('portfolio_view.technical_skills')}
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[250px] overflow-y-auto pr-2" style={{ scrollbarWidth: 'thin', scrollbarColor: '#22d3ee transparent' }}>
+                      {habilidadesTecnicas.length > 0 ? (
+                        habilidadesTecnicas.map((skill, idx) => (
+                          <div key={idx} className="bg-white dark:bg-slate-900 rounded-xl p-4 flex items-center justify-between border border-slate-200 dark:border-slate-750">
+                            <div className="flex flex-col pr-4">
+                              <span className="font-bold text-slate-900 dark:text-white text-sm">{skill.name}</span>
+                              {skill.category && (
+                                <span className="text-slate-400 dark:text-slate-500 text-[11px] mt-1 line-clamp-1">{skill.category}</span>
+                              )}
+                            </div>
+                            <span className="text-[10px] font-black px-2 py-1 rounded bg-blue-50 dark:bg-blue-950/30 text-[#003087] dark:text-blue-400 whitespace-nowrap">
+                              {getTranslatedLevel(skill.level)}
+                            </span>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="col-span-full py-10 text-center bg-white dark:bg-slate-900 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700">
+                          <p className="text-slate-600 dark:text-slate-400 font-bold text-sm mb-1">{t('portfolio_view.no_technical')}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* BLANDAS */}
+                  <div>
+                    <h3 className="text-slate-900 dark:text-white text-sm font-bold mb-4 flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-purple-400"></span>
+                      {t('portfolio_view.soft_skills')}
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[250px] overflow-y-auto pr-2" style={{ scrollbarWidth: 'thin', scrollbarColor: '#c084fc transparent' }}>
+                      {habilidadesBlandas.length > 0 ? (
+                        habilidadesBlandas.map((skill, idx) => (
+                          <div key={idx} className="bg-white dark:bg-slate-900 rounded-xl p-4 flex items-center justify-between border border-slate-200 dark:border-slate-750">
+                            <div className="flex flex-col pr-4">
+                              <span className="font-bold text-slate-900 dark:text-white text-sm">{skill.name}</span>
+                              {skill.category && (
+                                <span className="text-slate-400 dark:text-slate-500 text-[11px] mt-1 line-clamp-1">{skill.category}</span>
+                              )}
+                            </div>
+                            <span className="text-[10px] font-black px-2 py-1 rounded bg-purple-50 dark:bg-purple-950/30 text-purple-750 dark:text-purple-400 whitespace-nowrap">
+                              {getTranslatedLevel(skill.level)}
+                            </span>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="col-span-full py-10 text-center bg-white dark:bg-slate-900 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700">
+                          <p className="text-slate-600 dark:text-slate-400 font-bold text-sm mb-1">{t('portfolio_view.no_soft')}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
+            )}
 
-            <div>
-              <h3 className="text-sm font-bold text-gray-900 mb-3">
-                Habilidades Interpersonales (Blandas)
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {profile.skills.soft.map((skill) => (
-                  <span
-                    key={skill}
-                    className="px-3 py-1.5 bg-[#f3f2ef] text-gray-700 text-sm font-medium rounded-full border border-gray-200"
-                  >
-                    {skill}
-                  </span>
-                ))}
+            {/* EXPERIENCE */}
+            {portfolio.show_experience !== false && (
+              <div className="bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-xl border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{t('portfolio_view.experience_title')}</h2>
+                <p className="text-[#003087] dark:text-blue-400 text-[10px] font-bold uppercase tracking-widest mb-8">{t('portfolio_view.experience_subtitle')}</p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {portfolio.work_experiences && portfolio.work_experiences.length > 0 ? (
+                    portfolio.work_experiences.map(exp => (
+                      <div key={exp.id} className="bg-white dark:bg-slate-900 rounded-xl border-l-4 border-[#003087] dark:border-blue-500 shadow-lg hover:-translate-y-1 transition-all duration-300 p-6 flex flex-col">
+                        <div className="flex justify-between items-start mb-4">
+                          <span className="text-[10px] font-black uppercase tracking-wider text-[#003087] dark:text-blue-400">
+                            {exp.is_current ? t('portfolio_view.actual') : t('portfolio_view.previous')}
+                          </span>
+                          <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500">
+                            {new Date(exp.start_date).toLocaleDateString(i18n.language, { month: 'short', year: 'numeric' })} - {exp.end_date ? new Date(exp.end_date).toLocaleDateString(i18n.language, { month: 'short', year: 'numeric' }) : t('portfolio_view.present')}
+                          </span>
+                        </div>
+                        <h3 className="font-bold text-slate-900 dark:text-white text-base mb-1">{exp.position}</h3>
+                        <p className="text-[#003087] dark:text-blue-400 text-xs font-bold mb-4">{exp.company}</p>
+                        <p className="text-slate-600 dark:text-slate-350 text-[11px] leading-relaxed flex-1 whitespace-pre-line">{exp.description}</p>
+                        {exp.skills && exp.skills.length > 0 && (
+                          <div className="flex flex-wrap gap-2 mt-4">
+                            {exp.skills.map((s, i) => (
+                              <span key={i} className="bg-slate-100 dark:bg-slate-800 text-[#003087] dark:text-blue-400 text-[10px] font-bold px-2 py-1 rounded border border-slate-200 dark:border-slate-700">{s.name}</span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ))
+                  ) : (
+                    <div className="col-span-full py-12 text-center bg-white dark:bg-slate-900 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700">
+                      <Briefcase size={32} className="mx-auto text-slate-400 mb-3" />
+                      <p className="text-slate-650 dark:text-slate-400 font-bold text-sm mb-1">{t('portfolio_view.no_exp')}</p>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          </section>
+            )}
 
-          {/* --- EXPERIENCIA --- */}
-          <section className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-            <h2 className="text-xl font-bold text-gray-900 mb-2">Experiencia</h2>
-            <p className="text-sm text-gray-500 mb-6">
-              Muestra tus logros y consigue hasta el doble de visualizaciones del perfil y
-              contactos.
-            </p>
-
-            <div className="flex flex-col gap-6">
-              {profile.experience.map((exp) => (
-                <div key={exp.id} className="flex gap-4">
-                  <div className="w-12 h-12 bg-[#f3f2ef] rounded-md flex items-center justify-center shrink-0 border border-gray-200">
-                    <Building2 className="text-gray-500 w-6 h-6" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-gray-900">{exp.title}</h3>
-                    <p className="text-sm text-gray-800 font-medium">
-                      {exp.company} · {exp.type}
-                    </p>
-                    <p className="text-xs text-gray-500 mt-1">
-                      {exp.dateRange} · {exp.location}
-                    </p>
-                    <p className="text-sm text-gray-700 mt-3 leading-relaxed">{exp.description}</p>
-                  </div>
+            {/* PROJECTS */}
+            {portfolio.show_projects !== false && (
+              <div className="bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-xl border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{t('portfolio_view.projects_title')}</h2>
+                <p className="text-[#003087] dark:text-blue-400 text-[10px] font-bold uppercase tracking-widest mb-8">{t('portfolio_view.projects_subtitle')}</p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {portfolio.projects && portfolio.projects.length > 0 ? (
+                    portfolio.projects.map(project => (
+                      <div key={project.id} className="bg-white dark:bg-slate-900 rounded-xl border-l-4 border-blue-500 dark:border-cyan-500 shadow-lg hover:-translate-y-1 transition-all duration-300 p-6 flex flex-col">
+                        <div className="flex gap-2 mb-4">
+                          <span className="text-[9px] font-black px-2 py-1 rounded-md uppercase bg-slate-100 dark:bg-slate-800 text-[#003087] dark:text-blue-400">
+                            {project.category?.name || 'GENERAL'}
+                          </span>
+                        </div>
+                        <h3 className="font-bold text-slate-900 dark:text-white text-base mb-3">{project.title}</h3>
+                        <p className="text-slate-600 dark:text-slate-350 text-[11px] leading-relaxed mb-4 flex-1">{project.description}</p>
+                        <div className="flex flex-wrap gap-2 mb-4">
+                          {project.skills?.map(s => (
+                            <span key={s.id} className="bg-slate-100 dark:bg-slate-800 text-[#003087] dark:text-blue-400 text-[10px] font-bold px-2 py-1 rounded border border-slate-200 dark:border-slate-700">{s.name}</span>
+                          ))}
+                        </div>
+                        {project.project_url && (
+                          <a href={project.project_url} target="_blank" rel="noopener noreferrer"
+                            className="w-full py-2 rounded-lg bg-slate-900 dark:bg-slate-750 text-white text-xs font-bold flex items-center justify-center gap-2 hover:bg-[#003087] dark:hover:bg-blue-600 transition-all no-underline border-none cursor-pointer">
+                            {t('portfolio_view.visit_project')}
+                          </a>
+                        )}
+                        <div className="flex justify-end mt-3">
+                          <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-full">
+                            {project.created_at ? new Date(project.created_at).getFullYear() : ''}
+                          </span>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="col-span-full py-12 text-center bg-white dark:bg-slate-900 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700">
+                      <Folder size={32} className="mx-auto text-slate-400 mb-3" />
+                      <p className="text-slate-650 dark:text-slate-400 font-bold text-sm mb-1">{t('portfolio_view.no_proj')}</p>
+                    </div>
+                  )}
                 </div>
-              ))}
-            </div>
-          </section>
+              </div>
+            )}
 
-          {/* --- EDUCACIÓN --- */}
-          <section className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-            <h2 className="text-xl font-bold text-gray-900 mb-2">Educación</h2>
-            <p className="text-sm text-gray-500 mb-6">
-              Muestra tus aptitudes y tendrás el doble de probabilidad de recibir mensajes InMail de
-              técnicos de selección.
-            </p>
-
-            <div className="flex flex-col gap-6">
-              {profile.education.map((edu) => (
-                <div key={edu.id} className="flex gap-4">
-                  <div className="w-12 h-12 bg-[#f3f2ef] rounded-md flex items-center justify-center shrink-0 border border-gray-200">
-                    <GraduationCap className="text-gray-500 w-6 h-6" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-gray-900">{edu.school}</h3>
-                    <p className="text-sm text-gray-800">{edu.degree}</p>
-                    <p className="text-xs text-gray-500 mt-1">{edu.dateRange}</p>
-                  </div>
+            {/* CERTIFICATIONS */}
+            {portfolio.show_certifications !== false && (
+              <div className="bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-xl border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{t('portfolio_view.certs_title')}</h2>
+                <p className="text-[#003087] dark:text-blue-400 text-[10px] font-bold uppercase tracking-widest mb-8">{t('portfolio_view.certs_subtitle')}</p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {portfolio.certifications && portfolio.certifications.length > 0 ? (
+                    portfolio.certifications.map(cert => (
+                      <div key={cert.id} className="bg-white dark:bg-slate-900 rounded-xl border-l-4 border-violet-500 dark:border-violet-400 shadow-lg hover:-translate-y-1 transition-all duration-300 p-6 flex flex-col">
+                        <h3 className="font-bold text-slate-900 dark:text-white text-base mb-3">{cert.name}</h3>
+                        <p className="text-[#003087] dark:text-blue-400 text-xs font-bold mb-2">{cert.issuing_organization}</p>
+                        <p className="text-slate-400 dark:text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-3">
+                          {new Date(cert.issue_date).toLocaleDateString(i18n.language, { month: 'long', year: 'numeric' })}
+                        </p>
+                        {cert.credential_url && (
+                          <a href={cert.credential_url} target="_blank" rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline mt-auto">
+                            {t('portfolio_view.view_credential')}
+                          </a>
+                        )}
+                      </div>
+                    ))
+                  ) : (
+                    <div className="col-span-full py-12 text-center bg-white dark:bg-slate-900 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700">
+                      <Award size={32} className="mx-auto text-slate-400 mb-3" />
+                      <p className="text-slate-650 dark:text-slate-400 font-bold text-sm mb-1">{t('portfolio_view.no_certs')}</p>
+                    </div>
+                  )}
                 </div>
-              ))}
-            </div>
-          </section>
+              </div>
+            )}
 
-          {/* --- PROYECTOS DESTACADOS --- */}
-          <section className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-            <h2 className="text-xl font-bold text-gray-900 mb-2">Proyectos Destacados</h2>
-            <p className="text-sm text-gray-500 mb-6">
-              Destaca los proyectos clave en los que has trabajado para demostrar tu experiencia
-              práctica.
-            </p>
-
-            <div className="flex flex-col gap-6">
-              {profile.projects.map((project) => (
-                <div key={project.id} className="flex gap-4 flex-col sm:flex-row">
-                  <div className="w-full sm:w-48 h-32 bg-gray-200 rounded-lg overflow-hidden shrink-0 border border-gray-200">
-                    <img
-                      src={project.imageUrl}
-                      alt={project.title}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-gray-900">{project.title}</h3>
-                    <p className="text-sm text-gray-600 font-medium">
-                      {project.type} - {project.year}
-                    </p>
-                    <p className="text-sm text-gray-700 mt-2 leading-relaxed">
-                      {project.description}
-                    </p>
-                    <button className="mt-3 text-sm text-[#003087] font-semibold hover:underline flex items-center gap-1">
-                      Ver proyecto <ExternalLink size={14} />
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* --- CERTIFICACIONES --- */}
-          <section className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-            <h2 className="text-xl font-bold text-gray-900 mb-2">Certificaciones</h2>
-            <p className="text-sm text-gray-500 mb-6">
-              Las certificaciones aumentan tu credibilidad y te hacen destacar ante los
-              reclutadores.
-            </p>
-
-            <div className="flex flex-col gap-6">
-              {profile.certifications.map((cert) => (
-                <div key={cert.id} className="flex gap-4">
-                  <div className="w-12 h-12 bg-[#f3f2ef] rounded-md flex items-center justify-center shrink-0 border border-gray-200">
-                    <Award className="text-gray-500 w-6 h-6" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-gray-900">{cert.title}</h3>
-                    <p className="text-sm text-gray-800">{cert.issuer}</p>
-                    <p className="text-xs text-gray-500 mt-1">Expedición: {cert.date}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        </div>
+          </div>
+        </main>
       </div>
+
+      <PdfTemplateModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        portfolioId={id}
+      />
     </div>
   )
 }

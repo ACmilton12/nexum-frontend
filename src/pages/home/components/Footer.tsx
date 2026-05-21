@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import logoUmss from '../../../assets/logoUmss.png'
+import useAuth from '../../../hooks/useAuth'
 
 export default function Footer() {
   const { t } = useTranslation()
+  const { user } = useAuth()
   return (
     <footer id="contacto" className="pt-16 pb-8" style={{ backgroundColor: '#001A5E' }}>
       <div className="max-w-7xl mx-auto px-6">
@@ -30,7 +32,7 @@ export default function Footer() {
               {t('footer.home')}
             </Link>
             <Link
-              to="/Home"
+              to={user ? '/directorio' : '/Home'}
               className="block text-blue-300 hover:text-white text-sm mb-2.5 transition-colors no-underline"
             >
               {t('footer.search')}

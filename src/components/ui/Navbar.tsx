@@ -5,10 +5,12 @@ import { useState } from 'react'
 import UserMenuModal from './UserMenuModal' // Importa el componente del modal
 import useAuth from '../../hooks/useAuth' // Hook para obtener el usuario logueado
 import LanguageSelector from './LanguageSelector'
+import { useTranslation } from 'react-i18next'
 
 const Navbar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const { user } = useAuth()
+  const { user, isAdmin } = useAuth()
+  const { t } = useTranslation()
 
   const isAuthenticated = !!user
   const userName = user
@@ -16,10 +18,10 @@ const Navbar = () => {
     : 'Invitado'
   const userProfession =
     user?.role === 'professional'
-      ? 'Profesional'
+      ? t('navbar.user_menu.role_professional', 'Profesional')
       : user?.role === 'admin'
-        ? 'Administrador'
-        : 'Usuario'
+        ? t('navbar.user_menu.role_admin', 'Administrador')
+        : t('navbar.user_menu.role_user', 'Usuario')
   const userEmail = user?.email || 'Sin correo'
   const userPhoto = user?.avatar_url || '' // Avatar desde la BD o vacío
 
@@ -28,7 +30,7 @@ const Navbar = () => {
       {' '}
       {/* Azul marino profundo */}
       {/* Hamburger + Logo */}
-      <div className="flex items-center gap-2">
+      <div className="flex-1 flex items-center gap-2">
         {/* Botón hamburguesa visible solo en móvil */}
         <button
           onClick={() => window.dispatchEvent(new CustomEvent('toggle-sidebar'))}
@@ -38,7 +40,7 @@ const Navbar = () => {
           <Menu size={22} />
         </button>
 
-        <Link to="/" className="flex items-center gap-2 cursor-pointer">
+        <Link to="/" className="flex items-center gap-2 cursor-pointer no-underline">
           <div className="flex items-center gap-2">
             <img
               src={logoUmss}
@@ -49,8 +51,30 @@ const Navbar = () => {
           </div>
         </Link>
       </div>
+
+      {/* Links — centro */}
+      <div className="hidden md:flex flex-1 items-center justify-center gap-10">
+        <Link
+          to="/"
+          onClick={() => {
+            if (window.location.pathname === '/') {
+              window.scrollTo({ top: 0, behavior: 'smooth' })
+            }
+          }}
+          className="text-white text-xs font-bold tracking-widest hover:text-gray-300 transition-colors duration-200 no-underline"
+        >
+          {t('navbar.home').toUpperCase()}
+        </Link>
+        <Link
+          to={user ? '/directorio' : '/Home'}
+          className="text-white text-xs font-bold tracking-widest hover:text-gray-300 transition-colors duration-200 no-underline"
+        >
+          {t('navbar.search').toUpperCase()}
+        </Link>
+      </div>
+
       {/* Lógica de Usuario */}
-      <div className="flex items-center gap-3 sm:gap-5">
+      <div className="flex-1 flex items-center justify-end gap-3 sm:gap-5">
         <LanguageSelector />
 
         {/* Separator */}
@@ -76,6 +100,7 @@ const Navbar = () => {
               userProfession={userProfession}
               userPhoto={userPhoto}
               userEmail={userEmail}
+              isAdmin={isAdmin}
             />
           </div>
         )}

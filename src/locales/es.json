@@ -1,6 +1,6 @@
 {
   "navbar": {
-    "search": "Buscar profesionales",
+    "search": "Explorar profesionales",
     "contact": "Contacto",
     "home": "Inicio",
     "login": "Iniciar sesión",
@@ -8,7 +8,15 @@
     "dashboard": "Dashboard",
     "profile": "Mi perfil",
     "logout": "Cerrar sesión",
-    "select_language": "Seleccionar Idioma"
+    "select_language": "Seleccionar Idioma",
+    "user_menu": {
+      "profile_settings": "Configuración de Perfil",
+      "dark_mode": "Modo Oscuro",
+      "logout": "Cerrar Sesión",
+      "role_admin": "Administrador",
+      "role_professional": "Profesional",
+      "role_user": "Usuario"
+    }
   },
   "auth": {
     "login": {
@@ -107,7 +115,7 @@
     "description": "Plataforma institucional de portafolios digitales para profesionales.",
     "navigation": "Navegación",
     "home": "Inicio",
-    "search": "Buscar Profesionales",
+    "search": "Explorar profesionales",
     "login": "Iniciar Sesión",
     "register": "Registrarse",
     "resources": "Recursos",
@@ -576,7 +584,23 @@
     "levels": {
       "basico": "Básico",
       "intermedio": "Intermedio",
-      "avanzado": "Avanzado"
+      "avanzado": "Avanzado",
+      "technical": {
+        "basico": "Básico",
+        "intermedio": "Intermedio",
+        "avanzado": "Avanzado",
+        "basico_desc": "Conceptos y uso guiado.",
+        "intermedio_desc": "Implementación funcional en proyectos.",
+        "avanzado_desc": "Uso profesional autónomo."
+      },
+      "soft": {
+        "formacion": "En formación",
+        "desarrollada": "Desarrollada",
+        "fortalecida": "Fortalecida",
+        "formacion_desc": "Estoy desarrollando esta habilidad activamente.",
+        "desarrollada_desc": "La aplico con seguridad en contextos reales.",
+        "fortalecida_desc": "Es una de mis fortalezas consolidadas."
+      }
     }
   },
   "portfolio_view": {
@@ -670,5 +694,318 @@
     "generating_pdf": "Generando PDF...",
     "return": "Regresar",
     "error_generating_pdf": "Hubo un error al generar el PDF. Por favor intenta de nuevo."
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Panel de Administración",
+      "subtitle": "Control general de la plataforma NEXUM",
+      "stats": {
+        "total_users": "Total Usuarios Registrados",
+        "total_users_desc": "Total de usuarios en la plataforma",
+        "inactive_users": "Usuarios Inactivos",
+        "inactive_users_attention": "Requieren atención",
+        "inactive_users_all_active": "Todos activos",
+        "failed_logins": "Accesos Fallidos Recientes",
+        "failed_logins_check": "Revisar logs de auditoría",
+        "failed_logins_no_alerts": "Sin alertas"
+      },
+      "users_card": {
+        "title": "Gestión de Usuarios",
+        "desc": "Administra cuentas, roles, estados y permisos de los usuarios.",
+        "loading": "Cargando...",
+        "inactive_count": "{{count}} usuario inactivo.",
+        "inactive_count_plural": "{{count}} usuarios inactivos.",
+        "all_active": "Todos los usuarios están activos.",
+        "button": "Ver usuarios"
+      },
+      "backups_card": {
+        "title": "Copias de Seguridad",
+        "desc": "Gestiona y programa los respaldos automáticos de la plataforma.",
+        "loading": "Cargando...",
+        "last_backup": "Último backup: {{date}}",
+        "no_backups": "Sin backups registrados.",
+        "button": "Gestionar backups"
+      },
+      "skills_card": {
+        "title": "Sugerencias de Habilidades",
+        "desc": "Revisa las habilidades propuestas por los usuarios antes de que aparezcan en el catálogo.",
+        "loading": "Cargando...",
+        "no_pending": "Sin sugerencias pendientes.",
+        "pending_count": "{{count}} sugerencia pendiente de revisión.",
+        "pending_count_plural": "{{count}} sugerencias pendientes de revisión.",
+        "button": "Revisar sugerencias"
+      },
+      "categories_card": {
+        "title": "Sugerencias de Categorías",
+        "desc": "Revisa las categorías propuestas por los usuarios para organizar mejor los proyectos.",
+        "loading": "Cargando...",
+        "no_pending": "Sin sugerencias pendientes.",
+        "pending_count": "{{count}} sugerencia pendiente de revisión.",
+        "pending_count_plural": "{{count}} sugerencias pendientes de revisión.",
+        "button": "Revisar categorías"
+      },
+      "notifications": {
+        "title": "Notificaciones",
+        "inactive_users": "{{count}} usuario inactivo.",
+        "inactive_users_plural": "{{count}} usuarios inactivos.",
+        "failed_logins": "{{count}} intento de acceso fallido reciente.",
+        "failed_logins_plural": "{{count}} intentos de acceso fallido recientes.",
+        "pending_skills": "{{count}} sugerencia de habilidades pendiente.",
+        "pending_skills_plural": "{{count}} sugerencias de habilidades pendientes.",
+        "pending_categories": "{{count}} sugerencia de categorías pendiente.",
+        "pending_categories_plural": "{{count}} sugerencias de categorías pendientes."
+      },
+      "skills_modal": {
+        "title": "Sugerencias de Habilidades",
+        "subtitle": "Revisa y aprueba o rechaza las sugerencias de los usuarios.",
+        "loading": "Cargando sugerencias...",
+        "no_pending": "Sin sugerencias pendientes",
+        "all_reviewed": "Todas las sugerencias han sido revisadas.",
+        "category": "Categoría:",
+        "user": "Usuario:",
+        "approve": "Aprobar",
+        "reject": "Rechazar",
+        "pending_count": "{{count}} sugerencia pendiente",
+        "pending_count_plural": "{{count}} sugerencias pendientes",
+        "close": "Cerrar",
+        "error_load": "No se pudieron cargar las sugerencias.",
+        "toast_approved": "Sugerencia aprobada.",
+        "toast_rejected": "Sugerencia rechazada.",
+        "toast_error": "Error al procesar la acción."
+      },
+      "categories_modal": {
+        "title": "Sugerencias de Categorías",
+        "subtitle": "Revisa y aprueba o rechaza las sugerencias de nuevas categorías.",
+        "loading": "Cargando sugerencias...",
+        "no_pending": "Sin sugerencias pendientes",
+        "all_reviewed": "Todas las sugerencias han sido revisadas.",
+        "new_category": "Nueva Categoría",
+        "project": "Proyecto:",
+        "user": "Usuario:",
+        "approve": "Aprobar",
+        "reject": "Rechazar",
+        "pending_count": "{{count}} sugerencia pendiente",
+        "pending_count_plural": "{{count}} sugerencias pendientes",
+        "close": "Cerrar",
+        "error_load": "No se pudieron cargar las sugerencias de categorías.",
+        "toast_approved": "Sugerencia aprobada.",
+        "toast_rejected": "Sugerencia rechazada.",
+        "toast_error": "Error al procesar la acción."
+      },
+      "toasts": {
+        "error_skills": "No se pudieron cargar las sugerencias pendientes.",
+        "error_users": "No se pudieron cargar los datos de usuarios.",
+        "error_activity": "No se pudo cargar el historial de actividad.",
+        "success_load": "Panel de administración cargado correctamente."
+      }
+    },
+    "categories": {
+      "title": "Gestión de Categorías",
+      "tab": "Categorías",
+      "search_placeholder": "Buscar por nombre",
+      "filter_status": "Todos los estados",
+      "status_active": "ACTIVO",
+      "status_inactive": "INACTIVO",
+      "create_button": "Crear Categoría",
+      "table": {
+        "name": "Nombre",
+        "desc": "Descripción",
+        "status": "Estado",
+        "actions": "Acciones",
+        "no_results": "No se encontraron categorías.",
+        "no_desc": "— sin descripción —"
+      },
+      "form": {
+        "name_placeholder": "Nombre de categoría",
+        "desc_placeholder": "Breve descripción...",
+        "active_generated": "Generado Activo",
+        "save": "Guardar",
+        "cancel": "Cancelar",
+        "saving": "Guardando..."
+      },
+      "pagination": {
+        "showing": "Mostrando {{count}} de {{total}} Categorías",
+        "showing_zero": "0 Categorías encontradas",
+        "prev": "Anterior",
+        "next": "Siguiente"
+      },
+      "confirm": {
+        "title": "Confirmar Acción",
+        "desc": "¿Desea guardar la categoría?",
+        "confirm": "Confirmar"
+      },
+      "error": {
+        "load": "Error al cargar categorías",
+        "save": "Hubo un error al guardar."
+      },
+      "sidebar": {
+        "calendar": "Calendario"
+      }
+    },
+    "backups": {
+      "title": "Copias de Seguridad",
+      "subtitle": "Gestiona y genera respaldos de la base de datos del sistema.",
+      "restore_button": "Restaurar Backup",
+      "generate_button": "Generar Backup Manual",
+      "generating": "Generando...",
+      "stats": {
+        "total": "Total Backups",
+        "last": "Último Backup",
+        "none": "Ninguno",
+        "status": "Estado",
+        "status_active": "Automatizado activo"
+      },
+      "table": {
+        "title": "Historial de Respaldos",
+        "filename": "Nombre del Archivo",
+        "type": "Tipo",
+        "size": "Tamaño",
+        "date": "Fecha y Hora",
+        "actions": "Acciones",
+        "no_backups": "No hay copias de seguridad disponibles.",
+        "manual": "Manual",
+        "auto": "Automático",
+        "download_tooltip": "Descargar",
+        "delete_tooltip": "Eliminar"
+      },
+      "toasts": {
+        "restore_info": "La restauración debe ser realizada manualmente por un administrador de base de datos por seguridad.",
+        "generate_success": "Copia de seguridad generada y descargada con éxito.",
+        "generate_error": "Error al generar el backup.",
+        "delete_success": "Entrada eliminada del historial local.",
+        "download_success": "El archivo ya fue descargado al generarse."
+      }
+    },
+    "users": {
+      "title": "Gestión de Usuarios",
+      "subtitle": "Administración de accesos Nexum",
+      "filter_all": "Todos los estados",
+      "filter_active": "Activos",
+      "filter_inactive": "Inactivos",
+      "filter_button": "Filtrar",
+      "loading": "Cargando base de datos...",
+      "error_load": "Error al cargar usuarios.",
+      "table": {
+        "user": "Usuario",
+        "email": "Email",
+        "role": "Rol",
+        "status": "Estado",
+        "registration": "Registro",
+        "actions": "Acciones",
+        "active": "Activo",
+        "inactive": "Inactivo",
+        "suspend_tooltip": "Suspender acceso",
+        "reactivate_tooltip": "Reactivar acceso"
+      },
+      "pagination_desc": "Mostrando {{count}} registros en total. Deslice lateralmente en móvil.",
+      "security": {
+        "title": "Seguridad",
+        "desc": "La desactivación revoca tokens de sesión activos y bloquea el login del usuario seleccionado."
+      },
+      "modal": {
+        "title": "Confirmar Suspensión",
+        "desc": "¿Estás seguro de desactivar a {{name}}? Perderá acceso inmediato a la plataforma.",
+        "back": "Volver",
+        "confirm": "Desactivar"
+      },
+      "toasts": {
+        "error_deactivate": "Error al desactivar el usuario.",
+        "error_reactivate": "Error al reactivar el usuario."
+      }
+    },
+    "audit": {
+      "title": "Historial de Auditoría",
+      "search_placeholder": "Buscar por usuario o ID...",
+      "date_from": "Desde",
+      "date_to": "Hasta",
+      "export_pdf": "Exportar PDF",
+      "table": {
+        "user": "Usuario",
+        "event": "Evento",
+        "date": "Fecha/Hora",
+        "details": "Detalles",
+        "loading": "Consultando base de datos...",
+        "no_results": "No se encontraron registros de auditoría.",
+        "error": "Error al cargar el historial de auditoría."
+      },
+      "pdf": {
+        "title": "Historial de Auditoría - NEXUM",
+        "generated_at": "Generado el: {{date}}",
+        "filename": "historial_auditoria_{{date}}.pdf"
+      },
+      "events": {
+        "created": "Creado",
+        "updated": "Actualizado",
+        "deleted": "Eliminado",
+        "update_role": "Rol Actualizado",
+        "login_failed": "Acceso Fallido",
+        "login": "Login Exitoso",
+        "logout": "Cierre Sesión",
+        "profile_updated": "Perfil Modificado",
+        "portfolio_edit": "Portafolio Editado"
+      },
+      "detail_modal": {
+        "title": "Detalles de Actividad",
+        "responsible": "Usuario Responsable",
+        "affected": "Usuario Afectado",
+        "data_state": "Datos y Estados",
+        "close": "Cerrar Detalles",
+        "no_structured_details": "No hay detalles adicionales estructurados para este evento.",
+        "no_changes": "Sin cambios detectables.",
+        "field": "Campo Modificado",
+        "old_value": "Valor Anterior",
+        "new_value": "Nuevo Valor",
+        "registered_data": "Dato Registrado",
+        "value": "Valor"
+      },
+      "fields": {
+        "first_name": "Nombre",
+        "last_name": "Apellido",
+        "email": "Email",
+        "role": "Rol",
+        "is_active": "Estado de Cuenta",
+        "password": "Contraseña",
+        "biography": "Biografía",
+        "phone": "Teléfono",
+        "location": "Ubicación",
+        "github_url": "GitHub",
+        "linkedin_url": "LinkedIn",
+        "global_privacy": "Privacidad",
+        "name": "Nombre del Proyecto",
+        "description": "Descripción",
+        "deactivated_by_admin": "Estado de Cuenta",
+        "title": "Título",
+        "company": "Empresa",
+        "start_date": "Fecha de Inicio",
+        "end_date": "Fecha de Fin",
+        "is_current": "Trabajo Actual",
+        "issuing_entity": "Entidad Emisora",
+        "issue_date": "Fecha de Emisión",
+        "expiration_date": "Fecha de Expiración",
+        "image_url": "URL de Imagen",
+        "url": "Enlace URL",
+        "avatar_path": "Ruta de Avatar",
+        "design_pattern": "Patrón de Diseño",
+        "portfolio_id": "ID Portafolio",
+        "category_id": "ID Categoría",
+        "user_id": "ID Usuario"
+      },
+      "values": {
+        "unspecified": "No especificado",
+        "active": "Activo",
+        "suspended": "Suspendido",
+        "private": "Privado",
+        "public": "Público",
+        "yes": "Sí",
+        "no": "No"
+      },
+      "security": {
+        "title": "Seguridad",
+        "desc": "Supervisión activa del sistema. Se registran todos los cambios de roles y accesos fallidos."
+      },
+      "reports": {
+        "title": "Reportes"
+      }
+    }
   }
 }
