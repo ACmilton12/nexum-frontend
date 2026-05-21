@@ -50,7 +50,7 @@ const Navbar = () => {
         </Link>
       </div>
       {/* Lógica de Usuario */}
-      <div className="flex items-center gap-5">
+      <div className="flex items-center gap-3 sm:gap-5">
         <LanguageSelector />
 
         {/* Separator */}

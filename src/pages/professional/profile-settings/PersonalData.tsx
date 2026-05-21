@@ -20,12 +20,6 @@ import {
   MapPin,
   Phone,
   Mail,
-  ShieldCheck,
-  AlertTriangle,
-  CheckCircle,
-  BookOpen,
-  Settings,
-  FileText,
   Loader2
 } from 'lucide-react'
 
@@ -239,45 +233,6 @@ function PersonalData() {
             {t('sidebar.calendar', 'Calendario')}
           </h3>
           <Calendar />
-        </div>
-
-        {/* Notificaciones */}
-        <div>
-          <h3 className="font-bold text-textMain dark:text-white text-sm mb-4 flex items-center gap-2 uppercase tracking-wider">
-            <ShieldCheck size={18} className="text-action" />
-            {t('dashboard.notifications.title')}
-          </h3>
-          <div className="space-y-3">
-            <div className="flex items-start gap-2 text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
-              <AlertTriangle size={14} className="text-action mt-0.5 shrink-0" />
-              <span>{t('dashboard.notifications.views', { count: 3 })}</span>
-            </div>
-            <div className="flex items-start gap-2 text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
-              <CheckCircle size={14} className="text-green-500 mt-0.5 shrink-0" />
-              <span>{t('dashboard.notifications.last_project', { name: 'App Móvil' })}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Enlaces Rápidos */}
-        <div>
-          <h3 className="font-normal text-textMain dark:text-white text-sm mb-4 uppercase tracking-wider">
-            {t('dashboard.links.title')}
-          </h3>
-          <div className="space-y-3">
-            <div className="flex items-center gap-2 text-sm text-primary dark:text-blue-400 cursor-pointer hover:underline transition-all">
-              <BookOpen size={16} className="text-orange-400" />
-              <span className="font-medium">{t('dashboard.links.user_guide')}</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm text-primary dark:text-blue-400 cursor-pointer hover:underline transition-all">
-              <Settings size={16} className="text-purple-400" />
-              <span className="font-medium">{t('dashboard.links.tech_support')}</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm text-primary dark:text-blue-400 cursor-pointer hover:underline transition-all">
-              <FileText size={16} className="text-blue-300" />
-              <span className="font-medium">{t('dashboard.links.university_policies')}</span>
-            </div>
-          </div>
         </div>
       </div>
     )
