@@ -189,11 +189,11 @@ export default function HabilidadesPage() {
   const blandas = skillsFiltered.filter((s) => s.tipo === 'Blanda')
 
   return (
-    <div className="min-h-screen bg-background dark:bg-slate-900 flex flex-col transition-colors duration-300">
+    <div className="h-full max-h-full bg-background dark:bg-slate-900 flex flex-col transition-colors duration-300 overflow-hidden">
       <div className="flex flex-1 overflow-hidden">
         <Sidebar activeItem="Habilidades" />
         <main className="flex-1 flex flex-col lg:flex-row overflow-hidden bg-background dark:bg-slate-900 transition-colors duration-300">
-          <div className="flex-1 p-4 pl-16 sm:pl-6 md:p-8 overflow-y-auto">
+          <div className="flex-1 p-4 sm:p-6 md:p-8 overflow-y-auto">
             <header className="mb-4 sm:mb-6">
               <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mb-0.5">
                 {t('skills.platform_name')}
@@ -264,6 +264,23 @@ export default function HabilidadesPage() {
               </button>
             </div>
 
+            {/* Panel nueva habilidad (ahora arriba) */}
+            {mostrandoPanel && (
+              <div className="mb-5 animate-in slide-in-from-top-4 fade-in duration-300">
+                <NuevaHabilidadPanel
+                  tipo={tipoNueva}
+                  onTipoChange={setTipoNueva}
+                  catalogoPorCategoria={catalogoPorCategoria}
+                  skillsExistentes={skills}
+                  loadingCatalog={loadingCatalog}
+                  saving={savingNew}
+                  onSave={handleGuardarNuevo}
+                  onCancel={() => setMostrandoPanel(false)}
+                  onToast={(msg, t) => setToast({ mensaje: msg, tipo: t })}
+                />
+              </div>
+            )}
+
             {/* Habilidades registradas */}
             <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 shadow-md p-5 mb-5 transition-colors duration-300">
               <div className="flex items-center justify-between mb-4">
@@ -306,7 +323,7 @@ export default function HabilidadesPage() {
                           {t('skills.no_technical_skills')}
                         </p>
                       ) : (
-                        <div className="flex flex-wrap gap-2">
+                        <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2">
                           {tecnicas.map((s) => (
                             <SkillChip
                               key={s.portfolioSkillId}
@@ -335,7 +352,7 @@ export default function HabilidadesPage() {
                           {t('skills.no_soft_skills')}
                         </p>
                       ) : (
-                        <div className="flex flex-wrap gap-2">
+                        <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2">
                           {blandas.map((s) => (
                             <SkillChip
                               key={s.portfolioSkillId}
@@ -353,20 +370,7 @@ export default function HabilidadesPage() {
               )}
             </div>
 
-            {/* Panel nueva habilidad */}
-            {mostrandoPanel && (
-              <NuevaHabilidadPanel
-                tipo={tipoNueva}
-                onTipoChange={setTipoNueva}
-                catalogoPorCategoria={catalogoPorCategoria}
-                skillsExistentes={skills}
-                loadingCatalog={loadingCatalog}
-                saving={savingNew}
-                onSave={handleGuardarNuevo}
-                onCancel={() => setMostrandoPanel(false)}
-                onToast={(msg, t) => setToast({ mensaje: msg, tipo: t })}
-              />
-            )}
+
           </div>
         </main>
       </div>

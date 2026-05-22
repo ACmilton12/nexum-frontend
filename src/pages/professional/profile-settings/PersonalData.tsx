@@ -20,12 +20,6 @@ import {
   MapPin,
   Phone,
   Mail,
-  ShieldCheck,
-  AlertTriangle,
-  CheckCircle,
-  BookOpen,
-  Settings,
-  FileText,
   Loader2
 } from 'lucide-react'
 
@@ -235,49 +229,7 @@ function PersonalData() {
       <div className="sticky top-6 space-y-8">
         {/* Calendario */}
         <div>
-          <h3 className="font-bold text-textMain dark:text-white text-sm mb-4 uppercase tracking-wider">
-            {t('sidebar.calendar', 'Calendario')}
-          </h3>
           <Calendar />
-        </div>
-
-        {/* Notificaciones */}
-        <div>
-          <h3 className="font-bold text-textMain dark:text-white text-sm mb-4 flex items-center gap-2 uppercase tracking-wider">
-            <ShieldCheck size={18} className="text-action" />
-            {t('dashboard.notifications.title')}
-          </h3>
-          <div className="space-y-3">
-            <div className="flex items-start gap-2 text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
-              <AlertTriangle size={14} className="text-action mt-0.5 shrink-0" />
-              <span>{t('dashboard.notifications.views', { count: 3 })}</span>
-            </div>
-            <div className="flex items-start gap-2 text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
-              <CheckCircle size={14} className="text-green-500 mt-0.5 shrink-0" />
-              <span>{t('dashboard.notifications.last_project', { name: 'App Móvil' })}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Enlaces Rápidos */}
-        <div>
-          <h3 className="font-normal text-textMain dark:text-white text-sm mb-4 uppercase tracking-wider">
-            {t('dashboard.links.title')}
-          </h3>
-          <div className="space-y-3">
-            <div className="flex items-center gap-2 text-sm text-primary dark:text-blue-400 cursor-pointer hover:underline transition-all">
-              <BookOpen size={16} className="text-orange-400" />
-              <span className="font-medium">{t('dashboard.links.user_guide')}</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm text-primary dark:text-blue-400 cursor-pointer hover:underline transition-all">
-              <Settings size={16} className="text-purple-400" />
-              <span className="font-medium">{t('dashboard.links.tech_support')}</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm text-primary dark:text-blue-400 cursor-pointer hover:underline transition-all">
-              <FileText size={16} className="text-blue-300" />
-              <span className="font-medium">{t('dashboard.links.university_policies')}</span>
-            </div>
-          </div>
         </div>
       </div>
     )
@@ -285,17 +237,17 @@ function PersonalData() {
 
   if (loading)
     return (
-      <div className="min-h-screen bg-background dark:bg-slate-900 flex flex-col font-sans transition-colors duration-300">
+      <div className="h-full max-h-full bg-background dark:bg-slate-900 flex flex-col font-sans transition-colors duration-300 overflow-hidden">
         <div className="flex flex-1 overflow-hidden relative">
           <Sidebar activeItem="Datos Personales" />
           <main className="flex-1 flex flex-col lg:flex-row overflow-hidden bg-background dark:bg-slate-900 transition-colors duration-300">
-            <div className="flex-1 p-4 pl-14 sm:pl-6 md:p-8 flex items-center justify-center overflow-y-auto">
+            <div className="flex-1 p-4 sm:p-6 md:p-8 flex items-center justify-center overflow-y-auto">
               <div className="flex flex-col items-center gap-3 text-gray-400 dark:text-gray-500 font-medium">
                 <Loader2 className="animate-spin text-primary" size={32} />
                 <span>{t('profile.loading_profile')}</span>
               </div>
             </div>
-            <aside className="w-full lg:w-72 p-6 bg-white dark:bg-slate-900 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-800 shrink-0 overflow-y-auto transition-colors duration-300">
+            <aside className="hidden lg:block w-72 p-6 bg-white dark:bg-slate-900 lg:border-l border-gray-200 dark:border-gray-800 shrink-0 overflow-y-auto transition-colors duration-300">
               <RightPanelContent />
             </aside>
           </main>
@@ -304,13 +256,13 @@ function PersonalData() {
     )
 
   return (
-    <div className="min-h-screen bg-background dark:bg-slate-900 flex flex-col font-sans transition-colors duration-300">
+    <div className="h-full max-h-full bg-background dark:bg-slate-900 flex flex-col font-sans transition-colors duration-300 overflow-hidden">
       <div className="flex flex-1 overflow-hidden relative">
         <Sidebar activeItem="Datos Personales" />
 
         <main className="flex-1 flex flex-col lg:flex-row overflow-hidden bg-background dark:bg-slate-900 transition-colors duration-300">
           {/* SECCIÓN IZQUIERDA: Formulario */}
-          <div className="flex-1 p-4 pl-14 sm:pl-6 md:p-8 overflow-y-auto">
+          <div className="flex-1 p-4 sm:p-6 md:p-8 overflow-y-auto">
             <header className="mb-8">
               <h1 className="text-xl sm:text-2xl font-bold text-textMain dark:text-white mb-1">
                 {t('profile.personal_data')}
@@ -476,7 +428,7 @@ function PersonalData() {
           </div>
 
           {/* ASIDE DERECHO (ESTILO DASHBOARD ADMIN) */}
-          <aside className="w-full lg:w-72 p-6 bg-white dark:bg-slate-900 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-800 shrink-0 overflow-y-auto transition-colors duration-300">
+          <aside className="hidden lg:block w-72 p-6 bg-white dark:bg-slate-900 lg:border-l border-gray-200 dark:border-gray-800 shrink-0 overflow-y-auto transition-colors duration-300">
             <RightPanelContent />
           </aside>
         </main>

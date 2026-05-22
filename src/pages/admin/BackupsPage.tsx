@@ -4,16 +4,18 @@ import Sidebar from './components/Sidebar'
 import Toast from '../../components/ui/Toast'
 import { generateBackup } from '../../services/backups.service'
 import { getActivityLogs } from '../../services/admin.service'
+import { useTranslation } from 'react-i18next'
 
 interface Backup {
   id: string
   name: string
   size: string
   date: string
-  type: 'Automático' | 'Manual'
+  type: 'auto' | 'manual'
 }
 
 export default function BackupsPage() {
+  const { t, i18n } = useTranslation()
   const [backups, setBackups] = useState<Backup[]>([])
   const [loading, setLoading] = useState(false)
   const [toast, setToast] = useState<{ mensaje: string; tipo: 'success' | 'error' } | null>(null)
@@ -30,7 +32,7 @@ export default function BackupsPage() {
             name: log.properties?.filename || 'backup_db.sql',
             size: 'N/A',
             date: log.timestamp,
-            type: 'Manual' as const
+            type: 'manual' as const
           }))
         setBackups(backupLogs)
       } catch (error) {
@@ -49,20 +51,20 @@ export default function BackupsPage() {
         id: `bkp-${Date.now()}`,
         name: result.filename,
         size: result.size,
-        date: new Date().toLocaleString('es-ES', {
+        date: new Date().toLocaleString(i18n.language, {
           day: '2-digit',
           month: 'short',
           year: 'numeric',
           hour: '2-digit',
           minute: '2-digit'
         }),
-        type: 'Manual'
+        type: 'manual'
       }
 
       setBackups([newBackup, ...backups])
-      setToast({ mensaje: 'Copia de seguridad generada y descargada con éxito.', tipo: 'success' })
+      setToast({ mensaje: t('admin.backups.toasts.generate_success'), tipo: 'success' })
     } catch (error: unknown) {
-      setToast({ mensaje: (error as Error).message || 'Error al generar el backup.', tipo: 'error' })
+      setToast({ mensaje: (error as Error).message || t('admin.backups.toasts.generate_error'), tipo: 'error' })
     } finally {
       setLoading(false)
     }
@@ -70,63 +72,62 @@ export default function BackupsPage() {
 
   const handleDelete = (id: string) => {
     setBackups(backups.filter((b) => b.id !== id))
-    setToast({ mensaje: 'Entrada eliminada del historial local.', tipo: 'success' })
+    setToast({ mensaje: t('admin.backups.toasts.delete_success'), tipo: 'success' })
   }
 
   const handleDownload = () => {
-    setToast({ mensaje: 'El archivo ya fue descargado al generarse.', tipo: 'success' })
+    setToast({ mensaje: t('admin.backups.toasts.download_success'), tipo: 'success' })
   }
 
   return (
-    <div className="min-h-screen bg-background dark:bg-slate-900 flex flex-col transition-colors duration-300">
+    <div className="h-screen max-h-screen bg-background dark:bg-slate-900 flex flex-col transition-colors duration-300 overflow-hidden">
       <div className="flex flex-1 overflow-hidden">
         <Sidebar activeItem="Copias de Seguridad" />
 
-        <main className="flex-1 flex flex-col overflow-y-auto p-4 sm:p-6 md:p-8 pl-16 md:pl-8 bg-background dark:bg-slate-900 transition-colors duration-300">
+        <main className="flex-1 flex flex-col overflow-y-auto p-4 sm:p-6 md:p-8 bg-background dark:bg-slate-900 transition-colors duration-300">
           <div className="max-w-6xl w-full mx-auto">
             {/* Header */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
               <div>
                 <h1 className="text-2xl font-bold text-textMain dark:text-white flex items-center gap-2 mb-1">
                   <Database className="text-primary" size={24} />
-                  Copias de Seguridad
+                  {t('admin.backups.title')}
                 </h1>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Gestiona y genera respaldos de la base de datos del sistema.
+                  {t('admin.backups.subtitle')}
                 </p>
               </div>
 
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-col sm:flex-row gap-3 w-full">
                 {/* Botón de Restaurar (Estático) */}
                 <button
                   onClick={() =>
                     setToast({
-                      mensaje:
-                        'La restauración debe ser realizada manualmente por un administrador de base de datos por seguridad.',
+                      mensaje: t('admin.backups.toasts.restore_info'),
                       tipo: 'error'
                     })
                   }
-                  className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 text-sm px-5 py-2.5 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-700 transition-all shadow-sm flex items-center gap-2 font-semibold"
+                  className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 text-sm px-5 py-2.5 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-700 transition-all shadow-sm flex items-center justify-center gap-2 font-semibold w-full sm:w-auto"
                 >
                   <Download className="rotate-180" size={18} />
-                  Restaurar Backup
+                  {t('admin.backups.restore_button')}
                 </button>
 
                 {/* Botón de Generar */}
                 <button
                   onClick={handleGenerateBackup}
                   disabled={loading}
-                  className="bg-action text-white text-sm px-5 py-2.5 rounded-xl hover:opacity-90 transition-all shadow-md flex items-center gap-2 font-semibold disabled:opacity-70 disabled:cursor-not-allowed"
+                  className="bg-action text-white text-sm px-5 py-2.5 rounded-xl hover:opacity-90 transition-all shadow-md flex items-center justify-center gap-2 font-semibold disabled:opacity-70 disabled:cursor-not-allowed w-full sm:w-auto"
                 >
                   {loading ? (
                     <>
                       <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
-                      Generando...
+                      {t('admin.backups.generating')}
                     </>
                   ) : (
                     <>
                       <Plus size={18} />
-                      Generar Backup Manual
+                      {t('admin.backups.generate_button')}
                     </>
                   )}
                 </button>
@@ -141,7 +142,7 @@ export default function BackupsPage() {
                 </div>
                 <div>
                   <p className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide mb-0.5">
-                    Total Backups
+                    {t('admin.backups.stats.total')}
                   </p>
                   <p className="text-2xl font-bold text-textMain dark:text-white">
                     {backups.length}
@@ -155,10 +156,10 @@ export default function BackupsPage() {
                 </div>
                 <div>
                   <p className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide mb-0.5">
-                    Último Backup
+                    {t('admin.backups.stats.last')}
                   </p>
                   <p className="text-sm font-bold text-textMain dark:text-white">
-                    {backups[0]?.date || 'Ninguno'}
+                    {backups[0]?.date || t('admin.backups.stats.none')}
                   </p>
                 </div>
               </div>
@@ -169,10 +170,10 @@ export default function BackupsPage() {
                 </div>
                 <div>
                   <p className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide mb-0.5">
-                    Estado
+                    {t('admin.backups.stats.status')}
                   </p>
                   <p className="text-sm font-bold text-textMain dark:text-white">
-                    Automatizado activo
+                    {t('admin.backups.stats.status_active')}
                   </p>
                 </div>
               </div>
@@ -182,18 +183,18 @@ export default function BackupsPage() {
             <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden transition-colors">
               <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-slate-900/50">
                 <h2 className="font-bold text-textMain dark:text-white text-sm">
-                  Historial de Respaldos
+                  {t('admin.backups.table.title')}
                 </h2>
               </div>
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm text-gray-600 dark:text-gray-400">
+                <table className="w-full text-left text-sm text-gray-600 dark:text-gray-400 min-w-[560px]">
                   <thead className="text-xs text-gray-400 dark:text-gray-500 uppercase bg-gray-50/50 dark:bg-slate-900/50 border-b border-gray-100 dark:border-gray-700">
                     <tr>
-                      <th className="px-6 py-3 font-semibold">Nombre del Archivo</th>
-                      <th className="px-6 py-3 font-semibold">Tipo</th>
-                      <th className="px-6 py-3 font-semibold">Tamaño</th>
-                      <th className="px-6 py-3 font-semibold">Fecha y Hora</th>
-                      <th className="px-6 py-3 font-semibold text-right">Acciones</th>
+                      <th className="px-4 sm:px-6 py-3 font-semibold whitespace-nowrap">{t('admin.backups.table.filename')}</th>
+                      <th className="px-4 sm:px-6 py-3 font-semibold">{t('admin.backups.table.type')}</th>
+                      <th className="px-4 sm:px-6 py-3 font-semibold">{t('admin.backups.table.size')}</th>
+                      <th className="px-4 sm:px-6 py-3 font-semibold whitespace-nowrap">{t('admin.backups.table.date')}</th>
+                      <th className="px-4 sm:px-6 py-3 font-semibold text-right">{t('admin.backups.table.actions')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -203,7 +204,7 @@ export default function BackupsPage() {
                           colSpan={5}
                           className="px-6 py-8 text-center text-gray-500 dark:text-gray-500"
                         >
-                          No hay copias de seguridad disponibles.
+                          {t('admin.backups.table.no_backups')}
                         </td>
                       </tr>
                     ) : (
@@ -218,12 +219,12 @@ export default function BackupsPage() {
                           </td>
                           <td className="px-6 py-4">
                             <span
-                              className={`px-2.5 py-1 text-[11px] font-bold rounded-full ${backup.type === 'Automático'
+                              className={`px-2.5 py-1 text-[11px] font-bold rounded-full ${backup.type === 'auto'
                                 ? 'bg-primary/10 text-primary'
                                 : 'bg-navbar/10 text-navbar'
                                 }`}
                             >
-                              {backup.type}
+                              {t(`admin.backups.table.${backup.type}`)}
                             </span>
                           </td>
                           <td className="px-6 py-4">{backup.size}</td>
@@ -233,14 +234,14 @@ export default function BackupsPage() {
                               <button
                                 onClick={() => handleDownload()}
                                 className="p-1.5 text-gray-400 hover:text-primary hover:bg-primary/10 rounded transition-colors"
-                                title="Descargar"
+                                title={t('admin.backups.table.download_tooltip')}
                               >
                                 <Download size={18} />
                               </button>
                               <button
                                 onClick={() => handleDelete(backup.id)}
                                 className="p-1.5 text-gray-400 hover:text-action hover:bg-action/10 rounded transition-colors"
-                                title="Eliminar"
+                                title={t('admin.backups.table.delete_tooltip')}
                               >
                                 <Trash2 size={18} />
                               </button>

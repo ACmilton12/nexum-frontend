@@ -36,7 +36,9 @@ const MainLayout = () => {
       </div>
 
       {/* Columna 3: Widgets fijos o scrollable */}
-      <RightWidgets />
+      <div className="hidden lg:block">
+        <RightWidgets />
+      </div>
     </div>
   )
 }

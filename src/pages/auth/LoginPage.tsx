@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { Mail, Lock, Eye, EyeOff, ArrowLeft } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { loginService } from '../../services/auth.service'
 import Toast from '../../components/ui/Toast'
 import logoUmss from '../../assets/logoUmss.png'
@@ -9,6 +10,7 @@ import prueba09 from '../../assets/prueba09.png'
 import prueba10 from '../../assets/prueba10.png'
 
 const LoginPage = () => {
+  const { t } = useTranslation()
   const [showPassword, setShowPassword] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -26,15 +28,34 @@ const LoginPage = () => {
 
   const [idx, setIdx] = useState(0);
   const slides = [
-    { img: prueba11, title: "Tu portafolio profesional ", desc: "Conecta con oportunidades y muestra tu talento al mundo" },
-    { img: prueba09, title: "Proyectos que hablan por ti", desc: "Sube tu trabajo y déjalo brillar ante los empleadores" },
-    { img: prueba10, title: "Verificado por UMSS · FCyT", desc: "Tu perfil con respaldo académico real" },
+    { img: prueba11, title: t('auth.login.carousel.slide1_title'), desc: t('auth.login.carousel.slide1_desc') },
+    { img: prueba09, title: t('auth.login.carousel.slide2_title'), desc: t('auth.login.carousel.slide2_desc') },
+    { img: prueba10, title: t('auth.login.carousel.slide3_title'), desc: t('auth.login.carousel.slide3_desc') },
   ];
 
   useEffect(() => {
     const t = setInterval(() => setIdx(i => (i + 1) % slides.length), 5000);
     return () => clearInterval(t);
   }, [slides.length]);
+
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    const status = searchParams.get('status');
+    if (status) {
+      if (status === 'success') {
+        setToast({ mensaje: t('auth.login.toasts.verified_success'), tipo: 'success' });
+      } else if (status === 'already-verified') {
+        setToast({ mensaje: t('auth.login.toasts.already_verified'), tipo: 'info' });
+      } else if (status === 'error') {
+        setToast({ mensaje: t('auth.login.toasts.verify_error'), tipo: 'error' });
+      }
+      
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.delete('status');
+      setSearchParams(newSearchParams, { replace: true });
+    }
+  }, [searchParams, setSearchParams, t]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -44,30 +65,30 @@ const LoginPage = () => {
 
     // Validaciones campo por campo
     if (!email && !password) {
-      setErrorEmail('El correo electrónico es obligatorio.')
-      setErrorPassword('La contraseña es obligatoria.')
-      setToast({ mensaje: 'Por favor completa todos los campos.', tipo: 'error' })
+      setErrorEmail(t('auth.login.errors.email_required'))
+      setErrorPassword(t('auth.login.errors.password_required'))
+      setToast({ mensaje: t('auth.login.toasts.fill_all'), tipo: 'error' })
       return
     }
     if (!email) {
-      setErrorEmail('El correo electrónico es obligatorio.')
-      setToast({ mensaje: 'Ingresa tu correo electrónico.', tipo: 'error' })
+      setErrorEmail(t('auth.login.errors.email_required'))
+      setToast({ mensaje: t('auth.login.toasts.enter_email'), tipo: 'error' })
       return
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) {
-      setErrorEmail('Ingresa un correo electrónico válido.')
-      setToast({ mensaje: 'El formato del correo no es válido.', tipo: 'error' })
+      setErrorEmail(t('auth.login.errors.email_invalid'))
+      setToast({ mensaje: t('auth.login.toasts.invalid_email_format'), tipo: 'error' })
       return
     }
     if (!password) {
-      setErrorPassword('La contraseña es obligatoria.')
-      setToast({ mensaje: 'Ingresa tu contraseña.', tipo: 'error' })
+      setErrorPassword(t('auth.login.errors.password_required'))
+      setToast({ mensaje: t('auth.login.toasts.enter_password'), tipo: 'error' })
       return
     }
     if (password.length < 6) {
-      setErrorPassword('La contraseña debe tener al menos 6 caracteres.')
-      setToast({ mensaje: 'La contraseña es demasiado corta.', tipo: 'error' })
+      setErrorPassword(t('auth.login.errors.password_short'))
+      setToast({ mensaje: t('auth.login.toasts.password_too_short'), tipo: 'error' })
       return
     }
 
@@ -85,7 +106,7 @@ const LoginPage = () => {
       }
 
       setToast({
-        mensaje: `¡Bienvenido/a, ${data.user.first_name || 'usuario'}! Iniciando sesión...`,
+        mensaje: t('auth.login.toasts.welcome', { name: data.user.first_name || 'usuario' }),
         tipo: 'success'
       })
 
@@ -98,7 +119,7 @@ const LoginPage = () => {
         if (data.user.role === 'admin') {
           navigate('/admin')
         } else {
-          navigate('/home')
+          navigate('/directorio')
         }
       }, 1200);
     } catch (err: unknown) {
@@ -109,20 +130,19 @@ const LoginPage = () => {
         rawMessage.includes('credentials are incorrect') ||
         rawMessage.includes('Invalid login')
       ) {
-        rawMessage = 'Credenciales inválidas. Verifica tu correo y contraseña.'
+        rawMessage = t('auth.login.errors.invalid_credentials')
       } else if (rawMessage.includes('Too many attempts')) {
-        rawMessage = 'Demasiados intentos. Por favor, intenta más tarde.'
+        rawMessage = t('auth.login.errors.too_many_attempts')
       }
 
-      const adminContact = 'admin@nexum.com'
       const isDeactivated = /desactivad|deactivated|disabled/i.test(rawMessage)
       const isNetwork = /fetch|network|failed/i.test(rawMessage)
 
       let errorMsg: string
       if (isDeactivated) {
-        errorMsg = `Tu cuenta fue desactivada. Contacta al administrador: ${adminContact}`
+        errorMsg = t('auth.login.errors.deactivated')
       } else if (isNetwork) {
-        errorMsg = 'No se pudo conectar con el servidor. Verifica tu conexión a internet.'
+        errorMsg = t('auth.login.errors.network')
       } else {
         errorMsg = rawMessage
       }
@@ -209,10 +229,10 @@ const LoginPage = () => {
             <div className="w-full max-w-sm mx-auto">
               <div className="mb-8">
                 <h2 className="text-2xl font-bold text-textMain tracking-tight mb-1.5">
-                  Bienvenido de nuevo
+                  {t('auth.login.welcome_back')}
                 </h2>
                 <p className="text-sm text-gray-500">
-                  Ingresa tus credenciales para acceder a tu cuenta
+                  {t('auth.login.enter_credentials')}
                 </p>
               </div>
 
@@ -220,13 +240,13 @@ const LoginPage = () => {
                 {/* Email */}
                 <div>
                   <label className="text-sm font-bold text-gray-700 block mb-1.5">
-                    Correo electrónico
+                    {t('auth.login.email_label')}
                   </label>
                   <div className="flex items-center bg-gray-200 border-2 border-transparent rounded-lg px-4 py-2.5 gap-3 focus-within:border-primary focus-within:bg-white transition-colors duration-300">
                     <Mail size={16} className="text-gray-400 shrink-0" />
                     <input
                       type="email"
-                      placeholder="nombre@ejemplo.com"
+                      placeholder={t('auth.login.email_placeholder')}
                       value={email}
                       onChange={(e) => {
                         setEmail(e.target.value)
@@ -243,13 +263,13 @@ const LoginPage = () => {
                 {/* Contraseña */}
                 <div>
                   <label className="text-sm font-bold text-gray-700 block mb-1.5">
-                    Contraseña
+                    {t('auth.login.password_label')}
                   </label>
                   <div className="flex items-center bg-gray-200 border-2 border-transparent rounded-lg px-4 py-2.5 gap-3 focus-within:border-primary focus-within:bg-white transition-colors duration-300">
                     <Lock size={16} className="text-gray-400 shrink-0" />
                     <input
                       type={showPassword ? 'text' : 'password'}
-                      placeholder="••••••••••"
+                      placeholder={t('auth.login.password_placeholder')}
                       value={password}
                       onChange={(e) => {
                         setPassword(e.target.value)
@@ -282,13 +302,13 @@ const LoginPage = () => {
                       className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2 cursor-pointer"
                       autoComplete="off"
                     />
-                    Recordarme
+                    {t('auth.login.remember_me')}
                   </label>
                   <Link
                     to="/forgot-password"
                     className="text-sm text-primary font-bold hover:text-primary/80 hover:underline transition-all"
                   >
-                    ¿Olvidaste tu contraseña?
+                    {t('auth.login.forgot_password')}
                   </Link>
                 </div>
 
@@ -299,18 +319,18 @@ const LoginPage = () => {
                     disabled={loading}
                     className="w-full bg-action text-white py-3.5 rounded-xl font-bold text-sm tracking-wide hover:opacity-90 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 disabled:opacity-60 disabled:pointer-events-none disabled:transform-none border-none cursor-pointer"
                   >
-                    {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
+                    {loading ? t('auth.login.loading_btn') : t('auth.login.submit_btn')}
                   </button>
                 </div>
 
                 {/* Registro */}
                 <p className="text-center text-sm text-gray-600 font-medium mt-6">
-                  ¿No tienes cuenta?{' '}
+                  {t('auth.login.no_account')}{' '}
                   <Link
                     to="/register"
                     className="text-primary font-bold hover:text-primary/80 hover:underline transition-all ml-1"
                   >
-                    Regístrate aquí
+                    {t('auth.login.register_here')}
                   </Link>
                 </p>
               </form>

@@ -20,7 +20,7 @@ export default function SkillChip({
 
   return (
     <div
-      className={`flex items-center gap-2 bg-white dark:bg-slate-800 border dark:border-slate-700 rounded-lg px-2.5 sm:px-3 py-2 transition-colors max-w-full ${
+      className={`flex items-center flex-wrap gap-2 bg-white dark:bg-slate-800 border dark:border-slate-700 rounded-lg px-2.5 sm:px-3 py-2 transition-colors w-full overflow-hidden ${
         toggling
           ? 'opacity-50 border-gray-200'
           : isPending
@@ -36,7 +36,7 @@ export default function SkillChip({
       </div>
 
       <span
-        className={`text-sm font-medium ${
+        className={`text-sm font-medium truncate min-w-0 ${
           isDisabled
             ? 'text-gray-400 dark:text-gray-500 line-through decoration-gray-300 dark:decoration-gray-700'
             : 'text-gray-800 dark:text-white'
@@ -93,7 +93,7 @@ export default function SkillChip({
               ? t('skills.edit_disabled_tip', 'Re-habilita la habilidad para poder editarla')
               : t('skills.edit_tip', 'Cambiar nivel')
         }
-        className={`ml-1 p-1.5 rounded-md transition-all duration-200 disabled:cursor-not-allowed border ${
+        className={`ml-auto p-1.5 rounded-md transition-all duration-200 disabled:cursor-not-allowed border shrink-0 ${
           isPending || isDisabled
             ? 'text-gray-300 dark:text-gray-700 border-transparent bg-transparent'
             : 'text-blue-600 bg-blue-50 border-blue-100 hover:bg-blue-100 hover:text-blue-700 hover:border-blue-200 dark:text-blue-400 dark:bg-blue-900/20 dark:border-blue-800/30 dark:hover:bg-blue-900/40 shadow-sm'
@@ -113,7 +113,7 @@ export default function SkillChip({
               ? t('skills.enable_tip', 'Re-habilitar habilidad')
               : t('skills.disable_tip', 'Deshabilitar habilidad')
         }
-        className={`p-1.5 rounded-md transition-all duration-200 disabled:cursor-not-allowed border ${
+        className={`p-1.5 rounded-md transition-all duration-200 disabled:cursor-not-allowed border shrink-0 ${
           isPending
             ? 'text-gray-300 dark:text-gray-700 border-transparent bg-transparent'
             : isDisabled

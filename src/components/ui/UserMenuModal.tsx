@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { UserCog, LogOut, Mail, Sun, Moon } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface UserMenuModalProps {
   isOpen: boolean
@@ -9,6 +10,7 @@ interface UserMenuModalProps {
   userProfession: string
   userPhoto: string
   userEmail: string
+  isAdmin?: boolean
 }
 
 const UserMenuModal = ({
@@ -17,9 +19,11 @@ const UserMenuModal = ({
   userName,
   userProfession,
   userPhoto,
-  userEmail
+  userEmail,
+  isAdmin = false
 }: UserMenuModalProps) => {
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const [isDarkMode, setIsDarkMode] = useState(() => {
     return localStorage.getItem("theme") === "dark";
   });
@@ -46,12 +50,13 @@ const UserMenuModal = ({
     localStorage.removeItem('user')
     sessionStorage.removeItem('token')
     sessionStorage.removeItem('user')
-    navigate('/login')
+    navigate('/')
+    window.location.reload()
   }
 
   return (
     <div className="absolute top-full right-0 pt-3 z-50 animate-in fade-in zoom-in duration-200">
-      <div className="w-72 bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-800 text-[#1a1a2e] dark:text-gray-100">
+      <div className="w-72 max-w-[calc(100vw-2rem)] bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-800 text-[#1a1a2e] dark:text-gray-100">
         {/* Cabecera: Info del usuario */}
         <div className="p-5 border-b border-gray-100 dark:border-gray-800 flex flex-col items-center gap-3">
           <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-[#003087] dark:border-blue-500 flex items-center justify-center bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500">
@@ -72,13 +77,15 @@ const UserMenuModal = ({
 
         {/* Opciones */}
         <div className="p-2">
-          <button
-            onClick={handleGoToProfile}
-            className="w-full flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-lg transition-colors text-left dark:text-gray-200"
-          >
-            <UserCog size={18} className="text-[#003087] dark:text-blue-400" />
-            <span>Configuración de Perfil</span>
-          </button>
+          {!isAdmin && (
+            <button
+              onClick={handleGoToProfile}
+              className="w-full flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-lg transition-colors text-left dark:text-gray-200"
+            >
+              <UserCog size={18} className="text-[#003087] dark:text-blue-400" />
+              <span>{t('navbar.user_menu.profile_settings', 'Configuración de Perfil')}</span>
+            </button>
+          )}
 
           <button
             onClick={() => setIsDarkMode(!isDarkMode)}
@@ -90,7 +97,7 @@ const UserMenuModal = ({
               ) : (
                 <Sun size={18} className="text-orange-500" />
               )}
-              <span className="dark:text-gray-200">Modo Oscuro</span>
+              <span className="dark:text-gray-200">{t('navbar.user_menu.dark_mode', 'Modo Oscuro')}</span>
             </div>
 
             {/* Interruptor */}
@@ -108,7 +115,7 @@ const UserMenuModal = ({
             className="flex items-center gap-3 px-4 py-4 text-sm text-textMain dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors border-t border-gray-200 dark:border-gray-800 mt-auto"
           >
             <LogOut size={18} className="text-red-500" />
-            Cerrar Sesión
+            {t('navbar.user_menu.logout', 'Cerrar Sesión')}
           </button>
         </div>
       </div>

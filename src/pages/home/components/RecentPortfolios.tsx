@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import useAuth from '../../../hooks/useAuth'
 import { CheckCircle2, MapPin, Briefcase, Eye } from 'lucide-react'
 import type { FeaturedProfile } from '../types'
 import { getInitials } from '../utils'
@@ -9,8 +11,7 @@ function PortfolioCard({ profile, index }: { profile: FeaturedProfile; index: nu
   const { t } = useTranslation()
   const initials = getInitials(profile.first_name, profile.last_name)
   const fullName = `${profile.first_name} ${profile.last_name}`
-  
-  // Use a rotating set of beautiful, modern gradients instead of flat solid colors
+
   const gradients = [
     'from-blue-600 to-indigo-800',
     'from-indigo-600 to-purple-800',
@@ -19,16 +20,21 @@ function PortfolioCard({ profile, index }: { profile: FeaturedProfile; index: nu
   const bgGradient = gradients[index % gradients.length]
 
   return (
-    <div className="relative rounded-2xl bg-white overflow-hidden flex flex-col h-full border border-gray-100/80 group shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] transition-all duration-500 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.1)] hover:-translate-y-1">
-      {/* Premium Header Banner */}
+    <div className="relative rounded-2xl bg-white overflow-hidden flex flex-col h-full border border-gray-100/80 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)]">
+      {/* Banner */}
       <div className={`h-28 w-full relative overflow-hidden bg-gradient-to-br ${bgGradient}`}>
         <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+        {/* Mensaje hint en el banner */}
+        <div className="absolute bottom-2 right-3 flex items-center gap-1 text-white/80 text-[10px] font-semibold">
+          <span>{t('recent.click_card_hint')}</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+        </div>
       </div>
 
       <div className="px-6 pb-6 relative flex-1 flex flex-col">
-        {/* Modern Avatar */}
-        <div className="absolute -top-12 left-6 border-4 border-white rounded-2xl bg-white shadow-xl overflow-hidden transition-transform duration-500 group-hover:scale-105 group-hover:-translate-y-1">
+        {/* Avatar */}
+        <div className="absolute -top-12 left-6 border-4 border-white rounded-2xl bg-white shadow-xl overflow-hidden">
           {profile.avatar_url ? (
             <img src={profile.avatar_url} alt={fullName} className="w-20 h-20 object-cover" />
           ) : (
@@ -46,26 +52,24 @@ function PortfolioCard({ profile, index }: { profile: FeaturedProfile; index: nu
             </h3>
             <CheckCircle2 size={18} className="text-blue-500 flex-shrink-0" fill="#fff" />
           </div>
-          <p className="text-sm font-semibold text-primary/80 mb-3">
-            Profesional Destacado
-          </p>
+          <p className="text-sm font-semibold text-primary/80 mb-3">{t('recent.featured_pro')}</p>
           <div className="flex items-center gap-1.5 text-gray-500 text-sm font-medium">
             <MapPin size={14} className="text-gray-400" />
-            <span className="line-clamp-1">{profile.location || "UMSS · Cochabamba, BO"}</span>
+            <span className="line-clamp-1">{profile.location || 'UMSS · Cochabamba, BO'}</span>
           </div>
         </div>
 
-        {/* Enhanced Statistics Grid */}
+        {/* Stats */}
         <div className="grid grid-cols-2 gap-4 py-5 border-y border-gray-100 mb-6 bg-gray-50/50 -mx-6 px-6">
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5 text-gray-400 text-[10px] font-bold uppercase tracking-wider mb-1.5">
-              <Briefcase size={12} /> Proyectos
+              <Briefcase size={12} /> {t('recent.projects')}
             </div>
             <div className="font-black text-2xl text-textMain tracking-tight">{profile.projects_count || 0}</div>
           </div>
           <div className="flex flex-col border-l border-gray-200 pl-4">
             <div className="flex items-center gap-1.5 text-gray-400 text-[10px] font-bold uppercase tracking-wider mb-1.5">
-              <Eye size={12} /> Visitas
+              <Eye size={12} /> {t('recent.views')}
             </div>
             <div className="font-black text-2xl text-textMain tracking-tight">
               {profile.visits_count ?? '—'}
@@ -73,14 +77,10 @@ function PortfolioCard({ profile, index }: { profile: FeaturedProfile; index: nu
           </div>
         </div>
 
-        {/* Refined CTA Button */}
-        <div className="mt-auto">
-          <Link
-            to={`/portfolio/${profile.id}`}
-            className="w-full flex items-center justify-center gap-2 font-bold text-sm py-3 rounded-xl transition-all duration-300 text-[#C8102E] border-2 border-[#C8102E] hover:bg-[#C8102E] hover:text-white hover:shadow-lg hover:shadow-[#C8102E]/20"
-          >
-            {t('recent.view_portfolio')}
-          </Link>
+        {/* Footer hint */}
+        <div className="mt-auto flex items-center justify-center gap-2 py-2 rounded-xl border-2 border-dashed border-[#C8102E]/30 text-[#C8102E]/60 text-xs font-semibold">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" /></svg>
+          {t('recent.view_portfolio')}
         </div>
       </div>
     </div>
@@ -88,6 +88,8 @@ function PortfolioCard({ profile, index }: { profile: FeaturedProfile; index: nu
 }
 
 function DraggableCarousel({ profiles }: { profiles: FeaturedProfile[] }) {
+  const navigate = useNavigate()
+
   const displayProfiles = profiles.length > 0
     ? Array.from({ length: Math.max(50, profiles.length * 10) }).map((_, i) => profiles[i % profiles.length])
     : []
@@ -95,8 +97,10 @@ function DraggableCarousel({ profiles }: { profiles: FeaturedProfile[] }) {
 
   const [progress, setProgress] = useState(2)
   const [isDragging, setIsDragging] = useState(false)
+  const [hasMoved, setHasMoved] = useState(false)
   const [startX, setStartX] = useState(0)
   const [startProgress, setStartProgress] = useState(0)
+  const [pointerDownTime, setPointerDownTime] = useState(0)
 
   useEffect(() => {
     if (isDragging) return
@@ -111,32 +115,54 @@ function DraggableCarousel({ profiles }: { profiles: FeaturedProfile[] }) {
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     setIsDragging(true)
+    setHasMoved(false)
     setStartX(e.clientX)
     setStartProgress(progress)
+    setPointerDownTime(Date.now())
     e.currentTarget.setPointerCapture(e.pointerId)
   }
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!isDragging) return
     const deltaX = e.clientX - startX
+    // Umbral más amplio en móvil para evitar toques accidentales
+    if (!hasMoved && Math.abs(deltaX) < 15) return
+    setHasMoved(true)
     let newProgress = startProgress - (deltaX / 150)
     newProgress = Math.max(0, Math.min(total - 1, newProgress))
     setProgress(newProgress)
   }
 
   const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDragging) return
     setIsDragging(false)
     e.currentTarget.releasePointerCapture(e.pointerId)
-    setProgress(Math.round(progress))
+
+    const elapsed = Date.now() - pointerDownTime
+    const totalDelta = Math.abs(e.clientX - startX)
+
+    if (hasMoved) {
+      // fue drag, solo redondear
+      setProgress(Math.round(progress))
+    } else if (elapsed < 300 && totalDelta < 10) {
+      // fue click/tap intencional: corto en tiempo y sin desplazamiento
+      const frontIndex = Math.round(progress)
+      const profile = displayProfiles[frontIndex]
+      if (profile?.id) {
+        navigate(`/portfolio/${profile.id}`)
+      }
+    }
+    // Si el dedo estuvo mucho tiempo o se desplazó un poco, no navegar
+    setHasMoved(false)
   }
 
   return (
-    <div className="relative w-full py-16 flex justify-center items-center h-[600px] overflow-hidden">
+    <div className="relative w-full py-4 flex justify-center items-center h-[420px] overflow-hidden">
       <style>{`
         .cine-container {
           perspective: 1200px;
-          cursor: grab;
-          touch-action: pan-y;
+          cursor: pointer;
+          touch-action: none;
           position: relative;
           width: 320px;
           height: 400px;
@@ -144,7 +170,6 @@ function DraggableCarousel({ profiles }: { profiles: FeaturedProfile[] }) {
           justify-content: center;
           align-items: center;
         }
-        .cine-container:active { cursor: grabbing; }
         .cine-card {
           position: absolute;
           width: 100%;
@@ -152,6 +177,10 @@ function DraggableCarousel({ profiles }: { profiles: FeaturedProfile[] }) {
           transform-style: preserve-3d;
           transition: transform var(--speed, 0.8s) cubic-bezier(0.25, 1, 0.5, 1), opacity var(--speed, 0.8s);
           user-select: none;
+          pointer-events: none;
+        }
+        .cine-card.is-front {
+          pointer-events: auto;
         }
         .cine-card::after {
           content: "";
@@ -177,12 +206,13 @@ function DraggableCarousel({ profiles }: { profiles: FeaturedProfile[] }) {
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
-        style={{ '--speed': isDragging ? '0.05s' : '0.8s' } as React.CSSProperties}
+        style={{ '--speed': isDragging && hasMoved ? '0.05s' : '0.8s' } as React.CSSProperties}
       >
         {displayProfiles.map((p, i) => {
           const diff = i - progress
           const absDiff = Math.abs(diff)
           const sign = Math.sign(diff)
+          const isFront = absDiff < 0.5
 
           const translateX = diff * 150
           const translateZ = -absDiff * 120 + (absDiff === 0 ? 80 : 0)
@@ -198,7 +228,7 @@ function DraggableCarousel({ profiles }: { profiles: FeaturedProfile[] }) {
           return (
             <div
               key={`cine-card-${i}`}
-              className="cine-card shadow-2xl"
+              className={`cine-card shadow-2xl${isFront ? ' is-front' : ''}`}
               style={{
                 transform: `translateX(${translateX}px) translateZ(${translateZ}px) rotateY(${rotateY}deg) scale(${scale})`,
                 zIndex,
@@ -206,7 +236,7 @@ function DraggableCarousel({ profiles }: { profiles: FeaturedProfile[] }) {
                 '--shadow-opacity': shadowOpacity,
               } as React.CSSProperties}
             >
-              <div style={{ pointerEvents: (isDragging || absDiff >= 0.5) ? 'none' : 'auto' }}>
+              <div>
                 <PortfolioCard profile={p} index={i} />
               </div>
             </div>
@@ -225,13 +255,14 @@ export default function RecentPortfolios({
   loading: boolean
 }) {
   const { t } = useTranslation()
+  const { user } = useAuth()
 
   return (
-    <section className="py-20 sm:py-28 bg-white transition-colors duration-300">
+    <section className="pt-10 pb-20 sm:pt-14 sm:pb-28 bg-[#ccd4da] transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-6 sm:px-8">
         <div className="text-center mb-4 md:mb-8">
           <h2 className="font-extrabold text-3xl sm:text-4xl md:text-5xl tracking-tight text-textMain mb-4">
-            Portafolios más vistos
+            {t('recent.most_viewed')}
           </h2>
           <p className="text-gray-500 max-w-2xl mx-auto text-base sm:text-lg font-medium">
             {t('recent.subtitle')}
@@ -260,7 +291,7 @@ export default function RecentPortfolios({
           </div>
         ) : profiles.length === 0 ? (
           <p className="text-center text-gray-400 py-16">
-            Aún no hay portafolios con visitas registradas.
+            {t('recent.no_views')}
           </p>
         ) : (
           <DraggableCarousel profiles={profiles} />
@@ -268,7 +299,7 @@ export default function RecentPortfolios({
 
         <div className="text-center mt-10">
           <Link
-            to="/Home"
+            to={user ? '/directorio' : '/Home'}
             className="text-white font-bold px-8 py-3.5 rounded-xl transition-all duration-200 shadow-lg no-underline inline-block"
             style={{ backgroundColor: '#003087' }}
             onMouseEnter={(e) =>

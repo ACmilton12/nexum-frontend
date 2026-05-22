@@ -170,21 +170,53 @@ function Links() {
 
   const handleAddLink = async (e: React.FormEvent) => {
     e.preventDefault();
-    const trimmed = newUrl.trim();
+    let trimmed = newUrl.trim();
     if (!trimmed) return;
-    
-    setIsAdding(true);
-    
+
+    // Regex corregido sin escapes innecesarios
+    const domainRegex = /^(?:https?:\/\/)?(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{2,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&/=]*)$/;
+
+    if (!domainRegex.test(trimmed)) {
+      setToast({ message: 'Por favor, ingresa un enlace válido con dominio (ej. tusitio.com)', type: 'error' });
+      return;
+    }
+
+    if (!/^https?:\/\//i.test(trimmed)) {
+      trimmed = `https://${trimmed}`;
+    }
+
     const isLinkedin = trimmed.includes('linkedin.com');
     const isGithub = trimmed.includes('github.com');
-    
+
+    const allExistingUrls = [
+      mainLinks.linkedin,
+      mainLinks.github,
+      ...additionalLinks.map(l => l.url)
+    ].filter(Boolean).map(u => u.toLowerCase());
+
+    if (allExistingUrls.includes(trimmed.toLowerCase())) {
+      setToast({ message: 'Este enlace ya ha sido registrado previamente', type: 'error' });
+      return;
+    }
+
+    if (isLinkedin && mainLinks.linkedin) {
+      setToast({ message: 'Ya tienes un enlace de LinkedIn. Elimínalo primero para agregar uno nuevo', type: 'error' });
+      return;
+    }
+    if (isGithub && mainLinks.github) {
+      setToast({ message: 'Ya tienes un enlace de GitHub. Elimínalo primero para agregar uno nuevo', type: 'error' });
+      return;
+    }
+
+    setIsAdding(true);
+
     try {
       if (isLinkedin || isGithub) {
         const updatedLinks = {
           ...mainLinks,
           ...(isLinkedin ? { linkedin: trimmed } : { github: trimmed })
         };
-        
+
         await updateLinksPrivacyData({
           nombre,
           apellido,
@@ -192,7 +224,7 @@ function Links() {
           github: updatedLinks.github,
           global_privacy: isPublic ? 'public' : 'private'
         });
-        
+
         setMainLinks(updatedLinks);
         setNewUrl('');
         setToast({ message: 'Enlace principal actualizado correctamente', type: 'success' });
@@ -235,7 +267,7 @@ function Links() {
           ...mainLinks,
           ...(id === 'linkedin' ? { linkedin: '' } : { github: '' })
         };
-        
+
         await updateLinksPrivacyData({
           nombre,
           apellido,
@@ -243,7 +275,7 @@ function Links() {
           github: updatedLinks.github,
           global_privacy: isPublic ? 'public' : 'private'
         });
-        
+
         setMainLinks(updatedLinks);
         setToast({ message: 'Enlace eliminado', type: 'success' });
       } else {
@@ -275,13 +307,13 @@ function Links() {
         <div className="flex flex-1 overflow-hidden relative">
           <Sidebar activeItem="Enlaces" />
           <main className="flex-1 flex flex-col lg:flex-row overflow-hidden">
-            <div className="flex-1 p-4 pl-14 sm:pl-6 md:p-6 flex items-center justify-center overflow-y-auto">
+            <div className="flex-1 p-4 sm:p-6 md:p-6 flex items-center justify-center overflow-y-auto">
               <div className="flex flex-col items-center gap-3 text-gray-400 font-medium">
                 <Loader2 className="animate-spin text-primary" size={32} />
                 <span>Cargando...</span>
               </div>
             </div>
-            <RightWidgets type="profile" className="w-full lg:w-64 shrink-0" />
+            <RightWidgets type="profile" className="hidden lg:block w-64 shrink-0" />
           </main>
         </div>
       </div>
@@ -300,7 +332,7 @@ function Links() {
         <Sidebar activeItem="Enlaces" />
 
         <main className="flex-1 flex flex-col lg:flex-row overflow-hidden">
-          <div className="flex-1 p-4 pl-14 sm:pl-6 md:p-6 overflow-y-auto">
+          <div className="flex-1 p-4 sm:p-6 md:p-6 overflow-y-auto">
             <div className="mb-6">
               <h1 className="text-xl sm:text-2xl font-bold text-textMain dark:text-white mb-1">
                 Enlaces del Portafolio
@@ -316,7 +348,7 @@ function Links() {
                   <div className="flex-1 flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-slate-900 hover:border-gray-300 dark:hover:border-gray-600 transition-colors focus-within:border-primary dark:focus-within:border-blue-500 focus-within:bg-white dark:focus-within:bg-slate-800">
                     <Globe size={14} className="text-gray-400 shrink-0" />
                     <input
-                      type="url"
+                      type="text"
                       value={newUrl}
                       onChange={(e) => setNewUrl(e.target.value)}
                       placeholder="Pega la URL de tu red o sitio web..."
@@ -411,7 +443,7 @@ function Links() {
             </div>
           </div>
 
-          <RightWidgets type="profile" className="w-full lg:w-64 shrink-0" />
+          <RightWidgets type="profile" className="hidden lg:block w-64 shrink-0" />
         </main>
       </div>
 

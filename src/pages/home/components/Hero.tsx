@@ -2,22 +2,43 @@ import React, { useState, useEffect } from 'react'
 import { Search, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import type { GlobalStats } from '../types'
+import portada1 from '../../../assets/portada1.png'
+import portada2 from '../../../assets/portada2.png'
+import portada3 from '../../../assets/portada3.png'
 
 export default function Hero({
   stats,
   onSearch: _onSearch,
+  searchTerm: externalSearchTerm = ''
 }: {
   stats: GlobalStats;
   onSearch?: (term: string) => void;
+  searchTerm?: string;
 }) {
   const { t } = useTranslation()
   const [current, setCurrent] = useState(0)
-  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTerm, setSearchTerm] = useState(externalSearchTerm)
+
+  useEffect(() => {
+    setSearchTerm(externalSearchTerm)
+  }, [externalSearchTerm])
 
   const slides = [
-    { color: '#C8102E' },
-    { color: '#111111' },
-    { color: '#003087' }
+    { 
+      image: portada1,
+      title: t('hero.slides.slide1.title'),
+      description: t('hero.description')
+    },
+    { 
+      image: portada2,
+      title: t('hero.slides.slide2.title'),
+      description: t('hero.slides.slide2.description')
+    },
+    { 
+      image: portada3,
+      title: t('hero.slides.slide3.title'),
+      description: t('hero.slides.slide3.description')
+    }
   ]
 
   useEffect(() => {
@@ -41,16 +62,18 @@ export default function Hero({
       {slides.map((slide, index) => (
         <div
           key={index}
-          className={`absolute inset-0 transition-opacity duration-1000 flex items-center justify-center ${index === current ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
-          style={{ backgroundColor: slide.color }}
+          className={`absolute inset-0 transition-opacity duration-1000 flex items-center justify-center bg-cover bg-center ${index === current ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+          style={{ backgroundImage: `url(${slide.image})` }}
         >
-          <div className="max-w-5xl w-full px-6 text-center text-white mt-10">
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold mb-4 tracking-tight">
-              {t('hero.title_start')}{' '}
-              <span className="text-white/80">{t('hero.title_accent')}</span> {t('hero.title_end')}
+          {/* Overlay oscuro para mejorar contraste */}
+          <div className="absolute inset-0 bg-black/60 z-0"></div>
+
+          <div className="relative z-10 max-w-5xl w-full px-6 text-center text-white mt-10">
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold mb-4 tracking-tight drop-shadow-md">
+              {slide.title}
             </h1>
             <p className="text-base md:text-xl opacity-90 mb-10 max-w-3xl mx-auto font-medium">
-              {t('hero.description')}
+              {slide.description}
             </p>
 
             {/* Buscador */}
@@ -81,7 +104,7 @@ export default function Hero({
                 {formatNumber(stats.total_users) || "—"}
               </div>
               <div className="text-blue-200/70 text-[10px] sm:text-xs font-bold uppercase tracking-widest">
-                Usuarios
+                {t('hero.stats.users', 'Usuarios')}
               </div>
             </div>
 

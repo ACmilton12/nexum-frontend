@@ -127,11 +127,11 @@ function LinksPrivacy() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background dark:bg-slate-900 flex flex-col font-sans transition-colors duration-300">
+      <div className="h-full max-h-full bg-background dark:bg-slate-900 flex flex-col font-sans transition-colors duration-300 overflow-hidden">
         <div className="flex flex-1 overflow-hidden relative">
           <Sidebar activeItem="Enlaces" />
           <main className="flex-1 flex flex-col lg:flex-row overflow-hidden bg-background dark:bg-slate-900 transition-colors duration-300">
-            <div className="flex-1 p-4 pl-14 sm:pl-6 md:p-6 flex items-center justify-center overflow-y-auto">
+            <div className="flex-1 p-4 sm:p-6 md:p-6 flex items-center justify-center overflow-y-auto">
               <div className="flex flex-col items-center gap-3 text-gray-400 dark:text-gray-500 font-medium">
                 <Loader2 className="animate-spin text-primary" size={32} />
                 <span>{t('common.loading')}</span>
@@ -139,7 +139,7 @@ function LinksPrivacy() {
             </div>
             <RightWidgets
               type="profile"
-              className="w-full lg:w-64 shrink-0 transition-colors duration-300"
+              className="hidden lg:block w-64 shrink-0 transition-colors duration-300"
             />
           </main>
         </div>
@@ -148,7 +148,7 @@ function LinksPrivacy() {
   }
 
   return (
-    <div className="min-h-screen bg-background dark:bg-slate-900 flex flex-col transition-colors duration-300">
+    <div className="h-full max-h-full bg-background dark:bg-slate-900 flex flex-col transition-colors duration-300 overflow-hidden">
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
         <Sidebar activeItem="Enlaces" />
@@ -156,7 +156,7 @@ function LinksPrivacy() {
         {/* Contenido principal + Panel derecho */}
         <main className="flex-1 flex flex-col lg:flex-row overflow-hidden">
           {/* SECCIÓN IZQUIERDA: Formularios */}
-          <div className="flex-1 p-4 pl-14 sm:pl-6 md:p-6 overflow-y-auto">
+          <div className="flex-1 p-4 sm:p-6 md:p-6 overflow-y-auto">
             {/* Header */}
             <div className="mb-6">
               <h1 className="text-xl sm:text-2xl font-bold text-textMain dark:text-white mb-1">
@@ -316,7 +316,7 @@ function LinksPrivacy() {
           </div>
 
           {/* PANEL DERECHO (Responsivo) */}
-          <RightWidgets type="profile" className="w-full lg:w-64 shrink-0 transition-colors" />
+          <RightWidgets type="profile" className="hidden lg:block w-64 shrink-0 transition-colors" />
         </main>
       </div>
 

@@ -17,10 +17,11 @@ import { useTranslation } from 'react-i18next'
 import Sidebar from './components/Sidebar'
 import Calendar from '../../components/ui/Calendar'
 import Toast from '../../components/ui/Toast'
+import PdfTemplateModal from '../../components/modals/PdfTemplateModal'
 import { getProjects } from '../../services/project.service'
 import { getPortfolioSkills } from '../../services/habilidades.service'
 import { getExperiences } from '../../services/experience.service'
-import { getProfileStats, type ProfileVisitor } from '../../services/profileVisits.service'
+import { getProfileStats, getProfileVisitors, type ProfileVisitor } from '../../services/profileVisits.service'
 import { API_BASE_URL } from '../../utils/constants'
 
 const getInitials = (name: string): string | null => {
@@ -89,25 +90,6 @@ const RightPanelContent = ({
         </div>
       </div>
 
-      <div className="mt-8">
-        <h3 className="font-bold text-textMain dark:text-white text-sm mb-4">
-          {t('dashboard.links.title')}
-        </h3>
-        <div className="space-y-3 text-xs text-primary dark:text-blue-400">
-          <p className="cursor-pointer hover:underline flex items-center justify-between group">
-            <span>📋 {t('dashboard.links.user_guide')}</span>
-            <ExternalLink size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-          </p>
-          <p className="cursor-pointer hover:underline flex items-center justify-between group">
-            <span>⚙️ {t('dashboard.links.tech_support')}</span>
-            <ExternalLink size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-          </p>
-          <p className="cursor-pointer hover:underline flex items-center justify-between group">
-            <span>📄 {t('dashboard.links.university_policies')}</span>
-            <ExternalLink size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-          </p>
-        </div>
-      </div>
     </div>
   )
 }
@@ -115,8 +97,11 @@ const RightPanelContent = ({
 const DashboardProfessional = () => {
   const { t, i18n } = useTranslation()
   const [viewsCount, setViewsCount] = useState(0)
+  const [visits7Days, setVisits7Days] = useState(0)
+  const [visits30Days, setVisits30Days] = useState(0)
   const [recentVisitors, setRecentVisitors] = useState<ProfileVisitor[]>([])
   const [showStats, setShowStats] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const [projectsCount, setProjectsCount] = useState<number | null>(null)
   const [skillsCount, setSkillsCount] = useState<number | null>(null)
   const [experienceCount, setExperienceCount] = useState<number | null>(null)
@@ -162,6 +147,27 @@ const DashboardProfessional = () => {
           const statsData = await getProfileStats(fetchedPortfolioId)
           setViewsCount(statsData.visits_count)
           setRecentVisitors(statsData.recent_visitors)
+
+          try {
+            const paginatedVisitors = await getProfileVisitors(fetchedPortfolioId, 1, 100)
+            const visitorsList = paginatedVisitors.data || []
+            const now = new Date().getTime()
+            
+            let count7 = 0
+            let count30 = 0
+
+            visitorsList.forEach((v) => {
+              const visitDate = new Date(v.visited_at).getTime()
+              const diffDays = (now - visitDate) / (1000 * 60 * 60 * 24)
+              if (diffDays <= 7) count7++
+              if (diffDays <= 30) count30++
+            })
+
+            setVisits7Days(count7)
+            setVisits30Days(count30)
+          } catch (e) {
+            console.error("Error al obtener la lista de visitantes para conteo:", e)
+          }
         } catch (error) {
           console.error("Error al obtener estadísticas del perfil:", error)
         }
@@ -225,12 +231,12 @@ const DashboardProfessional = () => {
   }, [i18n.language, t])
 
   return (
-    <div className="min-h-screen bg-background dark:bg-slate-900 flex flex-col transition-colors duration-300">
+    <div className="h-full max-h-full bg-background dark:bg-slate-900 flex flex-col transition-colors duration-300 overflow-hidden">
       <div className="flex flex-1 overflow-hidden">
         <Sidebar activeItem="Dashboard" />
 
         <main className="flex-1 flex flex-col lg:flex-row overflow-hidden bg-background dark:bg-slate-900 transition-colors duration-300">
-          <div className="flex-1 p-4 pl-14 sm:pl-6 md:p-6 overflow-y-auto">
+          <div className="flex-1 p-4 sm:p-6 md:p-6 overflow-y-auto">
             <h1 className="text-xl sm:text-2xl font-bold text-textMain dark:text-white mb-1">
               {t('dashboard.title')}
             </h1>
@@ -306,14 +312,14 @@ const DashboardProfessional = () => {
                   <div className="hidden sm:block w-px bg-gray-200 dark:bg-gray-700 mx-6"></div>
                   <div className="flex-1">
                     <p className="text-4xl sm:text-5xl font-bold text-[#002e6b] dark:text-blue-400 mb-2">
-                      {loading ? "—" : Math.floor(viewsCount * 0.1)}
+                      {loading ? "—" : visits7Days}
                     </p>
                     <p className="text-sm text-gray-500 dark:text-gray-400">Últimos 7 días — Esta semana</p>
                   </div>
                   <div className="hidden sm:block w-px bg-gray-200 dark:bg-gray-700 mx-6"></div>
                   <div className="flex-1">
                     <p className="text-4xl sm:text-5xl font-bold text-[#002e6b] dark:text-blue-400 mb-2">
-                      {loading ? "—" : Math.floor(viewsCount * 0.3)}
+                      {loading ? "—" : visits30Days}
                     </p>
                     <p className="text-sm text-gray-500 dark:text-gray-400">Último mes — 30 días</p>
                   </div>
@@ -393,12 +399,12 @@ const DashboardProfessional = () => {
                   >
                     <ExternalLink size={14} /> {t('dashboard.portfolio.view_online')}
                   </Link>
-                  <Link
-                    to="/imprimir"
-                    className="bg-white text-gray-700 dark:text-gray-300 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 text-sm px-4 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-600 transition-all shadow-sm flex items-center gap-2 no-underline font-medium"
+                  <button
+                    onClick={() => setIsModalOpen(true)}
+                    className="bg-white text-gray-700 dark:text-gray-300 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 text-sm px-4 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-600 transition-all shadow-sm flex items-center gap-2 no-underline font-medium cursor-pointer"
                   >
                     <FileText size={14} className="text-action" /> {t('dashboard.portfolio.export_pdf')}
-                  </Link>
+                  </button>
                 </div>
               </div>
 
@@ -458,7 +464,7 @@ const DashboardProfessional = () => {
           </div>
 
           {/* ASIDE DERECHO */}
-          <aside className="w-full lg:w-64 p-6 bg-white dark:bg-slate-900 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-800 shrink-0 overflow-y-auto transition-colors duration-300">
+          <aside className="hidden lg:block w-64 p-6 bg-white dark:bg-slate-900 lg:border-l border-gray-200 dark:border-gray-800 shrink-0 overflow-y-auto transition-colors duration-300">
             <RightPanelContent
               viewsCount={viewsCount}
               lastProjectName={lastProjectName}
@@ -469,6 +475,11 @@ const DashboardProfessional = () => {
       </div>
 
       {toast && <Toast message={toast.mensaje} type={toast.tipo} onClose={handleCloseToast} />}
+      <PdfTemplateModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        portfolioId={portfolioId}
+      />
     </div>
   )
 }

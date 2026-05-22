@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
+import type { MouseEvent } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import {
   LayoutDashboard,
   Users,
   Shield,
   Database,
-  Settings,
   FolderOpen,
   Layers,
   Wrench,
@@ -15,10 +15,10 @@ import {
   ChevronDown,
   IdCard,
   Link2,
-  BellRing,
-  Menu,
   X,
-  Eye
+  Eye,
+  Home,
+  Search
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import useAuth from '../../../hooks/useAuth'
@@ -41,6 +41,31 @@ const SidebarContent = ({
   onItemClick?: () => void
 }) => {
   const { t } = useTranslation()
+  const generalMobileItems = [
+    {
+      label: t('navbar.home'),
+      icon: <Home size={18} />,
+      path: '/',
+      id: 'Inicio',
+      onClick: (e: MouseEvent<HTMLAnchorElement>) => {
+        if (window.location.pathname === '/') {
+          e.preventDefault()
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+        }
+        if (onItemClick) onItemClick()
+      }
+    },
+    {
+      label: t('navbar.search'),
+      icon: <Search size={18} />,
+      path: '/directorio',
+      id: 'Buscar profesionales',
+      onClick: () => {
+        if (onItemClick) onItemClick()
+      }
+    }
+  ]
+
   const adminItems = [
     {
       label: t('sidebar.dashboard'),
@@ -71,17 +96,29 @@ const SidebarContent = ({
       icon: <Database size={18} />,
       path: '/admin/backups',
       id: 'Copias de Seguridad'
-    },
-    {
-      label: t('sidebar.system_config'),
-      icon: <Settings size={18} />,
-      path: '/admin/configuracion',
-      id: 'Configuración del Sistema'
     }
   ]
 
   return (
     <nav className="py-4 flex-1">
+      {/* Enlaces principales para dispositivos móviles */}
+      <div className="md:hidden flex flex-col border-b border-gray-200 dark:border-gray-800 pb-2 mb-2">
+        {generalMobileItems.map((item) => (
+          <Link
+            key={item.id}
+            to={item.path}
+            onClick={item.onClick}
+            className={`flex items-center gap-3 px-4 py-3 text-sm no-underline transition-colors ${activeItem === item.id
+              ? 'bg-primary text-white font-medium'
+              : 'text-textMain dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
+              }`}
+          >
+            {item.icon}
+            {item.label}
+          </Link>
+        ))}
+      </div>
+
       {isAdmin ? (
         adminItems.map((item) => (
           <Link
@@ -157,7 +194,7 @@ const SidebarContent = ({
               : 'text-textMain dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
               }`}
           >
-            <Eye size={18} /> Vista Portafolio
+            <Eye size={18} /> {t('sidebar.portfolio_view')}
           </Link>
 
           <button
@@ -197,7 +234,7 @@ const SidebarContent = ({
                   : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                   }`}
               >
-                <Link2 size={14} /> Enlaces
+                <Link2 size={14} /> {t('sidebar.links')}
               </Link>
               <Link
                 to="/profile/privacy"
@@ -207,19 +244,9 @@ const SidebarContent = ({
                   : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                   }`}
               >
-                <Shield size={14} /> Privacidad
+                <Shield size={14} /> {t('sidebar.privacy')}
               </Link>
 
-              <Link
-                to="/profile/notifications"
-                onClick={onItemClick}
-                className={`flex items-center gap-3 pl-8 pr-4 py-2.5 text-xs no-underline transition-colors ${activeItem === 'Notificaciones'
-                  ? 'text-primary font-bold bg-primary/5 dark:bg-primary/10'
-                  : 'text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-                  }`}
-              >
-                <BellRing size={14} /> {t('sidebar.notifications')}
-              </Link>
             </div>
           )}
         </div>
@@ -229,13 +256,14 @@ const SidebarContent = ({
 }
 
 const Sidebar = ({ activeItem = 'Dashboard' }: SidebarProps) => {
+  const { t } = useTranslation()
   const { isAdmin } = useAuth()
   const { pathname } = useLocation()
 
   const [isProfileOpen, setIsProfileOpen] = useState(
     activeItem.includes('Perfil') ||
     ['Datos Personales', 'Enlaces', 'Privacidad', 'Notificaciones'].includes(activeItem) ||
-    pathname.startsWith('/profile')
+    (pathname.startsWith('/profile') && pathname !== '/profile/habilidades')
   )
 
   const [isMobileOpen, setIsMobileOpen] = useState(false)
@@ -251,20 +279,19 @@ const Sidebar = ({ activeItem = 'Dashboard' }: SidebarProps) => {
     }
   }, [isMobileOpen])
 
+  // Escuchar el evento del botón hamburguesa en el Navbar
+  useEffect(() => {
+    const handleToggle = () => setIsMobileOpen((prev) => !prev)
+    window.addEventListener('toggle-sidebar', handleToggle)
+    return () => window.removeEventListener('toggle-sidebar', handleToggle)
+  }, [])
+
   const closeMobileMenu = () => {
     setIsMobileOpen(false)
   }
 
   return (
     <>
-      <button
-        onClick={() => setIsMobileOpen(true)}
-        className="md:hidden fixed top-3 left-4 z-40 bg-navbar text-white p-2 rounded-md shadow-md border-none cursor-pointer"
-        aria-label="Abrir menú"
-      >
-        <Menu size={20} />
-      </button>
-
       {isMobileOpen && (
         <div
           className="md:hidden fixed inset-0 bg-black/50 z-40 transition-opacity"
@@ -280,7 +307,7 @@ const Sidebar = ({ activeItem = 'Dashboard' }: SidebarProps) => {
           <span className="font-bold text-base tracking-wide">NEXUM</span>
           <button
             onClick={closeMobileMenu}
-            aria-label="Cerrar menú"
+            aria-label={t('sidebar.close_menu', 'Cerrar menú')}
             className="hover:opacity-80 transition-opacity border-none bg-transparent text-white cursor-pointer"
           >
             <X size={20} />

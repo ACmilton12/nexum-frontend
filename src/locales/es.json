@@ -1,6 +1,6 @@
 {
   "navbar": {
-    "search": "Buscar profesionales",
+    "search": "Explorar profesionales",
     "contact": "Contacto",
     "home": "Inicio",
     "login": "Iniciar sesión",
@@ -8,7 +8,60 @@
     "dashboard": "Dashboard",
     "profile": "Mi perfil",
     "logout": "Cerrar sesión",
-    "select_language": "Seleccionar Idioma"
+    "select_language": "Seleccionar Idioma",
+    "user_menu": {
+      "profile_settings": "Configuración de Perfil",
+      "dark_mode": "Modo Oscuro",
+      "logout": "Cerrar Sesión",
+      "role_admin": "Administrador",
+      "role_professional": "Profesional",
+      "role_user": "Usuario"
+    }
+  },
+  "auth": {
+    "login": {
+      "welcome_back": "Bienvenido de nuevo",
+      "enter_credentials": "Ingresa tus credenciales para acceder a tu cuenta",
+      "email_label": "Correo electrónico",
+      "email_placeholder": "nombre@ejemplo.com",
+      "password_label": "Contraseña",
+      "password_placeholder": "••••••••••",
+      "remember_me": "Recordarme",
+      "forgot_password": "¿Olvidaste tu contraseña?",
+      "submit_btn": "Iniciar Sesión",
+      "loading_btn": "Iniciando sesión...",
+      "no_account": "¿No tienes cuenta?",
+      "register_here": "Regístrate aquí",
+      "carousel": {
+        "slide1_title": "Tu portafolio profesional",
+        "slide1_desc": "Conecta con oportunidades y muestra tu talento al mundo",
+        "slide2_title": "Proyectos que hablan por ti",
+        "slide2_desc": "Sube tu trabajo y déjalo brillar ante los empleadores",
+        "slide3_title": "Verificado por UMSS · FCyT",
+        "slide3_desc": "Tu perfil con respaldo académico real"
+      },
+      "errors": {
+        "email_required": "El correo electrónico es obligatorio.",
+        "password_required": "La contraseña es obligatoria.",
+        "email_invalid": "Ingresa un correo electrónico válido.",
+        "password_short": "La contraseña debe tener al menos 6 caracteres.",
+        "invalid_credentials": "Credenciales inválidas. Verifica tu correo y contraseña.",
+        "too_many_attempts": "Demasiados intentos. Por favor, intenta más tarde.",
+        "deactivated": "Tu cuenta fue desactivada. Contacta al administrador: admin@nexum.com",
+        "network": "No se pudo conectar con el servidor. Verifica tu conexión a internet."
+      },
+      "toasts": {
+        "fill_all": "Por favor completa todos los campos.",
+        "enter_email": "Ingresa tu correo electrónico.",
+        "invalid_email_format": "El formato del correo no es válido.",
+        "enter_password": "Ingresa tu contraseña.",
+        "password_too_short": "La contraseña es demasiado corta.",
+        "welcome": "¡Bienvenido/a, {{name}}! Iniciando sesión...",
+        "verified_success": "¡Email verificado exitosamente! Ahora puedes iniciar sesión.",
+        "already_verified": "Tu cuenta ya se encuentra verificada.",
+        "verify_error": "Link de verificación inválido o expirado. Solicita uno nuevo."
+      }
+    }
   },
   "hero": {
     "badge": "Talento Universitario de la UMSS",
@@ -25,7 +78,20 @@
     },
     "filter_area": "Área: Desarrollo de Software",
     "filter_skills": "Habilidades: React, Node.js",
-    "filter_order": "Ordenar: Relevancia"
+    "filter_order": "Ordenar: Relevancia",
+    "slides": {
+      "slide1": {
+        "title": "DESCUBRE Y CREA PORTAFOLIO DE CLASE MUNDIAL"
+      },
+      "slide2": {
+        "title": "¡EL IMPULSO QUE TU CARRERA NECESITA!",
+        "description": "El ecosistema tecnológico de la UMSS para conectar el talento universitario con el mundo."
+      },
+      "slide3": {
+        "title": "Impulsa tu Futuro Profesional",
+        "description": "Empieza a crear, gestionar y compartir tu portafolio digital en NEXUM."
+      }
+    }
   },
   "features": {
     "title": "¿Por qué elegir Nexum?",
@@ -42,13 +108,14 @@
     "loading": "Cargando...",
     "error": "Algo salió mal",
     "back": "Regresar",
-    "view_more": "Ver más"
+    "view_more": "Ver más",
+    "calendar": "Calendario"
   },
   "footer": {
     "description": "Plataforma institucional de portafolios digitales para profesionales.",
     "navigation": "Navegación",
     "home": "Inicio",
-    "search": "Buscar Profesionales",
+    "search": "Explorar profesionales",
     "login": "Iniciar Sesión",
     "register": "Registrarse",
     "resources": "Recursos",
@@ -89,7 +156,9 @@
     "technical_skills": "Habilidades técnicas",
     "skills_placeholder_detailed": "Añadir habilidad + Enter",
     "apply_filters": "Aplicar Filtros",
-    "clear_all": "Limpiar todo"
+    "clear_all": "Limpiar todo",
+    "show_all": "Mostrar todos los portafolios",
+    "for": "para"
   },
   "features_list": {
     "title": "Funcionalidades del Sistema",
@@ -121,16 +190,40 @@
   },
   "recent": {
     "title": "Portafolios recientes",
+    "most_viewed": "Portafolios más vistos",
     "subtitle": "Conoce el trabajo de los profesionales.",
     "view_portfolio": "Ver portafolio",
     "projects": "Proyectos",
     "views": "Visitas",
-    "university": "Universidad Mayor de San Simón"
+    "university": "Universidad Mayor de San Simón",
+    "no_views": "Aún no hay portafolios con visitas registradas.",
+    "featured_pro": "Profesional Destacado",
+    "click_card_hint": "Presiona la tarjeta para ver el portafolio"
   },
   "cta": {
     "title": "¿Eres profesional de software?",
-    "subtitle": "Crea tu portafolio institucional hoy mismo y destaca en tu área con una presencia digital profesional.",
-    "start": "Comenzar ahora"
+    "subtitle": "Crea tu portafolio institucional hoy y destaca en tu sector con una presencia digital profesional.",
+    "start": "Empieza ahora"
+  },
+  "print": {
+    "modal_title": "Seleccionar Plantilla",
+    "modal_desc": "Elige el diseño para tu portafolio PDF",
+    "cancel": "Cancelar",
+    "download": "Generar PDF",
+    "templates": {
+      "classic": {
+        "name": "Clásica",
+        "desc": "Formal y estructurada. Ideal para entornos corporativos."
+      },
+      "modern": {
+        "name": "Moderna",
+        "desc": "Cabecera oscura con acentos de color. Atractiva y tecnológica."
+      },
+      "minimalist": {
+        "name": "Minimalista",
+        "desc": "Limpia y elegante con amplios espacios en blanco."
+      }
+    }
   },
   "university_strip": {
     "backed_by": "Respaldado por la Universidad Mayor de San Simón",
@@ -151,7 +244,18 @@
     "personal_data": "Datos Personales",
     "links_privacy": "Enlaces y Privacidad",
     "appearance": "Apariencia",
-    "notifications": "Notificaciones"
+    "notifications": "Notificaciones",
+    "portfolio_view": "Vista Portafolio",
+    "links": "Enlaces",
+    "privacy": "Privacidad",
+    "open_menu": "Abrir menú",
+    "close_menu": "Cerrar menú",
+    "main_menu": "Menú principal",
+    "profile_config": "Configuración de perfil",
+    "admin": "Administración",
+    "roles": "Roles",
+    "visitors": "Visitantes",
+    "portfolio": "Portafolio"
   },
   "dashboard": {
     "title": "Dashboard Profesional",
@@ -279,7 +383,84 @@
     "toast_delete_success": "Proyecto eliminado con éxito.",
     "toast_delete_error": "No se pudo eliminar el proyecto.",
     "uncategorized": "Sin Categoría",
-    "unspecified_skills": "No especificadas"
+    "unspecified_skills": "No especificadas",
+    "modal": {
+      "new_title": "Nuevo proyecto",
+      "edit_title": "Editar proyecto",
+      "step1_subtitle": "Completa la información principal para agregar un nuevo proyecto a tu portafolio profesional.",
+      "create_badge": "Crear",
+      "edit_badge": "Editar",
+      "title_label": "Título del proyecto",
+      "title_placeholder": "Ej. Sistema de Tutorías Inteligentes",
+      "category_label": "Categoría",
+      "category_select": "Selecciona una categoría",
+      "category_desc": "Selecciona una categoría para clasificar y facilitar la búsqueda del proyecto.",
+      "category_others": "Otros",
+      "description_label": "Descripción",
+      "description_placeholder": "Plataforma para conectar estudiantes con tutores...",
+      "url_label": "Enlace del proyecto",
+      "url_placeholder": "https://github.com/usuario/repositorio",
+      "skills_label": "Tecnologías",
+      "skills_placeholder": "Ej. React, Python...",
+      "loading_skills": "Cargando habilidades...",
+      "cancel_btn": "Cancelar",
+      "delete_btn": "Eliminar",
+      "saving_lbl": "Guardando...",
+      "next_btn": "Siguiente",
+      "error_title_req": "El título del proyecto es obligatorio.",
+      "error_cat_invalid": "Por favor selecciona una categoría válida antes de continuar. La categoría sugerida está en revisión.",
+      "error_url_invalid": "Ingresa un enlace válido de GitHub (ej. https://github.com/usuario/repo)",
+      "suggest_title": "Sugerir nueva categoría",
+      "suggest_desc": "Si no encuentras una categoría adecuada, puedes sugerir una nueva. Un administrador la revisará.",
+      "suggest_name_label": "Nombre de la categoría",
+      "suggest_name_placeholder": "Ej. Inteligencia Artificial",
+      "suggest_just_label": "Justificación",
+      "suggest_just_placeholder": "Por qué debería añadirse esta categoría...",
+      "suggest_send_btn": "Enviar sugerencia",
+      "suggest_sending": "Enviando...",
+      "suggest_success": "Sugerencia guardada: \"{{name}}\". Se enviará al completar el proyecto.",
+      "suggest_error_name_req": "El nombre de la categoría es obligatorio.",
+      "suggest_error_exists": "Esta categoría sugerida ya existe en el sistema.",
+      "suggest_error_just_req": "La justificación es obligatoria.",
+      "suggest_error_api": "Error al enviar la sugerencia",
+      "step2_subtitle": "Adjunta imágenes o documentos PDF como evidencia digital de tu proyecto.",
+      "files_badge": "Archivos",
+      "files_limit": "{{count}} / {{max}} archivos",
+      "storage_full": "Almacenamiento lleno",
+      "files_max_reached": "Máximo de {{max}} archivos alcanzado",
+      "dropzone_active": "Arrastra archivos o haz clic para seleccionar",
+      "dropzone_desc": "Formatos: {{formats}} · Imágenes ≤ {{imgMax}} MB · PDF ≤ {{pdfMax}} MB",
+      "storage_warning": "Has alcanzado el límite de almacenamiento disponible ({{max}} MB).",
+      "indicator_title": "Uso de almacenamiento",
+      "uploaded_success": "Subido correctamente",
+      "uploading_status": "Uploading",
+      "success_status": "Success",
+      "error_status": "Error",
+      "view_file_title": "Ver archivo",
+      "delete_file_title": "Eliminar archivo",
+      "format_error_title": "Formato no permitido",
+      "format_error_desc": "Solo se aceptan archivos {{formats}}.",
+      "format_error_ok": "Entendido",
+      "confirm_no_files_title": "¿Guardar sin archivos?",
+      "confirm_no_files_desc": "No has subido ninguna imagen o documento. ¿Estás seguro de que deseas guardar sin archivos adjuntos?",
+      "confirm_no_files_cancel": "No, agregar archivos",
+      "confirm_no_files_confirm": "Sí, guardar",
+      "preview_loading": "Cargando vista previa...",
+      "confirm_delete_file_title": "¿Eliminar archivo?",
+      "confirm_delete_file_desc": "Estás a punto de eliminar {{name}}. Esta acción es inmediata y no se puede deshacer.",
+      "toast_step1_success": "Proyecto actualizado. Ahora puedes adjuntar archivos.",
+      "toast_step1_error": "Error al guardar el proyecto.",
+      "toast_step2_toast_uploading": "Espera a que terminen de subir todos los archivos.",
+      "toast_step2_success": "¡Proyecto guardado completamente!",
+      "toast_file_deleted": "Archivo eliminado exitosamente.",
+      "toast_file_delete_error": "Error al eliminar el archivo.",
+      "error_pdf_limit": "Excede el límite de {{max}} MB para PDF",
+      "error_image_limit": "Excede el límite de {{max}} MB para imágenes",
+      "error_upload": "Error al subir",
+      "back_btn": "Atrás",
+      "save_project_btn": "Guardar Proyecto",
+      "submitting_status": "Subiendo..."
+    }
   },
   "experience": {
     "title": "Experiencia",
@@ -399,6 +580,432 @@
     "cancel_btn": "Cancelar",
     "basic_desc": "Conceptos y uso guiado.",
     "intermediate_desc": "Implementación funcional en proyectos.",
-    "advanced_desc": "Uso profesional autónomo."
+    "advanced_desc": "Uso profesional autónomo.",
+    "levels": {
+      "basico": "Básico",
+      "intermedio": "Intermedio",
+      "avanzado": "Avanzado",
+      "technical": {
+        "basico": "Básico",
+        "intermedio": "Intermedio",
+        "avanzado": "Avanzado",
+        "basico_desc": "Conceptos y uso guiado.",
+        "intermedio_desc": "Implementación funcional en proyectos.",
+        "avanzado_desc": "Uso profesional autónomo."
+      },
+      "soft": {
+        "formacion": "En formación",
+        "desarrollada": "Desarrollada",
+        "fortalecida": "Fortalecida",
+        "formacion_desc": "Estoy desarrollando esta habilidad activamente.",
+        "desarrollada_desc": "La aplico con seguridad en contextos reales.",
+        "fortalecida_desc": "Es una de mis fortalezas consolidadas."
+      }
+    }
+  },
+  "portfolio_view": {
+    "loading": "Cargando portafolio profesional...",
+    "error_title": "¡Ups! Algo salió mal",
+    "error_private": "Este portafolio es privado por decisión del usuario.",
+    "error_not_found": "No pudimos encontrar este portafolio.",
+    "back_home": "Regresar al inicio",
+    "badge_talent": "Talento UMSS",
+    "views_label": "Visualizaciones",
+    "default_profession": "Especialista en tecnología",
+    "default_location": "Cochabamba, Bolivia",
+    "university": "Universidad Mayor de San Simón",
+    "download_pdf": "Descargar PDF",
+    "contact": "Contactar",
+    "profile_section": "Perfil Profesional",
+    "no_biography": "Este profesional aún no ha redactado su biografía pública.",
+    "projects_label": "Proyectos",
+    "skills_label": "Habilidades",
+    "contact_info": "Información de contacto",
+    "email": "Email",
+    "phone": "Teléfono",
+    "professional_networks": "Redes Profesionales",
+    "tab_projects": "Proyectos",
+    "tab_skills": "Habilidades",
+    "tab_experience": "Trayectoria",
+    "tab_certifications": "Certificados",
+    "project_default_category": "Proyecto",
+    "visit_project": "Visitar Proyecto",
+    "no_projects": "No hay proyectos públicos para mostrar.",
+    "no_skills": "No hay habilidades públicas listadas.",
+    "no_experience": "No hay trayectoria registrada.",
+    "no_certifications": "No hay certificaciones públicas para mostrar.",
+    "view_credential": "Ver credencial",
+    "remote": "Remoto",
+    "on_site": "Presencial",
+    "hybrid": "Híbrido",
+    "present": "Presente",
+    "private_warning_title": "Portafolio Privado",
+    "private_warning_desc": "Actualmente tu portafolio está oculto al público. Los visitantes no podrán acceder a este enlace. Esta vista es solo para ti.",
+    "about_me": "Acerca de mí",
+    "my_profile": "MI PERFIL PROFESIONAL",
+    "no_bio": "Sin biografía disponible.",
+    "edit": "Editar",
+    "edit_info": "Editar Información",
+    "skills_title": "Habilidades",
+    "skills_subtitle": "TECNOLOGÍAS Y COMPETENCIAS",
+    "technical_skills": "Habilidades Técnicas",
+    "soft_skills": "Habilidades Blandas",
+    "no_technical": "Sin habilidades técnicas",
+    "add_tech": "Agrega tecnologías a tu perfil.",
+    "no_soft": "Sin habilidades blandas",
+    "add_soft": "Agrega competencias a tu perfil.",
+    "experience_title": "Experiencia",
+    "experience_subtitle": "TRAYECTORIA LABORAL",
+    "no_exp": "Sin trayectoria laboral",
+    "add_exp": "Registra tu experiencia profesional.",
+    "projects_title": "Proyectos",
+    "projects_subtitle": "PORTAFOLIO DESTACADO",
+    "no_proj": "Sin proyectos destacados",
+    "add_proj": "Añade proyectos para mostrar tu trabajo.",
+    "certs_title": "Certificaciones",
+    "certs_subtitle": "LOGROS Y CURSOS COMPLETADOS",
+    "no_certs": "Sin certificaciones",
+    "add_certs": "Registra tus logros y cursos completados.",
+    "stats_views": "VISTAS",
+    "stats_projects": "PROYECTOS",
+    "stats_tech": "TECNOLOGÍAS",
+    "stats_exp": "EXPERIENCIA",
+    "notifications": "NOTIFICACIONES",
+    "auto_preload": "Precarga automática",
+    "auto_preload_desc": "de datos registrados.",
+    "quick_links": "Enlaces rápidos",
+    "configure_profile": "Configurar perfil",
+    "public_view": "Vista pública del perfil",
+    "loading_portfolio": "Cargando portafolio...",
+    "no_phone": "Sin teléfono",
+    "no_email": "Sin email",
+    "location_unspecified": "Ubicación no especificada",
+    "professional": "PROFESIONAL",
+    "user_default": "Usuario Nexum",
+    "previous": "Anterior",
+    "actual": "Actual",
+    "published": "PUBLICADO",
+    "verified": "VERIFICADO",
+    "loading_doc": "Preparando documento...",
+    "no_info": "No se encontró información.",
+    "back": "Volver",
+    "technologies": "Tecnologías",
+    "generated_via": "Generado vía Nexum UMSS",
+    "generating_pdf": "Generando PDF...",
+    "return": "Regresar",
+    "error_generating_pdf": "Hubo un error al generar el PDF. Por favor intenta de nuevo."
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Panel de Administración",
+      "subtitle": "Control general de la plataforma NEXUM",
+      "stats": {
+        "total_users": "Total Usuarios Registrados",
+        "total_users_desc": "Total de usuarios en la plataforma",
+        "inactive_users": "Usuarios Inactivos",
+        "inactive_users_attention": "Requieren atención",
+        "inactive_users_all_active": "Todos activos",
+        "failed_logins": "Accesos Fallidos Recientes",
+        "failed_logins_check": "Revisar logs de auditoría",
+        "failed_logins_no_alerts": "Sin alertas"
+      },
+      "users_card": {
+        "title": "Gestión de Usuarios",
+        "desc": "Administra cuentas, roles, estados y permisos de los usuarios.",
+        "loading": "Cargando...",
+        "inactive_count": "{{count}} usuario inactivo.",
+        "inactive_count_plural": "{{count}} usuarios inactivos.",
+        "all_active": "Todos los usuarios están activos.",
+        "button": "Ver usuarios"
+      },
+      "backups_card": {
+        "title": "Copias de Seguridad",
+        "desc": "Gestiona y programa los respaldos automáticos de la plataforma.",
+        "loading": "Cargando...",
+        "last_backup": "Último backup: {{date}}",
+        "no_backups": "Sin backups registrados.",
+        "button": "Gestionar backups"
+      },
+      "skills_card": {
+        "title": "Sugerencias de Habilidades",
+        "desc": "Revisa las habilidades propuestas por los usuarios antes de que aparezcan en el catálogo.",
+        "loading": "Cargando...",
+        "no_pending": "Sin sugerencias pendientes.",
+        "pending_count": "{{count}} sugerencia pendiente de revisión.",
+        "pending_count_plural": "{{count}} sugerencias pendientes de revisión.",
+        "button": "Revisar sugerencias"
+      },
+      "categories_card": {
+        "title": "Sugerencias de Categorías",
+        "desc": "Revisa las categorías propuestas por los usuarios para organizar mejor los proyectos.",
+        "loading": "Cargando...",
+        "no_pending": "Sin sugerencias pendientes.",
+        "pending_count": "{{count}} sugerencia pendiente de revisión.",
+        "pending_count_plural": "{{count}} sugerencias pendientes de revisión.",
+        "button": "Revisar categorías"
+      },
+      "notifications": {
+        "title": "Notificaciones",
+        "inactive_users": "{{count}} usuario inactivo.",
+        "inactive_users_plural": "{{count}} usuarios inactivos.",
+        "failed_logins": "{{count}} intento de acceso fallido reciente.",
+        "failed_logins_plural": "{{count}} intentos de acceso fallido recientes.",
+        "pending_skills": "{{count}} sugerencia de habilidades pendiente.",
+        "pending_skills_plural": "{{count}} sugerencias de habilidades pendientes.",
+        "pending_categories": "{{count}} sugerencia de categorías pendiente.",
+        "pending_categories_plural": "{{count}} sugerencias de categorías pendientes."
+      },
+      "skills_modal": {
+        "title": "Sugerencias de Habilidades",
+        "subtitle": "Revisa y aprueba o rechaza las sugerencias de los usuarios.",
+        "loading": "Cargando sugerencias...",
+        "no_pending": "Sin sugerencias pendientes",
+        "all_reviewed": "Todas las sugerencias han sido revisadas.",
+        "category": "Categoría:",
+        "user": "Usuario:",
+        "approve": "Aprobar",
+        "reject": "Rechazar",
+        "pending_count": "{{count}} sugerencia pendiente",
+        "pending_count_plural": "{{count}} sugerencias pendientes",
+        "close": "Cerrar",
+        "error_load": "No se pudieron cargar las sugerencias.",
+        "toast_approved": "Sugerencia aprobada.",
+        "toast_rejected": "Sugerencia rechazada.",
+        "toast_error": "Error al procesar la acción."
+      },
+      "categories_modal": {
+        "title": "Sugerencias de Categorías",
+        "subtitle": "Revisa y aprueba o rechaza las sugerencias de nuevas categorías.",
+        "loading": "Cargando sugerencias...",
+        "no_pending": "Sin sugerencias pendientes",
+        "all_reviewed": "Todas las sugerencias han sido revisadas.",
+        "new_category": "Nueva Categoría",
+        "project": "Proyecto:",
+        "user": "Usuario:",
+        "approve": "Aprobar",
+        "reject": "Rechazar",
+        "pending_count": "{{count}} sugerencia pendiente",
+        "pending_count_plural": "{{count}} sugerencias pendientes",
+        "close": "Cerrar",
+        "error_load": "No se pudieron cargar las sugerencias de categorías.",
+        "toast_approved": "Sugerencia aprobada.",
+        "toast_rejected": "Sugerencia rechazada.",
+        "toast_error": "Error al procesar la acción."
+      },
+      "toasts": {
+        "error_skills": "No se pudieron cargar las sugerencias pendientes.",
+        "error_users": "No se pudieron cargar los datos de usuarios.",
+        "error_activity": "No se pudo cargar el historial de actividad.",
+        "success_load": "Panel de administración cargado correctamente."
+      }
+    },
+    "categories": {
+      "title": "Gestión de Categorías",
+      "tab": "Categorías",
+      "search_placeholder": "Buscar por nombre",
+      "filter_status": "Todos los estados",
+      "status_active": "ACTIVO",
+      "status_inactive": "INACTIVO",
+      "create_button": "Crear Categoría",
+      "table": {
+        "name": "Nombre",
+        "desc": "Descripción",
+        "status": "Estado",
+        "actions": "Acciones",
+        "no_results": "No se encontraron categorías.",
+        "no_desc": "— sin descripción —"
+      },
+      "form": {
+        "name_placeholder": "Nombre de categoría",
+        "desc_placeholder": "Breve descripción...",
+        "active_generated": "Generado Activo",
+        "save": "Guardar",
+        "cancel": "Cancelar",
+        "saving": "Guardando..."
+      },
+      "pagination": {
+        "showing": "Mostrando {{count}} de {{total}} Categorías",
+        "showing_zero": "0 Categorías encontradas",
+        "prev": "Anterior",
+        "next": "Siguiente"
+      },
+      "confirm": {
+        "title": "Confirmar Acción",
+        "desc": "¿Desea guardar la categoría?",
+        "confirm": "Confirmar"
+      },
+      "error": {
+        "load": "Error al cargar categorías",
+        "save": "Hubo un error al guardar."
+      },
+      "sidebar": {
+        "calendar": "Calendario"
+      }
+    },
+    "backups": {
+      "title": "Copias de Seguridad",
+      "subtitle": "Gestiona y genera respaldos de la base de datos del sistema.",
+      "restore_button": "Restaurar Backup",
+      "generate_button": "Generar Backup Manual",
+      "generating": "Generando...",
+      "stats": {
+        "total": "Total Backups",
+        "last": "Último Backup",
+        "none": "Ninguno",
+        "status": "Estado",
+        "status_active": "Automatizado activo"
+      },
+      "table": {
+        "title": "Historial de Respaldos",
+        "filename": "Nombre del Archivo",
+        "type": "Tipo",
+        "size": "Tamaño",
+        "date": "Fecha y Hora",
+        "actions": "Acciones",
+        "no_backups": "No hay copias de seguridad disponibles.",
+        "manual": "Manual",
+        "auto": "Automático",
+        "download_tooltip": "Descargar",
+        "delete_tooltip": "Eliminar"
+      },
+      "toasts": {
+        "restore_info": "La restauración debe ser realizada manualmente por un administrador de base de datos por seguridad.",
+        "generate_success": "Copia de seguridad generada y descargada con éxito.",
+        "generate_error": "Error al generar el backup.",
+        "delete_success": "Entrada eliminada del historial local.",
+        "download_success": "El archivo ya fue descargado al generarse."
+      }
+    },
+    "users": {
+      "title": "Gestión de Usuarios",
+      "subtitle": "Administración de accesos Nexum",
+      "filter_all": "Todos los estados",
+      "filter_active": "Activos",
+      "filter_inactive": "Inactivos",
+      "filter_button": "Filtrar",
+      "loading": "Cargando base de datos...",
+      "error_load": "Error al cargar usuarios.",
+      "table": {
+        "user": "Usuario",
+        "email": "Email",
+        "role": "Rol",
+        "status": "Estado",
+        "registration": "Registro",
+        "actions": "Acciones",
+        "active": "Activo",
+        "inactive": "Inactivo",
+        "suspend_tooltip": "Suspender acceso",
+        "reactivate_tooltip": "Reactivar acceso"
+      },
+      "pagination_desc": "Mostrando {{count}} registros en total. Deslice lateralmente en móvil.",
+      "security": {
+        "title": "Seguridad",
+        "desc": "La desactivación revoca tokens de sesión activos y bloquea el login del usuario seleccionado."
+      },
+      "modal": {
+        "title": "Confirmar Suspensión",
+        "desc": "¿Estás seguro de desactivar a {{name}}? Perderá acceso inmediato a la plataforma.",
+        "back": "Volver",
+        "confirm": "Desactivar"
+      },
+      "toasts": {
+        "error_deactivate": "Error al desactivar el usuario.",
+        "error_reactivate": "Error al reactivar el usuario."
+      }
+    },
+    "audit": {
+      "title": "Historial de Auditoría",
+      "search_placeholder": "Buscar por usuario o ID...",
+      "date_from": "Desde",
+      "date_to": "Hasta",
+      "export_pdf": "Exportar PDF",
+      "table": {
+        "user": "Usuario",
+        "event": "Evento",
+        "date": "Fecha/Hora",
+        "details": "Detalles",
+        "loading": "Consultando base de datos...",
+        "no_results": "No se encontraron registros de auditoría.",
+        "error": "Error al cargar el historial de auditoría."
+      },
+      "pdf": {
+        "title": "Historial de Auditoría - NEXUM",
+        "generated_at": "Generado el: {{date}}",
+        "filename": "historial_auditoria_{{date}}.pdf"
+      },
+      "events": {
+        "created": "Creado",
+        "updated": "Actualizado",
+        "deleted": "Eliminado",
+        "update_role": "Rol Actualizado",
+        "login_failed": "Acceso Fallido",
+        "login": "Login Exitoso",
+        "logout": "Cierre Sesión",
+        "profile_updated": "Perfil Modificado",
+        "portfolio_edit": "Portafolio Editado"
+      },
+      "detail_modal": {
+        "title": "Detalles de Actividad",
+        "responsible": "Usuario Responsable",
+        "affected": "Usuario Afectado",
+        "data_state": "Datos y Estados",
+        "close": "Cerrar Detalles",
+        "no_structured_details": "No hay detalles adicionales estructurados para este evento.",
+        "no_changes": "Sin cambios detectables.",
+        "field": "Campo Modificado",
+        "old_value": "Valor Anterior",
+        "new_value": "Nuevo Valor",
+        "registered_data": "Dato Registrado",
+        "value": "Valor"
+      },
+      "fields": {
+        "first_name": "Nombre",
+        "last_name": "Apellido",
+        "email": "Email",
+        "role": "Rol",
+        "is_active": "Estado de Cuenta",
+        "password": "Contraseña",
+        "biography": "Biografía",
+        "phone": "Teléfono",
+        "location": "Ubicación",
+        "github_url": "GitHub",
+        "linkedin_url": "LinkedIn",
+        "global_privacy": "Privacidad",
+        "name": "Nombre del Proyecto",
+        "description": "Descripción",
+        "deactivated_by_admin": "Estado de Cuenta",
+        "title": "Título",
+        "company": "Empresa",
+        "start_date": "Fecha de Inicio",
+        "end_date": "Fecha de Fin",
+        "is_current": "Trabajo Actual",
+        "issuing_entity": "Entidad Emisora",
+        "issue_date": "Fecha de Emisión",
+        "expiration_date": "Fecha de Expiración",
+        "image_url": "URL de Imagen",
+        "url": "Enlace URL",
+        "avatar_path": "Ruta de Avatar",
+        "design_pattern": "Patrón de Diseño",
+        "portfolio_id": "ID Portafolio",
+        "category_id": "ID Categoría",
+        "user_id": "ID Usuario"
+      },
+      "values": {
+        "unspecified": "No especificado",
+        "active": "Activo",
+        "suspended": "Suspendido",
+        "private": "Privado",
+        "public": "Público",
+        "yes": "Sí",
+        "no": "No"
+      },
+      "security": {
+        "title": "Seguridad",
+        "desc": "Supervisión activa del sistema. Se registran todos los cambios de roles y accesos fallidos."
+      },
+      "reports": {
+        "title": "Reportes"
+      }
+    }
   }
 }

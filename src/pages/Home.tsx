@@ -2,13 +2,14 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import useAuth from '../hooks/useAuth'
 import { useFeaturedProfiles } from './home/hooks/useFeaturedProfiles'
-import { ChevronLeft, ChevronRight, Filter, Search as SearchIcon, X, Loader2 } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Search as SearchIcon, Loader2 } from 'lucide-react'
 import {
   searchProfessionals,
   type SearchResult,
   type PaginationMeta
 } from '../services/search.service'
 import PortfolioCard from './search/components/PortfolioCard'
+import SearchFilters from './search/components/SearchFilters'
 
 import Navbar from './home/components/Navbar'
 import Hero from './home/components/Hero'
@@ -25,7 +26,10 @@ interface SearchResultsProps {
   meta: PaginationMeta | null
   loading: boolean
   onPageChange: (page: number) => void
-  onFilterChange: (filters: { area: string; skills: string[] }) => void
+  onFilterChange: (filters: { q: string; area: string; skills: string[] }) => void
+  q: string
+  area: string
+  skills: string[]
 }
 
 function SearchResults({
@@ -33,34 +37,12 @@ function SearchResults({
   meta,
   loading,
   onPageChange,
-  onFilterChange
+  onFilterChange,
+  q,
+  area,
+  skills
 }: SearchResultsProps) {
   const { t } = useTranslation()
-  const [area, setArea] = useState('')
-  const [skillInput, setSkillInput] = useState('')
-  const [skills, setSkills] = useState<string[]>([])
-
-  const handleAddSkill = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && skillInput.trim()) {
-      e.preventDefault()
-      if (!skills.includes(skillInput.trim())) {
-        const newSkills = [...skills, skillInput.trim()]
-        setSkills(newSkills)
-        onFilterChange({ area, skills: newSkills })
-      }
-      setSkillInput('')
-    }
-  }
-
-  const removeSkill = (skillToRemove: string) => {
-    const newSkills = skills.filter((s) => s !== skillToRemove)
-    setSkills(newSkills)
-    onFilterChange({ area, skills: newSkills })
-  }
-
-  const applyAreaFilter = () => {
-    onFilterChange({ area, skills })
-  }
 
   return (
     <section id="search-results" className="py-20 bg-[#F8FAFC]">
@@ -72,57 +54,13 @@ function SearchResults({
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Sidebar Filtros */}
-          <aside className="lg:col-span-1 space-y-6">
-            <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
-              <div className="flex items-center gap-2 mb-6">
-                <Filter size={20} className="text-[#C8102E]" />
-                <h3 className="font-bold text-gray-900">{t('search.filters')}</h3>
-              </div>
-
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
-                    {t('search.area_label')}
-                  </label>
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      placeholder={t('search.area_placeholder')}
-                      className="flex-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#C8102E] transition-all"
-                      value={area}
-                      onChange={(e) => setArea(e.target.value)}
-                      onBlur={applyAreaFilter}
-                      onKeyDown={(e) => e.key === 'Enter' && applyAreaFilter()}
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
-                    {t('search.skills_label')}
-                  </label>
-                  <input
-                    type="text"
-                    placeholder={t('search.skills_placeholder')}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#C8102E] transition-all"
-                    value={skillInput}
-                    onChange={(e) => setSkillInput(e.target.value)}
-                    onKeyDown={handleAddSkill}
-                  />
-                  <div className="flex flex-wrap gap-2 mt-3">
-                    {skills.map((s) => (
-                      <span
-                        key={s}
-                        className="flex items-center gap-1 bg-[#C8102E]/5 text-[#C8102E] px-2 py-1 rounded-lg text-[10px] font-bold border border-[#C8102E]/10"
-                      >
-                        {s}
-                        <X size={12} className="cursor-pointer" onClick={() => removeSkill(s)} />
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
+          <aside className="lg:col-span-1">
+            <SearchFilters
+              initialQuery={q}
+              initialArea={area}
+              initialSkills={skills}
+              onSearch={onFilterChange}
+            />
           </aside>
 
           {/* Resultados Grid */}
@@ -192,6 +130,7 @@ export default function Home() {
   const [searchResults, setSearchResults] = useState<SearchResult[]>([])
   const [meta, setMeta] = useState<PaginationMeta | null>(null)
   const [loading, setLoading] = useState(false)
+  const [hasSearched, setHasSearched] = useState(false)
   const [searchParams, setSearchParams] = useState({
     q: '',
     area: '',
@@ -219,8 +158,20 @@ export default function Home() {
   }
 
   const handleSearch = (term: string) => {
-    const newParams = { ...searchParams, q: term, page: 1 }
+    const trimmed = term.trim()
+
+    // Si el término está vacío y no hay otros filtros, limpiar resultados y volver al inicio
+    if (!trimmed && !searchParams.area.trim() && searchParams.skills.length === 0) {
+      setSearchParams({ q: '', area: '', skills: [], page: 1 })
+      setSearchResults([])
+      setMeta(null)
+      setHasSearched(false)
+      return
+    }
+
+    const newParams = { ...searchParams, q: trimmed, page: 1 }
     setSearchParams(newParams)
+    setHasSearched(true)
     executeSearch(newParams)
 
     // Scroll a resultados
@@ -236,30 +187,44 @@ export default function Home() {
     executeSearch(newParams)
   }
 
-  const handleFilterChange = (filters: { area: string; skills: string[] }) => {
+  const handleFilterChange = (filters: { q: string; area: string; skills: string[] }) => {
+    // Si todos los filtros están vacíos, limpiar todo
+    if (!filters.q.trim() && !filters.area.trim() && filters.skills.length === 0) {
+      setSearchParams({ q: '', area: '', skills: [], page: 1 })
+      setSearchResults([])
+      setMeta(null)
+      setHasSearched(false)
+      return
+    }
+
     const newParams = { ...searchParams, ...filters, page: 1 }
     setSearchParams(newParams)
+    setHasSearched(true)
     executeSearch(newParams)
   }
 
   return (
     <div className="min-h-screen font-sans antialiased bg-white">
       <Navbar />
-      <Hero stats={stats} onSearch={handleSearch} />
+      <Hero stats={stats} onSearch={handleSearch} searchTerm={searchParams.q} />
 
-      {(searchResults.length > 0 || loading || searchParams.q) && (
+      {hasSearched && (
         <SearchResults
           results={searchResults}
           meta={meta}
           loading={loading}
           onPageChange={handlePageChange}
           onFilterChange={handleFilterChange}
+          q={searchParams.q}
+          area={searchParams.area}
+          skills={searchParams.skills}
         />
       )}
 
-      <Features />
-      {!user && <CTA />}
+
       <RecentPortfolios profiles={profiles} loading={loadingFeatured} />
+      {!user && <CTA />}
+      <Features />
       <Footer />
     </div>
   )
