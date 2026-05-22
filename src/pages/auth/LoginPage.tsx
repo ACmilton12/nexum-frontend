@@ -4,6 +4,7 @@ import { Mail, Lock, Eye, EyeOff, ArrowLeft } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { loginService } from '../../services/auth.service'
 import Toast from '../../components/ui/Toast'
+import LanguageSelector from '../../components/ui/LanguageSelector'
 import logoUmss from '../../assets/logoUmss.png'
 import prueba11 from '../../assets/prueba12.png'
 import prueba09 from '../../assets/prueba09.png'
@@ -50,7 +51,7 @@ const LoginPage = () => {
       } else if (status === 'error') {
         setToast({ mensaje: t('auth.login.toasts.verify_error'), tipo: 'error' });
       }
-      
+
       const newSearchParams = new URLSearchParams(searchParams);
       newSearchParams.delete('status');
       setSearchParams(newSearchParams, { replace: true });
@@ -169,7 +170,9 @@ const LoginPage = () => {
           <img src={logoUmss} alt="Logo UMSS" className="w-8 h-10 object-contain" />
           <span className="text-white font-bold text-lg tracking-wide">NEXUM</span>
         </div>
-        <div className="w-6" />
+        <div>
+          <LanguageSelector />
+        </div>
       </nav>
 
       {/* Contenido principal */}
@@ -186,31 +189,31 @@ const LoginPage = () => {
                 src={slides[idx].img}
                 alt="Ilustración Nexum"
                 className="w-48 h-48 lg:w-64 lg:h-64 object-contain mb-8 transition-opacity duration-500"
+              />
+              <h2 className="text-xl lg:text-2xl font-bold text-center mb-2">
+                {slides[idx].title}
+              </h2>
+              <p className="text-sm text-center opacity-80 mb-6">
+                {slides[idx].desc}
+              </p>
+              {/* Dots */}
+              <div className="flex gap-2 mb-6">
+                {slides.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setIdx(i)}
+                    className="rounded-full transition-all duration-300"
+                    style={{
+                      width: i === idx ? "20px" : "8px",
+                      height: "8px",
+                      backgroundColor: i === idx ? "#FFFFFF" : "rgba(255,255,255,0.4)",
+                      border: "none",
+                      padding: 0,
+                      cursor: "pointer",
+                    }}
                   />
-                  <h2 className="text-xl lg:text-2xl font-bold text-center mb-2">
-                    {slides[idx].title}
-                  </h2>
-                  <p className="text-sm text-center opacity-80 mb-6">
-                    {slides[idx].desc}
-                  </p>
-                  {/* Dots */}
-                  <div className="flex gap-2 mb-6">
-                    {slides.map((_, i) => (
-                      <button
-                        key={i}
-                        onClick={() => setIdx(i)}
-                        className="rounded-full transition-all duration-300"
-                        style={{
-                          width: i === idx ? "20px" : "8px",
-                          height: "8px",
-                          backgroundColor: i === idx ? "#FFFFFF" : "rgba(255,255,255,0.4)",
-                          border: "none",
-                          padding: 0,
-                          cursor: "pointer",
-                        }}
-                      />
-                    ))}
-                  </div>
+                ))}
+              </div>
             </div>
 
             <div className="flex items-center justify-end w-full mt-4">
