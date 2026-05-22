@@ -1022,5 +1022,45 @@
         "title": "Reports"
       }
     }
+  },
+  "register": {
+    "title": "Create Account on NEXUM",
+    "subtitle_step1": "2-step form with online validation and email activation.",
+    "subtitle_step2": "Professional Profile",
+    "success_msg": "Account created successfully, you can log in with your credentials.",
+    "step1_title": "Basic information",
+    "step2_title": "Professional Profile",
+    "account_created_badge": "Account created",
+    "first_name": "First Name",
+    "last_name": "Last Name",
+    "email": "Email Address",
+    "password": "Password",
+    "confirm_password": "Confirm password",
+    "password_strength": "Real-time password strength",
+    "pwd_min_chars": "Minimum 8 characters",
+    "pwd_upper": "1 uppercase",
+    "pwd_number": "1 number",
+    "pwd_special": "1 special",
+    "info_msg": "A confirmation email will be sent with a link valid for 24 hours to activate the profile. If expired, allow resend.",
+    "btn_back": "Back",
+    "btn_cancel": "Cancel",
+    "btn_next": "Professional profile",
+    "btn_creating": "Creating...",
+    "btn_create": "Create Account",
+    "prof_title": "Professional Title",
+    "redirecting": "Redirecting to login in a few seconds...",
+    "errors": {
+      "first_name_req": "First name is required.",
+      "first_name_invalid": "Only letters and spaces are allowed.",
+      "last_name_req": "Last name is required.",
+      "last_name_invalid": "Only letters and spaces are allowed.",
+      "email_req": "Email is required.",
+      "email_invalid": "Invalid email format.",
+      "pwd_req": "Password is required.",
+      "pwd_invalid": "Password does not meet the requirements.",
+      "pwd_mismatch": "Passwords do not match.",
+      "email_taken": "This email is already registered.",
+      "unexpected": "An unexpected error occurred while registering the user."
+    }
   }
 }

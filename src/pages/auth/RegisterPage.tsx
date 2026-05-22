@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom'
 import { Check, Eye, EyeOff, Mail, User } from 'lucide-react'
 import { registerService } from '../../services/auth.service'
 import Navbar from '../../components/ui/Navbar'
+import { useTranslation } from 'react-i18next'
 
 export default function RegisterPage() {
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const [step, setStep] = useState(1)
 
   // Step 1 states
@@ -40,28 +42,28 @@ export default function RegisterPage() {
   const validateStep1 = () => {
     const newErrors: { [key: string]: string } = {}
 
-    if (!firstName) newErrors.firstName = 'El nombre es obligatorio.'
+    if (!firstName) newErrors.firstName = t('register.errors.first_name_req', 'El nombre es obligatorio.')
     else if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(firstName)) {
-      newErrors.firstName = 'Solo se permiten letras y espacios.'
+      newErrors.firstName = t('register.errors.first_name_invalid', 'Solo se permiten letras y espacios.')
     }
 
-    if (!lastName) newErrors.lastName = 'El apellido es obligatorio.'
+    if (!lastName) newErrors.lastName = t('register.errors.last_name_req', 'El apellido es obligatorio.')
     else if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(lastName)) {
-      newErrors.lastName = 'Solo se permiten letras y espacios.'
+      newErrors.lastName = t('register.errors.last_name_invalid', 'Solo se permiten letras y espacios.')
     }
 
-    if (!email) newErrors.email = 'El correo es obligatorio.'
+    if (!email) newErrors.email = t('register.errors.email_req', 'El correo es obligatorio.')
     else if (!/^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[A-Za-z]{2,}$/.test(email)) {
-      newErrors.email = 'Formato de correo no válido.'
+      newErrors.email = t('register.errors.email_invalid', 'Formato de correo no válido.')
     }
 
-    if (!password) newErrors.password = 'La contraseña es obligatorio.'
+    if (!password) newErrors.password = t('register.errors.pwd_req', 'La contraseña es obligatorio.')
     else if (!hasMinLength || !hasUpper || !hasNumber || !hasSpecial) {
-      newErrors.password = 'La contraseña no cumple los requisitos.'
+      newErrors.password = t('register.errors.pwd_invalid', 'La contraseña no cumple los requisitos.')
     }
 
     if (password !== confirmPassword) {
-      newErrors.confirmPassword = 'Las contraseñas no coinciden.'
+      newErrors.confirmPassword = t('register.errors.pwd_mismatch', 'Las contraseñas no coinciden.')
     }
 
     setErrors(newErrors)
@@ -108,14 +110,14 @@ export default function RegisterPage() {
         if (error.errors.email) {
           const emailErr = error.errors.email[0];
           serverErrors.email = emailErr.toLowerCase().includes('already registered') || emailErr.toLowerCase().includes('has already been taken')
-            ? 'Este correo electrónico ya está registrado.'
+            ? t('register.errors.email_taken', 'Este correo electrónico ya está registrado.')
             : emailErr;
         }
         if (error.errors.password) serverErrors.password = error.errors.password[0]
 
         setErrors((prev) => ({ ...prev, ...serverErrors }))
       } else {
-        setRegisterError(error.message || 'Ocurrió un error inesperado al registrar el usuario.')
+        setRegisterError(error.message || t('register.errors.unexpected', 'Ocurrió un error inesperado al registrar el usuario.'))
       }
     } finally {
       setLoading(false)
@@ -128,17 +130,15 @@ export default function RegisterPage() {
       <div className="flex-1 flex items-center justify-center p-4">
         <div className="w-full max-w-2xl bg-surface rounded-xl shadow-md p-8 md:p-12 relative overflow-hidden">
           <div className="text-center mb-6">
-            <h1 className="text-2xl font-bold text-textMain mb-2">Crear Cuenta en NEXUM</h1>
+            <h1 className="text-2xl font-bold text-textMain mb-2">{t('register.title', 'Crear Cuenta en NEXUM')}</h1>
             <p className="text-sm text-gray-500">
-              {step === 1
-                ? 'Formulario de 2 etapas con validación online y activación por correo electrónico.'
-                : 'Perfil Profesional'}
+              {step === 1 ? t('register.subtitle_step1', 'Formulario de 2 etapas con validación online y activación por correo electrónico.') : t('register.subtitle_step2', 'Perfil Profesional')}
             </p>
           </div>
 
           {registrationSuccess && (
             <div className="bg-[#E6F4EA] text-[#2E7D32] p-4 rounded-md text-sm mb-6 border border-[#A2CFAC] text-center animate-fadeIn">
-              Cuenta creada exitosamente, puede iniciar sesión con las credenciales.
+              {t('register.success_msg', 'Cuenta creada exitosamente, puede iniciar sesión con las credenciales.')}
             </div>
           )}
 
@@ -159,11 +159,11 @@ export default function RegisterPage() {
                 </div>
                 <div className="flex justify-between items-center mt-3 text-sm">
                   <span className="text-gray-500">
-                    Paso {step}: {step === 1 ? 'Información básica' : 'Perfil Profesional'}
+                    Paso {step}: {step === 1 ? t('register.step1_title', 'Información básica') : t('register.step2_title', 'Perfil Profesional')}
                   </span>
                   {step === 1 && (
                     <span className="text-xs bg-[#e6ebf5] text-primary px-3 py-1 rounded font-medium">
-                      Cuenta creada
+                      {t('register.account_created_badge', 'Cuenta creada')}
                     </span>
                   )}
                 </div>
@@ -174,15 +174,12 @@ export default function RegisterPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     {/* Nombres */}
                     <div>
-                      <label className="text-sm font-semibold text-textMain block mb-1">
-                        Nombres
-                      </label>
+                      <label className="text-sm font-semibold text-textMain block mb-1">{t('register.first_name', 'Nombres')}</label>
                       <div
-                        className={`flex items-center border rounded px-3 py-2 text-sm transition-colors ${
-                          errors.firstName
+                        className={`flex items-center border rounded px-3 py-2 text-sm transition-colors ${errors.firstName
                             ? 'border-action bg-red-50'
                             : 'border-gray-300 bg-white focus-within:border-primary'
-                        }`}
+                          }`}
                       >
                         {errors.firstName && <User size={16} className="text-action mr-2" />}
                         <input
@@ -203,15 +200,12 @@ export default function RegisterPage() {
 
                     {/* Apellidos */}
                     <div>
-                      <label className="text-sm font-semibold text-textMain block mb-1">
-                        Apellidos
-                      </label>
+                      <label className="text-sm font-semibold text-textMain block mb-1">{t('register.last_name', 'Apellidos')}</label>
                       <div
-                        className={`flex items-center border rounded px-3 py-2 text-sm transition-colors ${
-                          errors.lastName
+                        className={`flex items-center border rounded px-3 py-2 text-sm transition-colors ${errors.lastName
                             ? 'border-action bg-red-50'
                             : 'border-gray-300 bg-white focus-within:border-primary'
-                        }`}
+                          }`}
                       >
                         {errors.lastName && <User size={16} className="text-action mr-2" />}
                         <input
@@ -233,15 +227,12 @@ export default function RegisterPage() {
 
                   {/* Correo Electrónico */}
                   <div>
-                    <label className="text-sm font-semibold text-textMain block mb-1">
-                      Correo Electrónico
-                    </label>
+                    <label className="text-sm font-semibold text-textMain block mb-1">{t('register.email', 'Correo Electrónico')}</label>
                     <div
-                      className={`flex items-center border rounded px-3 py-2 text-sm transition-colors ${
-                        errors.email
+                      className={`flex items-center border rounded px-3 py-2 text-sm transition-colors ${errors.email
                           ? 'border-action bg-red-50'
                           : 'border-gray-300 bg-white focus-within:border-primary'
-                      }`}
+                        }`}
                     >
                       {errors.email && <Mail size={16} className="text-action mr-2" />}
                       <input
@@ -261,15 +252,12 @@ export default function RegisterPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     {/* Contraseña */}
                     <div>
-                      <label className="text-sm font-semibold text-textMain block mb-1">
-                        Contraseña
-                      </label>
+                      <label className="text-sm font-semibold text-textMain block mb-1">{t('register.password', 'Contraseña')}</label>
                       <div
-                        className={`flex items-center border rounded px-3 py-2 bg-white transition-colors ${
-                          errors.password
+                        className={`flex items-center border rounded px-3 py-2 bg-white transition-colors ${errors.password
                             ? 'border-action'
                             : 'border-gray-300 focus-within:border-primary'
-                        }`}
+                          }`}
                       >
                         <input
                           type={showPassword ? 'text' : 'password'}
@@ -296,15 +284,12 @@ export default function RegisterPage() {
 
                     {/* Confirmar Contraseña */}
                     <div>
-                      <label className="text-sm font-semibold text-textMain block mb-1">
-                        Confirmar contraseña
-                      </label>
+                      <label className="text-sm font-semibold text-textMain block mb-1">{t('register.confirm_password', 'Confirmar contraseña')}</label>
                       <div
-                        className={`flex items-center border rounded px-3 py-2 bg-white transition-colors ${
-                          errors.confirmPassword
+                        className={`flex items-center border rounded px-3 py-2 bg-white transition-colors ${errors.confirmPassword
                             ? 'border-action'
                             : 'border-gray-300 focus-within:border-primary'
-                        }`}
+                          }`}
                       >
                         <input
                           type={showConfirmPassword ? 'text' : 'password'}
@@ -333,16 +318,13 @@ export default function RegisterPage() {
 
                   {/* Password Strength Section */}
                   <div className="pt-2">
-                    <p className="text-xs font-semibold text-textMain mb-2">
-                      Fortaleza de contraseña en tiempo real
-                    </p>
+                    <p className="text-xs font-semibold text-textMain mb-2">{t('register.password_strength', 'Fortaleza de contraseña en tiempo real')}</p>
                     <div className="flex gap-2 mb-3">
                       {[1, 2, 3, 4].map((level) => (
                         <div
                           key={level}
-                          className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${
-                            passwordStrengthCount >= level ? 'bg-[#10B981]' : 'bg-gray-200'
-                          }`}
+                          className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${passwordStrengthCount >= level ? 'bg-[#10B981]' : 'bg-gray-200'
+                            }`}
                         ></div>
                       ))}
                     </div>
@@ -352,33 +334,32 @@ export default function RegisterPage() {
                         className={`flex items-center gap-1.5 ${hasMinLength ? 'text-[#10B981]' : 'text-gray-400'}`}
                       >
                         <Check size={14} strokeWidth={hasMinLength ? 3 : 2} />
-                        <span>Mínimo 8 caracteres</span>
+                        <span>{t('register.pwd_min_chars', 'Mínimo 8 caracteres')}</span>
                       </div>
                       <div
                         className={`flex items-center gap-1.5 ${hasUpper ? 'text-[#10B981]' : 'text-gray-400'}`}
                       >
                         <Check size={14} strokeWidth={hasUpper ? 3 : 2} />
-                        <span>1 mayúscula</span>
+                        <span>{t('register.pwd_upper', '1 mayúscula')}</span>
                       </div>
                       <div
                         className={`flex items-center gap-1.5 ${hasNumber ? 'text-[#10B981]' : 'text-gray-400'}`}
                       >
                         <Check size={14} strokeWidth={hasNumber ? 3 : 2} />
-                        <span>1 número</span>
+                        <span>{t('register.pwd_number', '1 número')}</span>
                       </div>
                       <div
                         className={`flex items-center gap-1.5 ${hasSpecial ? 'text-[#10B981]' : 'text-gray-400'}`}
                       >
                         <Check size={14} strokeWidth={hasSpecial ? 3 : 2} />
-                        <span>1 especial</span>
+                        <span>{t('register.pwd_special', '1 especial')}</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Info Text Box */}
                   <div className="bg-[#E6F4EA] text-[#2E7D32] p-4 rounded-md text-xs mt-4">
-                    Se enviará un correo de confirmación con un enlace válido por 24 horas para
-                    activar el perfil. Si expiró, permitir reenvío.
+                    {t('register.info_msg', 'Se enviará un correo de confirmación con un enlace válido por 24 horas para activar el perfil. Si expiró, permitir reenvío.')}
                   </div>
 
                   {/* Step 1 Actions */}
@@ -388,25 +369,19 @@ export default function RegisterPage() {
                         type="button"
                         onClick={() => navigate('/login')}
                         className="bg-action text-white font-medium px-6 py-2 rounded text-sm hover:opacity-90 transition-opacity"
-                      >
-                        Atrás
-                      </button>
+                      >{t('register.btn_back', 'Atrás')}</button>
                       <button
                         type="button"
                         onClick={handleNextStep}
                         className="border border-gray-300 text-textMain font-medium px-6 py-2 rounded text-sm hover:bg-gray-50 transition-colors"
-                      >
-                        Perfil profesional
-                      </button>
+                      >{t('register.btn_next', 'Perfil profesional')}</button>
                     </div>
 
                     <button
                       type="submit"
                       disabled={loading}
                       className="bg-action text-white font-medium px-6 py-2 rounded text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
-                    >
-                      {loading ? 'Creando...' : 'Crear Cuenta'}
-                    </button>
+                    >{loading ? t('register.btn_creating', 'Creando...') : t('register.btn_create', 'Crear Cuenta')}</button>
                   </div>
                 </div>
               )}
@@ -415,9 +390,7 @@ export default function RegisterPage() {
                 <div className="space-y-6 animate-fadeIn">
                   {/* Titulo Profesional */}
                   <div>
-                    <label className="text-sm font-semibold text-textMain block mb-1">
-                      Titulo Profesional
-                    </label>
+                    <label className="text-sm font-semibold text-textMain block mb-1">{t('register.prof_title', 'Titulo Profesional')}</label>
                     <input
                       type="text"
                       placeholder="Ej. Senior Frontend Developer"
@@ -434,25 +407,19 @@ export default function RegisterPage() {
                         type="button"
                         onClick={() => navigate('/login')}
                         className="bg-action text-white font-medium px-6 py-2 rounded text-sm hover:opacity-90 transition-opacity"
-                      >
-                        Cancelar
-                      </button>
+                      >{t('register.btn_cancel', 'Cancelar')}</button>
                       <button
                         type="button"
                         onClick={() => setStep(1)}
                         className="border border-gray-300 text-textMain font-medium px-8 py-2 rounded text-sm hover:bg-gray-50 transition-colors"
-                      >
-                        Atras
-                      </button>
+                      >{t('register.btn_back', 'Atrás')}</button>
                     </div>
 
                     <button
                       type="submit"
                       disabled={loading}
                       className="bg-action text-white font-medium px-6 py-2 rounded text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
-                    >
-                      {loading ? 'Creando...' : 'Crear Cuenta'}
-                    </button>
+                    >{loading ? t('register.btn_creating', 'Creando...') : t('register.btn_create', 'Crear Cuenta')}</button>
                   </div>
                 </div>
               )}
@@ -462,9 +429,7 @@ export default function RegisterPage() {
               <div className="bg-[#E6F4EA] rounded-full p-4 mb-4">
                 <Check className="text-[#2E7D32]" size={40} />
               </div>
-              <p className="text-gray-600 text-center">
-                Redirigiendo al inicio de sesión en unos segundos...
-              </p>
+              <p className="text-gray-600 text-center">{t('register.redirecting', 'Redirigiendo al inicio de sesión en unos segundos...')}</p>
             </div>
           )}
         </div>

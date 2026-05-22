@@ -1022,5 +1022,45 @@
         "title": "Reportes"
       }
     }
+  },
+  "register": {
+    "title": "Crear Cuenta en NEXUM",
+    "subtitle_step1": "Formulario de 2 etapas con validación online y activación por correo electrónico.",
+    "subtitle_step2": "Perfil Profesional",
+    "success_msg": "Cuenta creada exitosamente, puede iniciar sesión con las credenciales.",
+    "step1_title": "Información básica",
+    "step2_title": "Perfil Profesional",
+    "account_created_badge": "Cuenta creada",
+    "first_name": "Nombres",
+    "last_name": "Apellidos",
+    "email": "Correo Electrónico",
+    "password": "Contraseña",
+    "confirm_password": "Confirmar contraseña",
+    "password_strength": "Fortaleza de contraseña en tiempo real",
+    "pwd_min_chars": "Mínimo 8 caracteres",
+    "pwd_upper": "1 mayúscula",
+    "pwd_number": "1 número",
+    "pwd_special": "1 especial",
+    "info_msg": "Se enviará un correo de confirmación con un enlace válido por 24 horas para activar el perfil. Si expiró, permitir reenvío.",
+    "btn_back": "Atrás",
+    "btn_cancel": "Cancelar",
+    "btn_next": "Perfil profesional",
+    "btn_creating": "Creando...",
+    "btn_create": "Crear Cuenta",
+    "prof_title": "Titulo Profesional",
+    "redirecting": "Redirigiendo al inicio de sesión en unos segundos...",
+    "errors": {
+      "first_name_req": "El nombre es obligatorio.",
+      "first_name_invalid": "Solo se permiten letras y espacios.",
+      "last_name_req": "El apellido es obligatorio.",
+      "last_name_invalid": "Solo se permiten letras y espacios.",
+      "email_req": "El correo es obligatorio.",
+      "email_invalid": "Formato de correo no válido.",
+      "pwd_req": "La contraseña es obligatorio.",
+      "pwd_invalid": "La contraseña no cumple los requisitos.",
+      "pwd_mismatch": "Las contraseñas no coinciden.",
+      "email_taken": "Este correo electrónico ya está registrado.",
+      "unexpected": "Ocurrió un error inesperado al registrar el usuario."
+    }
   }
 }
