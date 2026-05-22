@@ -126,72 +126,81 @@ export default function PublicPortfolioPage() {
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans">
       <Navbar />
 
-      <main className="flex-grow">
-        {/* HEADER CARD - FULL WIDTH */}
-        <div className="w-full bg-white border-b border-slate-200 shadow-md">
+      <main className="flex-grow bg-slate-50 py-8">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 md:px-8 space-y-6">
+          {/* HEADER CARD - MATCHING OTHERS */}
+          <div className="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
           {/* Banner full-width */}
           <div className="h-48 md:h-64 w-full bg-gradient-to-r from-[#001A5E] via-[#003087] to-[#C8102E]"></div>
 
-          {/* Content container aligned with max-w-5xl */}
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 md:px-8 pb-8 relative">
-            <div className="absolute -top-16 left-4 sm:left-6 md:left-8">
-              {avatar_url ? (
-                <img src={avatar_url} alt={user.first_name} className="w-32 h-32 rounded-full border-4 border-white object-cover shadow-lg" />
-              ) : (
-                <div className="w-32 h-32 rounded-full border-4 border-white bg-slate-100 flex items-center justify-center text-slate-600 uppercase text-3xl font-bold">
-                  {user.first_name?.[0]}{user.last_name?.[0]}
-                </div>
-              )}
-            </div>
-
-            <div className="pt-20 flex flex-col md:flex-row justify-between items-start gap-4">
-              <div>
-                <h1 className="text-3xl font-black text-slate-900">
-                  {user.first_name} {user.last_name}
-                </h1>
-                <p className="text-[#003087] text-sm font-semibold uppercase tracking-wider mt-1">
-                  {profession || t('portfolio_view.default_profession')}
-                </p>
-                <div className="flex items-center gap-2 text-slate-400 text-xs mt-3">
-                  <MapPin size={14} />
-                  <span>{location || t('portfolio_view.default_location')}</span>
-                </div>
-
-                <div className="flex flex-col gap-3 mt-5">
-                  <div className="flex flex-wrap gap-3">
-                    {/* Phone - always show like PortfolioView */}
-                    <div className="flex items-center gap-2 px-3 py-2 bg-white rounded-lg border border-slate-200 text-slate-700 text-xs shadow-sm">
-                      <Phone size={14} className="text-[#003087]" />
-                      <span>{portfolio.phone || 'Sin teléfono'}</span>
-                    </div>
-                    <a href={`mailto:${user.email}`} className="flex items-center gap-2 px-3 py-2 bg-white rounded-lg border border-slate-200 text-slate-700 text-xs shadow-sm no-underline hover:border-[#003087] transition-colors">
-                      <Mail size={14} className="text-[#003087]" />
-                      <span>{user.email}</span>
-                    </a>
-                  </div>
-
-                  {/* Social links - white circle background matching PortfolioView */}
-                  {socialLinks.length > 0 && (
-                    <div className="flex flex-wrap items-center gap-2.5">
-                      {socialLinks.map(link => {
-                        const meta = PLATFORM_ICONS[link.platform?.toLowerCase()] || PLATFORM_ICONS.website
-                        return (
-                          <a key={link.id} href={link.url} target="_blank" rel="noopener noreferrer" title={link.platform}
-                            className={`w-9 h-9 flex items-center justify-center bg-white dark:bg-slate-800 rounded-full border border-slate-200 dark:border-slate-700 ${meta.color} hover:bg-slate-100 dark:hover:bg-slate-700 ${meta.hoverColor} hover:scale-110 transition-all shadow-sm`}>
-                            {meta.svg}
-                          </a>
-                        )
-                      })}
+          <div className="px-6 md:px-8 pb-8 relative pt-6 md:pt-3">
+            <div className="flex flex-col md:flex-row justify-between items-start gap-6 w-full">
+              
+              {/* Left Side: Avatar + Details in a horizontal flex layout on desktop */}
+              <div className="flex flex-col md:flex-row items-center md:items-start gap-6 w-full md:w-auto">
+                {/* Avatar wrapper with negative margin to overlap banner */}
+                <div className="-mt-16 md:-mt-20 shrink-0 z-10">
+                  {avatar_url ? (
+                    <img src={avatar_url} alt={user.first_name} className="w-32 h-32 rounded-full border-4 border-white object-cover shadow-lg bg-white" />
+                  ) : (
+                    <div className="w-32 h-32 rounded-full border-4 border-white bg-slate-100 flex items-center justify-center text-slate-600 uppercase text-3xl font-bold shadow-lg">
+                      {user.first_name?.[0]}{user.last_name?.[0]}
                     </div>
                   )}
                 </div>
+
+                {/* Info details */}
+                <div className="text-center md:text-left flex-grow">
+                  <div>
+                    <h1 className="text-3xl font-black text-slate-900">
+                      {user.first_name} {user.last_name}
+                    </h1>
+                    <p className="text-[#003087] text-sm font-semibold uppercase tracking-wider mt-1">
+                      {profession || t('portfolio_view.default_profession')}
+                    </p>
+                    <div className="flex items-center justify-center md:justify-start gap-2 text-slate-400 text-xs mt-2">
+                      <MapPin size={14} />
+                      <span>{location || t('portfolio_view.default_location')}</span>
+                    </div>
+
+                    <div className="flex flex-col gap-3 mt-3">
+                      <div className="flex flex-wrap justify-center md:justify-start gap-3">
+                        {/* Phone - always show like PortfolioView */}
+                        <div className="flex items-center gap-2 px-3 py-2 bg-white rounded-lg border border-slate-200 text-slate-700 text-xs shadow-sm">
+                          <Phone size={14} className="text-[#003087]" />
+                          <span>{portfolio.phone || 'Sin teléfono'}</span>
+                        </div>
+                        <a href={`mailto:${user.email}`} className="flex items-center gap-2 px-3 py-2 bg-white rounded-lg border border-slate-200 text-slate-700 text-xs shadow-sm no-underline hover:border-[#003087] transition-colors">
+                          <Mail size={14} className="text-[#003087]" />
+                          <span>{user.email}</span>
+                        </a>
+                      </div>
+
+                      {/* Social links - white circle background matching PortfolioView */}
+                      {socialLinks.length > 0 && (
+                        <div className="flex flex-wrap justify-center md:justify-start items-center gap-2.5">
+                          {socialLinks.map(link => {
+                            const meta = PLATFORM_ICONS[link.platform?.toLowerCase()] || PLATFORM_ICONS.website
+                            return (
+                              <a key={link.id} href={link.url} target="_blank" rel="noopener noreferrer" title={link.platform}
+                                className={`w-9 h-9 flex items-center justify-center bg-white dark:bg-slate-800 rounded-full border border-slate-200 dark:border-slate-700 ${meta.color} hover:bg-slate-100 dark:hover:bg-slate-700 ${meta.hoverColor} hover:scale-110 transition-all shadow-sm`}>
+                                {meta.svg}
+                              </a>
+                            )
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </div>
-              {/* Right side Actions and Stats Stack */}
+
+              {/* Right Side: Actions and Stats Stack */}
               <div className="flex flex-col items-stretch md:items-end gap-3 w-full md:w-auto self-stretch mt-4 md:mt-0">
                 {/* Download PDF button instead of Edit */}
                 <button
                   onClick={() => setIsModalOpen(true)}
-                  className="flex items-center justify-center gap-2 px-4 py-2 bg-[#003087] hover:bg-blue-800 text-white rounded-lg text-xs font-bold transition-all duration-300 shadow-lg no-underline w-full md:w-56 cursor-pointer"
+                  className="flex items-center justify-center gap-2 px-4 py-2 bg-[#003087] hover:bg-blue-800 text-white rounded-lg text-xs font-bold transition-all duration-300 shadow-lg no-underline w-full md:w-56 cursor-pointer border-none"
                 >
                   <Download size={14} />
                   {t('portfolio_view.download_pdf')}
@@ -219,7 +228,6 @@ export default function PublicPortfolioPage() {
         </div>
 
         {/* REST OF CARDS */}
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 md:px-8 py-8 space-y-6">
 
           {/* ABOUT */}
           <div className="bg-white rounded-2xl p-8 shadow-xl border border-slate-200">

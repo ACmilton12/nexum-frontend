@@ -105,7 +105,12 @@ export default function RegisterPage() {
         const serverErrors: { [key: string]: string } = {}
         if (error.errors.first_name) serverErrors.firstName = error.errors.first_name[0]
         if (error.errors.last_name) serverErrors.lastName = error.errors.last_name[0]
-        if (error.errors.email) serverErrors.email = error.errors.email[0]
+        if (error.errors.email) {
+          const emailErr = error.errors.email[0];
+          serverErrors.email = emailErr.toLowerCase().includes('already registered') || emailErr.toLowerCase().includes('has already been taken')
+            ? 'Este correo electrónico ya está registrado.'
+            : emailErr;
+        }
         if (error.errors.password) serverErrors.password = error.errors.password[0]
 
         setErrors((prev) => ({ ...prev, ...serverErrors }))

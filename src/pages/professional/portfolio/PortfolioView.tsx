@@ -294,109 +294,118 @@ const PortfolioView = () => {
         <Sidebar activeItem="Vista Portafolio" />
 
         <main className="flex-1 overflow-y-auto bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
-          {/* HEADER CARD - FULL WIDTH */}
-          <div className="w-full bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-md">
-            {/* Banner full-width */}
-            <div className="h-48 md:h-64 w-full bg-gradient-to-r from-[#001A5E] via-[#003087] to-[#C8102E] dark:from-slate-900 dark:via-slate-800 dark:to-cyan-900"></div>
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 md:px-8 py-8 space-y-6 pb-12">
+            {/* HEADER CARD - MATCHING OTHERS */}
+            <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+              {/* Banner */}
+              <div className="h-48 md:h-64 w-full bg-gradient-to-r from-[#001A5E] via-[#003087] to-[#C8102E] dark:from-slate-900 dark:via-slate-800 dark:to-cyan-900"></div>
 
-            {/* Content container aligned with max-w-5xl */}
-            <div className="max-w-5xl mx-auto px-4 sm:px-6 md:px-8 pb-8 relative">
-              <div className="absolute -top-16 left-4 sm:left-6 md:left-8">
-                {loading ? (
-                  <div className="w-32 h-32 rounded-full border-4 border-white dark:border-slate-900 bg-slate-200 dark:bg-slate-800 animate-pulse shadow-lg" />
-                ) : personalData?.avatar_url ? (
-                  <img
-                    src={
-                      personalData.avatar_url.startsWith('http')
-                        ? personalData.avatar_url
-                        : `${API_BASE_URL.replace('/api', '')}/storage/${personalData.avatar_url}`
-                    }
-                    alt="Profile"
-                    className="w-32 h-32 rounded-full border-4 border-white dark:border-slate-900 object-cover shadow-lg"
-                  />
-                ) : (
-                  <div className="w-32 h-32 rounded-full border-4 border-white dark:border-slate-900 bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 uppercase text-3xl font-bold">
-                    {personalData?.user?.first_name?.[0]}
-                    {personalData?.user?.last_name?.[0] || <UserIcon size={48} />}
-                  </div>
-                )}
-              </div>
-
-              <div className="pt-20 flex flex-col md:flex-row justify-between items-start gap-4">
-                {loading ? (
-                  <div className="space-y-3 flex-grow max-w-md">
-                    <SkeletonPulse className="w-64 h-8 rounded-lg" />
-                    <SkeletonPulse className="w-40 h-4 rounded-lg" />
-                    <div className="flex items-center gap-2 mt-2">
-                      <SkeletonPulse className="w-4 h-4 rounded-full" />
-                      <SkeletonPulse className="w-32 h-3 rounded-lg" />
-                    </div>
-                    <div className="flex gap-3 mt-4">
-                      <SkeletonPulse className="w-28 h-8 rounded-lg" />
-                      <SkeletonPulse className="w-36 h-8 rounded-lg" />
-                    </div>
-                  </div>
-                ) : (
-                  <div>
-                    <h1 className="text-3xl font-black text-slate-900 dark:text-white">
-                      {personalData?.user?.first_name || personalData?.user?.last_name
-                        ? `${personalData.user.first_name || ''} ${personalData.user.last_name || ''}`.trim()
-                        : t('portfolio_view.user_default')}
-                    </h1>
-
-                    <p className="text-[#003087] dark:text-cyan-400 text-sm font-semibold uppercase tracking-wider mt-1">
-                      {personalData?.profession || t('portfolio_view.professional')}
-                    </p>
-
-                    <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500 text-xs mt-3">
-                      <MapPin size={14} />
-                      <span>{personalData?.location || t('portfolio_view.location_unspecified')}</span>
-                    </div>
-
-                    <div className="flex flex-col gap-3 mt-5">
-                      <div className="flex flex-wrap gap-3">
-                        <div className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs shadow-sm">
-                          <Phone size={14} className="text-[#003087] dark:text-cyan-400" />
-                          <span>{personalData?.phone || t('portfolio_view.no_phone')}</span>
-                        </div>
-
-                        {personalData?.user?.email && (
-                          <a
-                            href={`mailto:${personalData.user.email}`}
-                            className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs shadow-sm no-underline hover:border-[#003087] dark:hover:border-cyan-400 transition-colors"
-                          >
-                            <Mail size={14} className="text-[#003087] dark:text-cyan-400" />
-                            <span>{personalData.user.email}</span>
-                          </a>
-                        )}
+              {/* Content container */}
+              <div className="px-6 md:px-8 pb-8 relative pt-6 md:pt-3">
+                <div className="flex flex-col md:flex-row justify-between items-start gap-6 w-full">
+                
+                {/* Left Side: Avatar + Details in a horizontal flex layout on desktop */}
+                <div className="flex flex-col md:flex-row items-center md:items-start gap-6 w-full md:w-auto">
+                  {/* Avatar wrapper with negative margin to overlap banner */}
+                  <div className="-mt-16 md:-mt-20 shrink-0 z-10">
+                    {loading ? (
+                      <div className="w-32 h-32 rounded-full border-4 border-white dark:border-slate-900 bg-slate-200 dark:bg-slate-800 animate-pulse shadow-lg" />
+                    ) : personalData?.avatar_url ? (
+                      <img
+                        src={
+                          personalData.avatar_url.startsWith('http')
+                            ? personalData.avatar_url
+                            : `${API_BASE_URL.replace('/api', '')}/storage/${personalData.avatar_url}`
+                        }
+                        alt="Profile"
+                        className="w-32 h-32 rounded-full border-4 border-white dark:border-slate-900 object-cover shadow-lg bg-white dark:bg-slate-950"
+                      />
+                    ) : (
+                      <div className="w-32 h-32 rounded-full border-4 border-white dark:border-slate-900 bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 uppercase text-3xl font-bold shadow-lg">
+                        {personalData?.user?.first_name?.[0]}
+                        {personalData?.user?.last_name?.[0] || <UserIcon size={48} />}
                       </div>
-
-                      {(mainLinks.linkedin || mainLinks.github || additionalLinks.length > 0) && (
-                        <div className="flex flex-wrap items-center gap-2.5">
-                          {(() => {
-                            const linksToRender = [
-                              ...(mainLinks.linkedin ? [{ id: 'linkedin', url: mainLinks.linkedin, platform: 'linkedin' }] : []),
-                              ...(mainLinks.github ? [{ id: 'github', url: mainLinks.github, platform: 'github' }] : []),
-                              ...additionalLinks
-                            ];
-
-                            return linksToRender.map(link => {
-                              const meta = PLATFORM_ICONS[link.platform?.toLowerCase() || 'website'] || PLATFORM_ICONS.website;
-                              return (
-                                <a key={link.id} href={link.url} target="_blank" rel="noopener noreferrer" title={link.platform || 'Sitio Web'}
-                                  className={`w-9 h-9 flex items-center justify-center bg-white dark:bg-slate-800 rounded-full border border-slate-200 dark:border-slate-700 ${meta.color} hover:bg-slate-100 dark:hover:bg-slate-700 ${meta.hoverColor} hover:scale-110 transition-all shadow-sm`}>
-                                  {meta.svg}
-                                </a>
-                              );
-                            });
-                          })()}
-                        </div>
-                      )}
-                    </div>
+                    )}
                   </div>
-                )}
 
-                {/* Right side Actions and Stats Stack */}
+                  {/* Info details */}
+                  <div className="text-center md:text-left flex-grow">
+                    {loading ? (
+                      <div className="space-y-3 max-w-md mx-auto md:mx-0">
+                        <SkeletonPulse className="w-64 h-8 rounded-lg mx-auto md:mx-0" />
+                        <SkeletonPulse className="w-40 h-4 rounded-lg mx-auto md:mx-0" />
+                        <div className="flex items-center justify-center md:justify-start gap-2 mt-2">
+                          <SkeletonPulse className="w-4 h-4 rounded-full" />
+                          <SkeletonPulse className="w-32 h-3 rounded-lg" />
+                        </div>
+                        <div className="flex flex-wrap justify-center md:justify-start gap-3 mt-4">
+                          <SkeletonPulse className="w-28 h-8 rounded-lg" />
+                          <SkeletonPulse className="w-36 h-8 rounded-lg" />
+                        </div>
+                      </div>
+                    ) : (
+                      <div>
+                        <h1 className="text-3xl font-black text-slate-900 dark:text-white">
+                          {personalData?.user?.first_name || personalData?.user?.last_name
+                            ? `${personalData.user.first_name || ''} ${personalData.user.last_name || ''}`.trim()
+                            : t('portfolio_view.user_default')}
+                        </h1>
+
+                        <p className="text-[#003087] dark:text-cyan-400 text-sm font-semibold uppercase tracking-wider mt-1">
+                          {personalData?.profession || t('portfolio_view.professional')}
+                        </p>
+
+                        <div className="flex items-center justify-center md:justify-start gap-2 text-slate-400 dark:text-slate-500 text-xs mt-2">
+                          <MapPin size={14} />
+                          <span>{personalData?.location || t('portfolio_view.location_unspecified')}</span>
+                        </div>
+
+                        <div className="flex flex-col gap-3 mt-3">
+                          <div className="flex flex-wrap justify-center md:justify-start gap-3">
+                            <div className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs shadow-sm">
+                              <Phone size={14} className="text-[#003087] dark:text-cyan-400" />
+                              <span>{personalData?.phone || t('portfolio_view.no_phone')}</span>
+                            </div>
+
+                            {personalData?.user?.email && (
+                              <a
+                                href={`mailto:${personalData.user.email}`}
+                                className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs shadow-sm no-underline hover:border-[#003087] dark:hover:border-cyan-400 transition-colors"
+                              >
+                                <Mail size={14} className="text-[#003087] dark:text-cyan-400" />
+                                <span>{personalData.user.email}</span>
+                              </a>
+                            )}
+                          </div>
+
+                          {(mainLinks.linkedin || mainLinks.github || additionalLinks.length > 0) && (
+                            <div className="flex flex-wrap justify-center md:justify-start items-center gap-2.5">
+                              {(() => {
+                                const linksToRender = [
+                                  ...(mainLinks.linkedin ? [{ id: 'linkedin', url: mainLinks.linkedin, platform: 'linkedin' }] : []),
+                                  ...(mainLinks.github ? [{ id: 'github', url: mainLinks.github, platform: 'github' }] : []),
+                                  ...additionalLinks
+                                ];
+
+                                return linksToRender.map(link => {
+                                  const meta = PLATFORM_ICONS[link.platform?.toLowerCase() || 'website'] || PLATFORM_ICONS.website;
+                                  return (
+                                    <a key={link.id} href={link.url} target="_blank" rel="noopener noreferrer" title={link.platform || 'Sitio Web'}
+                                      className={`w-9 h-9 flex items-center justify-center bg-white dark:bg-slate-800 rounded-full border border-slate-200 dark:border-slate-700 ${meta.color} hover:bg-slate-100 dark:hover:bg-slate-700 ${meta.hoverColor} hover:scale-110 transition-all shadow-sm`}>
+                                      {meta.svg}
+                                    </a>
+                                  );
+                                });
+                              })()}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Right Side: Actions and Stats Stack */}
                 {loading ? (
                   <div className="flex flex-col items-stretch md:items-end gap-3 w-full md:w-auto self-stretch mt-4 md:mt-0">
                     <SkeletonPulse className="h-8 rounded-lg w-full md:w-56" />
@@ -451,7 +460,6 @@ const PortfolioView = () => {
           </div>
 
           {/* REST OF CARDS */}
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 md:px-8 py-8 space-y-6 pb-12">
             {!loading && privacy.global_privacy === 'private' && (
               <div className="bg-amber-50 dark:bg-amber-500/10 border-l-4 border-amber-500 rounded-r-xl p-4 flex items-start gap-3 shadow-sm">
                 <Lock className="text-amber-500 shrink-0 mt-0.5" size={20} />

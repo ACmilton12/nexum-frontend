@@ -195,10 +195,10 @@ const PrintPortfolio = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-slate-950 flex items-center justify-center transition-colors duration-300">
         <div className="flex flex-col items-center gap-4">
-          <Loader2 className="w-10 h-10 text-primary animate-spin" />
-          <p className="text-gray-500 font-medium">{t('portfolio_view.loading_doc', 'Preparando documento...')}</p>
+          <Loader2 className="w-10 h-10 text-[#003087] dark:text-cyan-500 animate-spin" />
+          <p className="text-gray-500 dark:text-slate-400 font-medium">{t('portfolio_view.loading_doc', 'Preparando documento...')}</p>
         </div>
       </div>
     )
@@ -206,16 +206,16 @@ const PrintPortfolio = () => {
 
   if (error || !portfolio) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-        <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 max-w-md w-full text-center">
-          <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+      <div className="min-h-screen bg-gray-50 dark:bg-slate-950 flex items-center justify-center p-6 transition-colors duration-300">
+        <div className="bg-white dark:bg-slate-900 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 max-w-md w-full text-center">
+          <div className="w-16 h-16 bg-red-50 dark:bg-red-500/10 text-red-500 dark:text-red-400 rounded-full flex items-center justify-center mx-auto mb-4">
             <Award size={32} />
           </div>
-          <h2 className="text-xl font-bold text-gray-900 mb-2">{t('portfolio_view.error_title', 'Error')}</h2>
-          <p className="text-gray-500 mb-6">{error || t('portfolio_view.no_info', 'No se encontró información.')}</p>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('portfolio_view.error_title', 'Error')}</h2>
+          <p className="text-gray-500 dark:text-slate-400 mb-6">{error || t('portfolio_view.no_info', 'No se encontró información.')}</p>
           <button
             onClick={() => navigate(-1)}
-            className="w-full py-3 bg-primary text-white rounded-xl font-bold shadow-lg"
+            className="w-full py-3 bg-[#003087] dark:bg-cyan-500 text-white dark:text-slate-950 rounded-xl font-bold shadow-lg transition-colors hover:bg-blue-800 dark:hover:bg-cyan-400 cursor-pointer"
           >
             {t('portfolio_view.back', 'Volver')}
           </button>
@@ -768,20 +768,20 @@ const PrintPortfolio = () => {
   )
 
   return (
-    <div className="min-h-screen bg-gray-100 font-sans print:bg-white">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-950 font-sans print:bg-white print:dark:bg-white transition-colors duration-300">
       {/* Barra de herramientas - No se imprime */}
-      <div className="no-print bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+      <div className="no-print bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800 sticky top-0 z-50 shadow-sm transition-colors duration-300">
         <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
           <button
             onClick={() => navigate(-1)}
-            className="text-gray-500 font-bold hover:text-primary transition-colors flex items-center gap-2 text-sm cursor-pointer border-none bg-transparent"
+            className="text-gray-500 dark:text-slate-400 font-bold hover:text-[#C8102E] dark:hover:text-cyan-400 transition-colors flex items-center gap-2 text-sm cursor-pointer border-none bg-transparent"
           >
             <ArrowLeft size={18} /> {t('portfolio_view.return', 'Regresar')}
           </button>
           <button
             onClick={handleDownloadPDF}
             disabled={isExporting}
-            className="flex items-center gap-2 bg-[#C8102E] text-white px-5 py-2.5 rounded-lg font-bold shadow-lg hover:bg-[#a50d25] transition-all disabled:opacity-50 disabled:cursor-not-allowed border-none cursor-pointer"
+            className="flex items-center gap-2 bg-[#C8102E] dark:bg-cyan-500 text-white dark:text-slate-950 px-5 py-2.5 rounded-lg font-bold shadow-lg hover:bg-[#a50d25] dark:hover:bg-cyan-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed border-none cursor-pointer"
           >
             {isExporting ? (
               <>
