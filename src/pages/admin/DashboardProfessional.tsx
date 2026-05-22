@@ -29,19 +29,23 @@ const getInitials = (name: string): string | null => {
   return name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2)
 }
 
-const formatRelativeDate = (iso: string): string => {
+const formatRelativeDate = (iso: string, t: any, lang: string): string => {
   const date = new Date(iso)
   const now = new Date()
   const diffMs = now.getTime() - date.getTime()
   const diffMins = Math.floor(diffMs / (1000 * 60))
   const diffHours = Math.floor(diffMs / (1000 * 60 * 60))
   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
-  if (diffMins < 1) return "Hace un momento"
-  if (diffMins < 60) return `Hace ${diffMins} min`
-  if (diffHours < 24) return `Hoy, ${date.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" })}`
-  if (diffDays === 1) return `Ayer, ${date.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" })}`
-  if (diffDays < 7) return `Hace ${diffDays} días`
-  return date.toLocaleDateString("es-ES", { day: "numeric", month: "short" })
+
+  const locale = lang === 'es' ? 'es-ES' : lang === 'pt' ? 'pt-BR' : 'en-US'
+  const time = date.toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" })
+
+  if (diffMins < 1) return t('dashboard.dates.just_now', "Hace un momento")
+  if (diffMins < 60) return t('dashboard.dates.mins_ago', { count: diffMins, defaultValue: `Hace ${diffMins} min` })
+  if (diffHours < 24) return t('dashboard.dates.today_at', { time, defaultValue: `Hoy, ${time}` })
+  if (diffDays === 1) return t('dashboard.dates.yesterday_at', { time, defaultValue: `Ayer, ${time}` })
+  if (diffDays < 7) return t('dashboard.dates.days_ago', { count: diffDays, defaultValue: `Hace ${diffDays} días` })
+  return date.toLocaleDateString(locale, { day: "numeric", month: "short" })
 }
 
 const RightPanelContent = ({
@@ -152,7 +156,7 @@ const DashboardProfessional = () => {
             const paginatedVisitors = await getProfileVisitors(fetchedPortfolioId, 1, 100)
             const visitorsList = paginatedVisitors.data || []
             const now = new Date().getTime()
-            
+
             let count7 = 0
             let count30 = 0
 
@@ -262,7 +266,7 @@ const DashboardProfessional = () => {
                 </div>
                 <div className="flex justify-between items-end mt-2">
                   <p className={`text-xs transition-colors font-medium ${showStats ? 'text-primary' : 'text-gray-400 group-hover:text-action'}`}>
-                    {showStats ? "Ocultar detalles" : "Ver estadísticas completas"}
+                    {showStats ? t('dashboard.stats.hide_details', "Ocultar detalles") : t('dashboard.stats.view_full_stats', "Ver estadísticas completas")}
                   </p>
                   {showStats
                     ? <ChevronUp size={16} className="text-primary" />
@@ -301,37 +305,37 @@ const DashboardProfessional = () => {
                 </button>
 
                 <h3 className="text-xl font-bold text-[#002e6b] dark:text-blue-400 mb-8">
-                  Estadísticas de visitas
+                  {t('dashboard.expanded_stats.title', 'Estadísticas de visitas')}
                 </h3>
 
                 <div className="flex flex-col sm:flex-row justify-between mb-8 gap-6 sm:gap-0">
                   <div className="flex-1">
                     <p className="text-4xl sm:text-5xl font-bold text-[#002e6b] dark:text-blue-400 mb-2">{loading ? "—" : viewsCount}</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">Total — Desde el inicio</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{t('dashboard.expanded_stats.total_views_desc', 'Total — Desde el inicio')}</p>
                   </div>
                   <div className="hidden sm:block w-px bg-gray-200 dark:bg-gray-700 mx-6"></div>
                   <div className="flex-1">
                     <p className="text-4xl sm:text-5xl font-bold text-[#002e6b] dark:text-blue-400 mb-2">
                       {loading ? "—" : visits7Days}
                     </p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">Últimos 7 días — Esta semana</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{t('dashboard.expanded_stats.last_7_days', 'Últimos 7 días — Esta semana')}</p>
                   </div>
                   <div className="hidden sm:block w-px bg-gray-200 dark:bg-gray-700 mx-6"></div>
                   <div className="flex-1">
                     <p className="text-4xl sm:text-5xl font-bold text-[#002e6b] dark:text-blue-400 mb-2">
                       {loading ? "—" : visits30Days}
                     </p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">Último mes — 30 días</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{t('dashboard.expanded_stats.last_30_days', 'Último mes — 30 días')}</p>
                   </div>
                 </div>
 
                 <div className="border-t border-gray-100 dark:border-gray-700 pt-8 mb-8">
                   <div className="flex items-center justify-between mb-2">
                     <h4 className="text-xs font-bold text-[#002e6b] dark:text-blue-400 opacity-80 tracking-wider uppercase">
-                      Visitantes recientes
+                      {t('dashboard.expanded_stats.recent_visitors', 'Visitantes recientes')}
                     </h4>
                     <Link to="/visitantes" className="text-[11px] text-primary font-bold hover:underline">
-                      Ver todos →
+                      {t('dashboard.expanded_stats.view_all', 'Ver todos →')}
                     </Link>
                   </div>
                   <div className="space-y-0">
@@ -353,19 +357,19 @@ const DashboardProfessional = () => {
                             </p>
                             {visitor.user_id !== null && (
                               <span className="bg-[#eff4fa] dark:bg-blue-900/30 text-[#002e6b] dark:text-blue-400 text-[11px] font-bold px-2.5 py-1 rounded-md">
-                                Usuario Nexum
+                                {t('dashboard.expanded_stats.nexum_user', 'Usuario Nexum')}
                               </span>
                             )}
                           </div>
                         </div>
                         <span className="text-sm text-gray-400 font-medium">
-                          {formatRelativeDate(visitor.visited_at)}
+                          {formatRelativeDate(visitor.visited_at, t, i18n.language)}
                         </span>
                       </div>
                     )) : (
                       <div className="py-8 text-center text-gray-400 text-sm">
                         <User size={24} className="mx-auto mb-2 text-gray-300" />
-                        <p>Aún no hay visitantes registrados.</p>
+                        <p>{t('dashboard.expanded_stats.no_visitors', 'Aún no hay visitantes registrados.')}</p>
                       </div>
                     )}
                   </div>
@@ -373,7 +377,7 @@ const DashboardProfessional = () => {
 
                 <div className="border-t border-gray-100 dark:border-gray-700 pt-6">
                   <div className="p-3.5 bg-[#eff4fa] dark:bg-blue-900/20 border-l-[3px] border-[#002e6b] text-[13px] sm:text-sm text-[#0a2540] dark:text-blue-300 rounded-r-lg font-medium">
-                    Las visitas propias no se contabilizan. Solo visitantes externos con deduplicación por sesión.
+                    {t('dashboard.expanded_stats.visitors_info', 'Las visitas propias no se contabilizan. Solo visitantes externos con deduplicación por sesión.')}
                   </div>
                 </div>
               </div>

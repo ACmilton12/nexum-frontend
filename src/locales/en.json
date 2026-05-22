@@ -307,7 +307,22 @@
     "dates": {
       "today": "Today",
       "yesterday": "Yesterday",
-      "days_ago": "{{count}} days ago"
+      "days_ago": "{{count}} days ago",
+      "just_now": "Just now",
+      "mins_ago": "{{count}} mins ago",
+      "today_at": "Today, {{time}}",
+      "yesterday_at": "Yesterday, {{time}}"
+    },
+    "expanded_stats": {
+      "title": "Visit Statistics",
+      "total_views_desc": "Total — Since beginning",
+      "last_7_days": "Last 7 days — This week",
+      "last_30_days": "Last month — 30 days",
+      "recent_visitors": "Recent visitors",
+      "view_all": "View all →",
+      "nexum_user": "Nexum User",
+      "no_visitors": "No visitors registered yet.",
+      "visitors_info": "Your own visits are not counted. Only external visitors with deduplication per session."
     }
   },
   "profile": {
