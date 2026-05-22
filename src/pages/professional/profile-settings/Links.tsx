@@ -5,6 +5,7 @@ import { Globe, Loader2, Plus, Trash2, ExternalLink, Link2, AlertTriangle } from
 import Toast from '../../../components/ui/Toast';
 import { getLinksPrivacyData, updateLinksPrivacyData } from '../../../services/linksprivacy.service';
 import { API_BASE_URL } from '../../../utils/constants';
+import { useTranslation } from 'react-i18next';
 
 interface AdditionalLink {
   id: number;
@@ -107,6 +108,7 @@ function getAuthToken(): string {
 }
 
 function Links() {
+  const { t } = useTranslation();
   const [nombre, setNombre] = useState('');
   const [apellido, setApellido] = useState('');
   const [isPublic, setIsPublic] = useState(true);
@@ -177,7 +179,7 @@ function Links() {
     const domainRegex = /^(?:https?:\/\/)?(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{2,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&/=]*)$/;
 
     if (!domainRegex.test(trimmed)) {
-      setToast({ message: 'Por favor, ingresa un enlace válido con dominio (ej. tusitio.com)', type: 'error' });
+      setToast({ message: t('profile.portfolio_links.toasts.invalid_url', 'Por favor, ingresa un enlace válido con dominio (ej. tusitio.com)'), type: 'error' });
       return;
     }
 
@@ -195,16 +197,16 @@ function Links() {
     ].filter(Boolean).map(u => u.toLowerCase());
 
     if (allExistingUrls.includes(trimmed.toLowerCase())) {
-      setToast({ message: 'Este enlace ya ha sido registrado previamente', type: 'error' });
+      setToast({ message: t('profile.portfolio_links.toasts.duplicate', 'Este enlace ya ha sido registrado previamente'), type: 'error' });
       return;
     }
 
     if (isLinkedin && mainLinks.linkedin) {
-      setToast({ message: 'Ya tienes un enlace de LinkedIn. Elimínalo primero para agregar uno nuevo', type: 'error' });
+      setToast({ message: t('profile.portfolio_links.toasts.linkedin_exists', 'Ya tienes un enlace de LinkedIn. Elimínalo primero para agregar uno nuevo'), type: 'error' });
       return;
     }
     if (isGithub && mainLinks.github) {
-      setToast({ message: 'Ya tienes un enlace de GitHub. Elimínalo primero para agregar uno nuevo', type: 'error' });
+      setToast({ message: t('profile.portfolio_links.toasts.github_exists', 'Ya tienes un enlace de GitHub. Elimínalo primero para agregar uno nuevo'), type: 'error' });
       return;
     }
 
@@ -227,7 +229,7 @@ function Links() {
 
         setMainLinks(updatedLinks);
         setNewUrl('');
-        setToast({ message: 'Enlace principal actualizado correctamente', type: 'success' });
+        setToast({ message: t('profile.portfolio_links.toasts.main_updated', 'Enlace principal actualizado correctamente'), type: 'success' });
       } else {
         const res = await fetch(`${API_BASE_URL}/portfolio/links`, {
           method: 'POST',
@@ -242,18 +244,18 @@ function Links() {
           const json = await res.json();
           setAdditionalLinks((prev) => [json.data, ...prev]);
           setNewUrl('');
-          setToast({ message: 'Enlace agregado correctamente', type: 'success' });
+          setToast({ message: t('profile.portfolio_links.toasts.added', 'Enlace agregado correctamente'), type: 'success' });
         } else {
           const errorData = await res.json();
           if (errorData.errors?.url) {
             setToast({ message: errorData.errors.url[0], type: 'error' });
           } else {
-            setToast({ message: errorData.message || 'Error al agregar enlace', type: 'error' });
+            setToast({ message: errorData.message || t('profile.portfolio_links.toasts.add_error', 'Error al agregar enlace'), type: 'error' });
           }
         }
       }
     } catch {
-      setToast({ message: 'Error de conexión al agregar enlace', type: 'error' });
+      setToast({ message: t('profile.portfolio_links.toasts.add_conn_error', 'Error de conexión al agregar enlace'), type: 'error' });
     } finally {
       setIsAdding(false);
     }
@@ -277,7 +279,7 @@ function Links() {
         });
 
         setMainLinks(updatedLinks);
-        setToast({ message: 'Enlace eliminado', type: 'success' });
+        setToast({ message: t('profile.portfolio_links.toasts.deleted', 'Enlace eliminado'), type: 'success' });
       } else {
         const res = await fetch(`${API_BASE_URL}/portfolio/links/${id}`, {
           method: 'DELETE',
@@ -288,14 +290,14 @@ function Links() {
         });
         if (res.ok) {
           setAdditionalLinks((prev) => prev.filter((l) => l.id !== id));
-          setToast({ message: 'Enlace eliminado', type: 'success' });
+          setToast({ message: t('profile.portfolio_links.toasts.deleted', 'Enlace eliminado'), type: 'success' });
         } else {
           const errorData = await res.json();
-          setToast({ message: errorData.message || 'Error al eliminar enlace', type: 'error' });
+          setToast({ message: errorData.message || t('profile.portfolio_links.toasts.delete_error', 'Error al eliminar enlace'), type: 'error' });
         }
       }
     } catch {
-      setToast({ message: 'Error de conexión al eliminar enlace', type: 'error' });
+      setToast({ message: t('profile.portfolio_links.toasts.delete_conn_error', 'Error de conexión al eliminar enlace'), type: 'error' });
     } finally {
       setDeletingId(null);
     }
@@ -310,7 +312,7 @@ function Links() {
             <div className="flex-1 p-4 sm:p-6 md:p-6 flex items-center justify-center overflow-y-auto">
               <div className="flex flex-col items-center gap-3 text-gray-400 font-medium">
                 <Loader2 className="animate-spin text-primary" size={32} />
-                <span>Cargando...</span>
+                <span>{t('profile.portfolio_links.loading', 'Cargando...')}</span>
               </div>
             </div>
             <RightWidgets type="profile" className="hidden lg:block w-64 shrink-0" />
@@ -335,10 +337,10 @@ function Links() {
           <div className="flex-1 p-4 sm:p-6 md:p-6 overflow-y-auto">
             <div className="mb-6">
               <h1 className="text-xl sm:text-2xl font-bold text-textMain dark:text-white mb-1">
-                Enlaces del Portafolio
+                {t('profile.portfolio_links.title', 'Enlaces del Portafolio')}
               </h1>
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                Pega tus enlaces (LinkedIn, GitHub, Kaggle, etc.) y los detectaremos automáticamente.
+                {t('profile.portfolio_links.subtitle', 'Pega tus enlaces (LinkedIn, GitHub, Kaggle, etc.) y los detectaremos automáticamente.')}
               </p>
             </div>
 
@@ -351,7 +353,7 @@ function Links() {
                       type="text"
                       value={newUrl}
                       onChange={(e) => setNewUrl(e.target.value)}
-                      placeholder="Pega la URL de tu red o sitio web..."
+                      placeholder={t('profile.portfolio_links.placeholder', 'Pega la URL de tu red o sitio web...')}
                       disabled={isAdding || additionalLinks.length >= 10}
                       className="flex-1 outline-none text-sm text-gray-700 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-500 bg-transparent disabled:opacity-60"
                       required
@@ -367,30 +369,30 @@ function Links() {
                     ) : (
                       <Plus size={14} />
                     )}
-                    <span className="hidden sm:inline">{isAdding ? 'Agregando...' : 'Agregar'}</span>
+                    <span className="hidden sm:inline">{isAdding ? t('profile.portfolio_links.adding', 'Agregando...') : t('profile.portfolio_links.add', 'Agregar')}</span>
                   </button>
                 </form>
 
                 {additionalLinks.length >= 10 && (
                   <div className="flex items-center gap-2 mb-4 p-2.5 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg text-amber-700 dark:text-amber-400 text-xs font-medium transition-colors">
                     <AlertTriangle size={13} className="shrink-0" />
-                    Límite de 10 enlaces adicionales alcanzado.
+                    {t('profile.portfolio_links.limit_reached', 'Límite de 10 enlaces adicionales alcanzado.')}
                   </div>
                 )}
 
                 {loadingLinks ? (
                   <div className="flex items-center justify-center gap-2 py-6 text-sm text-gray-400">
                     <Loader2 size={16} className="animate-spin" />
-                    Cargando enlaces...
+                    {t('profile.portfolio_links.loading_links', 'Cargando enlaces...')}
                   </div>
                 ) : allLinks.length === 0 ? (
                   <div className="text-center py-8">
                     <div className="w-12 h-12 rounded-full bg-gray-100 dark:bg-slate-700 flex items-center justify-center mx-auto mb-3 transition-colors">
                       <Link2 size={20} className="text-gray-300 dark:text-gray-500" />
                     </div>
-                    <p className="text-sm text-gray-400 font-medium">Sin enlaces configurados</p>
+                    <p className="text-sm text-gray-400 font-medium">{t('profile.portfolio_links.no_links', 'Sin enlaces configurados')}</p>
                     <p className="text-xs text-gray-300 dark:text-gray-500 mt-0.5">
-                      Pega un enlace arriba y se detectará la plataforma automáticamente.
+                      {t('profile.portfolio_links.no_links_desc', 'Pega un enlace arriba y se detectará la plataforma automáticamente.')}
                     </p>
                   </div>
                 ) : (
@@ -408,7 +410,7 @@ function Links() {
 
                           <div className="flex-1 flex flex-col justify-center min-w-0">
                             <span className="text-[11px] font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider mb-0.5">
-                              {link.platform || 'Sitio Web'}
+                              {link.platform || t('profile.portfolio_links.website', 'Sitio Web')}
                             </span>
                             <a
                               href={link.url}
@@ -426,7 +428,7 @@ function Links() {
                             onClick={() => handleDeleteLink(link.id, link.type)}
                             disabled={deletingId === link.id}
                             className="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors disabled:opacity-60 border-none bg-transparent cursor-pointer shrink-0"
-                            title="Eliminar"
+                            title={t('profile.portfolio_links.delete', 'Eliminar')}
                           >
                             {deletingId === link.id ? (
                               <Loader2 size={15} className="animate-spin" />

@@ -346,7 +346,34 @@
     "toast_reverted": "As alterações foram revertidas.",
     "toast_avatar_success": "Foto de perfil atualizada e comprimida com sucesso.",
     "toast_avatar_error": "Erro ao processar ou enviar a imagem.",
-    "loading_profile": "Carregando perfil..."
+    "loading_profile": "Carregando perfil...",
+    "portfolio_links": {
+      "loading": "Carregando...",
+      "title": "Links do Portfólio",
+      "subtitle": "Cole seus links (LinkedIn, GitHub, Kaggle, etc.) e os detectaremos automaticamente.",
+      "placeholder": "Cole a URL da sua rede ou site...",
+      "adding": "Adicionando...",
+      "add": "Adicionar",
+      "limit_reached": "Limite de 10 links adicionais atingido.",
+      "loading_links": "Carregando links...",
+      "no_links": "Nenhum link configurado",
+      "no_links_desc": "Cole um link acima e a plataforma será detectada automaticamente.",
+      "website": "Site",
+      "delete": "Excluir",
+      "toasts": {
+        "invalid_url": "Por favor, insira um link válido com domínio (ex. seusaite.com)",
+        "duplicate": "Este link já foi registrado anteriormente",
+        "linkedin_exists": "Você já tem um link do LinkedIn. Exclua-o primeiro para adicionar um novo",
+        "github_exists": "Você já tem um link do GitHub. Exclua-o primeiro para adicionar um novo",
+        "main_updated": "Link principal atualizado com sucesso",
+        "added": "Link adicionado com sucesso",
+        "add_error": "Erro ao adicionar link",
+        "add_conn_error": "Erro de conexão ao adicionar link",
+        "deleted": "Link excluído",
+        "delete_error": "Erro ao excluir link",
+        "delete_conn_error": "Erro de conexão ao excluir link"
+      }
+    }
   },
   "privacy": {
     "title": "Links e Privacidade",

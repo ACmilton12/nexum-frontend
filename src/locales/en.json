@@ -347,7 +347,34 @@
     "toast_reverted": "Changes have been reverted.",
     "toast_avatar_success": "Profile photo updated and compressed successfully.",
     "toast_avatar_error": "Error processing or uploading image.",
-    "loading_profile": "Loading profile..."
+    "loading_profile": "Loading profile...",
+    "portfolio_links": {
+      "loading": "Loading...",
+      "title": "Portfolio Links",
+      "subtitle": "Paste your links (LinkedIn, GitHub, Kaggle, etc.) and we will detect them automatically.",
+      "placeholder": "Paste your network or website URL...",
+      "adding": "Adding...",
+      "add": "Add",
+      "limit_reached": "Limit of 10 additional links reached.",
+      "loading_links": "Loading links...",
+      "no_links": "No links configured",
+      "no_links_desc": "Paste a link above and the platform will be detected automatically.",
+      "website": "Website",
+      "delete": "Delete",
+      "toasts": {
+        "invalid_url": "Please enter a valid link with a domain (e.g. yoursite.com)",
+        "duplicate": "This link has already been registered previously",
+        "linkedin_exists": "You already have a LinkedIn link. Delete it first to add a new one",
+        "github_exists": "You already have a GitHub link. Delete it first to add a new one",
+        "main_updated": "Main link updated successfully",
+        "added": "Link added successfully",
+        "add_error": "Error adding link",
+        "add_conn_error": "Connection error when adding link",
+        "deleted": "Link deleted",
+        "delete_error": "Error deleting link",
+        "delete_conn_error": "Connection error when deleting link"
+      }
+    }
   },
   "privacy": {
     "title": "Links and Privacy",
