@@ -5,6 +5,7 @@ import { Loader2, Clock, Save, Globe, CheckCircle, Lock, Link2, Copy, Check, Fol
 import Toast from '../../../components/ui/Toast';
 import { getLinksPrivacyData, updateLinksPrivacyData } from '../../../services/linksprivacy.service';
 import { API_BASE_URL } from '../../../utils/constants';
+import { useTranslation } from 'react-i18next';
 
 const Toggle = ({ active, onToggle, disabled }: { active: boolean; onToggle: () => void; disabled?: boolean }) => (
   <div
@@ -18,6 +19,7 @@ const Toggle = ({ active, onToggle, disabled }: { active: boolean; onToggle: () 
 );
 
 function Privacy() {
+  const { t } = useTranslation();
   const [nombre, setNombre] = useState('');
   const [apellido, setApellido] = useState('');
   const [linkedin, setLinkedin] = useState('');
@@ -47,7 +49,7 @@ function Privacy() {
   const DEPLOY_URL = 'https://nexum-frontend-wheat.vercel.app';
   const profileUrl = portfolioId
     ? `${DEPLOY_URL}/portfolio/${portfolioId}`
-    : 'Cargando enlace...';
+    : t('profile.privacy.loading_link', 'Cargando enlace...');
 
   const handleCopy = () => {
     if (!portfolioId) return;
@@ -135,9 +137,9 @@ function Privacy() {
       setOriginalShowExperience(showExperience);
       setOriginalShowCertifications(showCertifications);
       setLastUpdated(new Date());
-      setToast({ message: 'Privacidad actualizada con éxito', type: 'success' });
+      setToast({ message: t('profile.privacy.toasts.success', 'Privacidad actualizada con éxito'), type: 'success' });
     } catch (error: unknown) {
-      setToast({ message: 'Error al actualizar: ' + (error as Error).message, type: 'error' });
+      setToast({ message: t('profile.privacy.toasts.error', 'Error al actualizar: ') + (error as Error).message, type: 'error' });
     } finally {
       setIsSaving(false);
     }
@@ -166,7 +168,7 @@ function Privacy() {
             <div className="flex-1 p-4 sm:p-6 md:p-6 flex items-center justify-center overflow-y-auto">
               <div className="flex flex-col items-center gap-3 text-gray-400 font-medium">
                 <Loader2 className="animate-spin text-primary" size={32} />
-                <span>Cargando...</span>
+                <span>{t('profile.privacy.loading', 'Cargando...')}</span>
               </div>
             </div>
             <RightWidgets type="profile" className="hidden lg:block w-64 shrink-0" />
@@ -177,8 +179,8 @@ function Privacy() {
   }
 
   const formattedDate = lastUpdated 
-    ? `Hoy, ${new Intl.DateTimeFormat('es-ES', { hour: 'numeric', minute: 'numeric', hour12: true }).format(lastUpdated).toUpperCase()}`
-    : 'No disponible';
+    ? t('profile.privacy.today', 'Hoy, ') + `${new Intl.DateTimeFormat('es-ES', { hour: 'numeric', minute: 'numeric', hour12: true }).format(lastUpdated).toUpperCase()}`
+    : t('profile.privacy.not_available', 'No disponible');
 
   return (
     <div className="flex-1 w-full bg-background dark:bg-slate-900 flex flex-col overflow-hidden transition-colors duration-300">
@@ -193,14 +195,10 @@ function Privacy() {
               <div>
                 <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
                   <Clock size={16} />
-                  <span>Última actualización: {formattedDate}</span>
+                  <span>{t('profile.privacy.last_updated', 'Última actualización: ')}{formattedDate}</span>
                 </div>
-                <h1 className="text-3xl font-bold text-textMain dark:text-white mb-2">
-                  Privacidad
-                </h1>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Gestiona quién puede ver tu portafolio y qué información compartes.
-                </p>
+                <h1 className="text-3xl font-bold text-textMain dark:text-white mb-2">{t('profile.privacy.title', 'Privacidad')}</h1>
+                <p className="text-sm text-gray-600 dark:text-gray-400">{t('profile.privacy.subtitle', 'Gestiona quién puede ver tu portafolio y qué información compartes.')}</p>
               </div>
               
               <div className="flex items-center gap-3 mt-2 lg:mt-0">
@@ -208,16 +206,14 @@ function Privacy() {
                   onClick={handleDiscard}
                   disabled={!hasChanges || isSaving}
                   className="px-6 py-2.5 rounded-full border border-gray-300 dark:border-gray-600 text-textMain dark:text-gray-200 bg-transparent hover:bg-gray-100 dark:hover:bg-slate-800 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Descartar
-                </button>
+                >{t('profile.privacy.discard', 'Descartar')}</button>
                 <button 
                   onClick={handleSave}
                   disabled={!hasChanges || isSaving}
                   className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-action text-white text-sm font-medium hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Save size={18} />
-                  {isSaving ? 'Guardando...' : 'Guardar cambios'}
+                  {isSaving ? t('profile.privacy.saving', 'Guardando...') : t('profile.privacy.save', 'Guardar cambios')}
                 </button>
               </div>
             </div>
@@ -231,21 +227,17 @@ function Privacy() {
                       <Globe className="text-primary" size={24} />
                     </div>
                     <div>
-                      <h3 className="text-lg font-bold text-textMain dark:text-white mb-1">
-                        Visibilidad Global
-                      </h3>
-                      <p className="text-sm text-gray-500 dark:text-gray-400 mb-3 max-w-xl">
-                        Controla si tu portafolio puede ser visto por cualquier persona con el enlace o si está completamente oculto.
-                      </p>
+                      <h3 className="text-lg font-bold text-textMain dark:text-white mb-1">{t('profile.privacy.global_visibility.title', 'Visibilidad Global')}</h3>
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mb-3 max-w-xl">{t('profile.privacy.global_visibility.desc', 'Controla si tu portafolio puede ser visto por cualquier persona con el enlace o si está completamente oculto.')}</p>
                       {isPublic ? (
                         <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#edf7ed] dark:bg-green-900/20 border border-[#c3e6cb] dark:border-green-800/50 text-[#2e7d32] dark:text-green-400 text-xs font-semibold">
                           <CheckCircle size={15} />
-                          Público · Visible
+                          {t('profile.privacy.global_visibility.public', 'Público · Visible')}
                         </div>
                       ) : (
                         <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-100 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 text-xs font-semibold">
                           <Lock size={15} />
-                          Privado · Oculto
+                          {t('profile.privacy.global_visibility.private', 'Privado · Oculto')}
                         </div>
                       )}
                     </div>
@@ -269,12 +261,8 @@ function Privacy() {
                   </div>
                   
                   <div className="flex-1">
-                    <h3 className="text-lg font-bold text-textMain dark:text-white mb-1">
-                      Link público de tu portafolio
-                    </h3>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                      Comparte este enlace con reclutadores o quien quieras
-                    </p>
+                    <h3 className="text-lg font-bold text-textMain dark:text-white mb-1">{t('profile.privacy.public_link.title', 'Link público de tu portafolio')}</h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{t('profile.privacy.public_link.desc', 'Comparte este enlace con reclutadores o quien quieras')}</p>
                     
                     <div className="flex flex-col sm:flex-row gap-3">
                       <div className={`flex-1 px-4 py-2.5 rounded-lg border text-sm flex items-center overflow-hidden transition-colors ${!isPublic ? 'bg-gray-50 dark:bg-slate-900 border-gray-200 dark:border-gray-700 text-gray-400 dark:text-gray-600' : 'bg-gray-50 dark:bg-slate-900 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300'}`}>
@@ -284,12 +272,12 @@ function Privacy() {
                             target="_blank" 
                             rel="noopener noreferrer"
                             className="hover:text-action dark:hover:text-blue-400 hover:underline truncate transition-colors"
-                            title="Abrir portafolio en una nueva pestaña"
+                            title={t('profile.privacy.public_link.open_tab', 'Abrir portafolio en una nueva pestaña')}
                           >
                             {profileUrl}
                           </a>
                         ) : (
-                          <span className="truncate">{!isPublic ? 'Perfil privado' : profileUrl}</span>
+                          <span className="truncate">{!isPublic ? t('profile.privacy.public_link.private_profile', 'Perfil privado') : profileUrl}</span>
                         )}
                       </div>
                       
@@ -302,11 +290,11 @@ function Privacy() {
                       >
                         {copied ? (
                           <>
-                            <Check size={16} /> ¡Copiado!
+                            <Check size={16} /> {t('profile.privacy.public_link.copied', '¡Copiado!')}
                           </>
                         ) : (
                           <>
-                            <Copy size={16} /> Copiar link
+                            <Copy size={16} /> {t('profile.privacy.public_link.copy', 'Copiar link')}
                           </>
                         )}
                       </button>
@@ -314,7 +302,7 @@ function Privacy() {
 
                     {!isPublic && (
                       <div className="mt-5 p-3.5 bg-[#fef9f0] dark:bg-amber-900/10 border-l-4 border-[#f0a04b] text-[#8a613c] dark:text-amber-500 text-sm font-medium transition-colors">
-                        Activa la visibilidad pública para poder compartir tu portafolio
+                        {t('profile.privacy.public_link.activate_public', 'Activa la visibilidad pública para poder compartir tu portafolio')}
                       </div>
                     )}
                   </div>
@@ -324,12 +312,8 @@ function Privacy() {
               {/* Card 3: Privacidad por Sección */}
               <div className="bg-white dark:bg-slate-800 rounded-xl p-6 sm:p-8 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors">
                 <div className="mb-6">
-                  <h3 className="text-xl font-bold text-textMain dark:text-white mb-2">
-                    Privacidad por Sección
-                  </h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Activa o desactiva secciones específicas. Solo aplica cuando el portafolio es público.
-                  </p>
+                  <h3 className="text-xl font-bold text-textMain dark:text-white mb-2">{t('profile.privacy.section_privacy.title', 'Privacidad por Sección')}</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">{t('profile.privacy.section_privacy.desc', 'Activa o desactiva secciones específicas. Solo aplica cuando el portafolio es público.')}</p>
                 </div>
 
                 <div className="border border-gray-100 dark:border-gray-700 rounded-xl overflow-hidden mb-6 transition-colors">
@@ -340,12 +324,12 @@ function Privacy() {
                       </div>
                       <div className="min-w-0">
                         <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                          <h4 className="font-semibold text-textMain dark:text-white text-sm">Proyectos</h4>
+                          <h4 className="font-semibold text-textMain dark:text-white text-sm">{t('profile.privacy.section_privacy.projects.title', 'Proyectos')}</h4>
                           <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider transition-colors ${showProjects ? 'bg-green-100/60 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-gray-100 dark:bg-slate-700 text-gray-500 dark:text-gray-400'}`}>
-                            {showProjects ? 'VISIBLE' : 'OCULTO'}
+                            {showProjects ? t('profile.privacy.visible', 'VISIBLE') : t('profile.privacy.hidden', 'OCULTO')}
                           </span>
                         </div>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">Repositorios y proyectos destacados</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{t('profile.privacy.section_privacy.projects.desc', 'Repositorios y proyectos destacados')}</p>
                       </div>
                     </div>
                     <div className="shrink-0">
@@ -360,12 +344,12 @@ function Privacy() {
                       </div>
                       <div className="min-w-0">
                         <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                          <h4 className="font-semibold text-textMain dark:text-white text-sm">Habilidades</h4>
+                          <h4 className="font-semibold text-textMain dark:text-white text-sm">{t('profile.privacy.section_privacy.skills.title', 'Habilidades')}</h4>
                           <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider transition-colors ${showSkills ? 'bg-green-100/60 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-gray-100 dark:bg-slate-700 text-gray-500 dark:text-gray-400'}`}>
-                            {showSkills ? 'VISIBLE' : 'OCULTO'}
+                            {showSkills ? t('profile.privacy.visible', 'VISIBLE') : t('profile.privacy.hidden', 'OCULTO')}
                           </span>
                         </div>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">Tecnologías y competencias técnicas</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{t('profile.privacy.section_privacy.skills.desc', 'Tecnologías y competencias técnicas')}</p>
                       </div>
                     </div>
                     <div className="shrink-0">
@@ -380,12 +364,12 @@ function Privacy() {
                       </div>
                       <div className="min-w-0">
                         <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                          <h4 className="font-semibold text-textMain dark:text-white text-sm">Experiencia</h4>
+                          <h4 className="font-semibold text-textMain dark:text-white text-sm">{t('profile.privacy.section_privacy.experience.title', 'Experiencia')}</h4>
                           <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider transition-colors ${showExperience ? 'bg-green-100/60 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-gray-100 dark:bg-slate-700 text-gray-500 dark:text-gray-400'}`}>
-                            {showExperience ? 'VISIBLE' : 'OCULTO'}
+                            {showExperience ? t('profile.privacy.visible', 'VISIBLE') : t('profile.privacy.hidden', 'OCULTO')}
                           </span>
                         </div>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">Historial laboral y roles</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{t('profile.privacy.section_privacy.experience.desc', 'Historial laboral y roles')}</p>
                       </div>
                     </div>
                     <div className="shrink-0">
@@ -400,12 +384,12 @@ function Privacy() {
                       </div>
                       <div className="min-w-0">
                         <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                          <h4 className="font-semibold text-textMain dark:text-white text-sm">Certificaciones</h4>
+                          <h4 className="font-semibold text-textMain dark:text-white text-sm">{t('profile.privacy.section_privacy.certifications.title', 'Certificaciones')}</h4>
                           <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider transition-colors ${showCertifications ? 'bg-green-100/60 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-gray-100 dark:bg-slate-700 text-gray-500 dark:text-gray-400'}`}>
-                            {showCertifications ? 'VISIBLE' : 'OCULTO'}
+                            {showCertifications ? t('profile.privacy.visible', 'VISIBLE') : t('profile.privacy.hidden', 'OCULTO')}
                           </span>
                         </div>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">Cursos y certificados obtenidos</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{t('profile.privacy.section_privacy.certifications.desc', 'Cursos y certificados obtenidos')}</p>
                       </div>
                     </div>
                     <div className="shrink-0">
@@ -417,7 +401,7 @@ function Privacy() {
                 <div className="flex gap-3 p-4 bg-gray-50 dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-gray-700 text-gray-600 dark:text-gray-400 transition-colors">
                   <Info className="shrink-0 mt-0.5" size={18} />
                   <p className="text-sm">
-                    Las secciones ocultas se omiten completamente del servidor. Si tu perfil es privado, la configuración global anulará estos valores y devolverá un error 404 a todos los visitantes.
+                    {t('profile.privacy.info', 'Las secciones ocultas se omiten completamente del servidor. Si tu perfil es privado, la configuración global anulará estos valores y devolverá un error 404 a todos los visitantes.')}
                   </p>
                 </div>
               </div>

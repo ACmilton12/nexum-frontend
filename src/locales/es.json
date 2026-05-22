@@ -374,6 +374,60 @@
         "delete_error": "Error al eliminar enlace",
         "delete_conn_error": "Error de conexión al eliminar enlace"
       }
+    },
+    "privacy": {
+      "loading_link": "Cargando enlace...",
+      "loading": "Cargando...",
+      "last_updated": "Última actualización: ",
+      "today": "Hoy, ",
+      "not_available": "No disponible",
+      "title": "Privacidad",
+      "subtitle": "Gestiona quién puede ver tu portafolio y qué información compartes.",
+      "discard": "Descartar",
+      "saving": "Guardando...",
+      "save": "Guardar cambios",
+      "visible": "VISIBLE",
+      "hidden": "OCULTO",
+      "info": "Las secciones ocultas se omiten completamente del servidor. Si tu perfil es privado, la configuración global anulará estos valores y devolverá un error 404 a todos los visitantes.",
+      "toasts": {
+        "success": "Privacidad actualizada con éxito",
+        "error": "Error al actualizar: "
+      },
+      "global_visibility": {
+        "title": "Visibilidad Global",
+        "desc": "Controla si tu portafolio puede ser visto por cualquier persona con el enlace o si está completamente oculto.",
+        "public": "Público · Visible",
+        "private": "Privado · Oculto"
+      },
+      "public_link": {
+        "title": "Link público de tu portafolio",
+        "desc": "Comparte este enlace con reclutadores o quien quieras",
+        "open_tab": "Abrir portafolio en una nueva pestaña",
+        "private_profile": "Perfil privado",
+        "copied": "¡Copiado!",
+        "copy": "Copiar link",
+        "activate_public": "Activa la visibilidad pública para poder compartir tu portafolio"
+      },
+      "section_privacy": {
+        "title": "Privacidad por Sección",
+        "desc": "Activa o desactiva secciones específicas. Solo aplica cuando el portafolio es público.",
+        "projects": {
+          "title": "Proyectos",
+          "desc": "Repositorios y proyectos destacados"
+        },
+        "skills": {
+          "title": "Habilidades",
+          "desc": "Tecnologías y competencias técnicas"
+        },
+        "experience": {
+          "title": "Experiencia",
+          "desc": "Historial laboral y roles"
+        },
+        "certifications": {
+          "title": "Certificaciones",
+          "desc": "Cursos y certificados obtenidos"
+        }
+      }
     }
   },
   "privacy": {

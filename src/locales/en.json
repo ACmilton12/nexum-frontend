@@ -374,6 +374,60 @@
         "delete_error": "Error deleting link",
         "delete_conn_error": "Connection error when deleting link"
       }
+    },
+    "privacy": {
+      "loading_link": "Loading link...",
+      "loading": "Loading...",
+      "last_updated": "Last updated: ",
+      "today": "Today, ",
+      "not_available": "Not available",
+      "title": "Privacy",
+      "subtitle": "Manage who can see your portfolio and what information you share.",
+      "discard": "Discard",
+      "saving": "Saving...",
+      "save": "Save changes",
+      "visible": "VISIBLE",
+      "hidden": "HIDDEN",
+      "info": "Hidden sections are completely omitted from the server. If your profile is private, global settings will override these values and return a 404 error to all visitors.",
+      "toasts": {
+        "success": "Privacy updated successfully",
+        "error": "Error updating: "
+      },
+      "global_visibility": {
+        "title": "Global Visibility",
+        "desc": "Control whether your portfolio can be seen by anyone with the link or if it is completely hidden.",
+        "public": "Public · Visible",
+        "private": "Private · Hidden"
+      },
+      "public_link": {
+        "title": "Public link of your portfolio",
+        "desc": "Share this link with recruiters or whoever you want",
+        "open_tab": "Open portfolio in a new tab",
+        "private_profile": "Private profile",
+        "copied": "Copied!",
+        "copy": "Copy link",
+        "activate_public": "Activate public visibility to share your portfolio"
+      },
+      "section_privacy": {
+        "title": "Privacy by Section",
+        "desc": "Enable or disable specific sections. Only applies when the portfolio is public.",
+        "projects": {
+          "title": "Projects",
+          "desc": "Repositories and featured projects"
+        },
+        "skills": {
+          "title": "Skills",
+          "desc": "Technologies and technical competencies"
+        },
+        "experience": {
+          "title": "Experience",
+          "desc": "Work history and roles"
+        },
+        "certifications": {
+          "title": "Certifications",
+          "desc": "Courses and obtained certificates"
+        }
+      }
     }
   },
   "privacy": {
