@@ -248,6 +248,8 @@ const LoginPage = () => {
                   <div className="flex items-center bg-gray-200 border-2 border-transparent rounded-lg px-4 py-2.5 gap-3 focus-within:border-primary focus-within:bg-white transition-colors duration-300">
                     <Mail size={16} className="text-gray-400 shrink-0" />
                     <input
+                      id="email"
+                      name="email"
                       type="email"
                       placeholder={t('auth.login.email_placeholder')}
                       value={email}
@@ -271,6 +273,8 @@ const LoginPage = () => {
                   <div className="flex items-center bg-gray-200 border-2 border-transparent rounded-lg px-4 py-2.5 gap-3 focus-within:border-primary focus-within:bg-white transition-colors duration-300">
                     <Lock size={16} className="text-gray-400 shrink-0" />
                     <input
+                      id="password"
+                      name="password"
                       type={showPassword ? 'text' : 'password'}
                       placeholder={t('auth.login.password_placeholder')}
                       value={password}
