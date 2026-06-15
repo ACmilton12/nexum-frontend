@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { MapPin, Briefcase, Eye } from 'lucide-react'
 import type { SearchResult } from '../../../services/search.service'
 import { useProfileStats } from '../../../hooks/useProfileVisits'
+import useAuth from '../../../hooks/useAuth'
 
 
 interface PortfolioCardProps {
@@ -12,6 +13,8 @@ interface PortfolioCardProps {
 export default function PortfolioCard({ portfolio, isInternal = false }: PortfolioCardProps) {
   const { user, profession, location, avatar_url, skills, views_count } = portfolio
   const fullName = `${user.first_name} ${user.last_name}`
+  const { user: currentUser } = useAuth()
+  const isMyProfile = currentUser?.id === user.id
 
   // Obtener estadísticas reales del backend
   const { stats } = useProfileStats(portfolio.id)
@@ -78,9 +81,13 @@ export default function PortfolioCard({ portfolio, isInternal = false }: Portfol
 
         <Link
           to={isInternal ? `/directorio/perfil/${portfolio.id}` : `/portfolio/${portfolio.id}`}
-          className="px-4 py-2 rounded-xl bg-gray-900 dark:bg-slate-700 text-white dark:text-gray-100 text-xs font-bold hover:bg-[#C8102E] dark:hover:bg-[#C8102E] transition-all no-underline"
+          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all no-underline ${
+            isMyProfile
+              ? 'bg-[#003087] text-white hover:bg-[#002266]'
+              : 'bg-gray-900 dark:bg-slate-700 text-white dark:text-gray-100 hover:bg-[#C8102E] dark:hover:bg-[#C8102E]'
+          }`}
         >
-          Ver Perfil
+          {isMyProfile ? 'Tu Perfil' : 'Ver Perfil'}
         </Link>
       </div>
     </div>

@@ -438,25 +438,28 @@ function PersonalData() {
       <Modal
         isOpen={showConfirmModal}
         onClose={() => setShowConfirmModal(false)}
-        title={t('profile.confirm_update')}
+        maxWidth="max-w-[450px]"
       >
-        <div className="space-y-6 max-w-sm text-center p-2">
-          <div className="w-16 h-16 bg-red-50 dark:bg-red-900/20 text-action rounded-full flex items-center justify-center mx-auto">
+        <div className="flex flex-col items-center text-center mx-auto">
+          <div className="w-16 h-16 bg-red-50 dark:bg-red-900/20 text-action rounded-full flex items-center justify-center mb-6">
             <Save size={30} />
           </div>
-          <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed font-medium">
+          <h2 className="text-[20px] font-bold text-[#1a1a2e] dark:text-white mb-3">
+            {t('profile.confirm_update')}
+          </h2>
+          <p className="text-[14px] text-gray-500 dark:text-gray-400 leading-relaxed font-medium mb-8">
             {t('profile.confirm_desc')}
           </p>
-          <div className="flex gap-3">
+          <div className="flex flex-col-reverse sm:flex-row gap-3 w-full">
             <button
               onClick={() => setShowConfirmModal(false)}
-              className="flex-1 py-3 text-sm font-bold border border-gray-200 dark:border-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors"
+              className="flex-1 px-6 py-2.5 text-[14px] font-bold border border-gray-200 dark:border-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors"
             >
               {t('common.back')}
             </button>
             <button
               onClick={handleConfirmSave}
-              className="flex-1 py-3 text-sm font-bold bg-action text-white rounded-xl hover:brightness-110 shadow-lg shadow-red-200 transition-all"
+              className="flex-1 px-6 py-2.5 text-[14px] font-bold bg-action text-white rounded-xl hover:brightness-110 shadow-lg shadow-red-200 dark:shadow-none transition-all"
             >
               {t('dashboard.portfolio.save', 'Guardar')}
             </button>

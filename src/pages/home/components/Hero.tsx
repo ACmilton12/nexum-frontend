@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { Search, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import type { GlobalStats } from '../types'
-import portada1 from '../../../assets/portada1.png'
-import portada2 from '../../../assets/portada2.png'
-import portada3 from '../../../assets/portada3.png'
+import portada1 from '../../../assets/portada1.webp'
+import portada2 from '../../../assets/portada2.webp'
+import portada3 from '../../../assets/portada3.webp'
 
 export default function Hero({
   stats,
@@ -24,17 +24,17 @@ export default function Hero({
   }, [externalSearchTerm])
 
   const slides = [
-    { 
+    {
       image: portada1,
       title: t('hero.slides.slide1.title'),
       description: t('hero.description')
     },
-    { 
+    {
       image: portada2,
       title: t('hero.slides.slide2.title'),
       description: t('hero.slides.slide2.description')
     },
-    { 
+    {
       image: portada3,
       title: t('hero.slides.slide3.title'),
       description: t('hero.slides.slide3.description')

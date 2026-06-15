@@ -54,37 +54,43 @@ export default function Footer() {
             <div className="text-white font-bold text-xs mb-4 uppercase tracking-widest">
               {t('footer.resources')}
             </div>
-            <a
-              href="#"
+            <Link
+              to="/guia"
               className="block text-blue-300 hover:text-white text-sm mb-2.5 transition-colors no-underline"
             >
               {t('footer.resources_list.guide')}
-            </a>
-            <a
-              href="#"
+            </Link>
+            <Link
+              to="/formato-pdf"
               className="block text-blue-300 hover:text-white text-sm mb-2.5 transition-colors no-underline"
             >
               {t('footer.resources_list.pdf')}
-            </a>
-            <a
-              href="#"
+            </Link>
+            <Link
+              to="/faq"
               className="block text-blue-300 hover:text-white text-sm mb-2.5 transition-colors no-underline"
             >
               {t('footer.resources_list.faq')}
-            </a>
-            <a
-              href="#"
+            </Link>
+            <Link
+              to="/normativa"
               className="block text-blue-300 hover:text-white text-sm mb-2.5 transition-colors no-underline"
             >
               {t('footer.resources_list.rules')}
-            </a>
+            </Link>
           </div>
           <div>
             <div className="text-white font-bold text-xs mb-4 uppercase tracking-widest">
               {t('footer.contact')}
             </div>
-            <p className="text-blue-300 text-sm mb-2">soporte@nexum.umss.edu.bo</p>
-            <p className="text-blue-300 text-sm mb-2">{t('footer.faculty')}</p>
+            <a
+              href="https://mail.google.com/mail/?view=cm&fs=1&to=soportenexum2026@gmail.com&su=Consulta%20Soporte%20Nexum"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block text-blue-300 text-sm mb-2 hover:text-white transition-colors no-underline"
+            >
+              soportenexum2026@gmail.com
+            </a>
             <p className="text-blue-300 text-sm">{t('footer.location')}</p>
           </div>
         </div>
