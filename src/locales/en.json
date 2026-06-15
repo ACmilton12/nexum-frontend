@@ -109,7 +109,8 @@
     "error": "Something went wrong",
     "back": "Go back",
     "view_more": "View more",
-    "calendar": "Calendar"
+    "calendar": "Calendar",
+    "cancel": "Cancel"
   },
   "footer": {
     "description": "Institutional platform for digital portfolios for professionals.",
@@ -158,7 +159,19 @@
     "apply_filters": "Apply Filters",
     "clear_all": "Clear all",
     "show_all": "Show all portfolios",
-    "for": "for"
+    "for": "for",
+    "placeholder": "Search by name, profession or keywords...",
+    "button": "Search",
+    "clear": "Clear search"
+  },
+  "portfolio_card": {
+    "default_profession": "Professional",
+    "default_location": "Location not specified",
+    "no_skills": "No public skills listed",
+    "more_skills": "+{{count}} more",
+    "views": "{{count}} views",
+    "my_profile": "Your Profile",
+    "view_profile": "View Profile"
   },
   "features_list": {
     "title": "System Features",

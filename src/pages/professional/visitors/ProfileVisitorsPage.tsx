@@ -153,20 +153,20 @@ const ProfileVisitorsPage = () => {
   const rightPanelContent = (
     <div className="sticky top-6 space-y-8">
       <div>
-        <h3 className="font-bold text-textMain text-sm mb-4 uppercase tracking-wider">
+        <h3 className="font-bold text-textMain dark:text-white text-sm mb-4 uppercase tracking-wider">
           Calendario
         </h3>
         <Calendar />
       </div>
 
       <div>
-        <h3 className="font-bold text-textMain text-sm mb-4 flex items-center gap-2 uppercase tracking-wider">
+        <h3 className="font-bold text-textMain dark:text-white text-sm mb-4 flex items-center gap-2 uppercase tracking-wider">
           <ShieldCheck size={18} className="text-action" />
           NOTIFICACIONES
         </h3>
         <div className="space-y-3">
           {stats && stats.visits_count > 0 && (
-            <div className="flex items-start gap-2 text-xs text-gray-600 leading-relaxed">
+            <div className="flex items-start gap-2 text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
               <AlertTriangle
                 size={14}
                 className="text-action mt-0.5 shrink-0"
@@ -177,7 +177,7 @@ const ProfileVisitorsPage = () => {
               </span>
             </div>
           )}
-          <div className="flex items-start gap-2 text-xs text-gray-600 leading-relaxed">
+          <div className="flex items-start gap-2 text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
             <CheckCircle
               size={14}
               className="text-green-500 mt-0.5 shrink-0"
@@ -188,7 +188,7 @@ const ProfileVisitorsPage = () => {
       </div>
 
       <div>
-        <h3 className="font-normal text-textMain text-sm mb-4 uppercase tracking-wider">
+        <h3 className="font-normal text-textMain dark:text-white text-sm mb-4 uppercase tracking-wider">
           Enlaces rápidos
         </h3>
         <div className="space-y-3">
@@ -212,17 +212,17 @@ const ProfileVisitorsPage = () => {
   // ─── Loading State ─────────────────────────────────────────────
   if (loading) {
     return (
-      <div className="h-full bg-background flex flex-col font-sans overflow-hidden">
+      <div className="h-full bg-background dark:bg-slate-900 flex flex-col font-sans overflow-hidden transition-colors duration-300">
         <div className="flex flex-1 overflow-hidden relative">
           <Sidebar activeItem="Visitantes" />
           <main className="flex-1 flex flex-col lg:flex-row overflow-hidden">
             <div className="flex-1 p-4 sm:p-6 md:p-8 flex items-center justify-center overflow-y-auto">
-              <div className="flex flex-col items-center gap-3 text-gray-400 font-medium">
+              <div className="flex flex-col items-center gap-3 text-gray-400 dark:text-gray-500 font-medium">
                 <Loader2 className="animate-spin text-primary" size={32} />
                 <span>Cargando visitantes...</span>
               </div>
             </div>
-            <aside className="hidden lg:block w-72 p-6 bg-white lg:border-l border-gray-200 shrink-0 overflow-y-auto">
+            <aside className="hidden lg:block w-72 p-6 bg-white dark:bg-slate-900 lg:border-l border-gray-200 dark:border-gray-800 shrink-0 overflow-y-auto transition-colors duration-300">
               {rightPanelContent}
             </aside>
           </main>
@@ -233,7 +233,7 @@ const ProfileVisitorsPage = () => {
 
   // ─── Render ────────────────────────────────────────────────────
   return (
-    <div className="h-full bg-background flex flex-col font-sans overflow-hidden">
+    <div className="h-full bg-background dark:bg-slate-900 flex flex-col font-sans overflow-hidden transition-colors duration-300">
       <div className="flex flex-1 overflow-hidden relative">
         <Sidebar activeItem="Visitantes" />
 
@@ -243,17 +243,17 @@ const ProfileVisitorsPage = () => {
             <header className="mb-6">
               <div className="flex items-center justify-between flex-wrap gap-3">
                 <div>
-                  <h1 className="text-xl sm:text-2xl font-bold text-textMain mb-1">
+                  <h1 className="text-xl sm:text-2xl font-bold text-textMain dark:text-white mb-1">
                     Visitantes del Perfil
                   </h1>
-                  <p className="text-sm text-gray-400">
+                  <p className="text-sm text-gray-400 dark:text-gray-500">
                     Analiza quién ha visitado tu portafolio profesional.
                   </p>
                 </div>
                 <button
                   onClick={handleRefresh}
                   disabled={refreshing}
-                  className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50 transition-all shadow-sm disabled:opacity-50"
+                  className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition-all shadow-sm disabled:opacity-50"
                 >
                   <RefreshCw
                     size={14}
@@ -267,65 +267,65 @@ const ProfileVisitorsPage = () => {
             {/* STATS CARDS */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
               {/* Total visits */}
-              <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-all">
-                <div className="absolute top-0 right-0 w-20 h-20 bg-primary/5 rounded-bl-[60px] -mr-2 -mt-2 transition-all group-hover:bg-primary/10" />
+              <div className="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 relative overflow-hidden group hover:shadow-md transition-all">
+                <div className="absolute top-0 right-0 w-20 h-20 bg-primary/5 dark:bg-primary/10 rounded-bl-[60px] -mr-2 -mt-2 transition-all group-hover:bg-primary/10 dark:group-hover:bg-primary/20" />
                 <div className="relative">
                   <div className="flex items-center gap-2 mb-3">
                     <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
                       <Eye size={18} className="text-primary" />
                     </div>
-                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                    <span className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
                       Visitas totales
                     </span>
                   </div>
-                  <p className="text-3xl font-bold text-[#002e6b]">
+                  <p className="text-3xl font-bold text-[#002e6b] dark:text-blue-400">
                     {stats?.visits_count ?? 0}
                   </p>
-                  <p className="text-[11px] text-gray-400 mt-1">
+                  <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-1">
                     Desde el inicio
                   </p>
                 </div>
               </div>
 
               {/* Registered visitors */}
-              <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-all">
-                <div className="absolute top-0 right-0 w-20 h-20 bg-green-50 rounded-bl-[60px] -mr-2 -mt-2 transition-all group-hover:bg-green-100/60" />
+              <div className="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 relative overflow-hidden group hover:shadow-md transition-all">
+                <div className="absolute top-0 right-0 w-20 h-20 bg-green-50 dark:bg-green-900/20 rounded-bl-[60px] -mr-2 -mt-2 transition-all group-hover:bg-green-100/60 dark:group-hover:bg-green-900/30" />
                 <div className="relative">
                   <div className="flex items-center gap-2 mb-3">
-                    <div className="w-9 h-9 rounded-xl bg-green-50 flex items-center justify-center">
-                      <UserCheck size={18} className="text-green-600" />
+                    <div className="w-9 h-9 rounded-xl bg-green-50 dark:bg-green-900/30 flex items-center justify-center">
+                      <UserCheck size={18} className="text-green-600 dark:text-green-400" />
                     </div>
-                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                    <span className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
                       Registrados
                     </span>
                   </div>
-                  <p className="text-3xl font-bold text-[#002e6b]">
+                  <p className="text-3xl font-bold text-[#002e6b] dark:text-blue-400">
                     {stats?.recent_visitors.filter((v) => v.user_id !== null)
                       .length ?? 0}
                   </p>
-                  <p className="text-[11px] text-gray-400 mt-1">
+                  <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-1">
                     Usuarios Nexum recientes
                   </p>
                 </div>
               </div>
 
               {/* Anonymous visitors */}
-              <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-all">
-                <div className="absolute top-0 right-0 w-20 h-20 bg-orange-50 rounded-bl-[60px] -mr-2 -mt-2 transition-all group-hover:bg-orange-100/60" />
+              <div className="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 relative overflow-hidden group hover:shadow-md transition-all">
+                <div className="absolute top-0 right-0 w-20 h-20 bg-orange-50 dark:bg-orange-900/20 rounded-bl-[60px] -mr-2 -mt-2 transition-all group-hover:bg-orange-100/60 dark:group-hover:bg-orange-900/30" />
                 <div className="relative">
                   <div className="flex items-center gap-2 mb-3">
-                    <div className="w-9 h-9 rounded-xl bg-orange-50 flex items-center justify-center">
-                      <UserX size={18} className="text-orange-500" />
+                    <div className="w-9 h-9 rounded-xl bg-orange-50 dark:bg-orange-900/30 flex items-center justify-center">
+                      <UserX size={18} className="text-orange-500 dark:text-orange-400" />
                     </div>
-                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                    <span className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
                       Anónimos
                     </span>
                   </div>
-                  <p className="text-3xl font-bold text-[#002e6b]">
+                  <p className="text-3xl font-bold text-[#002e6b] dark:text-blue-400">
                     {stats?.recent_visitors.filter((v) => v.user_id === null)
                       .length ?? 0}
                   </p>
-                  <p className="text-[11px] text-gray-400 mt-1">
+                  <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-1">
                     Visitantes sin cuenta
                   </p>
                 </div>
@@ -334,10 +334,10 @@ const ProfileVisitorsPage = () => {
 
             {/* RECENT VISITORS (from stats) */}
             {stats && stats.recent_visitors.length > 0 && (
-              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-6">
+              <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 mb-6 transition-colors">
                 <div className="flex items-center gap-2 mb-5">
                   <TrendingUp size={18} className="text-primary" />
-                  <h2 className="font-bold text-textMain">
+                  <h2 className="font-bold text-textMain dark:text-white">
                     Visitantes recientes
                   </h2>
                   <span className="text-[10px] bg-primary/10 text-primary font-bold px-2 py-0.5 rounded-full ml-auto">
@@ -350,7 +350,7 @@ const ProfileVisitorsPage = () => {
                       key={idx}
                       className={`flex items-center justify-between py-4 ${
                         idx !== stats.recent_visitors.length - 1
-                          ? "border-b border-gray-50"
+                          ? "border-b border-gray-50 dark:border-gray-700/50"
                           : ""
                       }`}
                     >
@@ -360,7 +360,7 @@ const ProfileVisitorsPage = () => {
                             {getInitials(visitor.name)}
                           </div>
                         ) : (
-                          <div className="w-10 h-10 rounded-full bg-gray-50 text-gray-400 flex items-center justify-center shrink-0 border border-gray-100">
+                          <div className="w-10 h-10 rounded-full bg-gray-50 dark:bg-slate-700 text-gray-400 flex items-center justify-center shrink-0 border border-gray-100 dark:border-gray-600">
                             <User size={18} />
                           </div>
                         )}
@@ -368,24 +368,24 @@ const ProfileVisitorsPage = () => {
                           <p
                             className={`text-sm ${
                               visitor.user_id !== null
-                                ? "font-bold text-[#0a2540]"
-                                : "text-gray-500 italic"
+                                ? "font-bold text-[#0a2540] dark:text-white"
+                                : "text-gray-500 dark:text-gray-400 italic"
                             }`}
                           >
                             {visitor.name}
                           </p>
-                          <p className="text-[11px] text-gray-400">
+                          <p className="text-[11px] text-gray-400 dark:text-gray-500">
                             {formatFullDate(visitor.visited_at)}
                           </p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
                         {visitor.user_id !== null && (
-                          <span className="bg-[#eff4fa] text-[#002e6b] text-[10px] font-bold px-2 py-0.5 rounded-md hidden sm:inline-block">
+                          <span className="bg-[#eff4fa] dark:bg-blue-900/30 text-[#002e6b] dark:text-blue-400 text-[10px] font-bold px-2 py-0.5 rounded-md hidden sm:inline-block">
                             Usuario Nexum
                           </span>
                         )}
-                        <span className="text-xs text-gray-400 font-medium">
+                        <span className="text-xs text-gray-400 dark:text-gray-500 font-medium">
                           {formatDate(visitor.visited_at)}
                         </span>
                       </div>
@@ -396,25 +396,25 @@ const ProfileVisitorsPage = () => {
             )}
 
             {/* FULL VISITORS LIST */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-6">
-              <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden mb-6 transition-colors">
+              <div className="px-6 py-5 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Users size={18} className="text-primary" />
-                  <h2 className="font-bold text-textMain">
+                  <h2 className="font-bold text-textMain dark:text-white">
                     Todos los visitantes
                   </h2>
                 </div>
                 {meta && (
-                  <span className="text-xs text-gray-400 font-medium">
+                  <span className="text-xs text-gray-400 dark:text-gray-500 font-medium">
                     {meta.total} visitante{meta.total !== 1 ? "s" : ""} en total
                   </span>
                 )}
               </div>
 
               {visitors.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-16 text-gray-400">
-                  <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
-                    <Eye size={28} className="text-gray-300" />
+                <div className="flex flex-col items-center justify-center py-16 text-gray-400 dark:text-gray-500">
+                  <div className="w-16 h-16 bg-gray-50 dark:bg-slate-700 rounded-full flex items-center justify-center mb-4">
+                    <Eye size={28} className="text-gray-300 dark:text-gray-600" />
                   </div>
                   <p className="font-medium text-sm">
                     Aún no tienes visitantes
@@ -426,7 +426,7 @@ const ProfileVisitorsPage = () => {
               ) : (
                 <>
                   {/* Table Header */}
-                  <div className="hidden sm:grid grid-cols-[1fr_auto_auto] gap-4 px-6 py-3 bg-gray-50/60 text-[11px] font-bold text-gray-400 uppercase tracking-wider border-b border-gray-100">
+                  <div className="hidden sm:grid grid-cols-[1fr_auto_auto] gap-4 px-6 py-3 bg-gray-50/60 dark:bg-slate-900/50 text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider border-b border-gray-100 dark:border-gray-700">
                     <span>Visitante</span>
                     <span className="w-28 text-center">Tipo</span>
                     <span className="w-40 text-right">Fecha de visita</span>
@@ -436,9 +436,9 @@ const ProfileVisitorsPage = () => {
                   {visitors.map((visitor, idx) => (
                     <div
                       key={visitor.id ?? idx}
-                      className={`grid grid-cols-1 sm:grid-cols-[1fr_auto_auto] gap-2 sm:gap-4 px-6 py-4 items-center transition-colors hover:bg-gray-50/40 ${
+                      className={`grid grid-cols-1 sm:grid-cols-[1fr_auto_auto] gap-2 sm:gap-4 px-6 py-4 items-center transition-colors hover:bg-gray-50/40 dark:hover:bg-slate-700/30 ${
                         idx !== visitors.length - 1
-                          ? "border-b border-gray-50"
+                          ? "border-b border-gray-50 dark:border-gray-700/50"
                           : ""
                       }`}
                     >
@@ -449,15 +449,15 @@ const ProfileVisitorsPage = () => {
                             {getInitials(visitor.name)}
                           </div>
                         ) : (
-                          <div className="w-9 h-9 rounded-full bg-gray-50 text-gray-400 flex items-center justify-center shrink-0 border border-gray-100">
+                          <div className="w-9 h-9 rounded-full bg-gray-50 dark:bg-slate-700 text-gray-400 flex items-center justify-center shrink-0 border border-gray-100 dark:border-gray-600">
                             <User size={16} />
                           </div>
                         )}
                         <p
                           className={`text-sm ${
                             visitor.user_id !== null
-                              ? "font-semibold text-[#0a2540]"
-                              : "text-gray-500 italic"
+                              ? "font-semibold text-[#0a2540] dark:text-white"
+                              : "text-gray-500 dark:text-gray-400 italic"
                           }`}
                         >
                           {visitor.name}
@@ -467,12 +467,12 @@ const ProfileVisitorsPage = () => {
                       {/* Type badge */}
                       <div className="w-28 flex justify-center">
                         {visitor.user_id !== null ? (
-                          <span className="bg-[#eff4fa] text-[#002e6b] text-[10px] font-bold px-2.5 py-1 rounded-md inline-flex items-center gap-1">
+                          <span className="bg-[#eff4fa] dark:bg-blue-900/30 text-[#002e6b] dark:text-blue-400 text-[10px] font-bold px-2.5 py-1 rounded-md inline-flex items-center gap-1">
                             <UserCheck size={10} />
                             Registrado
                           </span>
                         ) : (
-                          <span className="bg-orange-50 text-orange-600 text-[10px] font-bold px-2.5 py-1 rounded-md inline-flex items-center gap-1">
+                          <span className="bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 text-[10px] font-bold px-2.5 py-1 rounded-md inline-flex items-center gap-1">
                             <UserX size={10} />
                             Anónimo
                           </span>
@@ -481,10 +481,10 @@ const ProfileVisitorsPage = () => {
 
                       {/* Date */}
                       <div className="w-40 text-right">
-                        <p className="text-xs text-gray-500 font-medium">
+                        <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">
                           {formatDate(visitor.visited_at)}
                         </p>
-                        <p className="text-[10px] text-gray-400">
+                        <p className="text-[10px] text-gray-400 dark:text-gray-500">
                           {formatFullDate(visitor.visited_at)}
                         </p>
                       </div>
@@ -495,15 +495,15 @@ const ProfileVisitorsPage = () => {
                   {meta && (meta.last_page ?? 1) > 1 && (() => {
                     const lastPage = meta.last_page ?? 1;
                     return (
-                    <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50/30">
-                      <p className="text-xs text-gray-400">
+                    <div className="px-6 py-4 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between bg-gray-50/30 dark:bg-slate-900/30">
+                      <p className="text-xs text-gray-400 dark:text-gray-500">
                         Página {meta.current_page} de {lastPage}
                       </p>
                       <div className="flex items-center gap-1">
                         <button
                           onClick={() => setPage((p) => Math.max(1, p - 1))}
                           disabled={page === 1}
-                          className="p-2 rounded-lg border border-gray-200 text-gray-500 hover:bg-white disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                          className="p-2 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:bg-white dark:hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
                         >
                           <ChevronLeft size={14} />
                         </button>
@@ -523,7 +523,7 @@ const ProfileVisitorsPage = () => {
                             return (
                               <span key={p} className="flex items-center">
                                 {showEllipsis && (
-                                  <span className="px-1 text-gray-400 text-xs">
+                                  <span className="px-1 text-gray-400 dark:text-gray-500 text-xs">
                                     …
                                   </span>
                                 )}
@@ -532,7 +532,7 @@ const ProfileVisitorsPage = () => {
                                   className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${
                                     p === page
                                       ? "bg-primary text-white shadow-sm"
-                                      : "text-gray-500 hover:bg-white border border-transparent hover:border-gray-200"
+                                      : "text-gray-500 dark:text-gray-400 hover:bg-white dark:hover:bg-slate-700 border border-transparent hover:border-gray-200 dark:hover:border-gray-600"
                                   }`}
                                 >
                                   {p}
@@ -546,7 +546,7 @@ const ProfileVisitorsPage = () => {
                             setPage((p) => Math.min(lastPage, p + 1))
                           }
                           disabled={page === lastPage}
-                          className="p-2 rounded-lg border border-gray-200 text-gray-500 hover:bg-white disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                          className="p-2 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:bg-white dark:hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
                         >
                           <ChevronRight size={14} />
                         </button>
@@ -559,11 +559,11 @@ const ProfileVisitorsPage = () => {
             </div>
 
             {/* Info Banner */}
-            <div className="p-4 bg-[#eff4fa] border-l-[3px] border-[#002e6b] text-[13px] text-[#0a2540] rounded-r-lg font-medium flex items-start gap-3 mb-6">
+            <div className="p-4 bg-[#eff4fa] dark:bg-blue-900/20 border-l-[3px] border-[#002e6b] text-[13px] text-[#0a2540] dark:text-blue-300 rounded-r-lg font-medium flex items-start gap-3 mb-6">
               <Clock size={16} className="text-primary mt-0.5 shrink-0" />
               <div>
                 <p className="font-bold mb-1">¿Cómo funcionan las visitas?</p>
-                <ul className="space-y-1 text-[12px] text-gray-600">
+                <ul className="space-y-1 text-[12px] text-gray-600 dark:text-gray-400">
                   <li>• Las visitas del dueño del perfil no se contabilizan.</li>
                   <li>• Las visitas de administradores no se contabilizan.</li>
                   <li>
@@ -580,7 +580,7 @@ const ProfileVisitorsPage = () => {
           </div>
 
           {/* ASIDE DERECHO */}
-          <aside className="hidden lg:block w-72 p-6 bg-white lg:border-l border-gray-200 shrink-0 overflow-y-auto">
+          <aside className="hidden lg:block w-72 p-6 bg-white dark:bg-slate-900 lg:border-l border-gray-200 dark:border-gray-800 shrink-0 overflow-y-auto transition-colors duration-300">
             {rightPanelContent}
           </aside>
         </main>

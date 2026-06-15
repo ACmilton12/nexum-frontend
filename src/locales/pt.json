@@ -108,7 +108,8 @@
     "error": "Algo deu errado",
     "back": "Voltar",
     "view_more": "Ver mais",
-    "calendar": "Calendário"
+    "calendar": "Calendário",
+    "cancel": "Cancelar"
   },
   "footer": {
     "description": "Plataforma institucional de portfólios digitais para profissionais.",
@@ -157,7 +158,19 @@
     "apply_filters": "Aplicar Filtros",
     "clear_all": "Limpar tudo",
     "show_all": "Mostrar todos os portfólios",
-    "for": "para"
+    "for": "para",
+    "placeholder": "Buscar por nome, profissão ou palavras-chave...",
+    "button": "Buscar",
+    "clear": "Limpar busca"
+  },
+  "portfolio_card": {
+    "default_profession": "Profissional",
+    "default_location": "Localização não especificada",
+    "no_skills": "Sem habilidades públicas registradas",
+    "more_skills": "+{{count}} mais",
+    "views": "{{count}} visitas",
+    "my_profile": "Seu Perfil",
+    "view_profile": "Ver Perfil"
   },
   "features_list": {
     "title": "Funcionalidades do Sistema",
