@@ -31,6 +31,10 @@ import PortfolioView from '../pages/professional/portfolio/PortfolioView'
 import SearchPage from '../pages/search/SearchPage'
 import PublicPortfolioPage from '../pages/portfolio/PublicPortfolioPage'
 import PrintPortfolio from '../pages/professional/PrintPortfolio'
+import GuidePage from '../pages/resources/GuidePage'
+import PdfTipsPage from '../pages/resources/PdfTipsPage'
+import FaqPage from '../pages/resources/FaqPage'
+import RulesPage from '../pages/resources/RulesPage'
 
 const ScrollToTop = () => {
   const { pathname } = useLocation()
@@ -147,7 +151,11 @@ const ROUTES_WITHOUT_LAYOUT = [
   '/reset-password',
   '/portfolio',
   '/search',
-  '/habilidades'
+  '/habilidades',
+  '/guia',
+  '/formato-pdf',
+  '/faq',
+  '/normativa'
 ]
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
@@ -206,6 +214,10 @@ const AppRouter = () => {
           <Route path="/search" element={<SearchPage />} />
           <Route path="/portfolio/:id" element={<PublicPortfolioPage />} />
           <Route path="/imprimir/:id?" element={<PrintPortfolio />} />
+          <Route path="/guia" element={<GuidePage />} />
+          <Route path="/formato-pdf" element={<PdfTipsPage />} />
+          <Route path="/faq" element={<FaqPage />} />
+          <Route path="/normativa" element={<RulesPage />} />
 
           {/* ── Rutas del admin ──────────────────────────────── */}
           <Route path="/admin" element={<ProtectedRoute allowedRole="admin"><RolesPage /></ProtectedRoute>} />

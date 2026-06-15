@@ -14,6 +14,7 @@ import {
   User
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import type { TFunction } from 'i18next'
 import Sidebar from './components/Sidebar'
 import Calendar from '../../components/ui/Calendar'
 import Toast from '../../components/ui/Toast'
@@ -29,7 +30,7 @@ const getInitials = (name: string): string | null => {
   return name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2)
 }
 
-const formatRelativeDate = (iso: string, t: any, lang: string): string => {
+const formatRelativeDate = (iso: string, t: TFunction, lang: string): string => {
   const date = new Date(iso)
   const now = new Date()
   const diffMs = now.getTime() - date.getTime()
