@@ -100,10 +100,10 @@ const HomeDirectory = () => {
           {/* Header de la sección */}
           <header className="mb-6">
             <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-1">
-              {t('search.explore_title', 'Explorar Portafolios')}
+              {t('search.explore_title')}
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              {t('search.explore_desc', 'Encuentra y conecta con el mejor talento de la comunidad.')}
+              {t('search.explore_desc')}
             </p>
           </header>
 
@@ -114,7 +114,7 @@ const HomeDirectory = () => {
                 <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
                   type="text"
-                  placeholder={t('search.placeholder', 'Buscar por nombre, profesión o palabras clave...')}
+                  placeholder={t('search.placeholder')}
                   value={searchValue}
                   onChange={(e) => setSearchValue(e.target.value)}
                   onKeyDown={(e) => {
@@ -128,13 +128,13 @@ const HomeDirectory = () => {
                   onClick={() => handleSearch(searchValue)}
                   className="px-6 py-3 bg-[#003087] hover:bg-[#002266] text-white font-bold rounded-xl shadow-md transition-all cursor-pointer text-sm border-none"
                 >
-                  {t('search.button', 'Buscar')}
+                  {t('search.button')}
                 </button>
                 {hasSearched && (
                   <button
                     onClick={handleClearSearch}
                     className="p-3 bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-gray-700 dark:text-gray-200 rounded-xl transition-all cursor-pointer border-none flex items-center justify-center"
-                    title={t('search.clear', 'Limpiar búsqueda')}
+                    title={t('search.clear')}
                   >
                     <X size={18} />
                   </button>
@@ -164,22 +164,22 @@ const HomeDirectory = () => {
               {loading ? (
                 <div className="flex flex-col items-center justify-center py-20 bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm transition-colors duration-300">
                   <Loader2 className="w-10 h-10 text-[#C8102E] animate-spin mb-4" />
-                  <p className="text-gray-500 dark:text-gray-400 font-medium">{t('search.searching', 'Buscando portafolios...')}</p>
+                  <p className="text-gray-500 dark:text-gray-400 font-medium">{t('search.searching')}</p>
                 </div>
               ) : results.length === 0 ? (
                 <div className="bg-white dark:bg-slate-800 p-16 rounded-2xl text-center border border-gray-100 dark:border-gray-700 shadow-sm flex flex-col items-center justify-center transition-colors duration-300">
                   <div className="w-16 h-16 bg-gray-50 dark:bg-slate-900 rounded-full flex items-center justify-center mb-4 transition-colors">
                     <SearchIcon size={30} className="text-gray-300 dark:text-gray-600" />
                   </div>
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('search.no_results', 'Sin resultados')}</h3>
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('search.no_results')}</h3>
                   <p className="text-gray-500 dark:text-gray-400 text-sm mb-6">
-                    {t('search.no_results_desc', 'No encontramos perfiles disponibles que coincidan con tu búsqueda.')}
+                    {t('search.no_results_desc')}
                   </p>
                   <button
                     onClick={handleClearSearch}
                     className="bg-[#C8102E] hover:bg-[#a50d25] text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-md transition-all cursor-pointer border-none"
                   >
-                    {t('search.view_all', 'Ver todos los portafolios')}
+                    {t('search.view_all')}
                   </button>
                 </div>
               ) : (

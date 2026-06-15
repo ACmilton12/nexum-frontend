@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { MapPin, Briefcase, Eye } from 'lucide-react'
 import type { SearchResult } from '../../../services/search.service'
 import { useProfileStats } from '../../../hooks/useProfileVisits'
@@ -11,6 +12,7 @@ interface PortfolioCardProps {
 }
 
 export default function PortfolioCard({ portfolio, isInternal = false }: PortfolioCardProps) {
+  const { t } = useTranslation()
   const { user, profession, location, avatar_url, skills, views_count } = portfolio
   const fullName = `${user.first_name} ${user.last_name}`
   const { user: currentUser } = useAuth()
@@ -41,11 +43,11 @@ export default function PortfolioCard({ portfolio, isInternal = false }: Portfol
           <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate mb-1">{fullName}</h3>
           <div className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 mb-1">
             <Briefcase size={14} className="text-[#C8102E]" />
-            <span className="truncate">{profession || 'Profesional'}</span>
+            <span className="truncate">{profession || t('portfolio_card.default_profession')}</span>
           </div>
           <div className="flex items-center gap-1.5 text-xs text-gray-400 dark:text-gray-500">
             <MapPin size={14} />
-            <span className="truncate">{location || 'Ubicación no especificada'}</span>
+            <span className="truncate">{location || t('portfolio_card.default_location')}</span>
           </div>
         </div>
       </div>
@@ -62,20 +64,20 @@ export default function PortfolioCard({ portfolio, isInternal = false }: Portfol
           ))}
           {skills.length > 4 && (
             <span className="text-[10px] text-gray-400 dark:text-gray-500 font-medium py-1">
-              +{skills.length - 4} más
+              {t('portfolio_card.more_skills', { count: skills.length - 4 })}
             </span>
           )}
         </div>
       ) : (
         <div className="mb-6 flex-grow">
-          <p className="text-xs text-gray-400 dark:text-gray-500 italic">Sin habilidades públicas listadas</p>
+          <p className="text-xs text-gray-400 dark:text-gray-500 italic">{t('portfolio_card.no_skills')}</p>
         </div>
       )}
 
       <div className="pt-4 mt-auto border-t border-gray-50 dark:border-slate-700/50 flex items-center justify-between gap-4">
         <div className="flex items-center gap-1 text-gray-400 dark:text-gray-500 text-xs">
           <Eye size={14} />
-          <span>{displayVisits} vistas</span>
+          <span>{t('portfolio_card.views', { count: displayVisits })}</span>
         </div>
 
 
@@ -87,7 +89,7 @@ export default function PortfolioCard({ portfolio, isInternal = false }: Portfol
               : 'bg-gray-900 dark:bg-slate-700 text-white dark:text-gray-100 hover:bg-[#C8102E] dark:hover:bg-[#C8102E]'
           }`}
         >
-          {isMyProfile ? 'Tu Perfil' : 'Ver Perfil'}
+          {isMyProfile ? t('portfolio_card.my_profile') : t('portfolio_card.view_profile')}
         </Link>
       </div>
     </div>
