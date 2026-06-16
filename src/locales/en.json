@@ -1324,7 +1324,15 @@
       "q9": "How do I generate my resume PDF file?",
       "a9": "On your main dashboard, click on 'Portfolio View'. In the upper right, you will find the 'Export PDF' button. You can choose between different templates.",
       "q10": "Why does my PDF look cut off or low quality?",
-      "a10": "The PDF is generated based on the images you uploaded. We recommend using high-quality images (16:9 format) and keeping your biographies and descriptions concise so the document looks professional."
+      "a10": "The PDF is generated based on the images you uploaded. We recommend using high quality images (16:9 format) and keeping your biographies and descriptions concise to make the document look professional."
     }
+  },
+  "notifications_dropdown": {
+    "title": "Notifications",
+    "mark_all_read": "Mark all as read",
+    "mark_read": "Mark as read",
+    "view": "View details",
+    "loading": "Loading...",
+    "empty": "You have no new notifications"
   }
 }
