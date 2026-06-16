@@ -37,6 +37,7 @@ export default function SugerirHabilidadModal({
   categoriaKey,
   catalogoPorCategoria,
   onCancel,
+  onSuccess,
   onToast
 }: {
   nombreInicial: string
@@ -44,6 +45,7 @@ export default function SugerirHabilidadModal({
   categoriaKey: CategoriaKey | null
   catalogoPorCategoria: Record<string, CatalogItem[]>
   onCancel: () => void
+  onSuccess?: () => void
   onToast: (msg: string, t: 'success' | 'error') => void
 }) {
   const { t } = useTranslation()
@@ -131,7 +133,11 @@ export default function SugerirHabilidadModal({
         })),
         'success'
       )
-      onCancel()
+      if (onSuccess) {
+        onSuccess()
+      } else {
+        onCancel()
+      }
     } catch (err: unknown) {
       const message =
         err instanceof Error

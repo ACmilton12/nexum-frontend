@@ -487,6 +487,10 @@ export default function NuevaHabilidadPanel({
           categoriaKey={categoriaSeleccionada}
           catalogoPorCategoria={catalogoPorCategoria}
           onCancel={() => setModalSugerencia(false)}
+          onSuccess={() => {
+            setModalSugerencia(false)
+            onCancel()
+          }}
           onToast={onToast}
         />
       )}
