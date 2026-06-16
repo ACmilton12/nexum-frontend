@@ -98,25 +98,25 @@ const NotificationBell = () => {
     return new Date(dateString).toLocaleString();
   };
 
-  const getMappedActionUrl = (url: string | null) => {
-    if (!url) return undefined;
+  const getMappedAction = (url: string | null) => {
+    if (!url) return { pathname: '#' };
     
-    if (url.includes('/admin/skill-suggestions')) {
-      return '/admin/dashboard?modal=skills';
+    if (url.includes('/admin/skill-suggestions') || url.includes('/admin/skill_suggestions')) {
+      return { pathname: '/admin', state: { modal: 'skills' } };
     }
-    if (url.includes('/admin/category-suggestions')) {
-      return '/admin/dashboard?modal=categories';
+    if (url.includes('/admin/category-suggestions') || url.includes('/admin/category_suggestions')) {
+      return { pathname: '/admin', state: { modal: 'categories' } };
     }
     if (url.includes('/portfolio/skills')) {
-      return '/profile/habilidades';
+      return { pathname: '/profile/habilidades' };
     }
     if (url.includes('/portfolio/stats')) {
-      return '/visitantes';
+      return { pathname: '/visitantes' };
     }
     if (url.includes('/projects/')) {
-      return '/proyectos';
+      return { pathname: '/proyectos' };
     }
-    return url;
+    return { pathname: url };
   };
 
   return (
@@ -193,19 +193,23 @@ const NotificationBell = () => {
                             <Check size={16} />
                           </button>
                         )}
-                        {notif.action_url && (
-                          <Link 
-                            to={getMappedActionUrl(notif.action_url) || '#'}
-                            className="p-1.5 text-gray-500 hover:bg-gray-100 rounded-full transition-colors"
-                            title={t('notifications_dropdown.view', 'Ver detalles')}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setIsOpen(false);
-                            }}
-                          >
-                            <ExternalLink size={16} />
-                          </Link>
-                        )}
+                        {notif.action_url && (() => {
+                          const action = getMappedAction(notif.action_url);
+                          return (
+                            <Link 
+                              to={action.pathname}
+                              state={action.state}
+                              className="p-1.5 text-gray-500 hover:bg-gray-100 rounded-full transition-colors"
+                              title={t('notifications_dropdown.view', 'Ver detalles')}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setIsOpen(false);
+                              }}
+                            >
+                              <ExternalLink size={16} />
+                            </Link>
+                          );
+                        })()}
                       </div>
                     </div>
                   </li>

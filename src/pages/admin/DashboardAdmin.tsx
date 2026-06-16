@@ -636,15 +636,14 @@ const DashboardAdmin = () => {
 
   const [modalCategorias, setModalCategorias] = useState(false)
 
-  // Abrir modal automáticamente según la URL (útil para links desde notificaciones)
+  // Abrir modal automáticamente según el estado de navegación (útil para links desde notificaciones)
   useEffect(() => {
-    const searchParams = new URLSearchParams(location.search)
-    if (searchParams.get('modal') === 'skills') {
+    if (location.state?.modal === 'skills') {
       setModalSugerencias(true)
-    } else if (searchParams.get('modal') === 'categories') {
+    } else if (location.state?.modal === 'categories') {
       setModalCategorias(true)
     }
-  }, [location.search])
+  }, [location.state])
   const [pendingCategoryCount, setPendingCategoryCount] = useState<number | null>(null)
   const [loadingCategoryCount, setLoadingCategoryCount] = useState(true)
 
