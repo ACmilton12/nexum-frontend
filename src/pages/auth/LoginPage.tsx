@@ -120,7 +120,7 @@ const LoginPage = () => {
         if (data.user.role === 'admin') {
           navigate('/admin')
         } else {
-          navigate('/directorio')
+          navigate('/')
         }
       }, 1200);
     } catch (err: unknown) {

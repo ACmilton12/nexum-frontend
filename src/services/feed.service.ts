@@ -1,5 +1,4 @@
-import { API_BASE_URL } from '../config/env'
-import { handleResponse } from '../utils/apiHelpers'
+import { API_BASE_URL } from '../utils/constants'
 
 export interface FeedUser {
   id: number
@@ -41,5 +40,9 @@ export const getFeed = async (page = 1, perPage = 10): Promise<FeedResponse> => 
     },
   })
 
-  return handleResponse<FeedResponse>(response)
+  if (!response.ok) {
+    throw new Error('Failed to fetch feed')
+  }
+
+  return response.json()
 }
