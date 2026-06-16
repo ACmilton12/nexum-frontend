@@ -9,15 +9,17 @@ import {
   ChevronDown,
   X,
   Check,
-  Calendar as CalendarIcon,
-  Trash2,
   Plus,
-  Briefcase
+  Briefcase,
+  Edit2,
+  Eye,
+  EyeOff
 } from 'lucide-react'
 import {
   createExperience,
+  updateExperience,
   getExperiences,
-  deleteExperience,
+  toggleExperienceVisibility,
   type WorkExperience
 } from '../../../services/experience.service'
 import { getSkillsCatalog, type Skill } from '../../../services/project.service'
@@ -26,8 +28,9 @@ function Experience() {
   const [experiences, setExperiences] = useState<WorkExperience[]>([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
-  const [showDeleteModal, setShowDeleteModal] = useState(false)
-  const [experienceToDelete, setExperienceToDelete] = useState<number | null>(null)
+  const [editingExperienceId, setEditingExperienceId] = useState<number | null>(null)
+  const [showVisibilityModal, setShowVisibilityModal] = useState(false)
+  const [experienceToToggle, setExperienceToToggle] = useState<WorkExperience | null>(null)
 
   const [position, setPosition] = useState('')
   const [company, setCompany] = useState('')
@@ -50,6 +53,26 @@ function Experience() {
   const [success, setSuccess] = useState<string | null>(null)
   const { t, i18n } = useTranslation()
 
+  const handleToggleVisibilityClick = (exp: WorkExperience) => {
+    setExperienceToToggle(exp)
+    setShowVisibilityModal(true)
+  }
+
+  const confirmToggleVisibility = async () => {
+    if (!experienceToToggle) return
+    try {
+      setActionLoading(true)
+      await toggleExperienceVisibility(experienceToToggle.id)
+      await fetchExperiences()
+      setShowVisibilityModal(false)
+      setExperienceToToggle(null)
+    } catch (error) {
+      console.error('Error al alternar visibilidad:', error)
+    } finally {
+      setActionLoading(false)
+    }
+  }
+
   const fetchExperiences = async () => {
     try {
       setLoading(true)
@@ -67,28 +90,31 @@ function Experience() {
     getSkillsCatalog().then(setAvailableSkills).catch(console.error)
   }, [])
 
-  const handleDeleteClick = (id: number) => {
-    setExperienceToDelete(id)
-    setShowDeleteModal(true)
-  }
-
-  const confirmDelete = async () => {
-    if (!experienceToDelete) return
-    try {
-      setActionLoading(true)
-      setGlobalError(null)
-      setSuccess(null)
-      await deleteExperience(experienceToDelete)
-      setSuccess(t('experience.toast_delete_success'))
-      await fetchExperiences()
-    } catch (err: unknown) {
-      const error = err as { message?: string }
-      setGlobalError(error.message || t('experience.toast_delete_error'))
-    } finally {
-      setActionLoading(false)
-      setShowDeleteModal(false)
-      setExperienceToDelete(null)
+  const handleEditClick = (exp: WorkExperience) => {
+    // Backend returns dates as YYYY-MM, input type="date" needs YYYY-MM-DD
+    const toDateInput = (val: string | null) => {
+      if (!val) return ''
+      // If already YYYY-MM-DD, return as-is
+      if (/^\d{4}-\d{2}-\d{2}$/.test(val)) return val
+      // If YYYY-MM, append -01
+      if (/^\d{4}-\d{2}$/.test(val)) return `${val}-01`
+      return val
     }
+    setEditingExperienceId(exp.id)
+    setPosition(exp.position)
+    setCompany(exp.company)
+    setLocation(exp.location || '')
+    setVerificationUrl(exp.verification_url || '')
+    setStartDate(toDateInput(exp.start_date))
+    setEndDate(toDateInput(exp.end_date || null))
+    setEmploymentType(exp.employment_type)
+    setDescription(exp.description || '')
+    setSelectedSkills(
+      (exp.skills || [])
+        .map((expSkill) => availableSkills.find((s) => s.id === expSkill.id))
+        .filter((s): s is Skill => s !== undefined)
+    )
+    setShowForm(true)
   }
 
   useEffect(() => {
@@ -120,16 +146,19 @@ function Experience() {
     setGlobalError(null)
     setSuccess(null)
     const errors: { [key: string]: string } = {}
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+
+    const start = new Date(startDate)
 
     if (!position.trim()) errors.position = t('experience.error_required')
     if (!company.trim()) errors.company = t('experience.error_required')
     if (!startDate) {
       errors.startDate = t('experience.error_required')
     } else {
-      const currentMonth = new Date().toISOString().slice(0, 7)
-      if (startDate > currentMonth) {
+     if (start > today) {
         errors.startDate = t('experience.error_future_date')
-      }
+}
     }
     if (startDate && endDate && endDate < startDate) {
       errors.endDate = t('experience.error_date_range')
@@ -161,7 +190,7 @@ function Experience() {
       if (!val) return null
       const parts = val.split('-')
       if (parts.length >= 3) {
-        const [y, m, d] = parts
+        const [y, m] = parts
         return `${y}-${m}`
       }
       return val
@@ -182,10 +211,16 @@ function Experience() {
         skill_ids: selectedSkills.map((s) => s.id)
       }
 
-      await createExperience(payload)
+      if (editingExperienceId) {
+        await updateExperience(editingExperienceId, payload)
+        setSuccess(t('experience.toast_update_success', 'Experiencia actualizada con éxito'))
+      } else {
+        await createExperience(payload)
+        setSuccess(t('experience.toast_success'))
+      }
 
-      setSuccess(t('experience.toast_success'))
       // Reset form
+      setEditingExperienceId(null)
       setPosition('')
       setCompany('')
       setStartDate('')
@@ -264,6 +299,17 @@ function Experience() {
                         onClick={() => {
                           setSuccess(null)
                           setGlobalError(null)
+                          setEditingExperienceId(null)
+                          setPosition('')
+                          setCompany('')
+                          setVerificationUrl('')
+                          setStartDate('')
+                          setEndDate('')
+                          setEmploymentType('remote')
+                          setLocation('')
+                          setDescription('')
+                          setSelectedSkills([])
+                          setValidationErrors({})
                           setShowForm(true)
                         }}
                         className="bg-action hover:brightness-110 text-white font-bold px-4 py-2 rounded-lg shadow-sm transition-all text-xs flex items-center gap-1.5"
@@ -302,7 +348,7 @@ function Experience() {
                       {experiences.map((exp) => (
                         <div
                           key={exp.id}
-                          className="bg-white dark:bg-slate-800 rounded-xl border-l-4 border-[#003087] dark:border-cyan-400 p-6 shadow-sm border border-gray-100 dark:border-gray-700 flex justify-between items-start transition-all duration-300 hover:shadow-md"
+                          className={`bg-white dark:bg-slate-800 rounded-xl border-l-4 p-6 shadow-sm border flex justify-between items-start transition-all duration-300 hover:shadow-md ${!exp.is_active ? 'opacity-60 border-gray-400 dark:border-gray-600 grayscale-[0.5]' : 'border-[#003087] dark:border-cyan-400 border-gray-100 dark:border-gray-700'}`}
                         >
                           <div className="flex-grow min-w-0 pr-4">
                             <div className="flex flex-wrap items-center gap-2 mb-2">
@@ -359,11 +405,24 @@ function Experience() {
                           </div>
                           <div className="shrink-0 flex items-center gap-2">
                             <button
-                              onClick={() => handleDeleteClick(exp.id)}
-                              className="p-2 text-gray-400 hover:text-red-500 dark:hover:text-red-400 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors"
-                              title={t('projects.delete')}
+                              onClick={() => handleEditClick(exp)}
+                              disabled={actionLoading || !exp.is_active}
+                              className={`w-9 h-9 flex items-center justify-center rounded-xl transition-colors ${
+                                !exp.is_active
+                                  ? 'bg-gray-100 text-gray-400 dark:bg-slate-800 dark:text-gray-600 cursor-not-allowed'
+                                  : 'bg-[#eff5ff] text-[#003087] dark:bg-blue-900/30 dark:text-cyan-400 transition-colors hover:brightness-95'
+                              }`}
+                              title={!exp.is_active ? t('experience.activate_to_edit', 'Activa la experiencia para poder editarla') : t('common.edit', 'Editar')}
                             >
-                              <Trash2 size={16} />
+                              <Edit2 size={16} />
+                            </button>
+                            <button
+                              onClick={() => handleToggleVisibilityClick(exp)}
+                              disabled={actionLoading}
+                              className={`w-9 h-9 flex items-center justify-center rounded-xl border transition-colors ${!exp.is_active ? 'border-gray-200 bg-white text-gray-500 hover:bg-gray-50 dark:bg-slate-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-slate-700' : 'border-gray-200 bg-white text-gray-500 hover:bg-gray-50 dark:bg-slate-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-slate-700'}`}
+                              title={exp.is_active ? t('experience.hide', 'Ocultar') : t('experience.show', 'Mostrar')}
+                            >
+                              {exp.is_active ? <Eye size={16} /> : <EyeOff size={16} />}
                             </button>
                           </div>
                         </div>
@@ -705,6 +764,16 @@ function Experience() {
                       type="button"
                       onClick={() => {
                         setShowForm(false)
+                        setEditingExperienceId(null)
+                        setPosition('')
+                        setCompany('')
+                        setVerificationUrl('')
+                        setStartDate('')
+                        setEndDate('')
+                        setEmploymentType('remote')
+                        setLocation('')
+                        setDescription('')
+                        setSelectedSkills([])
                         setValidationErrors({})
                       }}
                       disabled={actionLoading}
@@ -795,39 +864,62 @@ function Experience() {
           </div>
         )}
 
-        {/* Confirm Delete Modal */}
-        {showDeleteModal && (
+        {/* Visibility Toggle Modal */}
+        {showVisibilityModal && experienceToToggle && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center">
             <div
               className="absolute inset-0 bg-black/40 backdrop-blur-sm"
-              onClick={() => setShowDeleteModal(false)}
+              onClick={() => setShowVisibilityModal(false)}
             />
-            <div className="relative bg-white dark:bg-slate-900 rounded-xl shadow-2xl p-6 w-full max-w-[340px] mx-4 flex flex-col items-center gap-4 text-center border border-gray-100 dark:border-gray-800 transition-colors">
-              <h3 className="text-[16px] font-bold text-[#1a1a2e] dark:text-white mb-1">
-                {t('experience.confirm_delete_title')}
-              </h3>
-              <p className="text-[13px] text-[#5b6472] dark:text-gray-400 leading-relaxed">
-                {t('experience.confirm_delete_desc')}
-              </p>
-              <div className="flex justify-center gap-3 w-full mt-2">
+            <div className="relative bg-white dark:bg-slate-900 rounded-2xl shadow-2xl p-6 w-full max-w-[440px] mx-4 flex flex-col gap-5 border border-gray-100 dark:border-gray-800 transition-colors">
+              <div className="flex items-start gap-4">
+                <div className={`shrink-0 w-12 h-12 rounded-full flex items-center justify-center ${experienceToToggle.is_active ? 'bg-red-50 dark:bg-red-900/30 text-red-500' : 'bg-green-50 dark:bg-green-900/30 text-green-600'}`}>
+                  {experienceToToggle.is_active ? <EyeOff size={24} /> : <Eye size={24} />}
+                </div>
+                <div className="flex-1 pt-1">
+                  <h3 className="text-[17px] font-bold text-[#1a1a2e] dark:text-white mb-1">
+                    {experienceToToggle.is_active ? 'Deshabilitar experiencia' : 'Habilitar experiencia'}
+                  </h3>
+                  <p className="text-[14px] text-gray-500 dark:text-gray-400">
+                    {experienceToToggle.is_active ? 'Puedes re-habilitarla en cualquier momento' : 'Puedes deshabilitarla en cualquier momento'}
+                  </p>
+                </div>
+              </div>
+
+              <div className="text-[15px] text-[#1a1a2e] dark:text-gray-200 mt-2">
+                ¿Deseas {experienceToToggle.is_active ? 'deshabilitar' : 'habilitar'} "{experienceToToggle.position}" de tu perfil?
+              </div>
+
+              <div className="bg-[#f5f8ff] dark:bg-blue-900/20 border border-[#e0eaff] dark:border-blue-900/30 rounded-xl p-4 flex gap-3 text-[13px] text-[#003087] dark:text-blue-300 leading-relaxed">
+                <div className="shrink-0 mt-0.5">
+                  <AlertCircle size={16} />
+                </div>
+                <p>
+                  {experienceToToggle.is_active 
+                    ? 'La experiencia no se eliminará. Quedará oculta en tu portafolio público y podrás re-habilitarla cuando quieras desde esta misma pantalla.'
+                    : 'La experiencia volverá a ser visible en tu portafolio público de inmediato.'}
+                </p>
+              </div>
+
+              <div className="flex justify-end gap-3 mt-2">
                 <button
                   type="button"
-                  onClick={() => setShowDeleteModal(false)}
+                  onClick={() => setShowVisibilityModal(false)}
                   disabled={actionLoading}
-                  className="flex-1 h-10 px-4 text-[13px] font-bold text-[#1a1a2e] dark:text-gray-200 bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50"
+                  className="h-10 px-5 text-[14px] font-medium text-gray-600 dark:text-gray-300 bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50"
                 >
-                  {t('common.cancel')}
+                  Cancelar
                 </button>
                 <button
                   type="button"
-                  onClick={confirmDelete}
+                  onClick={confirmToggleVisibility}
                   disabled={actionLoading}
-                  className="flex-1 h-10 px-4 text-[13px] font-bold text-white bg-[#c8102e] rounded-lg hover:brightness-110 transition-all flex items-center justify-center gap-2 disabled:bg-[#c8102e]/60"
+                  className={`h-10 px-5 text-[14px] font-medium text-white rounded-lg transition-all flex items-center justify-center gap-2 disabled:opacity-60 ${experienceToToggle.is_active ? 'bg-[#c8102e] hover:bg-red-700' : 'bg-[#003087] hover:bg-blue-800'}`}
                 >
                   {actionLoading ? (
-                    <Loader2 size={14} className="animate-spin" />
+                    <Loader2 size={16} className="animate-spin" />
                   ) : (
-                    t('projects.delete')
+                    experienceToToggle.is_active ? 'Sí, deshabilitar' : 'Sí, habilitar'
                   )}
                 </button>
               </div>

@@ -131,24 +131,28 @@ const PrintPortfolio = () => {
                       ? 'Avanzado'
                       : 'Experto'
             })),
-            work_experiences: experiences.map((e) => ({
-              id: e.id,
-              company: e.company,
-              position: e.position,
-              description: e.description || '',
-              start_date: e.start_date,
-              end_date: e.end_date || undefined,
-              is_current: !e.end_date,
-              location: e.location || ''
-            })),
-            certifications: certifications.map((c) => ({
-              id: c.id,
-              name: c.name,
-              issuing_organization: c.issuing_entity,
-              issue_date: c.issue_date,
-              expiration_date: c.expiration_date || undefined,
-              image_url: c.image_url || undefined
-            }))
+            work_experiences: experiences
+              .filter((e: any) => e.is_active !== false)
+              .map((e) => ({
+                id: e.id,
+                company: e.company,
+                position: e.position,
+                description: e.description || '',
+                start_date: e.start_date,
+                end_date: e.end_date || undefined,
+                is_current: !e.end_date,
+                location: e.location || ''
+              })),
+            certifications: certifications
+              .filter((c: any) => c.is_active !== false)
+              .map((c) => ({
+                id: c.id,
+                name: c.name,
+                issuing_organization: c.issuing_entity,
+                issue_date: c.issue_date,
+                expiration_date: c.expiration_date || undefined,
+                image_url: c.image_url || undefined
+              }))
           })
         }
       } catch (err) {

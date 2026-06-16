@@ -192,27 +192,29 @@ const PortfolioView = () => {
         setTechSkills(mappedTech)
 
         setExperiences(
-          exps.map((e: { id: number; position?: string | null; company?: string | null; start_date?: string | null; end_date?: string | null; description?: string | null; skills?: { id: number; name?: string | null }[] }) => ({
-            id: e.id,
-            role: e.position || '',
-            company: e.company || '',
-            period: `${new Date(e.start_date || '').toLocaleDateString(i18n.language, {
-              month: 'short',
-              year: 'numeric'
-            })} - ${e.end_date
-              ? new Date(e.end_date).toLocaleDateString(i18n.language, {
+          exps
+            .filter((e: any) => e.is_active !== false)
+            .map((e: { id: number; position?: string | null; company?: string | null; start_date?: string | null; end_date?: string | null; description?: string | null; skills?: { id: number; name?: string | null }[] }) => ({
+              id: e.id,
+              role: e.position || '',
+              company: e.company || '',
+              period: `${new Date(e.start_date || '').toLocaleDateString(i18n.language, {
                 month: 'short',
                 year: 'numeric'
-              })
-              : t('portfolio_view.present')
-              }`,
-            status: e.end_date ? t('portfolio_view.previous') : t('portfolio_view.actual'),
-            description: e.description || '',
-            skills: e.skills?.map((s: { id: number; name?: string | null }) => ({
-              id: s.id,
-              name: s.name || ''
-            })) || []
-          }))
+              })} - ${e.end_date
+                ? new Date(e.end_date).toLocaleDateString(i18n.language, {
+                  month: 'short',
+                  year: 'numeric'
+                })
+                : t('portfolio_view.present')
+                }`,
+              status: e.end_date ? t('portfolio_view.previous') : t('portfolio_view.actual'),
+              description: e.description || '',
+              skills: e.skills?.map((s: { id: number; name?: string | null }) => ({
+                id: s.id,
+                name: s.name || ''
+              })) || []
+            }))
         )
 
         setProjects(
@@ -231,17 +233,19 @@ const PortfolioView = () => {
         )
 
         setCertifications(
-          certs.map((c: { id: number; name?: string | null; description?: string | null; issuing_entity?: string | null; issue_date?: string | null }) => {
-            const parsed = parseIssuingEntity(c.issuing_entity);
-            return {
-              id: c.id,
-              title: c.name || '',
-              description: c.description || '',
-              issuing_organization: parsed.issuing_organization,
-              credential_url: parsed.credential_url,
-              issue_date: c.issue_date || ''
-            };
-          })
+          certs
+            .filter((c: any) => c.is_active !== false)
+            .map((c: { id: number; name?: string | null; description?: string | null; issuing_entity?: string | null; issue_date?: string | null }) => {
+              const parsed = parseIssuingEntity(c.issuing_entity);
+              return {
+                id: c.id,
+                title: c.name || '',
+                description: c.description || '',
+                issuing_organization: parsed.issuing_organization,
+                credential_url: parsed.credential_url,
+                issue_date: c.issue_date || ''
+              };
+            })
         )
 
         if (portfolioData?.data) {
