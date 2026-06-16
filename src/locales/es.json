@@ -605,7 +605,12 @@
     "error_invalid_url": "URL inválida (debe iniciar con http:// o https://)",
     "toast_success": "Experiencia laboral guardada exitosamente.",
     "toast_error": "Ocurrió un error al guardar.",
-    "notification_tip": "Mantén tu experiencia actualizada para destacar ante reclutadores."
+    "notification_tip": "Mantén tu experiencia actualizada para destacar ante reclutadores.",
+    "no_registered_experiences": "no hay experiencias registradas",
+    "confirm_delete_title": "Confirmar Eliminación",
+    "confirm_delete_desc": "¿Está seguro de que desea eliminar esta experiencia laboral?",
+    "toast_delete_success": "Experiencia eliminada con éxito.",
+    "toast_delete_error": "No se pudo eliminar la experiencia."
   },
   "certifications": {
     "title": "Certificaciones",
@@ -634,7 +639,12 @@
     "error_image_size": "Límite excedido, por favor seleccione otra imagen",
     "toast_success": "Certificación guardada exitosamente.",
     "toast_error": "Ocurrió un error al guardar.",
-    "notification_tip": "Las certificaciones ayudan a validar tus conocimientos técnicos."
+    "notification_tip": "Las certificaciones ayudan a validar tus conocimientos técnicos.",
+    "no_registered_certifications": "No hay certificaciones registradas",
+    "confirm_delete_title": "Confirmar Eliminación",
+    "confirm_delete_desc": "¿Está seguro de que desea eliminar esta certificación?",
+    "toast_delete_success": "Certificación eliminada con éxito.",
+    "toast_delete_error": "No se pudo eliminar la certificación."
   },
   "skills": {
     "title": "Mis Habilidades",

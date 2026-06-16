@@ -605,7 +605,12 @@
     "error_invalid_url": "Invalid URL (must start with http:// or https://)",
     "toast_success": "Work experience saved successfully.",
     "toast_error": "An error occurred while saving.",
-    "notification_tip": "Keep your experience updated to stand out to recruiters."
+    "notification_tip": "Keep your experience updated to stand out to recruiters.",
+    "no_registered_experiences": "no registered experiences found",
+    "confirm_delete_title": "Confirm Deletion",
+    "confirm_delete_desc": "Are you sure you want to delete this work experience?",
+    "toast_delete_success": "Work experience deleted successfully.",
+    "toast_delete_error": "Could not delete work experience."
   },
   "certifications": {
     "title": "Certifications",
@@ -634,7 +639,12 @@
     "error_image_size": "Limit exceeded, please select another image",
     "toast_success": "Certification saved successfully.",
     "toast_error": "An error occurred while saving.",
-    "notification_tip": "Certifications help validate your technical knowledge."
+    "notification_tip": "Certifications help validate your technical knowledge.",
+    "no_registered_certifications": "no registered certifications found",
+    "confirm_delete_title": "Confirm Deletion",
+    "confirm_delete_desc": "Are you sure you want to delete this certification?",
+    "toast_delete_success": "Certification deleted successfully.",
+    "toast_delete_error": "Could not delete certification."
   },
   "skills": {
     "title": "My Skills",

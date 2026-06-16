@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import Sidebar from '../../admin/components/Sidebar'
 import Calendar from '../../../components/ui/Calendar'
@@ -7,16 +7,27 @@ import {
   Loader2,
   AlertCircle,
   CheckCircle2,
-  Calendar as CalendarIcon
+  Calendar as CalendarIcon,
+  Trash2,
+  Plus,
+  Award
 } from 'lucide-react'
 import {
   createCertification,
-  updateCertificationImage
+  updateCertificationImage,
+  getCertifications,
+  deleteCertification,
+  type Certification
 } from '../../../services/certification.service'
-
 
 function Certifications() {
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const [certifications, setCertifications] = useState<Certification[]>([])
+  const [loading, setLoading] = useState(true)
+  const [showForm, setShowForm] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [certificationToDelete, setCertificationToDelete] = useState<number | null>(null)
 
   const [titulo, setTitulo] = useState('')
   const [descripcion, setDescripcion] = useState('')
@@ -31,6 +42,46 @@ function Certifications() {
   const [success, setSuccess] = useState<string | null>(null)
   const [showConfirmModal, setShowConfirmModal] = useState(false)
   const { t, i18n } = useTranslation()
+
+  const fetchCertifications = async () => {
+    try {
+      setLoading(true)
+      const data = await getCertifications()
+      setCertifications(data)
+    } catch (error) {
+      console.error('Error al obtener certificaciones:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchCertifications()
+  }, [])
+
+  const handleDeleteClick = (id: number) => {
+    setCertificationToDelete(id)
+    setShowDeleteModal(true)
+  }
+
+  const confirmDelete = async () => {
+    if (!certificationToDelete) return
+    try {
+      setActionLoading(true)
+      setGlobalError(null)
+      setSuccess(null)
+      await deleteCertification(certificationToDelete)
+      setSuccess(t('certifications.toast_delete_success'))
+      await fetchCertifications()
+    } catch (err: unknown) {
+      const error = err as { message?: string }
+      setGlobalError(error.message || t('certifications.toast_delete_error'))
+    } finally {
+      setActionLoading(false)
+      setShowDeleteModal(false)
+      setCertificationToDelete(null)
+    }
+  }
 
   const handleTituloChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value
@@ -49,9 +100,16 @@ function Certifications() {
 
   const formatToLongDate = (val: string) => {
     if (!val) return ''
-    const [y, m] = val.split('-')
-    const date = new Date(parseInt(y), parseInt(m) - 1)
-    return new Intl.DateTimeFormat(i18n.language, { month: 'long', year: 'numeric' }).format(date)
+    const parts = val.split('-')
+    if (parts.length >= 3) {
+      const [y, m, d] = parts
+      const date = new Date(parseInt(y), parseInt(m) - 1, parseInt(d))
+      return new Intl.DateTimeFormat(i18n.language, { day: 'numeric', month: 'long', year: 'numeric' }).format(date)
+    } else {
+      const [y, m] = parts
+      const date = new Date(parseInt(y), parseInt(m) - 1)
+      return new Intl.DateTimeFormat(i18n.language, { month: 'long', year: 'numeric' }).format(date)
+    }
   }
 
   const handleFechaDesdeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -116,7 +174,12 @@ function Certifications() {
 
     const formatToBackend = (val: string) => {
       if (!val) return null
-      const [y, m] = val.split('-')
+      const parts = val.split('-')
+      if (parts.length >= 3) {
+        const [y, m, d] = parts
+        return `${m}/${y}`
+      }
+      const [y, m] = parts
       return `${m}/${y}`
     }
 
@@ -146,6 +209,8 @@ function Certifications() {
       setSelectedFile(null)
       if (fileInputRef.current) fileInputRef.current.value = ''
       setValidationErrors({})
+      await fetchCertifications()
+      setShowForm(false)
     } catch (err: unknown) {
       const error = err as { errors?: Record<string, string[]>; message?: string }
       if (error.errors) {
@@ -173,253 +238,334 @@ function Certifications() {
                 </h1>
               </header>
 
-              <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 md:p-8 mb-8 border border-gray-100 dark:border-gray-700 transition-colors duration-300">
-                <h2 className="text-base font-bold text-textMain dark:text-white mb-6">
-                  {t('certifications.add_certification')}
-                </h2>
+              {globalError && (
+                <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 text-red-700 dark:text-red-400 text-sm flex items-center gap-3 animate-slideIn">
+                  <AlertCircle size={18} />
+                  {globalError}
+                </div>
+              )}
 
-                {globalError && (
-                  <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 text-red-700 dark:text-red-400 text-sm flex items-center gap-3 animate-slideIn">
-                    <AlertCircle size={18} />
-                    {globalError}
-                  </div>
-                )}
+              {success && (
+                <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 text-green-700 dark:text-green-400 text-sm flex items-center gap-3 animate-slideIn">
+                  <CheckCircle2 size={18} />
+                  {success}
+                </div>
+              )}
 
-                {success && (
-                  <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 text-green-700 dark:text-green-400 text-sm flex items-center gap-3 animate-slideIn">
-                    <CheckCircle2 size={18} />
-                    {success}
-                  </div>
-                )}
-
-                <div className="space-y-6 text-gray-700 dark:text-gray-200">
-                  <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] items-start gap-4">
-                    <label className="text-[13px] font-bold mt-2 dark:text-gray-300">
-                      {t('certifications.cert_title_label')}:{' '}
-                      <span className="text-red-500">*</span>
-                    </label>
-                    <div className="flex flex-col w-full">
-                      <input
-                        type="text"
-                        placeholder={t('certifications.cert_title_placeholder')}
-                        value={titulo}
-                        onChange={(e) => {
-                          handleTituloChange(e)
-                          if (validationErrors.titulo)
-                            setValidationErrors({ ...validationErrors, titulo: '' })
+              {!showForm ? (
+                <div className="space-y-6">
+                  <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-lg font-bold text-textMain dark:text-white">
+                      {t('certifications.title', 'Certificaciones')}
+                    </h2>
+                    {!loading && certifications.length > 0 && (
+                      <button
+                        onClick={() => {
+                          setSuccess(null)
+                          setGlobalError(null)
+                          setShowForm(true)
                         }}
-                        disabled={actionLoading}
-                        className={`w-full p-2.5 rounded border bg-white dark:bg-slate-900 dark:text-white outline-none focus:border-action transition-all text-sm placeholder:text-gray-300 dark:placeholder:text-gray-600 ${validationErrors.titulo ? 'border-red-500 ring-1 ring-red-500/20' : 'border-gray-200 dark:border-gray-700'}`}
-                      />
-                      {validationErrors.titulo && (
-                        <span className="text-red-500 text-[11px] mt-1">
-                          {validationErrors.titulo}
-                        </span>
-                      )}
-                    </div>
+                        className="bg-action hover:brightness-110 text-white font-bold px-4 py-2 rounded-lg shadow-sm transition-all text-xs flex items-center gap-1.5"
+                      >
+                        <Plus size={14} />
+                        {t('certifications.add_certification')}
+                      </button>
+                    )}
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] items-start gap-4">
-                    <label className="text-[13px] font-bold mt-2 dark:text-gray-300">
-                      {t('certifications.description_label')}:
-                    </label>
-                    <div className="flex flex-col w-full">
-                      <input
-                        type="text"
-                        placeholder={t('certifications.description_placeholder')}
-                        value={descripcion}
-                        onChange={(e) => {
-                          handleDescripcionChange(e)
+                  {loading ? (
+                    <div className="bg-white dark:bg-slate-800 rounded-xl p-8 text-center text-gray-500 border border-gray-100 dark:border-gray-700">
+                      <Loader2 className="animate-spin mx-auto mb-2 text-[#003087] dark:text-blue-500" size={24} />
+                      {t('common.loading')}
+                    </div>
+                  ) : certifications.length === 0 ? (
+                    <div className="py-12 px-6 text-center bg-white dark:bg-slate-800 rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-700 flex flex-col items-center justify-center">
+                      <Award size={40} className="text-gray-400 dark:text-gray-500 mb-3" />
+                      <p className="text-gray-600 dark:text-gray-300 font-bold text-sm mb-4">
+                        {t('certifications.no_registered_certifications', 'no hay certificaciones registradas')}
+                      </p>
+                      <button
+                        onClick={() => {
+                          setSuccess(null)
+                          setGlobalError(null)
+                          setShowForm(true)
                         }}
-                        disabled={actionLoading}
-                        className="w-full p-2.5 rounded border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-900 dark:text-white outline-none focus:border-action transition-all text-sm"
-                      />
+                        className="bg-action hover:brightness-110 text-white font-bold px-6 py-2.5 rounded-lg shadow-sm transition-all text-sm flex items-center gap-2"
+                      >
+                        <Plus size={16} />
+                        {t('certifications.add_certification')}
+                      </button>
                     </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] items-start gap-4">
-                    <label className="text-[13px] font-bold mt-2 dark:text-gray-300">
-                      {t('certifications.entity_url_label')}:{' '}
-                      <span className="text-red-500">*</span>
-                    </label>
-                    <div className="flex flex-col w-full">
-                      <input
-                        type="text"
-                        placeholder={t('certifications.entity_url_placeholder')}
-                        value={entidad}
-                        onChange={(e) => {
-                          handleEntidadChange(e)
-                          if (validationErrors.entidad)
-                            setValidationErrors({ ...validationErrors, entidad: '' })
-                        }}
-                        disabled={actionLoading}
-                        className={`w-full p-2.5 rounded border bg-white dark:bg-slate-900 dark:text-white outline-none focus:border-action transition-all text-sm ${validationErrors.entidad ? 'border-red-500 ring-1 ring-red-500/20' : 'border-gray-200 dark:border-gray-700'}`}
-                      />
-                      {validationErrors.entidad && (
-                        <span className="text-red-500 text-[11px] mt-1">
-                          {validationErrors.entidad}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] items-start gap-4">
-                    <label className="text-[13px] font-bold mt-2 dark:text-gray-300">
-                      {t('certifications.date_label')}: <span className="text-red-500">*</span>
-                    </label>
-                    <div className="flex flex-col w-full">
-                      <div className="flex flex-col sm:flex-row items-start gap-3 w-full">
-                        {/* Fecha Inicio */}
-                        <div className="relative w-full sm:flex-1 min-w-0 group">
-                          <input
-                            type="month"
-                            value={fechaDesde}
-                            onChange={(e) => {
-                              handleFechaDesdeChange(e)
-                              if (validationErrors.fechaDesde)
-                                setValidationErrors({ ...validationErrors, fechaDesde: '' })
-                            }}
-                            disabled={actionLoading}
-                            className={`absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10 ${actionLoading ? 'pointer-events-none' : ''}`}
-                          />
-                          <div
-                            className={`w-full p-2.5 rounded border bg-white dark:bg-slate-900 flex items-center justify-between text-sm transition-all ${validationErrors.fechaDesde ? 'border-red-500 ring-1 ring-red-500/20' : 'border-gray-200 dark:border-gray-700 group-hover:border-action'}`}
-                          >
-                            <span
-                              className={
-                                fechaDesde ? 'text-textMain dark:text-white' : 'text-gray-400'
-                              }
-                            >
-                              {fechaDesde
-                                ? formatToLongDate(fechaDesde)
-                                : t('certifications.date_placeholder')}
-                            </span>
-                            <CalendarIcon size={14} className="text-gray-400" />
+                  ) : (
+                    <div className="space-y-4">
+                      {certifications.map((cert) => (
+                        <div
+                          key={cert.id}
+                          className="bg-white dark:bg-slate-800 rounded-xl border-l-4 border-[#003087] dark:border-cyan-400 p-6 shadow-sm border border-gray-100 dark:border-gray-700 flex justify-between items-start transition-all duration-300 hover:shadow-md"
+                        >
+                          <div className="flex-grow min-w-0 pr-4">
+                            <div className="flex flex-wrap items-center gap-2 mb-2">
+                              <span className="text-[11px] font-bold text-gray-500 dark:text-gray-400">
+                                {cert.issue_date} - {cert.expiration_date || t('portfolio_view.present', 'Presente')}
+                              </span>
+                            </div>
+                            <h3 className="font-bold text-textMain dark:text-white text-base mb-1">
+                              {cert.name}
+                            </h3>
+                            <p className="text-primary dark:text-blue-400 text-sm font-semibold mb-3">
+                              <a
+                                href={cert.issuing_entity}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="hover:underline"
+                              >
+                                {cert.issuing_entity}
+                              </a>
+                            </p>
+                            {cert.description && (
+                              <p className="text-gray-600 dark:text-gray-300 text-xs leading-relaxed mb-4 whitespace-pre-line">
+                                {cert.description}
+                              </p>
+                            )}
+                            {cert.image_url && (
+                              <div className="mt-3">
+                                <img
+                                  src={cert.image_url}
+                                  alt={cert.name}
+                                  className="w-16 h-16 object-cover rounded shadow-sm border border-gray-200 dark:border-gray-700"
+                                />
+                              </div>
+                            )}
                           </div>
-                          {validationErrors.fechaDesde && (
-                            <span className="text-red-500 text-[11px] mt-1 block text-center w-full">
-                              {validationErrors.fechaDesde}
-                            </span>
-                          )}
-                        </div>
-
-                        <span className="text-gray-400 hidden sm:block mt-3">-</span>
-
-                        {/* Fecha Fin */}
-                        <div className="relative w-full sm:flex-1 min-w-0 group">
-                          <input
-                            type="month"
-                            value={fechaHasta}
-                            onChange={(e) => {
-                              handleFechaHastaChange(e)
-                              if (validationErrors.fechaHasta)
-                                setValidationErrors({ ...validationErrors, fechaHasta: '' })
-                            }}
-                            disabled={actionLoading}
-                            className={`absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10 ${actionLoading ? 'pointer-events-none' : ''}`}
-                          />
-                          <div
-                            className={`w-full p-2.5 rounded border bg-white dark:bg-slate-900 flex items-center justify-between text-sm transition-all ${validationErrors.fechaHasta ? 'border-red-500 ring-1 ring-red-500/20' : 'border-gray-200 dark:border-gray-700 group-hover:border-action'}`}
-                          >
-                            <span
-                              className={
-                                fechaHasta ? 'text-textMain dark:text-white' : 'text-gray-400'
-                              }
+                          <div className="shrink-0 flex items-center gap-2">
+                            <button
+                              onClick={() => handleDeleteClick(cert.id)}
+                              className="p-2 text-gray-400 hover:text-red-500 dark:hover:text-red-400 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors"
+                              title={t('projects.delete', 'Eliminar')}
                             >
-                              {fechaHasta
-                                ? formatToLongDate(fechaHasta)
-                                : t('certifications.date_placeholder')}
-                            </span>
-                            <CalendarIcon size={14} className="text-gray-400" />
+                              <Trash2 size={16} />
+                            </button>
                           </div>
-                          {validationErrors.fechaHasta && (
-                            <span className="text-red-500 text-[11px] mt-1 block text-center w-full">
-                              {validationErrors.fechaHasta}
-                            </span>
-                          )}
                         </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 md:p-8 mb-8 border border-gray-100 dark:border-gray-700 transition-colors duration-300">
+                  <h2 className="text-base font-bold text-textMain dark:text-white mb-6">
+                    {t('certifications.add_certification')}
+                  </h2>
+
+                  <div className="space-y-6 text-gray-700 dark:text-gray-200">
+                    <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] items-start gap-4">
+                      <label className="text-[13px] font-bold mt-2 dark:text-gray-300">
+                        {t('certifications.cert_title_label')}:{' '}
+                        <span className="text-red-500">*</span>
+                      </label>
+                      <div className="flex flex-col w-full">
+                        <input
+                          type="text"
+                          placeholder={t('certifications.cert_title_placeholder')}
+                          value={titulo}
+                          onChange={(e) => {
+                            handleTituloChange(e)
+                            if (validationErrors.titulo)
+                              setValidationErrors({ ...validationErrors, titulo: '' })
+                          }}
+                          disabled={actionLoading}
+                          className={`w-full p-2.5 rounded border bg-white dark:bg-slate-900 dark:text-white outline-none focus:border-action transition-all text-sm placeholder:text-gray-300 dark:placeholder:text-gray-600 ${validationErrors.titulo ? 'border-red-500 ring-1 ring-red-500/20' : 'border-gray-200 dark:border-gray-700'}`}
+                        />
+                        {validationErrors.titulo && (
+                          <span className="text-red-500 text-[11px] mt-1">
+                            {validationErrors.titulo}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] items-start gap-4">
+                      <label className="text-[13px] font-bold mt-2 dark:text-gray-300">
+                        {t('certifications.description_label')}:
+                      </label>
+                      <div className="flex flex-col w-full">
+                        <input
+                          type="text"
+                          placeholder={t('certifications.description_placeholder')}
+                          value={descripcion}
+                          onChange={(e) => {
+                            handleDescripcionChange(e)
+                          }}
+                          disabled={actionLoading}
+                          className="w-full p-2.5 rounded border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-900 dark:text-white outline-none focus:border-action transition-all text-sm"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] items-start gap-4">
+                      <label className="text-[13px] font-bold mt-2 dark:text-gray-300">
+                        {t('certifications.entity_url_label')}:{' '}
+                        <span className="text-red-500">*</span>
+                      </label>
+                      <div className="flex flex-col w-full">
+                        <input
+                          type="text"
+                          placeholder={t('certifications.entity_url_placeholder')}
+                          value={entidad}
+                          onChange={(e) => {
+                            handleEntidadChange(e)
+                            if (validationErrors.entidad)
+                              setValidationErrors({ ...validationErrors, entidad: '' })
+                          }}
+                          disabled={actionLoading}
+                          className={`w-full p-2.5 rounded border bg-white dark:bg-slate-900 dark:text-white outline-none focus:border-action transition-all text-sm ${validationErrors.entidad ? 'border-red-500 ring-1 ring-red-500/20' : 'border-gray-200 dark:border-gray-700'}`}
+                        />
+                        {validationErrors.entidad && (
+                          <span className="text-red-500 text-[11px] mt-1">
+                            {validationErrors.entidad}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] items-start gap-4">
+                      <label className="text-[13px] font-bold mt-2 dark:text-gray-300">
+                        {t('certifications.date_label')}: <span className="text-red-500">*</span>
+                      </label>
+                      <div className="flex flex-col w-full">
+                        <div className="flex flex-col sm:flex-row items-start gap-3 w-full">
+                          {/* Fecha Inicio */}
+                          <div className="w-full sm:flex-1 min-w-0">
+                            <input
+                              type="date"
+                              value={fechaDesde}
+                              onChange={(e) => {
+                                handleFechaDesdeChange(e)
+                                if (validationErrors.fechaDesde)
+                                  setValidationErrors({ ...validationErrors, fechaDesde: '' })
+                              }}
+                              disabled={actionLoading}
+                              className={`w-full p-2.5 rounded border bg-white dark:bg-slate-900 dark:text-white outline-none focus:border-action transition-all text-sm ${validationErrors.fechaDesde ? 'border-red-500 ring-1 ring-red-500/20' : 'border-gray-200 dark:border-gray-700'}`}
+                            />
+                            {validationErrors.fechaDesde && (
+                              <span className="text-red-500 text-[11px] mt-1 block text-center w-full">
+                                {validationErrors.fechaDesde}
+                              </span>
+                            )}
+                          </div>
+
+                          <span className="text-gray-400 hidden sm:block mt-3">-</span>
+
+                          {/* Fecha Fin */}
+                          <div className="w-full sm:flex-1 min-w-0">
+                            <input
+                              type="date"
+                              value={fechaHasta}
+                              onChange={(e) => {
+                                handleFechaHastaChange(e)
+                                if (validationErrors.fechaHasta)
+                                  setValidationErrors({ ...validationErrors, fechaHasta: '' })
+                              }}
+                              disabled={actionLoading}
+                              className={`w-full p-2.5 rounded border bg-white dark:bg-slate-900 dark:text-white outline-none focus:border-action transition-all text-sm ${validationErrors.fechaHasta ? 'border-red-500 ring-1 ring-red-500/20' : 'border-gray-200 dark:border-gray-700'}`}
+                            />
+                            {validationErrors.fechaHasta && (
+                              <span className="text-red-500 text-[11px] mt-1 block text-center w-full">
+                                {validationErrors.fechaHasta}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="pt-4">
+                      <label className="text-[13px] font-bold mb-3 block dark:text-white">
+                        {t('certifications.image_label')}:
+                      </label>
+                      <div className="w-full bg-[#f0f4f8] dark:bg-slate-900 border border-dashed border-[#d1dce5] dark:border-gray-700 rounded-xl p-8 flex flex-col items-center justify-center gap-3 transition-colors">
+                        {selectedFile ? (
+                          <div className="flex flex-col items-center gap-2">
+                            <img
+                              src={URL.createObjectURL(selectedFile)}
+                              alt="Preview"
+                              className="w-20 h-20 object-cover rounded shadow-md border-2 border-white dark:border-slate-800"
+                            />
+                            <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+                              {selectedFile.name}
+                            </p>
+                            <button
+                              onClick={() => setSelectedFile(null)}
+                              className="text-red-500 text-[10px] hover:underline"
+                            >
+                              {t('certifications.remove')}
+                            </button>
+                          </div>
+                        ) : (
+                          <>
+                            <button
+                              onClick={() => fileInputRef.current?.click()}
+                              disabled={actionLoading}
+                              className="bg-white dark:bg-slate-800 border text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700 font-medium text-sm py-2 px-4 rounded-lg shadow-sm hover:bg-gray-50 dark:hover:bg-slate-700 flex items-center gap-2 transition-all disabled:opacity-50"
+                            >
+                              <Upload size={16} /> {t('certifications.select_image')}
+                            </button>
+                            <p className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-bold">
+                              {t('certifications.image_format_info')}
+                            </p>
+                          </>
+                        )}
+                        <input
+                          type="file"
+                          ref={fileInputRef}
+                          onChange={handleFileChange}
+                          accept="image/*"
+                          className="hidden"
+                        />
                       </div>
                     </div>
                   </div>
 
-                  <div className="pt-4">
-                    <label className="text-[13px] font-bold mb-3 block dark:text-white">
-                      {t('certifications.image_label')}:
-                    </label>
-                    <div className="w-full bg-[#f0f4f8] dark:bg-slate-900 border border-dashed border-[#d1dce5] dark:border-gray-700 rounded-xl p-8 flex flex-col items-center justify-center gap-3 transition-colors">
-                      {selectedFile ? (
-                        <div className="flex flex-col items-center gap-2">
-                          <img
-                            src={URL.createObjectURL(selectedFile)}
-                            alt="Preview"
-                            className="w-20 h-20 object-cover rounded shadow-md border-2 border-white dark:border-slate-800"
-                          />
-                          <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">
-                            {selectedFile.name}
-                          </p>
-                          <button
-                            onClick={() => setSelectedFile(null)}
-                            className="text-red-500 text-[10px] hover:underline"
-                          >
-                            {t('certifications.remove')}
-                          </button>
-                        </div>
+                  <div className="flex justify-end gap-3 pt-8 mt-6">
+                    <button
+                      type="button"
+                      onClick={() => setShowForm(false)}
+                      disabled={actionLoading}
+                      className="px-6 py-2 rounded border border-gray-200 dark:border-gray-700 font-medium text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition-all shadow-sm bg-white dark:bg-transparent"
+                    >
+                      {t('common.cancel', 'Cancelar')}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setTitulo('')
+                        setDescripcion('')
+                        setEntidad('')
+                        setFechaDesde('')
+                        setFechaHasta('')
+                        setSelectedFile(null)
+                        setValidationErrors({})
+                      }}
+                      disabled={actionLoading}
+                      className="px-6 py-2 rounded border border-gray-200 dark:border-gray-700 font-medium text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition-all shadow-sm bg-white dark:bg-transparent"
+                    >
+                      {t('certifications.clear')}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleSave}
+                      disabled={actionLoading}
+                      className="px-6 py-2 rounded font-medium text-sm text-white bg-action hover:brightness-110 shadow-md shadow-red-100 dark:shadow-none transition-all flex items-center gap-2 min-w-[150px] justify-center"
+                    >
+                      {actionLoading ? (
+                        <Loader2 className="animate-spin" size={16} />
                       ) : (
-                        <>
-                          <button
-                            onClick={() => fileInputRef.current?.click()}
-                            disabled={actionLoading}
-                            className="bg-white dark:bg-slate-800 border text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700 font-medium text-sm py-2 px-4 rounded-lg shadow-sm hover:bg-gray-50 dark:hover:bg-slate-700 flex items-center gap-2 transition-all disabled:opacity-50"
-                          >
-                            <Upload size={16} /> {t('certifications.select_image')}
-                          </button>
-                          <p className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-bold">
-                            {t('certifications.image_format_info')}
-                          </p>
-                        </>
+                        t('certifications.save')
                       )}
-                      <input
-                        type="file"
-                        ref={fileInputRef}
-                        onChange={handleFileChange}
-                        accept="image/*"
-                        className="hidden"
-                      />
-                    </div>
+                    </button>
                   </div>
                 </div>
-
-                <div className="flex justify-end gap-3 pt-8 mt-6">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setTitulo('')
-                      setDescripcion('')
-                      setEntidad('')
-                      setFechaDesde('')
-                      setFechaHasta('')
-                      setSelectedFile(null)
-                      setValidationErrors({})
-                    }}
-                    disabled={actionLoading}
-                    className="px-6 py-2 rounded border border-gray-200 dark:border-gray-700 font-medium text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition-all shadow-sm bg-white dark:bg-transparent"
-                  >
-                    {t('certifications.clear')}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleSave}
-                    disabled={actionLoading}
-                    className="px-6 py-2 rounded font-medium text-sm text-white bg-action hover:brightness-110 shadow-md shadow-red-100 dark:shadow-none transition-all flex items-center gap-2 min-w-[150px] justify-center"
-                  >
-                    {actionLoading ? (
-                      <Loader2 className="animate-spin" size={16} />
-                    ) : (
-                      t('certifications.save')
-                    )}
-                  </button>
-                </div>
-              </div>
+              )}
             </div>
           </div>
 
@@ -439,7 +585,7 @@ function Certifications() {
             />
             <div className="relative bg-white dark:bg-slate-900 rounded-xl shadow-2xl p-6 w-full max-w-[340px] mx-4 flex flex-col items-center gap-4 text-center border border-gray-100 dark:border-gray-800 transition-colors">
               <h3 className="text-[16px] font-bold text-[#1a1a2e] dark:text-white mb-1">
-                {t('experience.confirm_title', 'Confirmar Acción')}
+                {t('certifications.confirm_title', 'Confirmar Acción')}
               </h3>
               <p className="text-[13px] text-[#5b6472] dark:text-gray-400 leading-relaxed">
                 {t('certifications.confirm_desc', '¿Desea guardar la certificación?')}
@@ -451,7 +597,7 @@ function Certifications() {
                   disabled={actionLoading}
                   className="flex-1 h-10 px-4 text-[13px] font-bold text-[#1a1a2e] dark:text-gray-200 bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50"
                 >
-                  {t('common.cancel')}
+                  {t('common.cancel', 'Cancelar')}
                 </button>
                 <button
                   type="button"
@@ -463,6 +609,49 @@ function Certifications() {
                     <Loader2 size={14} className="animate-spin" />
                   ) : (
                     t('certifications.confirm_btn', 'Confirmar')
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Confirm Delete Modal */}
+        {showDeleteModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center">
+            <div
+              className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+              onClick={() => setShowDeleteModal(false)}
+            />
+            <div className="relative bg-white dark:bg-slate-900 rounded-xl shadow-2xl p-6 w-full max-w-[340px] mx-4 flex flex-col items-center gap-4 text-center border border-gray-100 dark:border-gray-800 transition-colors">
+              <div className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center mb-1">
+                <Trash2 className="text-red-500 dark:text-red-400" size={24} />
+              </div>
+              <h3 className="text-[16px] font-bold text-[#1a1a2e] dark:text-white mb-1">
+                {t('certifications.confirm_delete_title', 'Confirmar Eliminación')}
+              </h3>
+              <p className="text-[13px] text-[#5b6472] dark:text-gray-400 leading-relaxed">
+                {t('certifications.confirm_delete_desc', '¿Está seguro de que desea eliminar esta certificación?')}
+              </p>
+              <div className="flex justify-center gap-3 w-full mt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowDeleteModal(false)}
+                  disabled={actionLoading}
+                  className="flex-1 h-10 px-4 text-[13px] font-bold text-[#1a1a2e] dark:text-gray-200 bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50"
+                >
+                  {t('common.cancel', 'Cancelar')}
+                </button>
+                <button
+                  type="button"
+                  onClick={confirmDelete}
+                  disabled={actionLoading}
+                  className="flex-1 h-10 px-4 text-[13px] font-bold text-white bg-action rounded-lg hover:brightness-110 transition-all flex items-center justify-center gap-2 disabled:bg-action/60"
+                >
+                  {actionLoading ? (
+                    <Loader2 size={14} className="animate-spin" />
+                  ) : (
+                    t('common.delete', 'Eliminar')
                   )}
                 </button>
               </div>
