@@ -1,2 +1,2 @@
 export const API_BASE_URL =
-  import.meta.env.VITE_API_URL || 'https://web-production-6fa87.up.railway.app/api/v1'
+  import.meta.env.VITE_API_URL || 'http://codi.tis.cs.umss.edu.bo/backend/api/v1'

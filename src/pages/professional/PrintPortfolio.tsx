@@ -2,8 +2,6 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Download, ArrowLeft, Loader2, Mail, Phone, MapPin, Globe, Award } from 'lucide-react'
-import jsPDF from 'jspdf'
-import html2canvas from 'html2canvas'
 import { getPublicPortfolio, type FullPortfolio } from '../../services/portfolio.service'
 import { getProjects } from '../../services/project.service'
 import { getPortfolioSkills } from '../../services/habilidades.service'
@@ -27,6 +25,39 @@ const PrintPortfolio = () => {
     if (!level) return '';
     const normalized = level.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     return t(`skills.levels.${normalized}`, level);
+  }
+
+  const formatCertDate = (dateStr: string | null | undefined) => {
+    if (!dateStr) return '';
+    // Handle MM/YYYY format (e.g. "01/2026")
+    const match = dateStr.match(/^(\d{1,2})\/(\d{4})$/);
+    if (match) {
+      const date = new Date(parseInt(match[2]), parseInt(match[1]) - 1, 1);
+      const formatted = new Intl.DateTimeFormat(i18n.language, { month: 'long', year: 'numeric' }).format(date);
+      return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+    }
+    // Handle YYYY-MM or YYYY-MM-DD
+    const ymMatch = dateStr.match(/^(\d{4})-(\d{2})/);
+    if (ymMatch) {
+      const date = new Date(parseInt(ymMatch[1]), parseInt(ymMatch[2]) - 1, 1);
+      const formatted = new Intl.DateTimeFormat(i18n.language, { month: 'long', year: 'numeric' }).format(date);
+      return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+    }
+    return dateStr;
+  }
+
+  const formatExpDate = (dateStr: string | null | undefined, short = false) => {
+    if (!dateStr) return '';
+    const ymMatch = dateStr.match(/^(\d{4})-(\d{2})/);
+    if (ymMatch) {
+      const date = new Date(parseInt(ymMatch[1]), parseInt(ymMatch[2]) - 1, 1);
+      const opts: Intl.DateTimeFormatOptions = short
+        ? { month: 'short', year: 'numeric' }
+        : { month: 'long', year: 'numeric' };
+      const formatted = new Intl.DateTimeFormat(i18n.language, opts).format(date);
+      return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+    }
+    return dateStr;
   }
 
   useEffect(() => {
@@ -131,24 +162,28 @@ const PrintPortfolio = () => {
                       ? 'Avanzado'
                       : 'Experto'
             })),
-            work_experiences: experiences.map((e) => ({
-              id: e.id,
-              company: e.company,
-              position: e.position,
-              description: e.description || '',
-              start_date: e.start_date,
-              end_date: e.end_date || undefined,
-              is_current: !e.end_date,
-              location: e.location || ''
-            })),
-            certifications: certifications.map((c) => ({
-              id: c.id,
-              name: c.name,
-              issuing_organization: c.issuing_entity,
-              issue_date: c.issue_date,
-              expiration_date: c.expiration_date || undefined,
-              image_url: c.image_url || undefined
-            }))
+            work_experiences: experiences
+              .filter((e: any) => e.is_active !== false)
+              .map((e) => ({
+                id: e.id,
+                company: e.company,
+                position: e.position,
+                description: e.description || '',
+                start_date: e.start_date,
+                end_date: e.end_date || undefined,
+                is_current: !e.end_date,
+                location: e.location || ''
+              })),
+            certifications: certifications
+              .filter((c: any) => c.is_active !== false)
+              .map((c) => ({
+                id: c.id,
+                name: c.name,
+                issuing_organization: c.issuing_entity,
+                issue_date: c.issue_date,
+                expiration_date: c.expiration_date || undefined,
+                image_url: c.image_url || undefined
+              }))
           })
         }
       } catch (err) {
@@ -168,6 +203,11 @@ const PrintPortfolio = () => {
 
     setIsExporting(true)
     try {
+      const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
+        import('html2canvas'),
+        import('jspdf')
+      ])
+
       const canvas = await html2canvas(element, {
         scale: 2,
         useCORS: true,
@@ -302,7 +342,7 @@ const PrintPortfolio = () => {
                   <div className="flex justify-between items-baseline mb-1">
                     <h4 className="font-bold text-gray-900 text-base">{exp.position}</h4>
                     <span className="text-sm font-medium text-gray-600">
-                      {exp.start_date} — {exp.end_date || t('portfolio_view.present', 'Presente')}
+                      {formatExpDate(exp.start_date)} — {exp.end_date ? formatExpDate(exp.end_date) : t('portfolio_view.present', 'Presente')}
                     </span>
                   </div>
                   <p className="text-gray-700 font-bold text-sm mb-2">{exp.company}</p>
@@ -342,10 +382,7 @@ const PrintPortfolio = () => {
                     <h4 className="text-sm font-bold text-gray-900">{cert.name}</h4>
                     <p className="text-sm text-gray-600">{cert.issuing_organization}</p>
                     <p className="text-xs text-gray-500">
-                      {new Date(cert.issue_date).toLocaleDateString(i18n.language, {
-                        month: 'short',
-                        year: 'numeric'
-                      })}
+                      {formatCertDate(cert.issue_date)}{cert.expiration_date ? ` — ${formatCertDate(cert.expiration_date)}` : ''}
                     </p>
                   </div>
                 ))}
@@ -601,7 +638,7 @@ const PrintPortfolio = () => {
                   <div className="flex flex-col md:flex-row md:items-center justify-between mb-2">
                     <h4 className="font-bold text-gray-900">{exp.position}</h4>
                     <span className="text-xs font-bold text-gray-400">
-                      {exp.start_date} — {exp.end_date || t('portfolio_view.present', 'Presente')}
+                      {formatExpDate(exp.start_date)} — {exp.end_date ? formatExpDate(exp.end_date) : t('portfolio_view.present', 'Presente')}
                     </span>
                   </div>
                   <p className="text-[#C8102E] font-bold text-sm mb-2">{exp.company}</p>
@@ -661,10 +698,7 @@ const PrintPortfolio = () => {
                       <h4 className="text-sm font-bold text-gray-900">{cert.name}</h4>
                       <p className="text-xs text-gray-500">{cert.issuing_organization}</p>
                       <p className="text-[10px] text-gray-400 font-bold uppercase mt-0.5">
-                        {new Date(cert.issue_date).toLocaleDateString(i18n.language, {
-                          month: 'long',
-                          year: 'numeric'
-                        })}
+                        {formatCertDate(cert.issue_date)}{cert.expiration_date ? ` — ${formatCertDate(cert.expiration_date)}` : ''}
                       </p>
                     </div>
                   </div>

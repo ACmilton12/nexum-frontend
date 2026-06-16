@@ -11,11 +11,11 @@ import {
   Lock,
   Folder,
   Award,
-  Download
+  Download,
+  X
 } from 'lucide-react'
 import PLATFORM_ICONS from '../../../components/icons/SocialIcons'
 import Sidebar from '../../admin/components/Sidebar'
-import Navbar from '../../../components/ui/Navbar'
 import PdfTemplateModal from '../../../components/modals/PdfTemplateModal'
 
 import { getPersonalData } from '../../../services/datapersonal.service'
@@ -37,10 +37,11 @@ interface PersonalData {
 }
 
 interface TechSkill {
+  id: number;
   name: string;
   level: string;
   rawLevel: string;
-  description: string;
+  category: string;
   type: string;
 }
 
@@ -77,8 +78,9 @@ interface Certification {
   title: string;
   description: string;
   issuing_organization: string;
-  credential_url?: string;
   issue_date: string;
+  expiration_date?: string;
+  image_url?: string;
 }
 
 interface PrivacySettings {
@@ -117,6 +119,47 @@ const parseIssuingEntity = (issuingEntity?: string | null) => {
   };
 };
 
+const formatExpDate = (dateStr: string | null | undefined, locale: string) => {
+  if (!dateStr) return '';
+  // Handle YYYY-MM format (e.g. "2024-03")
+  const ymMatch = dateStr.match(/^(\d{4})-(\d{2})$/);
+  if (ymMatch) {
+    const date = new Date(parseInt(ymMatch[1]), parseInt(ymMatch[2]) - 1, 1);
+    const formatted = new Intl.DateTimeFormat(locale, { month: 'short', year: 'numeric' }).format(date);
+    return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+  }
+  // Handle YYYY-MM-DD
+  const ymdMatch = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (ymdMatch) {
+    const date = new Date(parseInt(ymdMatch[1]), parseInt(ymdMatch[2]) - 1, parseInt(ymdMatch[3]));
+    const formatted = new Intl.DateTimeFormat(locale, { month: 'short', year: 'numeric' }).format(date);
+    return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+  }
+  return dateStr;
+};
+
+const formatCertDate = (dateStr: string | null | undefined, locale: string) => {
+  if (!dateStr) return '';
+  let formatted = dateStr;
+  const match = dateStr.match(/^(\d{1,2})\/(\d{4})$/);
+  if (match) {
+    const month = parseInt(match[1]) - 1;
+    const year = parseInt(match[2]);
+    const date = new Date(year, month, 1);
+    formatted = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' }).format(date);
+  } else {
+    try {
+      const date = new Date(dateStr);
+      if (!isNaN(date.getTime())) {
+        formatted = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' }).format(date);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+};
+
 const PortfolioView = () => {
   const { t, i18n } = useTranslation()
   const [personalData, setPersonalData] = useState<PersonalData | null>(null)
@@ -140,6 +183,7 @@ const PortfolioView = () => {
 
   const navigate = useNavigate()
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [imagePreviewCert, setImagePreviewCert] = useState<Certification | null>(null)
 
   const getTranslatedLevel = (level: string) => {
     if (!level) return '';
@@ -180,39 +224,47 @@ const PortfolioView = () => {
         setPersonalData(personal)
 
         const mappedTech = skills
-          .filter((s: { is_active?: boolean | null; status?: string | null }) => s.is_active !== false && s.status !== 'pending' && s.status !== 'rejected')
-          .map((s: { name?: string | null; level?: string | null; justification?: string | null; type?: string | null }) => ({
+          .filter((s: { is_active?: boolean | null; status?: string | null }) =>
+            s.is_active !== false &&
+            s.status !== 'pending' &&
+            s.status !== 'rejected' &&
+            s.status !== 'disabled'
+          )
+          .map((s: {
+            id: number
+            name?: string | null
+            level?: string | null
+            category?: string | null
+            type?: string | null
+          }) => ({
+            id: s.id,
             name: s.name || '',
             level: s.level?.toUpperCase().replace('_', ' ') || 'N/A',
             rawLevel: s.level || '',
-            description: s.justification || '',
+            category: s.category || '',
             type: s.type || 'tecnica'
           }))
 
         setTechSkills(mappedTech)
 
         setExperiences(
-          exps.map((e: { id: number; position?: string | null; company?: string | null; start_date?: string | null; end_date?: string | null; description?: string | null; skills?: { id: number; name?: string | null }[] }) => ({
-            id: e.id,
-            role: e.position || '',
-            company: e.company || '',
-            period: `${new Date(e.start_date || '').toLocaleDateString(i18n.language, {
-              month: 'short',
-              year: 'numeric'
-            })} - ${e.end_date
-              ? new Date(e.end_date).toLocaleDateString(i18n.language, {
-                month: 'short',
-                year: 'numeric'
-              })
-              : t('portfolio_view.present')
-              }`,
-            status: e.end_date ? t('portfolio_view.previous') : t('portfolio_view.actual'),
-            description: e.description || '',
-            skills: e.skills?.map((s: { id: number; name?: string | null }) => ({
-              id: s.id,
-              name: s.name || ''
-            })) || []
-          }))
+          exps
+            .filter((e: any) => e.is_active !== false)
+            .map((e: { id: number; position?: string | null; company?: string | null; start_date?: string | null; end_date?: string | null; description?: string | null; skills?: { id: number; name?: string | null }[] }) => ({
+              id: e.id,
+              role: e.position || '',
+              company: e.company || '',
+              period: `${formatExpDate(e.start_date, i18n.language)} - ${e.end_date
+                ? formatExpDate(e.end_date, i18n.language)
+                : t('portfolio_view.present')
+                }`,
+              status: e.end_date ? t('portfolio_view.previous') : t('portfolio_view.actual'),
+              description: e.description || '',
+              skills: e.skills?.map((s: { id: number; name?: string | null }) => ({
+                id: s.id,
+                name: s.name || ''
+              })) || []
+            }))
         )
 
         setProjects(
@@ -231,17 +283,20 @@ const PortfolioView = () => {
         )
 
         setCertifications(
-          certs.map((c: { id: number; name?: string | null; description?: string | null; issuing_entity?: string | null; issue_date?: string | null }) => {
-            const parsed = parseIssuingEntity(c.issuing_entity);
-            return {
-              id: c.id,
-              title: c.name || '',
-              description: c.description || '',
-              issuing_organization: parsed.issuing_organization,
-              credential_url: parsed.credential_url,
-              issue_date: c.issue_date || ''
-            };
-          })
+          certs
+            .filter((c: any) => c.is_active !== false)
+            .map((c: { id: number; name?: string | null; description?: string | null; issuing_entity?: string | null; issue_date?: string | null; expiration_date?: string | null; image_url?: string | null }) => {
+              const parsed = parseIssuingEntity(c.issuing_entity);
+              return {
+                id: c.id,
+                title: c.name || '',
+                description: c.description || '',
+                issuing_organization: parsed.issuing_organization,
+                issue_date: c.issue_date || '',
+                expiration_date: c.expiration_date || undefined,
+                image_url: c.image_url || undefined
+              };
+            })
         )
 
         if (portfolioData?.data) {
@@ -284,12 +339,11 @@ const PortfolioView = () => {
   if (privacy.show_skills) stats.push({ label: t('portfolio_view.stats_tech'), value: techSkills.length })
   if (privacy.show_experience) stats.push({ label: t('portfolio_view.stats_exp'), value: experiences.length })
 
-  const habilidadesTecnicas = techSkills.filter(s => s.type === 'tecnica')
-  const habilidadesBlandas = techSkills.filter(s => s.type !== 'tecnica')
+  const habilidadesTecnicas = techSkills.filter((s) => s.type === 'tecnica')
+  const habilidadesBlandas = techSkills.filter((s) => s.type === 'blanda')
 
   return (
-    <div className="h-screen max-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors duration-300 overflow-hidden">
-      <Navbar />
+    <div className="h-full max-h-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors duration-300 overflow-hidden">
       <div className="flex flex-1 overflow-hidden relative">
         <Sidebar activeItem="Vista Portafolio" />
 
@@ -545,20 +599,22 @@ const PortfolioView = () => {
                           ))}
                         </div>
                       ) : habilidadesTecnicas.length > 0 ? (
-                        habilidadesTecnicas.map((skill, idx) => (
+                        habilidadesTecnicas.map((skill) => (
                           <div
-                            key={idx}
+                            key={skill.id}
                             className="bg-white dark:bg-slate-800 rounded-xl p-4 flex items-center justify-between border border-slate-200 dark:border-slate-700"
                           >
                             <div className="flex flex-col pr-4">
                               <span className="font-bold text-slate-900 dark:text-white text-sm">{skill.name}</span>
-                              {skill.description && (
-                                <span className="text-slate-400 dark:text-slate-500 text-[11px] mt-1 line-clamp-1">{skill.description}</span>
+                              {skill.category && (
+                                <span className="text-slate-400 dark:text-slate-500 text-[11px] mt-1 line-clamp-1">{skill.category}</span>
                               )}
                             </div>
-                            <span className="text-[10px] font-black px-2 py-1 rounded bg-blue-50 dark:bg-cyan-900/50 text-[#003087] dark:text-cyan-300 whitespace-nowrap">
-                              {getTranslatedLevel(skill.level)}
-                            </span>
+                            {skill.rawLevel && (
+                              <span className="text-[10px] font-black px-2 py-1 rounded bg-blue-50 dark:bg-cyan-900/50 text-[#003087] dark:text-cyan-300 whitespace-nowrap">
+                                {getTranslatedLevel(skill.rawLevel)}
+                              </span>
+                            )}
                           </div>
                         ))
                       ) : (
@@ -590,20 +646,22 @@ const PortfolioView = () => {
                           ))}
                         </div>
                       ) : habilidadesBlandas.length > 0 ? (
-                        habilidadesBlandas.map((skill, idx) => (
+                        habilidadesBlandas.map((skill) => (
                           <div
-                            key={idx}
+                            key={skill.id}
                             className="bg-white dark:bg-slate-800 rounded-xl p-4 flex items-center justify-between border border-slate-200 dark:border-slate-700"
                           >
                             <div className="flex flex-col pr-4">
                               <span className="font-bold text-slate-900 dark:text-white text-sm">{skill.name}</span>
-                              {skill.description && (
-                                <span className="text-slate-400 dark:text-slate-500 text-[11px] mt-1 line-clamp-1">{skill.description}</span>
+                              {skill.category && (
+                                <span className="text-slate-400 dark:text-slate-500 text-[11px] mt-1 line-clamp-1">{skill.category}</span>
                               )}
                             </div>
-                            <span className="text-[10px] font-black px-2 py-1 rounded bg-purple-50 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 whitespace-nowrap">
-                              {getTranslatedLevel(skill.level)}
-                            </span>
+                            {skill.rawLevel && (
+                              <span className="text-[10px] font-black px-2 py-1 rounded bg-purple-50 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 whitespace-nowrap">
+                                {getTranslatedLevel(skill.rawLevel)}
+                              </span>
+                            )}
                           </div>
                         ))
                       ) : (
@@ -851,7 +909,7 @@ const PortfolioView = () => {
                           <h3 className="font-bold text-slate-900 dark:text-white text-base mb-3">{cert.title}</h3>
                           <p className="text-[#003087] dark:text-cyan-400 text-xs font-bold mb-2">{cert.issuing_organization}</p>
                           <p className="text-slate-400 dark:text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-3">
-                            {cert.issue_date ? new Date(cert.issue_date).toLocaleDateString(i18n.language, { month: 'long', year: 'numeric' }) : ''}
+                            {formatCertDate(cert.issue_date, i18n.language)} - {cert.expiration_date ? formatCertDate(cert.expiration_date, i18n.language) : t('portfolio_view.present', 'Presente')}
                           </p>
                           {cert.description && (
                             <p className="text-slate-600 dark:text-slate-300 text-[11px] leading-relaxed mb-4">
@@ -859,15 +917,22 @@ const PortfolioView = () => {
                             </p>
                           )}
                         </div>
-                        {cert.credential_url && (
-                          <a
-                            href={cert.credential_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 text-xs font-bold text-blue-600 dark:text-cyan-400 hover:underline cursor-pointer"
+                        {cert.image_url && (
+                          <button
+                            type="button"
+                            onClick={() => setImagePreviewCert(cert)}
+                            className="group flex items-center gap-3 p-2 -ml-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors cursor-pointer border-none bg-transparent text-left"
+                            title={t('portfolio_view.view_certificate', 'Ver certificado')}
                           >
-                            {t('portfolio_view.view_credential')}
-                          </a>
+                            <img
+                              src={cert.image_url}
+                              alt={cert.title}
+                              className="w-12 h-12 object-cover rounded shadow-sm border border-slate-200 dark:border-slate-700 group-hover:ring-2 group-hover:ring-[#003087] dark:group-hover:ring-cyan-400 transition-all"
+                            />
+                            <span className="text-xs font-bold text-[#003087] dark:text-cyan-400 group-hover:underline">
+                              {t('portfolio_view.view_certificate', 'Ver certificado')}
+                            </span>
+                          </button>
                         )}
                       </div>
                     ))
@@ -891,6 +956,45 @@ const PortfolioView = () => {
         onClose={() => setIsModalOpen(false)}
         portfolioId={portfolioId}
       />
+
+      {imagePreviewCert?.image_url && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={() => setImagePreviewCert(null)}
+          />
+          <div className="relative bg-white dark:bg-slate-900 rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col border border-slate-200 dark:border-slate-800 overflow-hidden">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-800">
+              <div className="min-w-0 pr-4">
+                <h3 className="text-[15px] font-bold text-slate-900 dark:text-white truncate">
+                  {imagePreviewCert.title}
+                </h3>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                  {imagePreviewCert.issue_date}
+                  {imagePreviewCert.expiration_date
+                    ? ` - ${imagePreviewCert.expiration_date}`
+                    : ` - ${t('portfolio_view.present', 'Presente')}`}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setImagePreviewCert(null)}
+                className="shrink-0 w-9 h-9 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                aria-label={t('common.close', 'Cerrar')}
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <div className="p-5 overflow-auto flex items-center justify-center bg-slate-100 dark:bg-slate-950">
+              <img
+                src={imagePreviewCert.image_url}
+                alt={imagePreviewCert.title}
+                className="max-w-full max-h-[65vh] object-contain rounded-lg shadow-md"
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

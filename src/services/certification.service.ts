@@ -18,11 +18,49 @@ export interface Certification {
   issue_date: string
   expiration_date: string | null
   image_url: string | null
+  is_active: boolean
 }
 
 export const getCertifications = async (): Promise<Certification[]> => {
   const token = getToken()
-  const response = await fetch(`${API_BASE_URL}/portfolio/certifications`, {
+  const headers = {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+    Authorization: `Bearer ${token}`
+  }
+
+  const [activeRes, inactiveRes] = await Promise.all([
+    fetch(`${API_BASE_URL}/portfolio/certifications`, { headers }),
+    fetch(`${API_BASE_URL}/portfolio/certifications?include_inactive=true`, { headers })
+  ])
+
+  if (activeRes.status === 401 || inactiveRes.status === 401) {
+    handleUnauthorized()
+    return []
+  }
+
+  const activeData = await activeRes.json()
+  const inactiveData = await inactiveRes.json()
+
+  if (!activeRes.ok) throw new Error(activeData.message || 'Error al obtener certificaciones activas.')
+  if (!inactiveRes.ok) throw new Error(inactiveData.message || 'Error al obtener certificaciones inactivas.')
+
+  const active = activeData.data || []
+  const inactive = inactiveData.data || []
+
+  // Combine and sort descending by issue_date
+  const combined = [...active, ...inactive].sort((a: Certification, b: Certification) => {
+    // issue_date is in format YYYY-MM-DD
+    return new Date(b.issue_date).getTime() - new Date(a.issue_date).getTime()
+  })
+
+  return combined
+}
+
+export const toggleCertificationVisibility = async (id: number): Promise<boolean> => {
+  const token = getToken()
+  const response = await fetch(`${API_BASE_URL}/portfolio/certifications/${id}/toggle`, {
+    method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
@@ -32,11 +70,36 @@ export const getCertifications = async (): Promise<Certification[]> => {
 
   if (response.status === 401) {
     handleUnauthorized()
-    return []
+    throw new Error('No autorizado')
   }
 
   const data = await response.json()
-  if (!response.ok) throw new Error(data.message || 'Error al obtener certificaciones.')
+  if (!response.ok) throw data
+  return data.data.is_active
+}
+
+export const updateCertification = async (
+  id: number,
+  payload: Record<string, unknown>
+): Promise<Certification> => {
+  const token = getToken()
+  const response = await fetch(`${API_BASE_URL}/portfolio/certifications/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify(payload)
+  })
+
+  if (response.status === 401) {
+    handleUnauthorized()
+    throw new Error('No autorizado')
+  }
+
+  const data = await response.json()
+  if (!response.ok) throw data
   return data.data
 }
 

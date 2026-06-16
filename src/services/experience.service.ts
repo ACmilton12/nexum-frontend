@@ -21,11 +21,47 @@ export interface WorkExperience {
   description: string | null
   verification_url: string | null
   skills?: { id: number; name: string }[]
+  is_active: boolean
 }
 
 export const getExperiences = async (): Promise<WorkExperience[]> => {
   const token = getToken()
-  const response = await fetch(`${API_BASE_URL}/work-experiences`, {
+  const headers = {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+    Authorization: `Bearer ${token}`
+  }
+
+  const [activeRes, inactiveRes] = await Promise.all([
+    fetch(`${API_BASE_URL}/work-experiences`, { headers }),
+    fetch(`${API_BASE_URL}/work-experiences?status=inactive`, { headers })
+  ])
+
+  if (activeRes.status === 401 || inactiveRes.status === 401) {
+    handleUnauthorized()
+    return []
+  }
+
+  const activeData = await activeRes.json()
+  const inactiveData = await inactiveRes.json()
+
+  if (!activeRes.ok) throw new Error(activeData.message || 'Error al obtener experiencias activas.')
+  if (!inactiveRes.ok) throw new Error(inactiveData.message || 'Error al obtener experiencias inactivas.')
+
+  const active = activeData.data || activeData || []
+  const inactive = inactiveData.data || inactiveData || []
+
+  const combined = [...active, ...inactive].sort((a: WorkExperience, b: WorkExperience) => {
+    return new Date(b.start_date).getTime() - new Date(a.start_date).getTime()
+  })
+
+  return combined
+}
+
+export const toggleExperienceVisibility = async (id: number): Promise<boolean> => {
+  const token = getToken()
+  const response = await fetch(`${API_BASE_URL}/work-experiences/${id}/toggle`, {
+    method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
@@ -35,12 +71,12 @@ export const getExperiences = async (): Promise<WorkExperience[]> => {
 
   if (response.status === 401) {
     handleUnauthorized()
-    return []
+    throw new Error('No autorizado')
   }
 
   const data = await response.json()
-  if (!response.ok) throw new Error(data.message || 'Error al obtener experiencias.')
-  return data.data || data // Dependiendo de si viene envuelto en 'data' por el recurso de Laravel
+  if (!response.ok) throw data
+  return data.data?.is_active ?? true
 }
 
 export const createExperience = async (

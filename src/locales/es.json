@@ -598,6 +598,7 @@
     "confirm_title": "Confirmar Acción",
     "confirm_desc": "¿Desea guardar la experiencia?",
     "confirm_btn": "Confirmar",
+    "activate_to_edit": "Activa la experiencia para poder editarla",
     "error_required": "Este campo es obligatorio",
     "error_future_date": "La fecha de inicio no puede ser una fecha futura",
     "error_date_range": "La fecha de fin debe ser posterior a la de inicio",
@@ -605,7 +606,12 @@
     "error_invalid_url": "URL inválida (debe iniciar con http:// o https://)",
     "toast_success": "Experiencia laboral guardada exitosamente.",
     "toast_error": "Ocurrió un error al guardar.",
-    "notification_tip": "Mantén tu experiencia actualizada para destacar ante reclutadores."
+    "notification_tip": "Mantén tu experiencia actualizada para destacar ante reclutadores.",
+    "no_registered_experiences": "no hay experiencias registradas",
+    "confirm_delete_title": "Confirmar Eliminación",
+    "confirm_delete_desc": "¿Está seguro de que desea eliminar esta experiencia laboral?",
+    "toast_delete_success": "Experiencia eliminada con éxito.",
+    "toast_delete_error": "No se pudo eliminar la experiencia."
   },
   "certifications": {
     "title": "Certificaciones",
@@ -620,13 +626,16 @@
     "date_placeholder": "Mes de año",
     "image_label": "Insignia o Imagen (JPG, PNG)",
     "select_image": "Seleccionar Imagen",
+    "view_image": "Ver imagen",
     "image_format_info": "Formato JPG, PNG o WEBP - Máx 2MB",
+    "image_not_editable": "La imagen del certificado no puede modificarse",
     "remove": "Quitar",
     "clear": "Limpiar",
     "save": "Guardar",
     "confirm_title": "Confirmar Acción",
     "confirm_desc": "¿Desea guardar la certificación?",
     "confirm_btn": "Confirmar",
+    "activate_to_edit": "Activa la certificación para poder editarla",
     "error_required": "Este campo es obligatorio",
     "error_invalid_url": "URL inválida (debe iniciar con http:// o https://)",
     "error_date_range": "La fecha de fin debe ser posterior a la de inicio",
@@ -634,7 +643,12 @@
     "error_image_size": "Límite excedido, por favor seleccione otra imagen",
     "toast_success": "Certificación guardada exitosamente.",
     "toast_error": "Ocurrió un error al guardar.",
-    "notification_tip": "Las certificaciones ayudan a validar tus conocimientos técnicos."
+    "notification_tip": "Las certificaciones ayudan a validar tus conocimientos técnicos.",
+    "no_registered_certifications": "No hay certificaciones registradas",
+    "confirm_delete_title": "Confirmar Eliminación",
+    "confirm_delete_desc": "¿Está seguro de que desea eliminar esta certificación?",
+    "toast_delete_success": "Certificación eliminada con éxito.",
+    "toast_delete_error": "No se pudo eliminar la certificación."
   },
   "skills": {
     "title": "Mis Habilidades",
@@ -744,6 +758,7 @@
     "no_experience": "No hay trayectoria registrada.",
     "no_certifications": "No hay certificaciones públicas para mostrar.",
     "view_credential": "Ver credencial",
+    "view_certificate": "Ver certificado",
     "remote": "Remoto",
     "on_site": "Presencial",
     "hybrid": "Híbrido",
@@ -1039,8 +1054,19 @@
       },
       "pdf": {
         "title": "Historial de Auditoría - NEXUM",
+        "subtitle": "Reporte de actividades del sistema",
         "generated_at": "Generado el: {{date}}",
-        "filename": "historial_auditoria_{{date}}.pdf"
+        "filename": "historial_auditoria_{{date}}.pdf",
+        "summary_title": "Resumen del reporte",
+        "records_count": "Total de registros: {{count}}",
+        "period": "Período: {{from}} — {{to}}",
+        "period_all": "Período: todos los registros visibles",
+        "search_filter": "Búsqueda activa: \"{{term}}\"",
+        "no_search_filter": "Búsqueda activa: ninguna",
+        "affected_user": "Usuario afectado",
+        "summary": "Resumen de cambios",
+        "page": "Página {{current}} de {{total}}",
+        "not_applicable": "N/A"
       },
       "events": {
         "created": "Creado",
@@ -1056,7 +1082,8 @@
       "detail_modal": {
         "title": "Detalles de Actividad",
         "responsible": "Usuario Responsable",
-        "affected": "Usuario Afectado",
+        "affected": "Usuario afectado",
+        "affected_section": "Sección afectada",
         "data_state": "Datos y Estados",
         "close": "Cerrar Detalles",
         "no_structured_details": "No hay detalles adicionales estructurados para este evento.",
@@ -1073,6 +1100,12 @@
         "email": "Email",
         "role": "Rol",
         "is_active": "Estado de Cuenta",
+        "experience_visibility": "Visibilidad de la experiencia",
+        "certification_visibility": "Visibilidad de la certificación",
+        "project_visibility": "Visibilidad del proyecto",
+        "skill_visibility": "Visibilidad de la habilidad",
+        "show_experience": "Mostrar experiencia en portafolio",
+        "show_certifications": "Mostrar certificaciones en portafolio",
         "password": "Contraseña",
         "biography": "Biografía",
         "phone": "Teléfono",
@@ -1106,14 +1139,35 @@
         "private": "Privado",
         "public": "Público",
         "yes": "Sí",
-        "no": "No"
+        "no": "No",
+        "visible": "Visible",
+        "hidden": "Oculta",
+        "professional": "Profesional"
+      },
+      "entity": {
+        "experience_section": "Experiencia laboral",
+        "experience_item": "Experiencia: {{position}} en {{company}}",
+        "experience_position": "Experiencia: {{position}}",
+        "certification_section": "Certificación",
+        "certification_item": "Certificación: {{name}}",
+        "project_section": "Proyecto",
+        "project_item": "Proyecto: {{title}}",
+        "portfolio_section": "Configuración del portafolio"
       },
       "security": {
         "title": "Seguridad",
         "desc": "Supervisión activa del sistema. Se registran todos los cambios de roles y accesos fallidos."
       },
       "reports": {
-        "title": "Reportes"
+        "title": "Reportes",
+        "desc": "Descarga un PDF con los registros que aparecen en la tabla, aplicando los filtros de búsqueda y fechas.",
+        "records_label": "Registros incluidos",
+        "period_label": "Período",
+        "search_label": "Búsqueda",
+        "all_dates": "Todas las fechas",
+        "no_search": "Sin filtro de texto",
+        "export_desc": "Descargar reporte en PDF",
+        "export_empty": "No hay registros para exportar con los filtros actuales."
       }
     }
   },
