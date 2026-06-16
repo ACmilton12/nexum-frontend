@@ -1310,7 +1310,15 @@
       "q9": "Como gero meu arquivo PDF de currículo?",
       "a9": "No seu painel principal (Dashboard), clique em 'Visualização de Portfólio'. No canto superior direito, você encontrará o botão 'Exportar PDF'. Você pode escolher entre diferentes modelos.",
       "q10": "Por que meu PDF parece cortado ou de baixa qualidade?",
-      "a10": "O PDF é gerado com base nas imagens que você enviou. Recomendamos o uso de imagens de alta qualidade (formato 16:9) e manter suas biografias e descrições concisas para que o documento pareça profissional."
+      "a10": "O PDF é gerado com base nas imagens que enviou. Recomendamos a utilização de imagens de alta qualidade (formato 16:9) e manter as suas biografias e descrições concisas para dar ao documento um aspeto profissional."
     }
+  },
+  "notifications_dropdown": {
+    "title": "Notificações",
+    "mark_all_read": "Marcar todas como lidas",
+    "mark_read": "Marcar como lida",
+    "view": "Ver detalhes",
+    "loading": "A carregar...",
+    "empty": "Não tem novas notificações"
   }
 }

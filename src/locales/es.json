@@ -1326,5 +1326,13 @@
       "q10": "¿Por qué mi PDF se ve cortado o con baja calidad?",
       "a10": "El PDF se genera basándose en las imágenes que subiste. Te recomendamos usar imágenes de alta calidad (formato 16:9) y mantener tus biografías y descripciones concisas para que el documento se vea profesional."
     }
+  },
+  "notifications_dropdown": {
+    "title": "Notificaciones",
+    "mark_all_read": "Marcar todas como leídas",
+    "mark_read": "Marcar como leída",
+    "view": "Ver detalles",
+    "loading": "Cargando...",
+    "empty": "No tienes notificaciones nuevas"
   }
 }

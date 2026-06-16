@@ -7,6 +7,7 @@ import useAuth from '../../hooks/useAuth' // Hook para obtener el usuario loguea
 import LanguageSelector from './LanguageSelector'
 import { useTranslation } from 'react-i18next'
 import { API_BASE_URL } from '../../utils/constants'
+import NotificationBell from './NotificationBell'
 
 const Navbar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -124,8 +125,10 @@ const Navbar = () => {
         <div className="h-8 w-px bg-white/20 hidden md:block"></div>
 
         {isAuthenticated && ( // Renderiza el icono de usuario y modal si está autenticado
-          <div className="relative" onMouseLeave={() => setIsModalOpen(false)}>
-            <button
+          <>
+            <NotificationBell />
+            <div className="relative" onMouseLeave={() => setIsModalOpen(false)}>
+              <button
               onClick={() => setIsModalOpen(!isModalOpen)}
               className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-300 text-gray-700 cursor-pointer hover:bg-gray-400 transition-colors overflow-hidden border-2 border-white/20 shadow-inner"
               aria-label="Alternar menú de usuario"
@@ -146,6 +149,7 @@ const Navbar = () => {
               isAdmin={isAdmin}
             />
           </div>
+          </>
         )}
       </div>
     </nav>
