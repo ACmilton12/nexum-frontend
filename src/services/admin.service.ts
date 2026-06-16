@@ -170,6 +170,7 @@ export const getActivityLogs = async (params: { user_id?: number; per_page?: num
           }),
           detail: formatLogDetail(log),
           raw_date: log.created_at,
+          log_name: log.log_name,
           properties: log.properties
         }
       }
@@ -213,8 +214,49 @@ const formatLogDetail = (log: {
     }
 
     case 'updated': {
+      const logName = (log.log_name || '').toLowerCase()
+      const attrs = { ...old, ...attributes }
+      const isActiveChange =
+        attributes.is_active !== undefined &&
+        old.is_active !== undefined &&
+        String(attributes.is_active) !== String(old.is_active)
+
+      if (isActiveChange) {
+        if (logName.includes('certification') || logName.includes('certific') || attrs.issuing_entity) {
+          const name = attrs.name ? String(attrs.name) : 'certificación'
+          const visible = attributes.is_active === true || attributes.is_active === 'true' || attributes.is_active === 1
+          return visible
+            ? `Certificación habilitada en portafolio: ${name}.`
+            : `Certificación ocultada en portafolio: ${name}.`
+        }
+
+        if (
+          logName.includes('work_experience') ||
+          logName.includes('work-experience') ||
+          logName.includes('experience') ||
+          attrs.position ||
+          attrs.company
+        ) {
+          const position = attrs.position ? String(attrs.position) : 'experiencia'
+          const company = attrs.company ? String(attrs.company) : ''
+          const visible = attributes.is_active === true || attributes.is_active === 'true' || attributes.is_active === 1
+          const label = company ? `${position} en ${company}` : position
+          return visible
+            ? `Experiencia habilitada en portafolio: ${label}.`
+            : `Experiencia ocultada en portafolio: ${label}.`
+        }
+      }
+
       const changes = Object.keys(attributes)
         .filter((key) => key !== 'updated_at')
+        .filter((key) => {
+          const oldVal = old[key] !== undefined && old[key] !== null ? String(old[key]) : null
+          const newVal =
+            attributes[key] !== undefined && attributes[key] !== null
+              ? String(attributes[key])
+              : null
+          return oldVal !== newVal
+        })
         .map((key) => {
           const oldVal = old[key] !== undefined && old[key] !== null ? String(old[key]) : 'Ø'
           const newVal =

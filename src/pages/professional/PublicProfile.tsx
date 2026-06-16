@@ -11,13 +11,77 @@ import {
   Loader2,
   AlertCircle,
   Folder,
-  Download
+  Download,
+  X
 } from 'lucide-react'
 import { getPublicPortfolio, type FullPortfolio, type AdditionalLink } from '../../services/portfolio.service'
 import { useRecordVisit, useProfileStats } from '../../hooks/useProfileVisits'
 import PLATFORM_ICONS from '../../components/icons/SocialIcons'
 import Sidebar from '../admin/components/Sidebar'
 import PdfTemplateModal from '../../components/modals/PdfTemplateModal'
+
+const formatExpDate = (dateStr: string | null | undefined, locale: string) => {
+  if (!dateStr) return '';
+  // Handle YYYY-MM format (e.g. "2024-03")
+  const ymMatch = dateStr.match(/^(\d{4})-(\d{2})$/);
+  if (ymMatch) {
+    const date = new Date(parseInt(ymMatch[1]), parseInt(ymMatch[2]) - 1, 1);
+    const formatted = new Intl.DateTimeFormat(locale, { month: 'short', year: 'numeric' }).format(date);
+    return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+  }
+  // Handle YYYY-MM-DD
+  const ymdMatch = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (ymdMatch) {
+    const date = new Date(parseInt(ymdMatch[1]), parseInt(ymdMatch[2]) - 1, parseInt(ymdMatch[3]));
+    const formatted = new Intl.DateTimeFormat(locale, { month: 'short', year: 'numeric' }).format(date);
+    return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+  }
+  return dateStr;
+};
+
+const formatCertDate = (dateStr: string | null | undefined, locale: string) => {
+  if (!dateStr) return '';
+  let formatted = dateStr;
+  const match = dateStr.match(/^(\d{1,2})\/(\d{4})$/);
+  if (match) {
+    const month = parseInt(match[1]) - 1;
+    const year = parseInt(match[2]);
+    const date = new Date(year, month, 1);
+    formatted = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' }).format(date);
+  } else {
+    try {
+      const date = new Date(dateStr);
+      if (!isNaN(date.getTime())) {
+        formatted = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' }).format(date);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+};
+
+const parseIssuingEntity = (issuingEntity?: string | null) => {
+  if (!issuingEntity) return { issuing_organization: 'N/A', credential_url: undefined };
+  if (issuingEntity.startsWith('http://') || issuingEntity.startsWith('https://')) {
+    try {
+      const url = new URL(issuingEntity);
+      return {
+        issuing_organization: url.hostname.replace('www.', ''),
+        credential_url: issuingEntity
+      };
+    } catch {
+      return {
+        issuing_organization: issuingEntity,
+        credential_url: issuingEntity
+      };
+    }
+  }
+  return {
+    issuing_organization: issuingEntity,
+    credential_url: undefined
+  };
+};
 
 const PublicProfile = () => {
   const { id } = useParams<{ id: string }>()
@@ -29,6 +93,7 @@ const PublicProfile = () => {
   const [error, setError] = useState<string | null>(null)
   const [additionalLinks, setAdditionalLinks] = useState<AdditionalLink[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [imagePreviewCert, setImagePreviewCert] = useState<any | null>(null)
 
   useRecordVisit(portfolio?.id || null)
   const { stats } = useProfileStats(portfolio?.id || null)
@@ -337,7 +402,7 @@ const PublicProfile = () => {
                             {exp.is_current ? t('portfolio_view.actual') : t('portfolio_view.previous')}
                           </span>
                           <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500">
-                            {new Date(exp.start_date).toLocaleDateString(i18n.language, { month: 'short', year: 'numeric' })} - {exp.end_date ? new Date(exp.end_date).toLocaleDateString(i18n.language, { month: 'short', year: 'numeric' }) : t('portfolio_view.present')}
+                            {formatExpDate(exp.start_date, i18n.language)} - {exp.end_date ? formatExpDate(exp.end_date, i18n.language) : t('portfolio_view.present')}
                           </span>
                         </div>
                         <h3 className="font-bold text-slate-900 dark:text-white text-base mb-1">{exp.position}</h3>
@@ -413,21 +478,51 @@ const PublicProfile = () => {
                 <p className="text-[#003087] dark:text-blue-400 text-[10px] font-bold uppercase tracking-widest mb-8">{t('portfolio_view.certs_subtitle')}</p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {portfolio.certifications && portfolio.certifications.length > 0 ? (
-                    portfolio.certifications.map(cert => (
-                      <div key={cert.id} className="bg-white dark:bg-slate-900 rounded-xl border-l-4 border-violet-500 dark:border-violet-400 shadow-lg hover:-translate-y-1 transition-all duration-300 p-6 flex flex-col">
-                        <h3 className="font-bold text-slate-900 dark:text-white text-base mb-3">{cert.name}</h3>
-                        <p className="text-[#003087] dark:text-blue-400 text-xs font-bold mb-2">{cert.issuing_organization}</p>
-                        <p className="text-slate-400 dark:text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-3">
-                          {new Date(cert.issue_date).toLocaleDateString(i18n.language, { month: 'long', year: 'numeric' })}
-                        </p>
-                        {cert.credential_url && (
-                          <a href={cert.credential_url} target="_blank" rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline mt-auto">
-                            {t('portfolio_view.view_credential')}
-                          </a>
-                        )}
-                      </div>
-                    ))
+                    portfolio.certifications.map(cert => {
+                      const parsed = parseIssuingEntity((cert as any).issuing_entity);
+                      const issuingOrg = parsed.issuing_organization || cert.issuing_organization;
+                      const credUrl = parsed.credential_url || cert.credential_url;
+
+                      return (
+                        <div key={cert.id} className="bg-white dark:bg-slate-900 rounded-xl border-l-4 border-violet-500 dark:border-violet-400 shadow-lg hover:-translate-y-1 transition-all duration-300 p-6 flex flex-col justify-between">
+                          <div>
+                            <h3 className="font-bold text-slate-900 dark:text-white text-base mb-3">{cert.name}</h3>
+                            <p className="text-[#003087] dark:text-blue-400 text-xs font-bold mb-2">{issuingOrg}</p>
+                            <p className="text-slate-400 dark:text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-3">
+                              {formatCertDate(cert.issue_date, i18n.language)}{cert.expiration_date ? ` - ${formatCertDate(cert.expiration_date, i18n.language)}` : ''}
+                            </p>
+                            {cert.description && (
+                              <p className="text-slate-600 dark:text-slate-350 text-[11px] leading-relaxed mb-4">
+                                {cert.description}
+                              </p>
+                            )}
+                          </div>
+                          {cert.image_url && (
+                            <button
+                              type="button"
+                              onClick={() => setImagePreviewCert(cert)}
+                              className="group flex items-center gap-3 p-2 -ml-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors cursor-pointer border-none bg-transparent text-left mt-auto animate-fade-in"
+                              title={t('portfolio_view.view_certificate', 'Ver certificado')}
+                            >
+                              <img
+                                src={cert.image_url}
+                                alt={cert.name}
+                                className="w-12 h-12 object-cover rounded shadow-sm border border-slate-200 dark:border-slate-700 group-hover:ring-2 group-hover:ring-[#003087] dark:group-hover:ring-blue-400 transition-all"
+                              />
+                              <span className="text-xs font-bold text-[#003087] dark:text-blue-400 group-hover:underline">
+                                {t('portfolio_view.view_certificate', 'Ver certificado')}
+                              </span>
+                            </button>
+                          )}
+                          {!cert.image_url && credUrl && (
+                            <a href={credUrl} target="_blank" rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline mt-auto">
+                              {t('portfolio_view.view_credential')}
+                            </a>
+                          )}
+                        </div>
+                      );
+                    })
                   ) : (
                     <div className="col-span-full py-12 text-center bg-white dark:bg-slate-900 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700">
                       <Award size={32} className="mx-auto text-slate-400 mb-3" />
@@ -447,6 +542,45 @@ const PublicProfile = () => {
         onClose={() => setIsModalOpen(false)} 
         portfolioId={id}
       />
+
+      {imagePreviewCert?.image_url && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={() => setImagePreviewCert(null)}
+          />
+          <div className="relative bg-white dark:bg-slate-900 rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col border border-slate-200 dark:border-slate-800 overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-800">
+              <div className="min-w-0 pr-4">
+                <h3 className="text-[15px] font-bold text-slate-900 dark:text-white truncate">
+                  {imagePreviewCert.name}
+                </h3>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                  {formatCertDate(imagePreviewCert.issue_date, i18n.language)}
+                  {imagePreviewCert.expiration_date
+                    ? ` - ${formatCertDate(imagePreviewCert.expiration_date, i18n.language)}`
+                    : ` - ${t('portfolio_view.present', 'Presente')}`}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setImagePreviewCert(null)}
+                className="shrink-0 w-9 h-9 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                aria-label={t('common.close', 'Cerrar')}
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <div className="p-5 overflow-auto flex items-center justify-center bg-slate-100 dark:bg-slate-950">
+              <img
+                src={imagePreviewCert.image_url}
+                alt={imagePreviewCert.name}
+                className="max-w-full max-h-[65vh] object-contain rounded-lg shadow-md"
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

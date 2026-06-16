@@ -42,6 +42,7 @@ export interface PortfolioSkill {
 export interface PortfolioCertification {
   id: number
   name: string
+  description?: string
   issuing_organization: string
   issue_date: string
   expiration_date?: string

@@ -11,8 +11,6 @@ import {
 import Sidebar from './components/Sidebar'
 import Calendar from '../../components/ui/Calendar'
 import { getActivityLogs } from '../../services/admin.service'
-import jsPDF from 'jspdf'
-import autoTable from 'jspdf-autotable'
 import { useTranslation } from 'react-i18next'
 
 interface AuditLog {
@@ -23,6 +21,7 @@ interface AuditLog {
   timestamp: string
   detail: string
   raw_date: string
+  log_name?: string
   properties?: {
     attributes?: Record<string, unknown>
     old?: Record<string, unknown>
@@ -72,40 +71,6 @@ const AuditPage = () => {
         ref.current.focus()
       }
     }
-  }
-
-  const handleExportPDF = () => {
-    const doc = new jsPDF()
-    doc.setFontSize(18)
-    doc.text(t('admin.audit.pdf.title'), 14, 22)
-    doc.setFontSize(11)
-    doc.setTextColor(100)
-    doc.text(t('admin.audit.pdf.generated_at', { date: new Date().toLocaleString(i18n.language) }), 14, 30)
-
-    const tableColumn = [
-      t('admin.audit.table.user'),
-      t('admin.audit.table.event'),
-      t('admin.audit.table.date'),
-      t('admin.audit.table.details')
-    ]
-    const tableRows = filteredLogs.map((log) => [
-      log.user_name,
-      translateEventName(log.event).toUpperCase(),
-      log.timestamp,
-      log.detail
-    ])
-
-    autoTable(doc, {
-      head: [tableColumn],
-      body: tableRows,
-      startY: 35,
-      theme: 'grid',
-      headStyles: { fillColor: [0, 48, 135] },
-      styles: { fontSize: 8 }
-    })
-
-    const dateStr = new Date().toISOString().split('T')[0]
-    doc.save(t('admin.audit.pdf.filename', { date: dateStr }))
   }
 
   const filteredLogs = logs.filter((log) => {
@@ -161,7 +126,133 @@ const AuditPage = () => {
     return `${d}/${m}/${y.slice(-2)}`
   }
 
-  const translateKey = (key: string) => {
+  type AuditEntityType =
+    | 'user'
+    | 'work_experience'
+    | 'certification'
+    | 'project'
+    | 'skill'
+    | 'portfolio'
+    | 'unknown'
+
+  const getAuditAttributes = (log: AuditLog) => ({
+    ...(log.properties?.old || {}),
+    ...(log.properties?.attributes || {})
+  })
+
+  const detectAuditEntityType = (log: AuditLog): AuditEntityType => {
+    const logName = (log.log_name || '').toLowerCase()
+    const attrs = getAuditAttributes(log)
+    const keys = Object.keys(attrs)
+
+    if (logName.includes('certification') || logName.includes('certific')) return 'certification'
+    if (
+      logName.includes('work_experience') ||
+      logName.includes('work-experience') ||
+      logName.includes('experience')
+    ) {
+      return 'work_experience'
+    }
+    if (logName.includes('project')) return 'project'
+    if (logName.includes('skill') || logName.includes('habilidad')) return 'skill'
+
+    if (keys.includes('issuing_entity') || keys.includes('expiration_date')) return 'certification'
+    if (keys.includes('position') || keys.includes('company') || keys.includes('employment_type')) {
+      return 'work_experience'
+    }
+    if (keys.includes('project_url') || (keys.includes('title') && keys.includes('category_id'))) {
+      return 'project'
+    }
+    if (
+      keys.includes('show_experience') ||
+      keys.includes('show_certifications') ||
+      keys.includes('global_privacy')
+    ) {
+      return 'portfolio'
+    }
+    if (
+      keys.includes('first_name') ||
+      keys.includes('last_name') ||
+      keys.includes('role') ||
+      keys.includes('deactivated_by_admin') ||
+      keys.includes('email')
+    ) {
+      return 'user'
+    }
+
+    return 'unknown'
+  }
+
+  const isPortfolioVisibilityEntity = (entity: AuditEntityType) =>
+    entity === 'work_experience' ||
+    entity === 'certification' ||
+    entity === 'project' ||
+    entity === 'skill'
+
+  const getAuditEntitySummary = (log: AuditLog): string | null => {
+    const attrs = getAuditAttributes(log)
+    const entity = detectAuditEntityType(log)
+
+    switch (entity) {
+      case 'work_experience': {
+        const position = attrs.position ? String(attrs.position) : ''
+        const company = attrs.company ? String(attrs.company) : ''
+        if (position && company) {
+          return t('admin.audit.entity.experience_item', { position, company })
+        }
+        if (position) return t('admin.audit.entity.experience_position', { position })
+        return t('admin.audit.entity.experience_section')
+      }
+      case 'certification': {
+        const name = attrs.name ? String(attrs.name) : ''
+        if (name) return t('admin.audit.entity.certification_item', { name })
+        return t('admin.audit.entity.certification_section')
+      }
+      case 'project': {
+        const title = attrs.title || attrs.name
+        if (title) return t('admin.audit.entity.project_item', { title: String(title) })
+        return t('admin.audit.entity.project_section')
+      }
+      case 'portfolio':
+        return t('admin.audit.entity.portfolio_section')
+      default:
+        return null
+    }
+  }
+
+  const getChangedAuditKeys = (log: AuditLog) => {
+    const attributes = log.properties?.attributes || {}
+    const old = log.properties?.old || {}
+
+    return Array.from(new Set([...Object.keys(attributes), ...Object.keys(old)])).filter((key) => {
+      if (key === 'updated_at' || key === 'created_at' || key === 'id') return false
+      if (
+        key === 'deactivated_by_admin' &&
+        (attributes.is_active !== undefined || old.is_active !== undefined)
+      ) {
+        return false
+      }
+
+      const oldVal =
+        old[key] !== undefined && old[key] !== null ? String(old[key]) : null
+      const newVal =
+        attributes[key] !== undefined && attributes[key] !== null
+          ? String(attributes[key])
+          : null
+
+      return oldVal !== newVal
+    })
+  }
+
+  const translateKey = (key: string, log?: AuditLog) => {
+    if (log && key === 'is_active') {
+      const entity = detectAuditEntityType(log)
+      if (entity === 'work_experience') return t('admin.audit.fields.experience_visibility')
+      if (entity === 'certification') return t('admin.audit.fields.certification_visibility')
+      if (entity === 'project') return t('admin.audit.fields.project_visibility')
+      if (entity === 'skill') return t('admin.audit.fields.skill_visibility')
+    }
+
     const translated = t(`admin.audit.fields.${key}`)
     if (translated && !translated.startsWith('admin.audit.fields.')) {
       return translated
@@ -169,7 +260,7 @@ const AuditPage = () => {
     return key
   }
 
-  const formatValue = (key: string, value: unknown) => {
+  const formatValue = (key: string, value: unknown, log?: AuditLog) => {
     if (value === undefined || value === null || value === 'null') return t('admin.audit.values.unspecified')
 
     // Si el valor es booleano o string 'true'/'false'
@@ -183,8 +274,14 @@ const AuditPage = () => {
       value === '0'
     ) {
       const isTrue = value === true || value === 'true' || value === 1 || value === '1'
+      const entity = log ? detectAuditEntityType(log) : 'user'
 
-      if (key === 'is_active') return isTrue ? t('admin.audit.values.active') : t('admin.audit.values.suspended')
+      if (key === 'is_active') {
+        if (isPortfolioVisibilityEntity(entity)) {
+          return isTrue ? t('admin.audit.values.visible') : t('admin.audit.values.hidden')
+        }
+        return isTrue ? t('admin.audit.values.active') : t('admin.audit.values.suspended')
+      }
       if (key === 'deactivated_by_admin') return isTrue ? t('admin.audit.values.suspended') : t('admin.audit.values.active')
       if (key === 'global_privacy') return isTrue ? t('admin.audit.values.private') : t('admin.audit.values.public')
       if (key === 'is_current') return isTrue ? t('admin.audit.values.yes') : t('admin.audit.values.no')
@@ -209,6 +306,198 @@ const AuditPage = () => {
     return String(value)
   }
 
+  const formatAffectedUserDisplay = (log: AuditLog): string | null => {
+    const entity = detectAuditEntityType(log)
+
+    if (isPortfolioVisibilityEntity(entity) || entity === 'portfolio') {
+      return t('admin.audit.values.professional', 'Profesional')
+    }
+
+    if (!log.affected_user) return null
+
+    if (log.affected_user === 'Usuario') {
+      return t('admin.audit.values.professional', 'Profesional')
+    }
+
+    return log.affected_user
+  }
+
+  const shouldShowAffectedUser = (log: AuditLog) => {
+    const display = formatAffectedUserDisplay(log)
+    return Boolean(display && display !== log.user_name)
+  }
+
+  const buildPdfDetailSummary = (log: AuditLog): string => {
+    const props = log.properties
+    if (!props?.attributes && !props?.old) {
+      const fallback = log.detail || t('admin.audit.detail_modal.no_structured_details')
+      return `• ${fallback}`
+    }
+
+    const attributes = props.attributes || {}
+    const old = props.old || {}
+    const keys = getChangedAuditKeys(log)
+
+    if (keys.length === 0) {
+      const fallback = log.detail || t('admin.audit.detail_modal.no_changes')
+      const entitySummary = getAuditEntitySummary(log)
+      return entitySummary ? `• ${entitySummary}\n• ${fallback}` : `• ${fallback}`
+    }
+
+    const bullets: string[] = []
+    const entitySummary = getAuditEntitySummary(log)
+    if (entitySummary) bullets.push(`• ${entitySummary}`)
+
+    keys.forEach((key) => {
+        const oldVal =
+          old[key] !== undefined && old[key] !== null ? formatValue(key, old[key], log) : null
+        const newVal =
+          attributes[key] !== undefined && attributes[key] !== null
+            ? formatValue(key, attributes[key], log)
+            : null
+        const label = translateKey(key, log)
+
+        if (oldVal && newVal && oldVal !== newVal) {
+          bullets.push(`• ${label}: ${oldVal} -> ${newVal}`)
+          return
+        }
+        if (newVal) bullets.push(`• ${label}: ${newVal}`)
+        else if (oldVal) bullets.push(`• ${label}: ${oldVal}`)
+        else bullets.push(`• ${label}`)
+      })
+
+    return bullets.join('\n')
+  }
+
+  const handleExportPDF = async () => {
+    if (filteredLogs.length === 0) return
+
+    const [{ default: jsPDF }, { default: autoTable }] = await Promise.all([
+      import('jspdf'),
+      import('jspdf-autotable')
+    ])
+
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' })
+    const pageWidth = doc.internal.pageSize.getWidth()
+    const marginX = 14
+    const generatedAt = new Date().toLocaleString(i18n.language)
+
+    doc.setFillColor(0, 48, 135)
+    doc.rect(0, 0, pageWidth, 24, 'F')
+    doc.setTextColor(255, 255, 255)
+    doc.setFontSize(15)
+    doc.text(t('admin.audit.pdf.title'), marginX, 11)
+    doc.setFontSize(9)
+    doc.text(t('admin.audit.pdf.subtitle'), marginX, 18)
+
+    doc.setTextColor(90, 90, 90)
+    doc.setFontSize(8)
+    doc.text(t('admin.audit.pdf.generated_at', { date: generatedAt }), pageWidth - marginX, 11, {
+      align: 'right'
+    })
+
+    let summaryY = 32
+    doc.setTextColor(30, 30, 30)
+    doc.setFontSize(11)
+    doc.text(t('admin.audit.pdf.summary_title'), marginX, summaryY)
+    summaryY += 6
+
+    doc.setFontSize(9)
+    doc.setTextColor(70, 70, 70)
+    doc.text(t('admin.audit.pdf.records_count', { count: filteredLogs.length }), marginX, summaryY)
+    summaryY += 5
+
+    if (dateFrom || dateTo) {
+      doc.text(
+        t('admin.audit.pdf.period', {
+          from: dateFrom ? formatDateDisplay(dateFrom) : '...',
+          to: dateTo ? formatDateDisplay(dateTo) : '...'
+        }),
+        marginX,
+        summaryY
+      )
+    } else {
+      doc.text(t('admin.audit.pdf.period_all'), marginX, summaryY)
+    }
+    summaryY += 5
+
+    doc.text(
+      searchTerm.trim()
+        ? t('admin.audit.pdf.search_filter', { term: searchTerm.trim() })
+        : t('admin.audit.pdf.no_search_filter'),
+      marginX,
+      summaryY
+    )
+
+    const tableColumn = [
+      'ID',
+      t('admin.audit.table.user'),
+      t('admin.audit.pdf.affected_user'),
+      t('admin.audit.table.event'),
+      t('admin.audit.table.date'),
+      t('admin.audit.pdf.summary')
+    ]
+
+    const tableRows = filteredLogs.map((log) => [
+      String(log.id),
+      log.user_name,
+      (() => {
+        const affected = formatAffectedUserDisplay(log)
+        return affected && affected !== log.user_name
+          ? affected
+          : t('admin.audit.pdf.not_applicable')
+      })(),
+      translateEventName(log.event),
+      log.timestamp,
+      buildPdfDetailSummary(log)
+    ])
+
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+      startY: summaryY + 6,
+      theme: 'striped',
+      headStyles: {
+        fillColor: [0, 48, 135],
+        textColor: 255,
+        fontSize: 8,
+        fontStyle: 'bold'
+      },
+      styles: {
+        fontSize: 7.5,
+        cellPadding: 2.5,
+        overflow: 'linebreak',
+        valign: 'top',
+        lineColor: [220, 220, 220]
+      },
+      columnStyles: {
+        0: { cellWidth: 12 },
+        1: { cellWidth: 30 },
+        2: { cellWidth: 30 },
+        3: { cellWidth: 26 },
+        4: { cellWidth: 28 },
+        5: { cellWidth: 'auto', cellPadding: { top: 3, right: 2.5, bottom: 3, left: 2.5 } }
+      },
+      alternateRowStyles: { fillColor: [248, 250, 252] },
+      margin: { left: marginX, right: marginX },
+      didDrawPage: (data) => {
+        const pageCount = doc.getNumberOfPages()
+        const currentPage = data.pageNumber
+        doc.setFontSize(8)
+        doc.setTextColor(120, 120, 120)
+        doc.text(
+          t('admin.audit.pdf.page', { current: currentPage, total: pageCount }),
+          pageWidth / 2,
+          doc.internal.pageSize.getHeight() - 8,
+          { align: 'center' }
+        )
+      }
+    })
+
+    const dateStr = new Date().toISOString().split('T')[0]
+    doc.save(t('admin.audit.pdf.filename', { date: dateStr }))
+  }
+
   const renderChangesTable = (log: AuditLog) => {
     const props = log.properties
     if (!props || (!props.attributes && !props.old)) {
@@ -229,15 +518,7 @@ const AuditPage = () => {
       Object.keys(old).length > 0
 
     if (isUpdate) {
-      const keys = Array.from(new Set([...Object.keys(attributes), ...Object.keys(old)])).filter(
-        (k) => {
-          const isInternal = k === 'updated_at' || k === 'created_at' || k === 'id'
-          const isDuplicateStatus =
-            k === 'deactivated_by_admin' &&
-            (attributes['is_active'] !== undefined || old['is_active'] !== undefined)
-          return !isInternal && !isDuplicateStatus
-        }
-      )
+      const keys = getChangedAuditKeys(log)
 
       if (keys.length === 0)
         return (
@@ -246,8 +527,21 @@ const AuditPage = () => {
           </p>
         )
 
+      const entitySummary = getAuditEntitySummary(log)
+
       return (
-        <div className="rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm bg-white dark:bg-slate-900">
+        <div className="space-y-3">
+          {entitySummary && (
+            <div className="px-4 py-3 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-900/40">
+              <p className="text-[11px] uppercase tracking-wider text-indigo-500 dark:text-indigo-300 font-bold mb-1">
+                {t('admin.audit.detail_modal.affected_section')}
+              </p>
+              <p className="text-sm font-semibold text-indigo-900 dark:text-indigo-100">
+                {entitySummary}
+              </p>
+            </div>
+          )}
+          <div className="rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm bg-white dark:bg-slate-900">
           <table className="w-full text-sm text-left">
             <thead className="bg-gray-50/80 dark:bg-slate-800 border-b border-gray-200 dark:border-gray-700 text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400">
               <tr>
@@ -263,19 +557,20 @@ const AuditPage = () => {
             <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
               {keys.map((key) => {
                 const oldVal =
-                  old[key] !== undefined && old[key] !== null ? formatValue(key, old[key]) : 'Ø'
+                  old[key] !== undefined && old[key] !== null
+                    ? formatValue(key, old[key], log)
+                    : 'Ø'
                 const newVal =
                   attributes[key] !== undefined && attributes[key] !== null
-                    ? formatValue(key, attributes[key])
+                    ? formatValue(key, attributes[key], log)
                     : 'Ø'
-                const isChanged = oldVal !== newVal
                 return (
                   <tr
                     key={key}
-                    className={`transition-colors hover:bg-gray-50 dark:hover:bg-slate-800 ${isChanged ? 'bg-white dark:bg-slate-900' : 'opacity-60 bg-gray-50 dark:bg-slate-800/50'}`}
+                    className="transition-colors hover:bg-gray-50 dark:hover:bg-slate-800 bg-white dark:bg-slate-900"
                   >
                     <td className="px-5 py-4 font-medium text-gray-900 dark:text-white border-r border-gray-100/50 dark:border-gray-800">
-                      {translateKey(key)}
+                      {translateKey(key, log)}
                     </td>
                     <td
                       className="px-5 py-4 text-red-900 dark:text-red-300 bg-red-50/20 dark:bg-red-900/10 font-mono text-xs break-all 
@@ -284,11 +579,9 @@ const AuditPage = () => {
                       {oldVal}
                     </td>
                     <td className="px-5 py-4 text-green-900 dark:text-green-300 bg-green-50/20 dark:bg-green-900/10 font-mono text-xs break-all font-medium flex items-center gap-2">
-                      {isChanged && (
-                        <span className="text-green-500 dark:text-green-400">
-                          <ArrowRight size={14} />
-                        </span>
-                      )}
+                      <span className="text-green-500 dark:text-green-400">
+                        <ArrowRight size={14} />
+                      </span>
                       {newVal}
                     </td>
                   </tr>
@@ -296,6 +589,7 @@ const AuditPage = () => {
               })}
             </tbody>
           </table>
+        </div>
         </div>
       )
     }
@@ -321,10 +615,10 @@ const AuditPage = () => {
                 className="bg-white dark:bg-slate-900 hover:bg-blue-50/30 dark:hover:bg-blue-900/10 transition-colors"
               >
                 <td className="px-5 py-4 font-medium text-gray-900 dark:text-white border-r border-gray-50 dark:border-gray-800 bg-gray-50/10 dark:bg-slate-800/20">
-                  {translateKey(key)}
+                  {translateKey(key, log)}
                 </td>
                 <td className="px-5 py-4 text-blue-900 dark:text-blue-300 font-mono text-xs break-all bg-blue-50/10 dark:bg-blue-900/10">
-                  {formatValue(key, attributes[key])}
+                  {formatValue(key, attributes[key], log)}
                 </td>
               </tr>
             ))}
@@ -352,20 +646,56 @@ const AuditPage = () => {
         </div>
       </div>
 
-      <div>
-        <h3 className="font-bold text-textMain dark:text-white mb-4 text-xs uppercase tracking-wider">
-          {t('admin.audit.reports.title')}
-        </h3>
-        <button
-          onClick={handleExportPDF}
-          className="w-full flex items-center justify-center gap-3 p-3 bg-white dark:bg-slate-800 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-xl transition-all border border-gray-200 dark:border-gray-700 group shadow-sm hover:shadow-md"
-        >
-          <Download
-            size={18}
-            className="text-gray-400 group-hover:text-primary transition-colors"
-          />
-          <span className="font-medium">{t('admin.audit.export_pdf')}</span>
-        </button>
+      <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-800 shadow-sm overflow-hidden">
+        <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700 bg-gray-50/80 dark:bg-slate-900/50">
+          <h3 className="font-bold text-textMain dark:text-white text-xs uppercase tracking-wider">
+            {t('admin.audit.reports.title')}
+          </h3>
+          <p className="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed mt-1.5">
+            {t('admin.audit.reports.desc')}
+          </p>
+        </div>
+
+        <div className="p-4 space-y-3">
+          <div className="rounded-lg bg-blue-50/60 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-900/40 p-3 space-y-2.5">
+            <div className="flex items-center justify-between gap-3 text-[11px]">
+              <span className="text-gray-500 dark:text-gray-400">{t('admin.audit.reports.records_label')}</span>
+              <span className="font-bold text-[#003087] dark:text-cyan-400 text-sm">{filteredLogs.length}</span>
+            </div>
+            <div className="flex items-start justify-between gap-3 text-[11px]">
+              <span className="text-gray-500 dark:text-gray-400 shrink-0">{t('admin.audit.reports.period_label')}</span>
+              <span className="font-medium text-gray-700 dark:text-gray-200 text-right">
+                {dateFrom || dateTo
+                  ? `${dateFrom ? formatDateDisplay(dateFrom) : '...'} — ${dateTo ? formatDateDisplay(dateTo) : '...'}`
+                  : t('admin.audit.reports.all_dates')}
+              </span>
+            </div>
+            <div className="flex items-start justify-between gap-3 text-[11px]">
+              <span className="text-gray-500 dark:text-gray-400 shrink-0">{t('admin.audit.reports.search_label')}</span>
+              <span className="font-medium text-gray-700 dark:text-gray-200 text-right break-all">
+                {searchTerm.trim() ? `"${searchTerm.trim()}"` : t('admin.audit.reports.no_search')}
+              </span>
+            </div>
+          </div>
+
+          <button
+            onClick={handleExportPDF}
+            disabled={loading || filteredLogs.length === 0}
+            className="w-full flex items-center gap-3 p-3.5 bg-[#003087] dark:bg-blue-600 text-white hover:brightness-110 disabled:bg-gray-200 disabled:text-gray-400 disabled:dark:bg-slate-700 disabled:dark:text-gray-500 disabled:cursor-not-allowed rounded-xl transition-all group shadow-sm"
+          >
+            <div className="w-9 h-9 rounded-lg bg-white/15 flex items-center justify-center shrink-0">
+              <Download size={18} />
+            </div>
+            <div className="text-left min-w-0">
+              <span className="block text-sm font-bold">{t('admin.audit.export_pdf')}</span>
+              <span className="block text-[10px] text-white/80 font-medium">
+                {filteredLogs.length === 0
+                  ? t('admin.audit.reports.export_empty')
+                  : t('admin.audit.reports.export_desc')}
+              </span>
+            </div>
+          </button>
+        </div>
       </div>
     </div>
   )
@@ -569,13 +899,13 @@ const AuditPage = () => {
                       {selectedLog.user_name}
                     </p>
                   </div>
-                  {selectedLog.affected_user && selectedLog.affected_user !== selectedLog.user_name && (
+                  {shouldShowAffectedUser(selectedLog) && (
                     <div className="border-l-0 sm:border-l border-gray-200 dark:border-gray-700 pl-0 sm:pl-6">
                       <p className="text-xs text-blue-500 dark:text-blue-400 font-medium uppercase tracking-wider mb-1">
                         {t('admin.audit.detail_modal.affected')}
                       </p>
                       <p className="font-bold text-blue-700 dark:text-blue-300 text-lg">
-                        {selectedLog.affected_user}
+                        {formatAffectedUserDisplay(selectedLog)}
                       </p>
                     </div>
                   )}
