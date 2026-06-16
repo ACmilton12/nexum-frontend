@@ -2,6 +2,14 @@ import { API_BASE_URL } from '../utils/constants'
 
 const getToken = () => localStorage.getItem('token') || sessionStorage.getItem('token')
 
+export interface ProjectFile {
+  id: number
+  type: string
+  url: string
+  original_name: string
+  order: number
+}
+
 export interface Project {
   id: number
   title: string
@@ -17,6 +25,7 @@ export interface Project {
     id: number
     name: string
   }[]
+  files?: ProjectFile[]
   created_at: string
   updated_at?: string
 }

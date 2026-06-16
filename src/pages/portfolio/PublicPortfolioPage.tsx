@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
-  MapPin, Phone, Mail, Briefcase, Award, Loader2, AlertCircle, Folder, Download, X
+  MapPin, Phone, Mail, Briefcase, Award, Loader2, AlertCircle, Folder, Download, X, Share2
 } from 'lucide-react'
 import { getPublicPortfolio, type FullPortfolio, type AdditionalLink } from '../../services/portfolio.service'
 import { useRecordVisit, useProfileStats } from '../../hooks/useProfileVisits'
@@ -85,6 +85,12 @@ export default function PublicPortfolioPage() {
 
   useRecordVisit(portfolio?.id || null)
   const { stats } = useProfileStats(portfolio?.id || null)
+
+  const handleShareProfile = () => {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url);
+    alert(t('portfolio_view.share_success', '¡Enlace de tu portafolio copiado al portapapeles!'));
+  }
 
   const getTranslatedLevel = (level: string) => {
     if (!level) return '';
@@ -269,6 +275,14 @@ export default function PublicPortfolioPage() {
                   {t('portfolio_view.download_pdf')}
                 </button>
 
+                <button
+                  onClick={handleShareProfile}
+                  className="flex items-center justify-center gap-2 px-4 py-2 bg-white hover:bg-slate-50 text-[#003087] border border-[#003087] rounded-lg text-xs font-bold transition-all duration-300 shadow-sm w-full md:w-56 cursor-pointer"
+                >
+                  <Share2 size={14} />
+                  {t('portfolio_view.share_profile', 'Compartir perfil')}
+                </button>
+
                 {/* STATS PANEL (Horizontal Row on both Desktop and Mobile) */}
                 <div className="flex flex-wrap md:flex-nowrap gap-2 w-full mt-1 justify-start md:justify-end">
                   {statsList.map((stat, idx) => (
@@ -421,6 +435,15 @@ export default function PublicPortfolioPage() {
                           {project.category?.name || 'GENERAL'}
                         </span>
                       </div>
+                      
+                      {project.files && project.files.some(f => (f.type || f.file_type)?.startsWith('image')) && (
+                        <img 
+                          src={project.files.find(f => (f.type || f.file_type)?.startsWith('image'))?.url} 
+                          alt={project.title} 
+                          className="w-full h-40 object-cover rounded-lg mb-4" 
+                        />
+                      )}
+
                       <h3 className="font-bold text-slate-900 text-base mb-3">{project.title}</h3>
                       <p className="text-slate-600 text-[11px] leading-relaxed mb-4 flex-1">{project.description}</p>
                       <div className="flex flex-wrap gap-2 mb-4">
@@ -467,6 +490,22 @@ export default function PublicPortfolioPage() {
                       <div key={cert.id} className="bg-white rounded-xl border-l-4 border-violet-500 shadow-lg hover:-translate-y-1 transition-all duration-300 p-6 flex flex-col justify-between">
                         <div>
                           <h3 className="font-bold text-slate-900 text-base mb-3">{cert.name}</h3>
+
+                          {cert.image_url && (
+                            <button
+                              type="button"
+                              onClick={() => setImagePreviewCert(cert)}
+                              className="w-full text-left block cursor-pointer border-none bg-transparent p-0 mb-4 hover:opacity-90 transition-opacity"
+                              title={t('portfolio_view.view_certificate', 'Ver certificado')}
+                            >
+                              <img
+                                src={cert.image_url}
+                                alt={cert.name}
+                                className="w-full h-40 object-cover rounded-lg shadow-sm border border-slate-200"
+                              />
+                            </button>
+                          )}
+
                           <p className="text-[#003087] text-xs font-bold mb-2">{issuingOrg}</p>
                           <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-3">
                             {formatCertDate(cert.issue_date, i18n.language)} - {cert.expiration_date ? formatCertDate(cert.expiration_date, i18n.language) : t('portfolio_view.present', 'Presente')}
@@ -477,23 +516,6 @@ export default function PublicPortfolioPage() {
                             </p>
                           )}
                         </div>
-                        {cert.image_url && (
-                          <button
-                            type="button"
-                            onClick={() => setImagePreviewCert(cert)}
-                            className="group flex items-center gap-3 p-2 -ml-2 rounded-lg hover:bg-slate-50 transition-colors cursor-pointer border-none bg-transparent text-left mt-auto animate-fade-in"
-                            title={t('portfolio_view.view_certificate', 'Ver certificado')}
-                          >
-                            <img
-                              src={cert.image_url}
-                              alt={cert.name}
-                              className="w-12 h-12 object-cover rounded shadow-sm border border-slate-200 group-hover:ring-2 group-hover:ring-[#003087] transition-all"
-                            />
-                            <span className="text-xs font-bold text-[#003087] group-hover:underline">
-                              {t('portfolio_view.view_certificate', 'Ver certificado')}
-                            </span>
-                          </button>
-                        )}
                         {!cert.image_url && credUrl && (
                           <a href={credUrl} target="_blank" rel="noopener noreferrer"
                             className="inline-flex items-center gap-1 text-xs font-bold text-blue-600 hover:underline mt-auto">

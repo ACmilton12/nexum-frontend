@@ -74,9 +74,8 @@ export default function PublicationsFeed() {
   }
 
   return (
-    <section className="py-16 bg-[#F8FAFC]">
-      <div className="max-w-3xl mx-auto px-6">
-        <div className="flex items-center justify-between mb-8">
+    <div className="w-full">
+      <div className="flex items-center justify-between mb-8">
           <h2 className="text-2xl font-bold text-gray-900 tracking-tight">
             {t('feed.title', 'Actividad Reciente')}
           </h2>
@@ -169,7 +168,6 @@ export default function PublicationsFeed() {
             </div>
           )}
         </div>
-      </div>
-    </section>
+    </div>
   )
 }

@@ -9,8 +9,9 @@ export interface PortfolioUser {
 
 export interface ProjectFile {
   id: number
-  file_path: string
-  file_type: 'image' | 'pdf'
+  file_path?: string
+  file_type?: 'image' | 'pdf'
+  type?: string
   original_name: string
   url: string
 }
@@ -97,7 +98,6 @@ export interface FullPortfolio {
   additional_links?: AdditionalLink[]
 }
 
-
 const getToken = () => localStorage.getItem('token') || sessionStorage.getItem('token')
 
 export const getPublicPortfolio = async (id: string | number): Promise<FullPortfolio> => {
@@ -131,7 +131,10 @@ export const getPublicPortfolioLinks = async (id: string | number): Promise<Addi
   if (token) headers['Authorization'] = `Bearer ${token}`
 
   try {
-    const response = await fetch(`${API_BASE_URL}/portfolios/${id}/links`, { method: 'GET', headers })
+    const response = await fetch(`${API_BASE_URL}/portfolios/${id}/links`, {
+      method: 'GET',
+      headers
+    })
     if (!response.ok) return []
     const json = await response.json()
     return json.data || json || []

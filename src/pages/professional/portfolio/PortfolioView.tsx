@@ -12,7 +12,8 @@ import {
   Folder,
   Award,
   Download,
-  X
+  X,
+  Share2
 } from 'lucide-react'
 import PLATFORM_ICONS from '../../../components/icons/SocialIcons'
 import Sidebar from '../../admin/components/Sidebar'
@@ -69,6 +70,7 @@ interface Project {
     id: number;
     name: string;
   }[];
+  files?: any[];
   project_url?: string;
   year: string;
 }
@@ -81,6 +83,7 @@ interface Certification {
   issue_date: string;
   expiration_date?: string;
   image_url?: string;
+  credential_url?: string;
 }
 
 interface PrivacySettings {
@@ -184,6 +187,13 @@ const PortfolioView = () => {
   const navigate = useNavigate()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [imagePreviewCert, setImagePreviewCert] = useState<Certification | null>(null)
+
+  const handleShareProfile = () => {
+    if (!portfolioId) return;
+    const url = `${window.location.origin}/portfolio/${portfolioId}`;
+    navigator.clipboard.writeText(url);
+    alert(t('portfolio_view.share_success', '¡Enlace de tu portafolio copiado al portapapeles!'));
+  }
 
   const getTranslatedLevel = (level: string) => {
     if (!level) return '';
@@ -292,6 +302,7 @@ const PortfolioView = () => {
                 title: c.name || '',
                 description: c.description || '',
                 issuing_organization: parsed.issuing_organization,
+                credential_url: parsed.credential_url,
                 issue_date: c.issue_date || '',
                 expiration_date: c.expiration_date || undefined,
                 image_url: c.image_url || undefined
@@ -489,6 +500,14 @@ const PortfolioView = () => {
                     >
                       <Download size={14} />
                       {t('portfolio_view.download_pdf')}
+                    </button>
+
+                    <button
+                      onClick={handleShareProfile}
+                      className="flex items-center justify-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-[#003087] dark:text-cyan-400 border border-[#003087] dark:border-cyan-400 rounded-lg text-xs font-bold transition-all duration-300 shadow-sm w-full md:w-56 cursor-pointer"
+                    >
+                      <Share2 size={14} />
+                      {t('portfolio_view.share_profile', 'Compartir perfil')}
                     </button>
 
                     {/* STATS PANEL */}
@@ -815,6 +834,14 @@ const PortfolioView = () => {
                             </span>
                           </div>
 
+                          {project.files && project.files.some((f: any) => (f.type || f.file_type)?.startsWith('image')) && (
+                            <img 
+                              src={project.files.find((f: any) => (f.type || f.file_type)?.startsWith('image'))?.url} 
+                              alt={project.title} 
+                              className="w-full h-40 object-cover rounded-lg mb-4" 
+                            />
+                          )}
+
                           <h3 className="font-bold text-slate-900 dark:text-white text-base mb-3">{project.title}</h3>
 
                           <p className="text-slate-600 dark:text-slate-300 text-[11px] leading-relaxed mb-4">
@@ -907,6 +934,22 @@ const PortfolioView = () => {
                       >
                         <div>
                           <h3 className="font-bold text-slate-900 dark:text-white text-base mb-3">{cert.title}</h3>
+
+                          {cert.image_url && (
+                            <button
+                              type="button"
+                              onClick={() => setImagePreviewCert(cert)}
+                              className="w-full text-left block cursor-pointer border-none bg-transparent p-0 mb-4 hover:opacity-90 transition-opacity"
+                              title={t('portfolio_view.view_certificate', 'Ver certificado')}
+                            >
+                              <img
+                                src={cert.image_url}
+                                alt={cert.title}
+                                className="w-full h-40 object-cover rounded-lg shadow-sm border border-slate-200 dark:border-slate-700"
+                              />
+                            </button>
+                          )}
+
                           <p className="text-[#003087] dark:text-cyan-400 text-xs font-bold mb-2">{cert.issuing_organization}</p>
                           <p className="text-slate-400 dark:text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-3">
                             {formatCertDate(cert.issue_date, i18n.language)} - {cert.expiration_date ? formatCertDate(cert.expiration_date, i18n.language) : t('portfolio_view.present', 'Presente')}
@@ -917,22 +960,11 @@ const PortfolioView = () => {
                             </p>
                           )}
                         </div>
-                        {cert.image_url && (
-                          <button
-                            type="button"
-                            onClick={() => setImagePreviewCert(cert)}
-                            className="group flex items-center gap-3 p-2 -ml-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors cursor-pointer border-none bg-transparent text-left"
-                            title={t('portfolio_view.view_certificate', 'Ver certificado')}
-                          >
-                            <img
-                              src={cert.image_url}
-                              alt={cert.title}
-                              className="w-12 h-12 object-cover rounded shadow-sm border border-slate-200 dark:border-slate-700 group-hover:ring-2 group-hover:ring-[#003087] dark:group-hover:ring-cyan-400 transition-all"
-                            />
-                            <span className="text-xs font-bold text-[#003087] dark:text-cyan-400 group-hover:underline">
-                              {t('portfolio_view.view_certificate', 'Ver certificado')}
-                            </span>
-                          </button>
+                        {!cert.image_url && cert.credential_url && (
+                          <a href={cert.credential_url} target="_blank" rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-xs font-bold text-blue-600 dark:text-cyan-400 hover:underline mt-auto pt-2">
+                            {t('portfolio_view.view_credential')}
+                          </a>
                         )}
                       </div>
                     ))

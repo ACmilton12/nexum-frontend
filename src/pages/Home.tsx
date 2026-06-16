@@ -17,6 +17,8 @@ import Features from './home/components/Features'
 import CTA from './home/components/CTA'
 import RecentPortfolios from './home/components/RecentPortfolios'
 import PublicationsFeed from './home/components/PublicationsFeed'
+import SuggestedProfilesWidget from './home/components/SuggestedProfilesWidget'
+import Calendar from '../components/ui/Calendar'
 import Footer from './home/components/Footer'
 
 // Removed PublicProfileCard as we use PortfolioCard
@@ -222,7 +224,29 @@ export default function Home() {
         />
       )}
 
-      <PublicationsFeed />
+      <section className="py-16 bg-[#F8FAFC]">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            {/* Columna Izquierda: Sugerencias */}
+            <div className="hidden lg:block lg:col-span-1">
+              <SuggestedProfilesWidget profiles={profiles} />
+            </div>
+            
+            {/* Columna Central: Feed */}
+            <div className="col-span-1 lg:col-span-2">
+              <PublicationsFeed />
+            </div>
+
+            {/* Columna Derecha: Calendario */}
+            <div className="hidden lg:block lg:col-span-1 sticky top-24 h-fit">
+              <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100/80">
+                <h3 className="font-bold text-gray-900 text-lg mb-4">Calendario</h3>
+                <Calendar />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
       <RecentPortfolios profiles={profiles} loading={loadingFeatured} />
       {!user && <CTA />}
       <Features />
