@@ -165,9 +165,12 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const { pathname } = useLocation()
   const lowerPath = pathname.toLowerCase()
 
-  const hideLayout = ROUTES_WITHOUT_LAYOUT.some((route) =>
-    route === '/' ? lowerPath === '/' : lowerPath === route || lowerPath.startsWith(route + '/')
-  )
+  const hideLayout = ROUTES_WITHOUT_LAYOUT.some((route) => {
+    if (route === '/portfolio') {
+      return lowerPath.startsWith('/portfolio/');
+    }
+    return route === '/' ? lowerPath === '/' : lowerPath === route || lowerPath.startsWith(route + '/')
+  })
 
   if (hideLayout) return <>{children}</>
 

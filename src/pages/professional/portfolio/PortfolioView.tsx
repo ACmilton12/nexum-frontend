@@ -16,7 +16,6 @@ import {
 } from 'lucide-react'
 import PLATFORM_ICONS from '../../../components/icons/SocialIcons'
 import Sidebar from '../../admin/components/Sidebar'
-import Navbar from '../../../components/ui/Navbar'
 import PdfTemplateModal from '../../../components/modals/PdfTemplateModal'
 
 import { getPersonalData } from '../../../services/datapersonal.service'
@@ -344,8 +343,7 @@ const PortfolioView = () => {
   const habilidadesBlandas = techSkills.filter((s) => s.type === 'blanda')
 
   return (
-    <div className="h-screen max-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors duration-300 overflow-hidden">
-      <Navbar />
+    <div className="h-full max-h-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors duration-300 overflow-hidden">
       <div className="flex flex-1 overflow-hidden relative">
         <Sidebar activeItem="Vista Portafolio" />
 
