@@ -52,9 +52,32 @@ function Privacy() {
 
   const handleCopy = () => {
     if (!portfolioId) return;
-    navigator.clipboard.writeText(profileUrl);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(profileUrl)
+        .then(() => {
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2000);
+        })
+        .catch(err => console.error('Error al copiar con clipboard API: ', err));
+    } else {
+      const textArea = document.createElement("textarea");
+      textArea.value = profileUrl;
+      textArea.style.position = "absolute";
+      textArea.style.left = "-999999px";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch (err) {
+        console.error('Error al copiar con execCommand: ', err);
+      } finally {
+        textArea.remove();
+      }
+    }
   };
 
   useEffect(() => {
