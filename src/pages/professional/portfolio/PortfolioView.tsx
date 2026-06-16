@@ -188,11 +188,28 @@ const PortfolioView = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [imagePreviewCert, setImagePreviewCert] = useState<Certification | null>(null)
 
-  const handleShareProfile = () => {
+  const handleShareProfile = async () => {
     if (!portfolioId) return;
     const url = `${window.location.origin}/portfolio/${portfolioId}`;
-    navigator.clipboard.writeText(url);
-    alert(t('portfolio_view.share_success', '¡Enlace de tu portafolio copiado al portapapeles!'));
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(url);
+      } else {
+        const textArea = document.createElement("textarea");
+        textArea.value = url;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand('copy');
+        textArea.remove();
+      }
+      alert(t('portfolio_view.share_success', '¡Enlace de tu portafolio copiado al portapapeles!'));
+    } catch (err) {
+      console.error('Failed to copy: ', err);
+      alert('Error al copiar el enlace');
+    }
   }
 
   const getTranslatedLevel = (level: string) => {

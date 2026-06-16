@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { Bell, Check, ExternalLink } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { 
@@ -172,16 +173,17 @@ const NotificationBell = () => {
                           </button>
                         )}
                         {notif.action_url && (
-                          <a 
-                            href={notif.action_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                          <Link 
+                            to={notif.action_url}
                             className="p-1.5 text-gray-500 hover:bg-gray-100 rounded-full transition-colors"
                             title={t('notifications_dropdown.view', 'Ver detalles')}
-                            onClick={(e) => e.stopPropagation()}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setIsOpen(false);
+                            }}
                           >
                             <ExternalLink size={16} />
-                          </a>
+                          </Link>
                         )}
                       </div>
                     </div>

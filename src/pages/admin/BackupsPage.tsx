@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react'
 import { Database, Download, Trash2, Plus, Clock, FileArchive, CheckCircle } from 'lucide-react'
 import Sidebar from './components/Sidebar'
 import Toast from '../../components/ui/Toast'
-import { generateBackup } from '../../services/backups.service'
+import { generateBackup, restoreBackup } from '../../services/backups.service'
 import { getActivityLogs } from '../../services/admin.service'
 import { useTranslation } from 'react-i18next'
+import { useRef } from 'react'
 
 interface Backup {
   id: string
@@ -14,13 +15,13 @@ interface Backup {
   type: 'auto' | 'manual'
 }
 
-const PHP_PGADMIN_RESTORE_URL = 'http://codi.tis.cs.umss.edu.bo/phppgadmin'
-
 export default function BackupsPage() {
   const { t, i18n } = useTranslation()
   const [backups, setBackups] = useState<Backup[]>([])
   const [loading, setLoading] = useState(false)
+  const [restoring, setRestoring] = useState(false)
   const [toast, setToast] = useState<{ mensaje: string; tipo: 'success' | 'error' } | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     const fetchHistory = async () => {
@@ -72,6 +73,24 @@ export default function BackupsPage() {
     }
   }
 
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    setRestoring(true)
+    try {
+      await restoreBackup(file)
+      setToast({ mensaje: '¡Backup restaurado con éxito!', tipo: 'success' })
+    } catch (error: unknown) {
+      setToast({ mensaje: (error as Error).message || 'Error al restaurar el backup', tipo: 'error' })
+    } finally {
+      setRestoring(false)
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''
+      }
+    }
+  }
+
   const handleDelete = (id: string) => {
     setBackups(backups.filter((b) => b.id !== id))
     setToast({ mensaje: t('admin.backups.toasts.delete_success'), tipo: 'success' })
@@ -101,13 +120,30 @@ export default function BackupsPage() {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3 w-full">
+                <input
+                  type="file"
+                  accept=".sql"
+                  ref={fileInputRef}
+                  style={{ display: 'none' }}
+                  onChange={handleFileChange}
+                />
                 <button
                   type="button"
-                  onClick={() => window.open(PHP_PGADMIN_RESTORE_URL, '_blank', 'noopener,noreferrer')}
-                  className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 text-sm px-5 py-2.5 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-700 transition-all shadow-sm flex items-center justify-center gap-2 font-semibold w-full sm:w-auto"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={restoring}
+                  className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 text-sm px-5 py-2.5 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-700 transition-all shadow-sm flex items-center justify-center gap-2 font-semibold w-full sm:w-auto disabled:opacity-70 disabled:cursor-not-allowed"
                 >
-                  <Download className="rotate-180" size={18} />
-                  {t('admin.backups.restore_button')}
+                  {restoring ? (
+                    <>
+                      <div className="animate-spin w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full" />
+                      Restaurando...
+                    </>
+                  ) : (
+                    <>
+                      <Download className="rotate-180" size={18} />
+                      {t('admin.backups.restore_button')}
+                    </>
+                  )}
                 </button>
 
                 <button

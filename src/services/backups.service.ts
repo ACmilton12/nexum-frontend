@@ -59,3 +59,30 @@ export const generateBackup = async () => {
 
   return { success: true, filename, size: formattedSize }
 }
+
+export const restoreBackup = async (file: File) => {
+  const token = getToken()
+  const formData = new FormData()
+  formData.append('backup', file)
+
+  const response = await fetch(`${API_BASE_URL}/admin/backup/restore`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    body: formData
+  })
+
+  if (response.status === 401) {
+    handleUnauthorized()
+    throw new Error('No autorizado')
+  }
+
+  const data = await response.json().catch(() => ({}))
+
+  if (!response.ok) {
+    throw new Error(data.message || 'Error al restaurar el backup.')
+  }
+
+  return data
+}

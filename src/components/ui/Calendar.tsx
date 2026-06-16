@@ -116,8 +116,8 @@ const Calendar = () => {
   return (
     <div
       className="
-        bg-white dark:bg-gray-900
-        border border-gray-200 dark:border-gray-700
+        bg-white dark:bg-slate-800
+        border border-slate-200 dark:border-slate-700
         rounded-2xl
         p-3 sm:p-4
         shadow-sm
@@ -125,17 +125,17 @@ const Calendar = () => {
       "
     >
       {/* TÍTULO */}
-      <h3 className="font-semibold text-textMain dark:text-gray-100 mb-2">
+      <h3 className="font-semibold text-textMain dark:text-slate-100 mb-2">
         {t('common.calendar', 'Calendario')}
       </h3>
 
       {/* FECHA */}
-      <p className="text-xs text-gray-400 dark:text-gray-500 mb-3">
+      <p className="text-xs text-slate-400 dark:text-slate-500 mb-3">
         {monthNames[month]} {year}
       </p>
 
       {/* DÍAS SEMANA */}
-      <div className="grid grid-cols-7 text-xs text-center text-gray-400 dark:text-gray-500 mb-2">
+      <div className="grid grid-cols-7 text-xs text-center text-slate-400 dark:text-slate-500 mb-2">
         {weekdays.map((d, i) => (
           <span key={i}>{d}</span>
         ))}
@@ -149,8 +149,8 @@ const Calendar = () => {
             className={`py-0.5 rounded-full ${d.day === todayDate && d.currentMonth
               ? 'bg-primary text-white font-bold'
               : !d.currentMonth
-                ? "text-gray-300 dark:text-gray-600"
-                : "text-textMain dark:text-gray-300"
+                ? "text-slate-300 dark:text-slate-600"
+                : "text-textMain dark:text-slate-300"
               }`}
           >
             {d.day}
