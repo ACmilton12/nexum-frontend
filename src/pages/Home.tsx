@@ -16,6 +16,7 @@ import Hero from './home/components/Hero'
 import Features from './home/components/Features'
 import CTA from './home/components/CTA'
 import RecentPortfolios from './home/components/RecentPortfolios'
+import PublicationsFeed from './home/components/PublicationsFeed'
 import Footer from './home/components/Footer'
 
 // Removed PublicProfileCard as we use PortfolioCard
@@ -221,7 +222,7 @@ export default function Home() {
         />
       )}
 
-
+      <PublicationsFeed />
       <RecentPortfolios profiles={profiles} loading={loadingFeatured} />
       {!user && <CTA />}
       <Features />
