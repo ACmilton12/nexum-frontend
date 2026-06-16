@@ -1,40 +1,44 @@
 import { BrowserRouter, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom'
-import React, { useEffect } from 'react'
+import React, { Suspense, lazy, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import LoginPage from '../pages/auth/LoginPage'
-import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage'
-import ResetPasswordPage from '../pages/auth/ResetPasswordPage'
-import RegisterPage from '../pages/auth/RegisterPage'
-import VerifyEmailRedirect from '../pages/auth/VerifyEmailRedirect'
-
-import RolesPage from '../pages/admin/RolesPage'
-import AccountsPage from '../pages/admin/AccountsPage'
 import Navbar from '../components/ui/Navbar'
 import Footer from '../components/ui/Footer'
-import AuditPage from '../pages/admin/AuditPage'
-import CategoriesPage from '../pages/admin/CategoriesPage'
-import BackupsPage from '../pages/admin/BackupsPage'
-import PersonalData from '../pages/professional/profile-settings/PersonalData'
-import Links from '../pages/professional/profile-settings/Links'
-import Privacy from '../pages/professional/profile-settings/Privacy'
-import HabilidadesPage from '../pages/professional/Habilidades'
-import Experience from '../pages/professional/experience/Experience'
-import Certifications from '../pages/professional/certifications/Certifications'
-import ProfileVisitorsPage from '../pages/professional/visitors/ProfileVisitorsPage'
+import RouteFallback from '../components/ui/RouteFallback'
 import ProtectedRoute from './ProtectedRoute'
-import Home from '../pages/Home'
-import BuscarProfesionales from '../pages/BuscarProfesionales'
-import ProjectsPage from '../pages/professional/projects/ProjectsPage'
-import HomeDirectory from '../pages/professional/HomeDirectory'
-import PublicProfile from '../pages/professional/PublicProfile'
-import PortfolioView from '../pages/professional/portfolio/PortfolioView'
-import SearchPage from '../pages/search/SearchPage'
-import PublicPortfolioPage from '../pages/portfolio/PublicPortfolioPage'
-import PrintPortfolio from '../pages/professional/PrintPortfolio'
-import GuidePage from '../pages/resources/GuidePage'
-import PdfTipsPage from '../pages/resources/PdfTipsPage'
-import FaqPage from '../pages/resources/FaqPage'
-import RulesPage from '../pages/resources/RulesPage'
+
+const LoginPage = lazy(() => import('../pages/auth/LoginPage'))
+const ForgotPasswordPage = lazy(() => import('../pages/auth/ForgotPasswordPage'))
+const ResetPasswordPage = lazy(() => import('../pages/auth/ResetPasswordPage'))
+const RegisterPage = lazy(() => import('../pages/auth/RegisterPage'))
+const VerifyEmailRedirect = lazy(() => import('../pages/auth/VerifyEmailRedirect'))
+
+const RolesPage = lazy(() => import('../pages/admin/RolesPage'))
+const AccountsPage = lazy(() => import('../pages/admin/AccountsPage'))
+const AuditPage = lazy(() => import('../pages/admin/AuditPage'))
+const CategoriesPage = lazy(() => import('../pages/admin/CategoriesPage'))
+const BackupsPage = lazy(() => import('../pages/admin/BackupsPage'))
+
+const PersonalData = lazy(() => import('../pages/professional/profile-settings/PersonalData'))
+const Links = lazy(() => import('../pages/professional/profile-settings/Links'))
+const Privacy = lazy(() => import('../pages/professional/profile-settings/Privacy'))
+const HabilidadesPage = lazy(() => import('../pages/professional/Habilidades'))
+const Experience = lazy(() => import('../pages/professional/experience/Experience'))
+const Certifications = lazy(() => import('../pages/professional/certifications/Certifications'))
+const ProfileVisitorsPage = lazy(() => import('../pages/professional/visitors/ProfileVisitorsPage'))
+
+const Home = lazy(() => import('../pages/Home'))
+const BuscarProfesionales = lazy(() => import('../pages/BuscarProfesionales'))
+const ProjectsPage = lazy(() => import('../pages/professional/projects/ProjectsPage'))
+const HomeDirectory = lazy(() => import('../pages/professional/HomeDirectory'))
+const PublicProfile = lazy(() => import('../pages/professional/PublicProfile'))
+const PortfolioView = lazy(() => import('../pages/professional/portfolio/PortfolioView'))
+const SearchPage = lazy(() => import('../pages/search/SearchPage'))
+const PublicPortfolioPage = lazy(() => import('../pages/portfolio/PublicPortfolioPage'))
+const PrintPortfolio = lazy(() => import('../pages/professional/PrintPortfolio'))
+const GuidePage = lazy(() => import('../pages/resources/GuidePage'))
+const PdfTipsPage = lazy(() => import('../pages/resources/PdfTipsPage'))
+const FaqPage = lazy(() => import('../pages/resources/FaqPage'))
+const RulesPage = lazy(() => import('../pages/resources/RulesPage'))
 
 const ScrollToTop = () => {
   const { pathname } = useLocation()
@@ -94,7 +98,6 @@ const Breadcrumbs = () => {
                 </>
               )}
 
-              {/* Conflicto 1 resuelto: HEAD tiene dark mode, tu rama tiene más rutas */}
               <span className="mx-2 text-slate-300 dark:text-gray-600">&gt;</span>
               <span className="font-bold text-[#003087] dark:text-blue-400">
                 {pathname.includes('dashboard') ? t('sidebar.dashboard', 'Dashboard')
@@ -184,7 +187,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     )
   }
 
-  /* Conflicto 2 resuelto: HEAD tiene dark mode y Footer */
   return (
     <div className="min-h-screen flex flex-col transition-colors duration-300">
       <Navbar />
@@ -200,55 +202,50 @@ const AppRouter = () => {
     <BrowserRouter>
       <ScrollToTop />
       <Layout>
-        <Routes>
-          {/* ── Página de inicio ─────────────────────────────── */}
-          <Route path="/" element={<Home />} />
-          <Route path="/Home" element={<BuscarProfesionales />} />
+        <Suspense fallback={<RouteFallback />}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/Home" element={<BuscarProfesionales />} />
 
-          {/* ── Rutas públicas ───────────────────────────────── */}
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/auth/verify-email" element={<VerifyEmailRedirect />} />
-          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="/reset-password" element={<ResetPasswordPage />} />
-          <Route path="/search" element={<SearchPage />} />
-          <Route path="/portfolio/:id" element={<PublicPortfolioPage />} />
-          <Route path="/imprimir/:id?" element={<PrintPortfolio />} />
-          <Route path="/guia" element={<GuidePage />} />
-          <Route path="/formato-pdf" element={<PdfTipsPage />} />
-          <Route path="/faq" element={<FaqPage />} />
-          <Route path="/normativa" element={<RulesPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/auth/verify-email" element={<VerifyEmailRedirect />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
+            <Route path="/search" element={<SearchPage />} />
+            <Route path="/portfolio/:id" element={<PublicPortfolioPage />} />
+            <Route path="/imprimir/:id?" element={<PrintPortfolio />} />
+            <Route path="/guia" element={<GuidePage />} />
+            <Route path="/formato-pdf" element={<PdfTipsPage />} />
+            <Route path="/faq" element={<FaqPage />} />
+            <Route path="/normativa" element={<RulesPage />} />
 
-          {/* ── Rutas del admin ──────────────────────────────── */}
-          <Route path="/admin" element={<ProtectedRoute allowedRole="admin"><RolesPage /></ProtectedRoute>} />
-          <Route path="/admin/roles" element={<ProtectedRoute allowedRole="admin"><RolesPage /></ProtectedRoute>} />
-          <Route path="/admin/dashboard" element={<ProtectedRoute allowedRole="admin"><RolesPage /></ProtectedRoute>} />
-          <Route path="/admin/usuarios" element={<ProtectedRoute allowedRole="admin"><AccountsPage /></ProtectedRoute>} />
-          <Route path="/admin/auditoria" element={<ProtectedRoute allowedRole="admin"><AuditPage /></ProtectedRoute>} />
-          <Route path="/admin/categorias" element={<ProtectedRoute allowedRole="admin"><CategoriesPage /></ProtectedRoute>} />
-          <Route path="/admin/backups" element={<ProtectedRoute allowedRole="admin"><BackupsPage /></ProtectedRoute>} />
+            <Route path="/admin" element={<ProtectedRoute allowedRole="admin"><RolesPage /></ProtectedRoute>} />
+            <Route path="/admin/roles" element={<ProtectedRoute allowedRole="admin"><RolesPage /></ProtectedRoute>} />
+            <Route path="/admin/dashboard" element={<ProtectedRoute allowedRole="admin"><RolesPage /></ProtectedRoute>} />
+            <Route path="/admin/usuarios" element={<ProtectedRoute allowedRole="admin"><AccountsPage /></ProtectedRoute>} />
+            <Route path="/admin/auditoria" element={<ProtectedRoute allowedRole="admin"><AuditPage /></ProtectedRoute>} />
+            <Route path="/admin/categorias" element={<ProtectedRoute allowedRole="admin"><CategoriesPage /></ProtectedRoute>} />
+            <Route path="/admin/backups" element={<ProtectedRoute allowedRole="admin"><BackupsPage /></ProtectedRoute>} />
 
-          {/* ── Rutas del profesional ────────────────────────── */}
-          {/* Conflicto 3 resuelto: combinamos rutas de ambas versiones */}
-          <Route path="/dashboard" element={<ProtectedRoute allowedRole="professional"><RolesPage /></ProtectedRoute>} />
-          <Route path="/directorio" element={<ProtectedRoute allowedRoles={['admin', 'professional']}><HomeDirectory /></ProtectedRoute>} />
-          <Route path="/directorio/perfil/:id" element={<ProtectedRoute allowedRoles={['admin', 'professional']}><PublicProfile /></ProtectedRoute>} />
-          <Route path="/proyectos" element={<ProtectedRoute allowedRole="professional"><ProjectsPage /></ProtectedRoute>} />
-          <Route path="/experiencia" element={<ProtectedRoute allowedRole="professional"><Experience /></ProtectedRoute>} />
-          <Route path="/certificaciones" element={<ProtectedRoute allowedRole="professional"><Certifications /></ProtectedRoute>} />
-          <Route path="/visitantes" element={<ProtectedRoute allowedRole="professional"><ProfileVisitorsPage /></ProtectedRoute>} />
-          <Route path="/portfolio" element={<ProtectedRoute allowedRole="professional"><PortfolioView /></ProtectedRoute>} />
+            <Route path="/dashboard" element={<ProtectedRoute allowedRole="professional"><RolesPage /></ProtectedRoute>} />
+            <Route path="/directorio" element={<ProtectedRoute allowedRoles={['admin', 'professional']}><HomeDirectory /></ProtectedRoute>} />
+            <Route path="/directorio/perfil/:id" element={<ProtectedRoute allowedRoles={['admin', 'professional']}><PublicProfile /></ProtectedRoute>} />
+            <Route path="/proyectos" element={<ProtectedRoute allowedRole="professional"><ProjectsPage /></ProtectedRoute>} />
+            <Route path="/experiencia" element={<ProtectedRoute allowedRole="professional"><Experience /></ProtectedRoute>} />
+            <Route path="/certificaciones" element={<ProtectedRoute allowedRole="professional"><Certifications /></ProtectedRoute>} />
+            <Route path="/visitantes" element={<ProtectedRoute allowedRole="professional"><ProfileVisitorsPage /></ProtectedRoute>} />
+            <Route path="/portfolio" element={<ProtectedRoute allowedRole="professional"><PortfolioView /></ProtectedRoute>} />
 
-          {/* ── Perfil del profesional ────────────────────────── */}
-          <Route path="/profile" element={<Navigate to="/profile/personal-data" replace />} />
-          <Route path="/profile/personal-data" element={<ProtectedRoute allowedRole="professional"><PersonalData /></ProtectedRoute>} />
-          <Route path="/profile/links" element={<ProtectedRoute allowedRole="professional"><Links /></ProtectedRoute>} />
-          <Route path="/profile/privacy" element={<ProtectedRoute allowedRole="professional"><Privacy /></ProtectedRoute>} />
-          <Route path="/profile/habilidades" element={<ProtectedRoute allowedRole="professional"><HabilidadesPage /></ProtectedRoute>} />
+            <Route path="/profile" element={<Navigate to="/profile/personal-data" replace />} />
+            <Route path="/profile/personal-data" element={<ProtectedRoute allowedRole="professional"><PersonalData /></ProtectedRoute>} />
+            <Route path="/profile/links" element={<ProtectedRoute allowedRole="professional"><Links /></ProtectedRoute>} />
+            <Route path="/profile/privacy" element={<ProtectedRoute allowedRole="professional"><Privacy /></ProtectedRoute>} />
+            <Route path="/profile/habilidades" element={<ProtectedRoute allowedRole="professional"><HabilidadesPage /></ProtectedRoute>} />
 
-          {/* ── Ruta por defecto ─────────────────────────────── */}
-          <Route path="*" element={<Home />} />
-        </Routes>
+            <Route path="*" element={<Home />} />
+          </Routes>
+        </Suspense>
       </Layout>
     </BrowserRouter>
   )

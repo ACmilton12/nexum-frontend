@@ -14,6 +14,8 @@ interface Backup {
   type: 'auto' | 'manual'
 }
 
+const PHP_PGADMIN_RESTORE_URL = 'http://codi.tis.cs.umss.edu.bo/phppgadmin'
+
 export default function BackupsPage() {
   const { t, i18n } = useTranslation()
   const [backups, setBackups] = useState<Backup[]>([])
@@ -99,21 +101,15 @@ export default function BackupsPage() {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3 w-full">
-                {/* Botón de Restaurar (Estático) */}
                 <button
-                  onClick={() =>
-                    setToast({
-                      mensaje: t('admin.backups.toasts.restore_info'),
-                      tipo: 'error'
-                    })
-                  }
+                  type="button"
+                  onClick={() => window.open(PHP_PGADMIN_RESTORE_URL, '_blank', 'noopener,noreferrer')}
                   className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 text-sm px-5 py-2.5 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-700 transition-all shadow-sm flex items-center justify-center gap-2 font-semibold w-full sm:w-auto"
                 >
                   <Download className="rotate-180" size={18} />
                   {t('admin.backups.restore_button')}
                 </button>
 
-                {/* Botón de Generar */}
                 <button
                   onClick={handleGenerateBackup}
                   disabled={loading}

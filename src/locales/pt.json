@@ -744,6 +744,7 @@
     "no_experience": "Nenhuma carreira profissional registrada.",
     "no_certifications": "Não há certificações públicas para mostrar.",
     "view_credential": "Ver credencial",
+    "view_certificate": "Ver certificado",
     "remote": "Remoto",
     "on_site": "Presencial",
     "hybrid": "Híbrido",
@@ -1039,8 +1040,19 @@
       },
       "pdf": {
         "title": "Histórico de Auditoria - NEXUM",
+        "subtitle": "Relatório de atividades do sistema",
         "generated_at": "Gerado em: {{date}}",
-        "filename": "historico_auditoria_{{date}}.pdf"
+        "filename": "historico_auditoria_{{date}}.pdf",
+        "summary_title": "Resumo do relatório",
+        "records_count": "Total de registros: {{count}}",
+        "period": "Período: {{from}} — {{to}}",
+        "period_all": "Período: todos os registros visíveis",
+        "search_filter": "Busca ativa: \"{{term}}\"",
+        "no_search_filter": "Busca ativa: nenhuma",
+        "affected_user": "Usuário afetado",
+        "summary": "Resumo das alterações",
+        "page": "Página {{current}} de {{total}}",
+        "not_applicable": "N/A"
       },
       "events": {
         "created": "Criado",
@@ -1056,7 +1068,8 @@
       "detail_modal": {
         "title": "Detalhes da Atividade",
         "responsible": "Usuário Responsável",
-        "affected": "Usuário Afetado",
+        "affected": "Usuário afetado",
+        "affected_section": "Seção afetada",
         "data_state": "Dados e Estados",
         "close": "Fechar Detalhes",
         "no_structured_details": "Não há detalhes adicionais estruturados para este evento.",
@@ -1073,6 +1086,12 @@
         "email": "E-mail",
         "role": "Função",
         "is_active": "Estado da Conta",
+        "experience_visibility": "Visibilidade da experiência",
+        "certification_visibility": "Visibilidade da certificação",
+        "project_visibility": "Visibilidade do projeto",
+        "skill_visibility": "Visibilidade da habilidade",
+        "show_experience": "Mostrar experiência no portfólio",
+        "show_certifications": "Mostrar certificações no portfólio",
         "password": "Senha",
         "biography": "Biografia",
         "phone": "Telefone",
@@ -1106,14 +1125,35 @@
         "private": "Privado",
         "public": "Público",
         "yes": "Sim",
-        "no": "Não"
+        "no": "Não",
+        "visible": "Visível",
+        "hidden": "Oculta",
+        "professional": "Profissional"
+      },
+      "entity": {
+        "experience_section": "Experiência profissional",
+        "experience_item": "Experiência: {{position}} em {{company}}",
+        "experience_position": "Experiência: {{position}}",
+        "certification_section": "Certificação",
+        "certification_item": "Certificação: {{name}}",
+        "project_section": "Projeto",
+        "project_item": "Projeto: {{title}}",
+        "portfolio_section": "Configuração do portfólio"
       },
       "security": {
         "title": "Segurança",
         "desc": "Supervisão activa do sistema. Todas as alterações de funções e acessos com falha são registradas."
       },
       "reports": {
-        "title": "Relatórios"
+        "title": "Relatórios",
+        "desc": "Baixe um PDF com os registros exibidos na tabela, respeitando os filtros de busca e datas.",
+        "records_label": "Registros incluídos",
+        "period_label": "Período",
+        "search_label": "Busca",
+        "all_dates": "Todas as datas",
+        "no_search": "Sem filtro de texto",
+        "export_desc": "Baixar relatório em PDF",
+        "export_empty": "Não há registros para exportar com os filtros atuais."
       }
     }
   },

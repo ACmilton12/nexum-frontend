@@ -758,6 +758,7 @@
     "no_experience": "No career history registered.",
     "no_certifications": "No public certifications to show.",
     "view_credential": "View credential",
+    "view_certificate": "View certificate",
     "remote": "Remote",
     "on_site": "On-site",
     "hybrid": "Hybrid",
@@ -1053,8 +1054,19 @@
       },
       "pdf": {
         "title": "Audit Logs - NEXUM",
+        "subtitle": "System activity report",
         "generated_at": "Generated on: {{date}}",
-        "filename": "audit_history_{{date}}.pdf"
+        "filename": "audit_history_{{date}}.pdf",
+        "summary_title": "Report summary",
+        "records_count": "Total records: {{count}}",
+        "period": "Period: {{from}} — {{to}}",
+        "period_all": "Period: all visible records",
+        "search_filter": "Active search: \"{{term}}\"",
+        "no_search_filter": "Active search: none",
+        "affected_user": "Affected user",
+        "summary": "Change summary",
+        "page": "Page {{current}} of {{total}}",
+        "not_applicable": "N/A"
       },
       "events": {
         "created": "Created",
@@ -1070,7 +1082,8 @@
       "detail_modal": {
         "title": "Activity Details",
         "responsible": "Responsible User",
-        "affected": "Affected User",
+        "affected": "Affected user",
+        "affected_section": "Affected section",
         "data_state": "Data and States",
         "close": "Close Details",
         "no_structured_details": "No additional structured details for this event.",
@@ -1087,6 +1100,12 @@
         "email": "Email",
         "role": "Role",
         "is_active": "Account Status",
+        "experience_visibility": "Experience visibility",
+        "certification_visibility": "Certification visibility",
+        "project_visibility": "Project visibility",
+        "skill_visibility": "Skill visibility",
+        "show_experience": "Show experience on portfolio",
+        "show_certifications": "Show certifications on portfolio",
         "password": "Password",
         "biography": "Biography",
         "phone": "Phone",
@@ -1120,14 +1139,35 @@
         "private": "Private",
         "public": "Public",
         "yes": "Yes",
-        "no": "No"
+        "no": "No",
+        "visible": "Visible",
+        "hidden": "Hidden",
+        "professional": "Professional"
+      },
+      "entity": {
+        "experience_section": "Work experience",
+        "experience_item": "Experience: {{position}} at {{company}}",
+        "experience_position": "Experience: {{position}}",
+        "certification_section": "Certification",
+        "certification_item": "Certification: {{name}}",
+        "project_section": "Project",
+        "project_item": "Project: {{title}}",
+        "portfolio_section": "Portfolio settings"
       },
       "security": {
         "title": "Security",
         "desc": "Active system monitoring. All role changes and failed accesses are logged."
       },
       "reports": {
-        "title": "Reports"
+        "title": "Reports",
+        "desc": "Download a PDF with the records shown in the table, using the current search and date filters.",
+        "records_label": "Records included",
+        "period_label": "Period",
+        "search_label": "Search",
+        "all_dates": "All dates",
+        "no_search": "No text filter",
+        "export_desc": "Download PDF report",
+        "export_empty": "No records to export with the current filters."
       }
     }
   },
