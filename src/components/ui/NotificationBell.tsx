@@ -98,6 +98,27 @@ const NotificationBell = () => {
     return new Date(dateString).toLocaleString();
   };
 
+  const getMappedActionUrl = (url: string | null) => {
+    if (!url) return undefined;
+    
+    if (url.includes('/admin/skill-suggestions')) {
+      return '/admin/dashboard?modal=skills';
+    }
+    if (url.includes('/admin/category-suggestions')) {
+      return '/admin/dashboard?modal=categories';
+    }
+    if (url.includes('/portfolio/skills')) {
+      return '/profile/habilidades';
+    }
+    if (url.includes('/portfolio/stats')) {
+      return '/visitantes';
+    }
+    if (url.includes('/projects/')) {
+      return '/proyectos';
+    }
+    return url;
+  };
+
   return (
     <div className="relative" ref={dropdownRef}>
       <button
@@ -174,7 +195,7 @@ const NotificationBell = () => {
                         )}
                         {notif.action_url && (
                           <Link 
-                            to={notif.action_url}
+                            to={getMappedActionUrl(notif.action_url) || '#'}
                             className="p-1.5 text-gray-500 hover:bg-gray-100 rounded-full transition-colors"
                             title={t('notifications_dropdown.view', 'Ver detalles')}
                             onClick={(e) => {

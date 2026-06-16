@@ -10,7 +10,7 @@ import {
   BookOpen
 } from 'lucide-react'
 import Sidebar from './components/Sidebar'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import Calendar from '../../components/ui/Calendar'
 import Toast from '../../components/ui/Toast'
 import { getUsers, getActivityLogs } from '../../services/admin.service'
@@ -629,11 +629,22 @@ const RightPanelContent = ({
 // ─── Dashboard principal ──────────────────────────────────────────────────────
 const DashboardAdmin = () => {
   const { t, i18n } = useTranslation()
+  const location = useLocation()
   const [modalSugerencias, setModalSugerencias] = useState(false)
   const [pendingCount, setPendingCount] = useState<number | null>(null)
   const [loadingCount, setLoadingCount] = useState(true)
 
   const [modalCategorias, setModalCategorias] = useState(false)
+
+  // Abrir modal automáticamente según la URL (útil para links desde notificaciones)
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search)
+    if (searchParams.get('modal') === 'skills') {
+      setModalSugerencias(true)
+    } else if (searchParams.get('modal') === 'categories') {
+      setModalCategorias(true)
+    }
+  }, [location.search])
   const [pendingCategoryCount, setPendingCategoryCount] = useState<number | null>(null)
   const [loadingCategoryCount, setLoadingCategoryCount] = useState(true)
 
