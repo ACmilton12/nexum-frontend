@@ -4,34 +4,36 @@ Este es el repositorio frontend para el proyecto Nexum, construido con React, Vi
 
 ## Características
 
-*   **Desarrollo Rápido**: Utiliza Vite para un servidor de desarrollo rápido y Hot Module Replacement (HMR).
-*   **Componentes React**: Construido con la biblioteca React para una interfaz de usuario modular y eficiente.
-*   **Tipado Estático**: Desarrollado con TypeScript para una mayor robustez y mantenimiento del código.
-*   **Gestión de Estado**: Utiliza React Hooks (como `useState`) para la gestión de estado local y puede extenderse con el Context API para estado global.
-*   **Estilos**: Implementado con Tailwind CSS para un desarrollo rápido y utilitario, complementado con CSS tradicional para estilos globales (`App.css`, `index.css`).
+- **Desarrollo Rápido**: Utiliza Vite para un servidor de desarrollo rápido y Hot Module Replacement (HMR).
+- **Componentes React**: Construido con la biblioteca React para una interfaz de usuario modular y eficiente.
+- **Tipado Estático**: Desarrollado con TypeScript para una mayor robustez y mantenimiento del código.
+- **Gestión de Estado**: Utiliza React Hooks (como `useState`) para la gestión de estado local y puede extenderse con el Context API para estado global.
+- **Estilos**: Implementado con Tailwind CSS para un desarrollo rápido y utilitario, complementado con CSS tradicional para estilos globales (`App.csss`, `index.csss`).
 
 ## Tecnologías Utilizadas
 
-*   **React**: Biblioteca de JavaScript para construir interfaces de usuario.
-*   **Vite**: Herramienta de construcción de próxima generación para proyectos web.
-*   **TypeScript**: Superset de JavaScript que añade tipado estático.
-*   **npm/Yarn/pnpm**: Gestor de paquetes.
-*   **React Router DOM**: Para la navegación en la aplicación.
-*   **Tailwind CSS**: Para estilos utilitarios y responsivos.
-*   **Autoprefixer**: Para añadir prefijos de proveedor a CSS.
-*   **PostCSS**: Para transformar CSS con plugins de JavaScript.
-*   **ESLint**: Para el linting de código.
+- **React**: Biblioteca de JavaScript para construir interfaces de usuario.
+- **Vite**: Herramienta de construcción de próxima generación para proyectos web.
+- **TypeScript**: Superset de JavaScript que añade tipado estático.
+- **npm/Yarn/pnpm**: Gestor de paquetes.
+- **React Router DOM**: Para la navegación en la aplicación.
+- **Tailwind CSS**: Para estilos utilitarios y responsivos.
+- **Autoprefixer**: Para añadir prefijos de proveedor a CSS.
+- **PostCSS**: Para transformar CSS con plugins de JavaScript.
+- **ESLint**: Para el linting de código.
 
 ## Instalación
 
 Para ejecutar este proyecto localmente, sigue estos pasos:
 
 1.  **Clona el repositorio:**
+
     ```bash
         git clone https://github.com/ACmilton12/nexum-frontend.git
     ```
 
 2.  **Instala las dependencias:**
+
     ```bash
     npm install react react-dom
     npm install -D typescript vite @types/react @types/react-dom @vitejs/plugin-react
@@ -54,10 +56,10 @@ Para ejecutar este proyecto localmente, sigue estos pasos:
 
 En el directorio del proyecto, puedes ejecutar:
 
-*   `npm run dev`: Inicia el servidor de desarrollo.
-*   `npm run build`: Compila la aplicación para producción en la carpeta `dist`.
-*   `npm run lint`: Ejecuta ESLint para revisar problemas de código.
-*   `npm run preview`: Sirve la compilación de producción localmente.
+- `npm run dev`: Inicia el servidor de desarrollo.
+- `npm run build`: Compila la aplicación para producción en la carpeta `dist`.
+- `npm run lint`: Ejecuta ESLint para revisar problemas de código.
+- `npm run preview`: Sirve la compilación de producción localmente.
 
 ## Estructura del Proyecto
 

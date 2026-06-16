@@ -1,29 +1,42 @@
-import { Navigate } from "react-router-dom";
-import useAuth from "../hooks/useAuth";
+import { Navigate } from 'react-router-dom'
+import useAuth from '../hooks/useAuth'
 
 interface ProtectedRouteProps {
-  children: React.ReactNode;
-  allowedRole: "admin" | "professional";
+  children: React.ReactNode
+  allowedRole?: 'admin' | 'professional'
+  allowedRoles?: ('admin' | 'professional')[]
 }
 
-const ProtectedRoute = ({ children, allowedRole }: ProtectedRouteProps) => {
-  const { token, user } = useAuth();
+const ProtectedRoute = ({ children, allowedRole, allowedRoles }: ProtectedRouteProps) => {
+  const { token, user } = useAuth()
 
   // Si no hay token redirige al login
   if (!token) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" replace />
   }
 
-  // Si el rol no coincide redirige a su dashboard
-  if (user?.role !== allowedRole) {
-    if (user?.role === "admin") {
-      return <Navigate to="/admin" replace />;
+  const userRole = user?.role as 'admin' | 'professional' | undefined
+
+  // Si se especifica allowedRoles (arreglo)
+  if (allowedRoles) {
+    if (!userRole || !allowedRoles.includes(userRole)) {
+      if (userRole === 'admin') {
+        return <Navigate to="/admin" replace />
+      } else {
+        return <Navigate to="/portfolio" replace />
+      }
+    }
+  }
+  // Si se especifica allowedRole (string único)
+  else if (allowedRole && userRole !== allowedRole) {
+    if (userRole === 'admin') {
+      return <Navigate to="/admin" replace />
     } else {
-      return <Navigate to="/profolio" replace />;
+      return <Navigate to="/portfolio" replace />
     }
   }
 
-  return <>{children}</>;
-};
+  return <>{children}</>
+}
 
-export default ProtectedRoute;
+export default ProtectedRoute

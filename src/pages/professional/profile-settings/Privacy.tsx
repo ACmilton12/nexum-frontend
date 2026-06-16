@@ -1,0 +1,449 @@
+import { useState, useEffect } from 'react';
+import Sidebar from '../../admin/components/Sidebar';
+import RightWidgets from '../../../components/ui/RightWidgets';
+import { Loader2, Clock, Save, Globe, CheckCircle, Lock, Link2, Copy, Check, Folder, Star, Briefcase, Award, Info } from 'lucide-react';
+import Toast from '../../../components/ui/Toast';
+import { getLinksPrivacyData, updateLinksPrivacyData } from '../../../services/linksprivacy.service';
+import { API_BASE_URL } from '../../../utils/constants';
+import { useTranslation } from 'react-i18next';
+
+const Toggle = ({ active, onToggle, disabled }: { active: boolean; onToggle: () => void; disabled?: boolean }) => (
+  <div
+    onClick={!disabled ? onToggle : undefined}
+    className={`w-11 h-6 rounded-full relative cursor-pointer transition-colors ${active ? 'bg-action' : 'bg-gray-400'
+      } ${disabled ? 'opacity-60 cursor-not-allowed' : ''}`}
+  >
+    <div className={`absolute top-0.5 w-5 h-5 rounded-full bg-white transition-all ${active ? 'left-5' : 'left-0.5'
+      }`} />
+  </div>
+);
+
+function Privacy() {
+  const { t } = useTranslation();
+  const [nombre, setNombre] = useState('');
+  const [apellido, setApellido] = useState('');
+  const [linkedin, setLinkedin] = useState('');
+  const [github, setGithub] = useState('');
+  
+  const [isPublic, setIsPublic] = useState(true);
+  const [originalIsPublic, setOriginalIsPublic] = useState(true);
+  
+  const [showProjects, setShowProjects] = useState(true);
+  const [originalShowProjects, setOriginalShowProjects] = useState(true);
+  const [showSkills, setShowSkills] = useState(true);
+  const [originalShowSkills, setOriginalShowSkills] = useState(true);
+  const [showExperience, setShowExperience] = useState(true);
+  const [originalShowExperience, setOriginalShowExperience] = useState(true);
+  const [showCertifications, setShowCertifications] = useState(true);
+  const [originalShowCertifications, setOriginalShowCertifications] = useState(true);
+
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(new Date());
+
+  const [loading, setLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
+
+  const [copied, setCopied] = useState(false);
+  const [portfolioId, setPortfolioId] = useState<number | null>(null);
+
+  const profileUrl = portfolioId
+    ? `${window.location.origin}/portfolio/${portfolioId}`
+    : t('profile.privacy.loading_link', 'Cargando enlace...');
+
+  const handleCopy = () => {
+    if (!portfolioId) return;
+    
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(profileUrl)
+        .then(() => {
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2000);
+        })
+        .catch(err => console.error('Error al copiar con clipboard API: ', err));
+    } else {
+      const textArea = document.createElement("textarea");
+      textArea.value = profileUrl;
+      textArea.style.position = "absolute";
+      textArea.style.left = "-999999px";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch (err) {
+        console.error('Error al copiar con execCommand: ', err);
+      } finally {
+        textArea.remove();
+      }
+    }
+  };
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const data = await getLinksPrivacyData();
+        if (data) {
+          setNombre(data.user.first_name || '');
+          setApellido(data.user.last_name || '');
+          setLinkedin(data.linkedin_url || '');
+          setGithub(data.github_url || '');
+          const isPub = data.global_privacy === 'public';
+          setIsPublic(isPub);
+          setOriginalIsPublic(isPub);
+
+          // Privacidad por sección (defaults a true si no viene del backend)
+          const sp = data.show_projects !== false;
+          const ss = data.show_skills !== false;
+          const se = data.show_experience !== false;
+          const sc = data.show_certifications !== false;
+          setShowProjects(sp);
+          setOriginalShowProjects(sp);
+          setShowSkills(ss);
+          setOriginalShowSkills(ss);
+          setShowExperience(se);
+          setOriginalShowExperience(se);
+          setShowCertifications(sc);
+          setOriginalShowCertifications(sc);
+        } else {
+          const storedUser = JSON.parse(localStorage.getItem("user") || sessionStorage.getItem("user") || "{}");
+          setNombre(storedUser.first_name || '');
+          setApellido(storedUser.last_name || '');
+        }
+      } catch (error) {
+        console.error("Error al cargar privacidad:", error);
+      }
+
+      // Fetch portfolio ID for the shareable link
+      try {
+        const storedToken = localStorage.getItem('token') || sessionStorage.getItem('token');
+        const res = await fetch(`${API_BASE_URL}/portfolio`, {
+          headers: {
+            Authorization: `Bearer ${storedToken}`,
+            Accept: 'application/json',
+          },
+        });
+        const json = await res.json();
+        if (json?.data?.id) {
+          setPortfolioId(json.data.id);
+        }
+      } catch (err) {
+        console.error('Error al obtener ID del portafolio:', err);
+      }
+
+      setLoading(false);
+    };
+    loadData();
+  }, []);
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      const privacyValue = isPublic ? 'public' : 'private';
+
+      await updateLinksPrivacyData({
+        nombre,
+        apellido,
+        linkedin,
+        github,
+        global_privacy: privacyValue,
+        show_projects: showProjects,
+        show_skills: showSkills,
+        show_experience: showExperience,
+        show_certifications: showCertifications,
+      });
+      setOriginalIsPublic(isPublic);
+      setOriginalShowProjects(showProjects);
+      setOriginalShowSkills(showSkills);
+      setOriginalShowExperience(showExperience);
+      setOriginalShowCertifications(showCertifications);
+      setLastUpdated(new Date());
+      setToast({ message: t('profile.privacy.toasts.success', 'Privacidad actualizada con éxito'), type: 'success' });
+    } catch (error: unknown) {
+      setToast({ message: t('profile.privacy.toasts.error', 'Error al actualizar: ') + (error as Error).message, type: 'error' });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleDiscard = () => {
+    setIsPublic(originalIsPublic);
+    setShowProjects(originalShowProjects);
+    setShowSkills(originalShowSkills);
+    setShowExperience(originalShowExperience);
+    setShowCertifications(originalShowCertifications);
+  };
+
+  const hasChanges = isPublic !== originalIsPublic ||
+                     showProjects !== originalShowProjects ||
+                     showSkills !== originalShowSkills ||
+                     showExperience !== originalShowExperience ||
+                     showCertifications !== originalShowCertifications;
+
+  if (loading) {
+    return (
+      <div className="flex-1 w-full bg-background dark:bg-slate-900 flex flex-col font-sans overflow-hidden transition-colors duration-300">
+        <div className="flex flex-1 overflow-hidden relative">
+          <Sidebar activeItem="Privacidad" />
+          <main className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+            <div className="flex-1 p-4 sm:p-6 md:p-6 flex items-center justify-center overflow-y-auto">
+              <div className="flex flex-col items-center gap-3 text-gray-400 font-medium">
+                <Loader2 className="animate-spin text-primary" size={32} />
+                <span>{t('profile.privacy.loading', 'Cargando...')}</span>
+              </div>
+            </div>
+            <RightWidgets type="profile" className="hidden lg:block w-64 shrink-0" />
+          </main>
+        </div>
+      </div>
+    );
+  }
+
+  const formattedDate = lastUpdated 
+    ? t('profile.privacy.today', 'Hoy, ') + `${new Intl.DateTimeFormat('es-ES', { hour: 'numeric', minute: 'numeric', hour12: true }).format(lastUpdated).toUpperCase()}`
+    : t('profile.privacy.not_available', 'No disponible');
+
+  return (
+    <div className="flex-1 w-full bg-background dark:bg-slate-900 flex flex-col overflow-hidden transition-colors duration-300">
+      <div className="flex flex-1 overflow-hidden">
+        <Sidebar activeItem="Privacidad" />
+
+        <main className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+          <div className="flex-1 p-4 sm:p-6 md:p-6 overflow-y-auto">
+            <div className="max-w-5xl mx-auto w-full">
+              {/* Header */}
+            <div className="flex flex-col lg:flex-row lg:items-start justify-between mb-8 gap-4 pt-2">
+              <div>
+                <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
+                  <Clock size={16} />
+                  <span>{t('profile.privacy.last_updated', 'Última actualización: ')}{formattedDate}</span>
+                </div>
+                <h1 className="text-3xl font-bold text-textMain dark:text-white mb-2">{t('profile.privacy.title', 'Privacidad')}</h1>
+                <p className="text-sm text-gray-600 dark:text-gray-400">{t('profile.privacy.subtitle', 'Gestiona quién puede ver tu portafolio y qué información compartes.')}</p>
+              </div>
+              
+              <div className="flex items-center gap-3 mt-2 lg:mt-0">
+                <button 
+                  onClick={handleDiscard}
+                  disabled={!hasChanges || isSaving}
+                  className="px-6 py-2.5 rounded-full border border-gray-300 dark:border-gray-600 text-textMain dark:text-gray-200 bg-transparent hover:bg-gray-100 dark:hover:bg-slate-800 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >{t('profile.privacy.discard', 'Descartar')}</button>
+                <button 
+                  onClick={handleSave}
+                  disabled={!hasChanges || isSaving}
+                  className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-action text-white text-sm font-medium hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Save size={18} />
+                  {isSaving ? t('profile.privacy.saving', 'Guardando...') : t('profile.privacy.save', 'Guardar cambios')}
+                </button>
+              </div>
+            </div>
+
+            <div className="space-y-6">
+              {/* Card 1: Visibilidad Global */}
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-6 sm:p-8 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors">
+                <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
+                  <div className="flex gap-4">
+                    <div className="w-12 h-12 rounded-full border border-gray-200 dark:border-gray-700 dark:bg-slate-900 flex items-center justify-center shrink-0">
+                      <Globe className="text-primary" size={24} />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-textMain dark:text-white mb-1">{t('profile.privacy.global_visibility.title', 'Visibilidad Global')}</h3>
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mb-3 max-w-xl">{t('profile.privacy.global_visibility.desc', 'Controla si tu portafolio puede ser visto por cualquier persona con el enlace o si está completamente oculto.')}</p>
+                      {isPublic ? (
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#edf7ed] dark:bg-green-900/20 border border-[#c3e6cb] dark:border-green-800/50 text-[#2e7d32] dark:text-green-400 text-xs font-semibold">
+                          <CheckCircle size={15} />
+                          {t('profile.privacy.global_visibility.public', 'Público · Visible')}
+                        </div>
+                      ) : (
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-100 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 text-xs font-semibold">
+                          <Lock size={15} />
+                          {t('profile.privacy.global_visibility.private', 'Privado · Oculto')}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="shrink-0 mt-2 sm:mt-0 pl-16 sm:pl-0">
+                    <Toggle
+                      active={isPublic}
+                      onToggle={() => setIsPublic(!isPublic)}
+                      disabled={isSaving}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Card 2: Link público */}
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-6 sm:p-8 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors">
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <div className="w-12 h-12 rounded-full border border-blue-100 dark:border-blue-900/50 bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center shrink-0">
+                    <Link2 className="text-primary dark:text-blue-400" size={24} />
+                  </div>
+                  
+                  <div className="flex-1">
+                    <h3 className="text-lg font-bold text-textMain dark:text-white mb-1">{t('profile.privacy.public_link.title', 'Link público de tu portafolio')}</h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{t('profile.privacy.public_link.desc', 'Comparte este enlace con reclutadores o quien quieras')}</p>
+                    
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <div className={`flex-1 px-4 py-2.5 rounded-lg border text-sm flex items-center overflow-hidden transition-colors ${!isPublic ? 'bg-gray-50 dark:bg-slate-900 border-gray-200 dark:border-gray-700 text-gray-400 dark:text-gray-600' : 'bg-gray-50 dark:bg-slate-900 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300'}`}>
+                        {isPublic && portfolioId ? (
+                          <a 
+                            href={profileUrl}
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="hover:text-action dark:hover:text-blue-400 hover:underline truncate transition-colors"
+                            title={t('profile.privacy.public_link.open_tab', 'Abrir portafolio en una nueva pestaña')}
+                          >
+                            {profileUrl}
+                          </a>
+                        ) : (
+                          <span className="truncate">{!isPublic ? t('profile.privacy.public_link.private_profile', 'Perfil privado') : profileUrl}</span>
+                        )}
+                      </div>
+                      
+                      <button
+                        onClick={handleCopy}
+                        disabled={!isPublic || !portfolioId || copied}
+                        className={`flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg text-sm font-medium transition-colors sm:w-40 border-none cursor-pointer
+                          ${!isPublic || !portfolioId ? 'bg-[#7a96b8] dark:bg-slate-700 text-white dark:text-gray-400 opacity-80 cursor-not-allowed'
+                          : copied ? 'bg-[#3b7c2b] text-white' : 'bg-primary text-white hover:opacity-90'}`}
+                      >
+                        {copied ? (
+                          <>
+                            <Check size={16} /> {t('profile.privacy.public_link.copied', '¡Copiado!')}
+                          </>
+                        ) : (
+                          <>
+                            <Copy size={16} /> {t('profile.privacy.public_link.copy', 'Copiar link')}
+                          </>
+                        )}
+                      </button>
+                    </div>
+
+                    {!isPublic && (
+                      <div className="mt-5 p-3.5 bg-[#fef9f0] dark:bg-amber-900/10 border-l-4 border-[#f0a04b] text-[#8a613c] dark:text-amber-500 text-sm font-medium transition-colors">
+                        {t('profile.privacy.public_link.activate_public', 'Activa la visibilidad pública para poder compartir tu portafolio')}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Card 3: Privacidad por Sección */}
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-6 sm:p-8 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors">
+                <div className="mb-6">
+                  <h3 className="text-xl font-bold text-textMain dark:text-white mb-2">{t('profile.privacy.section_privacy.title', 'Privacidad por Sección')}</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">{t('profile.privacy.section_privacy.desc', 'Activa o desactiva secciones específicas. Solo aplica cuando el portafolio es público.')}</p>
+                </div>
+
+                <div className="border border-gray-100 dark:border-gray-700 rounded-xl overflow-hidden mb-6 transition-colors">
+                  <div className="flex items-center justify-between gap-3 p-4 sm:p-5 border-b border-gray-100 dark:border-gray-700 transition-colors">
+                    <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+                      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shrink-0 bg-blue-50 dark:bg-slate-900">
+                        <Folder size={16} className="text-blue-600 dark:text-blue-400" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap mb-0.5">
+                          <h4 className="font-semibold text-textMain dark:text-white text-sm">{t('profile.privacy.section_privacy.projects.title', 'Proyectos')}</h4>
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider transition-colors ${showProjects ? 'bg-green-100/60 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-gray-100 dark:bg-slate-700 text-gray-500 dark:text-gray-400'}`}>
+                            {showProjects ? t('profile.privacy.visible', 'VISIBLE') : t('profile.privacy.hidden', 'OCULTO')}
+                          </span>
+                        </div>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{t('profile.privacy.section_privacy.projects.desc', 'Repositorios y proyectos destacados')}</p>
+                      </div>
+                    </div>
+                    <div className="shrink-0">
+                      <Toggle active={showProjects} onToggle={() => setShowProjects(!showProjects)} disabled={!isPublic || isSaving} />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-3 p-4 sm:p-5 border-b border-gray-100 dark:border-gray-700 transition-colors">
+                    <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+                      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shrink-0 bg-orange-50 dark:bg-slate-900">
+                        <Star size={16} className="text-orange-500 dark:text-orange-400" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap mb-0.5">
+                          <h4 className="font-semibold text-textMain dark:text-white text-sm">{t('profile.privacy.section_privacy.skills.title', 'Habilidades')}</h4>
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider transition-colors ${showSkills ? 'bg-green-100/60 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-gray-100 dark:bg-slate-700 text-gray-500 dark:text-gray-400'}`}>
+                            {showSkills ? t('profile.privacy.visible', 'VISIBLE') : t('profile.privacy.hidden', 'OCULTO')}
+                          </span>
+                        </div>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{t('profile.privacy.section_privacy.skills.desc', 'Tecnologías y competencias técnicas')}</p>
+                      </div>
+                    </div>
+                    <div className="shrink-0">
+                      <Toggle active={showSkills} onToggle={() => setShowSkills(!showSkills)} disabled={!isPublic || isSaving} />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-3 p-4 sm:p-5 border-b border-gray-100 dark:border-gray-700 transition-colors">
+                    <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+                      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shrink-0 bg-purple-50 dark:bg-slate-900">
+                        <Briefcase size={16} className="text-purple-600 dark:text-purple-400" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap mb-0.5">
+                          <h4 className="font-semibold text-textMain dark:text-white text-sm">{t('profile.privacy.section_privacy.experience.title', 'Experiencia')}</h4>
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider transition-colors ${showExperience ? 'bg-green-100/60 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-gray-100 dark:bg-slate-700 text-gray-500 dark:text-gray-400'}`}>
+                            {showExperience ? t('profile.privacy.visible', 'VISIBLE') : t('profile.privacy.hidden', 'OCULTO')}
+                          </span>
+                        </div>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{t('profile.privacy.section_privacy.experience.desc', 'Historial laboral y roles')}</p>
+                      </div>
+                    </div>
+                    <div className="shrink-0">
+                      <Toggle active={showExperience} onToggle={() => setShowExperience(!showExperience)} disabled={!isPublic || isSaving} />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-3 p-4 sm:p-5">
+                    <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+                      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shrink-0 bg-green-50 dark:bg-slate-900">
+                        <Award size={16} className="text-green-600 dark:text-green-400" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap mb-0.5">
+                          <h4 className="font-semibold text-textMain dark:text-white text-sm">{t('profile.privacy.section_privacy.certifications.title', 'Certificaciones')}</h4>
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider transition-colors ${showCertifications ? 'bg-green-100/60 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-gray-100 dark:bg-slate-700 text-gray-500 dark:text-gray-400'}`}>
+                            {showCertifications ? t('profile.privacy.visible', 'VISIBLE') : t('profile.privacy.hidden', 'OCULTO')}
+                          </span>
+                        </div>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{t('profile.privacy.section_privacy.certifications.desc', 'Cursos y certificados obtenidos')}</p>
+                      </div>
+                    </div>
+                    <div className="shrink-0">
+                      <Toggle active={showCertifications} onToggle={() => setShowCertifications(!showCertifications)} disabled={!isPublic || isSaving} />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex gap-3 p-4 bg-gray-50 dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-gray-700 text-gray-600 dark:text-gray-400 transition-colors">
+                  <Info className="shrink-0 mt-0.5" size={18} />
+                  <p className="text-sm">
+                    {t('profile.privacy.info', 'Las secciones ocultas se omiten completamente del servidor. Si tu perfil es privado, la configuración global anulará estos valores y devolverá un error 404 a todos los visitantes.')}
+                  </p>
+                </div>
+              </div>
+            </div>
+            </div>
+          </div>
+
+          <RightWidgets type="profile" className="hidden lg:block w-64 shrink-0" />
+        </main>
+      </div>
+
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
+    </div>
+  );
+}
+
+export default Privacy;

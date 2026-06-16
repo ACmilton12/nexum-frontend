@@ -23,14 +23,26 @@ export const getLinksPrivacyData = async () => {
   return result.data
 }
 
-export const updateLinksPrivacyData = async (payload: any) => {
+interface LinksPrivacyPayload {
+  nombre: string
+  apellido: string
+  linkedin?: string | null
+  github?: string | null
+  global_privacy: string
+  show_projects?: boolean
+  show_skills?: boolean
+  show_experience?: boolean
+  show_certifications?: boolean
+}
+
+export const updateLinksPrivacyData = async (payload: LinksPrivacyPayload) => {
   const token = getToken()
 
   // Recuperar datos actuales para preservar datos personales
   const currentData = await getLinksPrivacyData()
 
   // Preparamos el cuerpo fusionando datos actuales con los nuevos
-  const body = {
+  const body: Record<string, unknown> = {
     first_name: payload.nombre,
     last_name: payload.apellido,
     linkedin_url: payload.linkedin?.trim() || null,
@@ -40,7 +52,12 @@ export const updateLinksPrivacyData = async (payload: any) => {
     profession: currentData?.profession,
     phone: currentData?.phone,
     location: currentData?.location,
-    biography: currentData?.biography
+    biography: currentData?.biography,
+    // Privacidad por sección
+    ...(payload.show_projects !== undefined && { show_projects: payload.show_projects }),
+    ...(payload.show_skills !== undefined && { show_skills: payload.show_skills }),
+    ...(payload.show_experience !== undefined && { show_experience: payload.show_experience }),
+    ...(payload.show_certifications !== undefined && { show_certifications: payload.show_certifications }),
   }
 
   const response = await fetch(`${API_BASE_URL}/portfolio`, {

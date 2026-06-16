@@ -1,188 +1,262 @@
-import { useState } from "react";
-import { Database, Download, Trash2, Plus, Clock, FileArchive, CheckCircle } from "lucide-react";
-import Sidebar from "./components/Sidebar";
-import Toast from "../../components/ui/Toast";
+import { useState, useEffect } from 'react'
+import { Database, Download, Trash2, Plus, Clock, FileArchive, CheckCircle } from 'lucide-react'
+import Sidebar from './components/Sidebar'
+import Toast from '../../components/ui/Toast'
+import { generateBackup, restoreBackup } from '../../services/backups.service'
+import { getActivityLogs } from '../../services/admin.service'
+import { useTranslation } from 'react-i18next'
+import { useRef } from 'react'
 
 interface Backup {
-  id: string;
-  name: string;
-  size: string;
-  date: string;
-  type: "Automático" | "Manual";
+  id: string
+  name: string
+  size: string
+  date: string
+  type: 'auto' | 'manual'
 }
 
-const mockBackups: Backup[] = [
-  {
-    id: "bkp-001",
-    name: "backup_nexum_db_2026-04-26.sql",
-    size: "45.2 MB",
-    date: "26 abr 2026, 03:00",
-    type: "Automático",
-  },
-  {
-    id: "bkp-002",
-    name: "backup_nexum_db_2026-04-25.sql",
-    size: "44.8 MB",
-    date: "25 abr 2026, 03:00",
-    type: "Automático",
-  },
-  {
-    id: "bkp-003",
-    name: "backup_manual_pre_update.sql",
-    size: "44.5 MB",
-    date: "24 abr 2026, 15:45",
-    type: "Manual",
-  },
-];
-
 export default function BackupsPage() {
-  const [backups, setBackups] = useState<Backup[]>(mockBackups);
-  const [loading, setLoading] = useState(false);
-  const [toast, setToast] = useState<{ mensaje: string; tipo: "success" | "error" } | null>(null);
+  const { t, i18n } = useTranslation()
+  const [backups, setBackups] = useState<Backup[]>([])
+  const [loading, setLoading] = useState(false)
+  const [restoring, setRestoring] = useState(false)
+  const [toast, setToast] = useState<{ mensaje: string; tipo: 'success' | 'error' } | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const handleGenerateBackup = () => {
-    setLoading(true);
-    // Simulación de creación de backup (hasta que el backend esté listo)
-    setTimeout(() => {
+  useEffect(() => {
+    const fetchHistory = async () => {
+      try {
+        const logs = await getActivityLogs()
+        // Filtrar logs de eventos de backup
+        const backupLogs = logs.data
+          .filter((log: { event?: string }) => log.event === 'backup.generated')
+          .map((log: { id: string | number, timestamp: string, properties?: { filename?: string } }) => ({
+            id: log.id.toString(),
+            name: log.properties?.filename || 'backup_db.sql',
+            size: 'N/A',
+            date: log.timestamp,
+            type: 'manual' as const
+          }))
+        setBackups(backupLogs)
+      } catch (error) {
+        console.error('Error al cargar historial de backups:', error)
+      }
+    }
+    fetchHistory()
+  }, [])
+
+  const handleGenerateBackup = async () => {
+    setLoading(true)
+    try {
+      const result = await generateBackup()
+
       const newBackup: Backup = {
         id: `bkp-${Date.now()}`,
-        name: `backup_manual_nexum_${new Date().toISOString().split("T")[0]}.sql`,
-        size: "45.3 MB",
-        date: new Date().toLocaleString("es-ES", {
-          day: "2-digit",
-          month: "short",
-          year: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
+        name: result.filename,
+        size: result.size,
+        date: new Date().toLocaleString(i18n.language, {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
         }),
-        type: "Manual",
-      };
-      setBackups([newBackup, ...backups]);
-      setLoading(false);
-      setToast({ mensaje: "Copia de seguridad generada con éxito.", tipo: "success" });
-    }, 2000);
-  };
+        type: 'manual'
+      }
+
+      setBackups([newBackup, ...backups])
+      setToast({ mensaje: t('admin.backups.toasts.generate_success'), tipo: 'success' })
+    } catch (error: unknown) {
+      setToast({ mensaje: (error as Error).message || t('admin.backups.toasts.generate_error'), tipo: 'error' })
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    setRestoring(true)
+    try {
+      await restoreBackup(file)
+      setToast({ mensaje: '¡Backup restaurado con éxito!', tipo: 'success' })
+    } catch (error: unknown) {
+      setToast({ mensaje: (error as Error).message || 'Error al restaurar el backup', tipo: 'error' })
+    } finally {
+      setRestoring(false)
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''
+      }
+    }
+  }
 
   const handleDelete = (id: string) => {
-    if (confirm("¿Estás seguro de que deseas eliminar este backup? Esta acción no se puede deshacer.")) {
-      setBackups(backups.filter((b) => b.id !== id));
-      setToast({ mensaje: "Copia de seguridad eliminada.", tipo: "success" });
-    }
-  };
+    setBackups(backups.filter((b) => b.id !== id))
+    setToast({ mensaje: t('admin.backups.toasts.delete_success'), tipo: 'success' })
+  }
 
-  const handleDownload = (name: string) => {
-    setToast({ mensaje: `Descargando ${name}...`, tipo: "success" });
-    // Aquí iría la lógica real de descarga (window.open(url) o crear blob)
-  };
+  const handleDownload = () => {
+    setToast({ mensaje: t('admin.backups.toasts.download_success'), tipo: 'success' })
+  }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="h-screen max-h-screen bg-background dark:bg-slate-900 flex flex-col transition-colors duration-300 overflow-hidden">
       <div className="flex flex-1 overflow-hidden">
         <Sidebar activeItem="Copias de Seguridad" />
 
-        <main className="flex-1 flex flex-col overflow-y-auto p-4 sm:p-6 md:p-8 pl-16 md:pl-8">
+        <main className="flex-1 flex flex-col overflow-y-auto p-4 sm:p-6 md:p-8 bg-background dark:bg-slate-900 transition-colors duration-300">
           <div className="max-w-6xl w-full mx-auto">
             {/* Header */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
               <div>
-                <h1 className="text-2xl font-bold text-textMain flex items-center gap-2 mb-1">
+                <h1 className="text-2xl font-bold text-textMain dark:text-white flex items-center gap-2 mb-1">
                   <Database className="text-primary" size={24} />
-                  Copias de Seguridad
+                  {t('admin.backups.title')}
                 </h1>
-                <p className="text-sm text-gray-500">
-                  Gestiona y genera respaldos de la base de datos del sistema.
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {t('admin.backups.subtitle')}
                 </p>
               </div>
 
-              <button
-                onClick={handleGenerateBackup}
-                disabled={loading}
-                className="bg-action text-white text-sm px-5 py-2.5 rounded-xl hover:opacity-90 transition-all shadow-md flex items-center gap-2 font-semibold disabled:opacity-70 disabled:cursor-not-allowed"
-              >
-                {loading ? (
-                  <>
-                    <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
-                    Generando...
-                  </>
-                ) : (
-                  <>
-                    <Plus size={18} />
-                    Generar Backup Manual
-                  </>
-                )}
-              </button>
+              <div className="flex flex-col sm:flex-row gap-3 w-full">
+                <input
+                  type="file"
+                  accept=".sql"
+                  ref={fileInputRef}
+                  style={{ display: 'none' }}
+                  onChange={handleFileChange}
+                />
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={restoring}
+                  className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 text-sm px-5 py-2.5 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-700 transition-all shadow-sm flex items-center justify-center gap-2 font-semibold w-full sm:w-auto disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  {restoring ? (
+                    <>
+                      <div className="animate-spin w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full" />
+                      Restaurando...
+                    </>
+                  ) : (
+                    <>
+                      <Download className="rotate-180" size={18} />
+                      {t('admin.backups.restore_button')}
+                    </>
+                  )}
+                </button>
+
+                <button
+                  onClick={handleGenerateBackup}
+                  disabled={loading}
+                  className="bg-action text-white text-sm px-5 py-2.5 rounded-xl hover:opacity-90 transition-all shadow-md flex items-center justify-center gap-2 font-semibold disabled:opacity-70 disabled:cursor-not-allowed w-full sm:w-auto"
+                >
+                  {loading ? (
+                    <>
+                      <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
+                      {t('admin.backups.generating')}
+                    </>
+                  ) : (
+                    <>
+                      <Plus size={18} />
+                      {t('admin.backups.generate_button')}
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
 
             {/* Info Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-              <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm flex items-center gap-4">
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700 shadow-sm flex items-center gap-4 transition-colors">
                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                   <FileArchive className="text-primary" size={24} />
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 font-medium uppercase tracking-wide mb-0.5">Total Backups</p>
-                  <p className="text-2xl font-bold text-textMain">{backups.length}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide mb-0.5">
+                    {t('admin.backups.stats.total')}
+                  </p>
+                  <p className="text-2xl font-bold text-textMain dark:text-white">
+                    {backups.length}
+                  </p>
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm flex items-center gap-4">
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700 shadow-sm flex items-center gap-4 transition-colors">
                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                   <Clock className="text-primary" size={24} />
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 font-medium uppercase tracking-wide mb-0.5">Último Backup</p>
-                  <p className="text-sm font-bold text-textMain">{backups[0]?.date || "Ninguno"}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide mb-0.5">
+                    {t('admin.backups.stats.last')}
+                  </p>
+                  <p className="text-sm font-bold text-textMain dark:text-white">
+                    {backups[0]?.date || t('admin.backups.stats.none')}
+                  </p>
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm flex items-center gap-4">
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700 shadow-sm flex items-center gap-4 transition-colors">
                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                   <CheckCircle className="text-primary" size={24} />
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 font-medium uppercase tracking-wide mb-0.5">Estado</p>
-                  <p className="text-sm font-bold text-textMain">Automatizado activo</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide mb-0.5">
+                    {t('admin.backups.stats.status')}
+                  </p>
+                  <p className="text-sm font-bold text-textMain dark:text-white">
+                    {t('admin.backups.stats.status_active')}
+                  </p>
                 </div>
               </div>
             </div>
 
             {/* Table */}
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
-                <h2 className="font-bold text-textMain text-sm">Historial de Respaldos</h2>
+            <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden transition-colors">
+              <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-slate-900/50">
+                <h2 className="font-bold text-textMain dark:text-white text-sm">
+                  {t('admin.backups.table.title')}
+                </h2>
               </div>
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm text-gray-600">
-                  <thead className="text-xs text-gray-400 uppercase bg-gray-50/50 border-b border-gray-100">
+                <table className="w-full text-left text-sm text-gray-600 dark:text-gray-400 min-w-[560px]">
+                  <thead className="text-xs text-gray-400 dark:text-gray-500 uppercase bg-gray-50/50 dark:bg-slate-900/50 border-b border-gray-100 dark:border-gray-700">
                     <tr>
-                      <th className="px-6 py-3 font-semibold">Nombre del Archivo</th>
-                      <th className="px-6 py-3 font-semibold">Tipo</th>
-                      <th className="px-6 py-3 font-semibold">Tamaño</th>
-                      <th className="px-6 py-3 font-semibold">Fecha y Hora</th>
-                      <th className="px-6 py-3 font-semibold text-right">Acciones</th>
+                      <th className="px-4 sm:px-6 py-3 font-semibold whitespace-nowrap">{t('admin.backups.table.filename')}</th>
+                      <th className="px-4 sm:px-6 py-3 font-semibold">{t('admin.backups.table.type')}</th>
+                      <th className="px-4 sm:px-6 py-3 font-semibold">{t('admin.backups.table.size')}</th>
+                      <th className="px-4 sm:px-6 py-3 font-semibold whitespace-nowrap">{t('admin.backups.table.date')}</th>
+                      <th className="px-4 sm:px-6 py-3 font-semibold text-right">{t('admin.backups.table.actions')}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {backups.length === 0 ? (
                       <tr>
-                        <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
-                          No hay copias de seguridad disponibles.
+                        <td
+                          colSpan={5}
+                          className="px-6 py-8 text-center text-gray-500 dark:text-gray-500"
+                        >
+                          {t('admin.backups.table.no_backups')}
                         </td>
                       </tr>
                     ) : (
                       backups.map((backup) => (
-                        <tr key={backup.id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
-                          <td className="px-6 py-4 font-medium text-textMain flex items-center gap-2">
-                            <Database size={14} className="text-gray-400" />
+                        <tr
+                          key={backup.id}
+                          className="border-b border-gray-50 dark:border-gray-700 hover:bg-gray-50/50 dark:hover:bg-slate-900/50 transition-colors"
+                        >
+                          <td className="px-6 py-4 font-medium text-textMain dark:text-white flex items-center gap-2">
+                            <Database size={14} className="text-gray-400 dark:text-gray-500" />
                             {backup.name}
                           </td>
                           <td className="px-6 py-4">
-                            <span className={`px-2.5 py-1 text-[11px] font-bold rounded-full ${
-                              backup.type === "Automático" 
-                                ? "bg-primary/10 text-primary" 
-                                : "bg-navbar/10 text-navbar"
-                            }`}>
-                              {backup.type}
+                            <span
+                              className={`px-2.5 py-1 text-[11px] font-bold rounded-full ${backup.type === 'auto'
+                                ? 'bg-primary/10 text-primary'
+                                : 'bg-navbar/10 text-navbar'
+                                }`}
+                            >
+                              {t(`admin.backups.table.${backup.type}`)}
                             </span>
                           </td>
                           <td className="px-6 py-4">{backup.size}</td>
@@ -190,16 +264,16 @@ export default function BackupsPage() {
                           <td className="px-6 py-4 text-right">
                             <div className="flex items-center justify-end gap-2">
                               <button
-                                onClick={() => handleDownload(backup.name)}
+                                onClick={() => handleDownload()}
                                 className="p-1.5 text-gray-400 hover:text-primary hover:bg-primary/10 rounded transition-colors"
-                                title="Descargar"
+                                title={t('admin.backups.table.download_tooltip')}
                               >
                                 <Download size={18} />
                               </button>
                               <button
                                 onClick={() => handleDelete(backup.id)}
                                 className="p-1.5 text-gray-400 hover:text-action hover:bg-action/10 rounded transition-colors"
-                                title="Eliminar"
+                                title={t('admin.backups.table.delete_tooltip')}
                               >
                                 <Trash2 size={18} />
                               </button>
@@ -217,5 +291,5 @@ export default function BackupsPage() {
       </div>
       {toast && <Toast message={toast.mensaje} type={toast.tipo} onClose={() => setToast(null)} />}
     </div>
-  );
+  )
 }

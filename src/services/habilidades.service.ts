@@ -1,5 +1,5 @@
 /// habilidades.service.ts
-import { API_BASE_URL } from "../utils/constants";
+import { API_BASE_URL } from '../utils/constants'
 
 function getAuthToken(): string {
   const token = localStorage.getItem('token') || sessionStorage.getItem('token')
@@ -73,9 +73,6 @@ interface ApiPortfolioSkillsResponse {
   }
 }
 
-interface ApiPortfolioSkillResponse {
-  data: ApiPortfolioSkill
-}
 
 interface ApiCatalogResponse {
   data: {
@@ -125,31 +122,31 @@ export async function addPortfolioSkill(
 ): Promise<ApiPortfolioSkill> {
   const body: { skill_id: number; level?: string } = { skill_id: skillId }
   if (level) body.level = level
-  const res = await apiFetch<ApiPortfolioSkillResponse>('/portfolio/skills', {
+  const res = await apiFetch<any>('/portfolio/skills', {
     method: 'POST',
     body: JSON.stringify(body)
   })
-  return res.data
+  return res.data ?? res
 }
 
 /** PUT /portfolio/skills/{id} — actualiza nivel y/o status */
 export async function updatePortfolioSkill(
   portfolioSkillId: number,
-  level: ApiNivel  // solo level, sin isActive
+  level: ApiNivel // solo level, sin isActive
 ): Promise<ApiPortfolioSkill> {
-  const res = await apiFetch<ApiPortfolioSkillResponse>(`/portfolio/skills/${portfolioSkillId}`, {
+  const res = await apiFetch<any>(`/portfolio/skills/${portfolioSkillId}`, {
     method: 'PUT',
     body: JSON.stringify({ level })
   })
-  return res.data
+  return res.data ?? res
 }
 
 /** Deshabilita una skill (soft-delete) */
 export async function disablePortfolioSkill(portfolioSkillId: number): Promise<ApiPortfolioSkill> {
-  const res = await apiFetch<ApiPortfolioSkillResponse>(`/portfolio/skills/${portfolioSkillId}`, {
+  const res = await apiFetch<any>(`/portfolio/skills/${portfolioSkillId}`, {
     method: 'DELETE'
   })
-  return res.data
+  return res.data ?? res
 }
 /**
  * POST /portfolio/skill-suggestions — sugerencia de nueva habilidad
@@ -164,9 +161,9 @@ export async function suggestSkill(
 ): Promise<ApiSuggestResponse['data']> {
   const body: Record<string, string> = { name, type, category, level }
   if (justification) body.justification = justification
-  const res = await apiFetch<ApiSuggestResponse>('/portfolio/skill-suggestions', {
+  const res = await apiFetch<any>('/portfolio/skill-suggestions', {
     method: 'POST',
     body: JSON.stringify(body)
   })
-  return res.data
+  return res.data ?? res
 }

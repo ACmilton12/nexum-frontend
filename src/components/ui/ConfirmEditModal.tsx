@@ -1,21 +1,21 @@
-import React from 'react';
-import Modal from './Modal';
-import { Edit3 } from 'lucide-react';
+import React from 'react'
+import Modal from './Modal'
+import { Edit3 } from 'lucide-react'
 
 interface ConfirmEditModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-  title?: string;
-  projectName?: string;
+  isOpen: boolean
+  onClose: () => void
+  onConfirm: () => void
+  title?: string
+  projectName?: string
 }
 
 const ConfirmEditModal: React.FC<ConfirmEditModalProps> = ({
   isOpen,
   onClose,
   onConfirm,
-  title = "Editar proyecto",
-  projectName,
+  title = 'Editar proyecto',
+  projectName
 }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} maxWidth="max-w-[450px]">
@@ -28,21 +28,20 @@ const ConfirmEditModal: React.FC<ConfirmEditModalProps> = ({
         </div>
 
         {/* Title */}
-        <h2 className="text-[20px] font-bold text-[#1a1a2e] mb-3">
-          {title}
-        </h2>
+        <h2 className="text-[20px] font-bold text-[#1a1a2e] dark:text-white mb-3">{title}</h2>
 
         {/* Description */}
-        <p className="text-[14px] text-[#5b6472] leading-relaxed mb-8">
-          ¿Estás seguro de que deseas editar el proyecto <span className="font-bold text-[#1a1a2e]">"{projectName}"</span>? 
-          Esto abrirá el formulario de edición para que puedas modificar sus detalles.
+        <p className="text-[14px] text-[#5b6472] dark:text-slate-300 leading-relaxed mb-8">
+          ¿Estás seguro de que deseas editar el proyecto{' '}
+          <span className="font-bold text-[#1a1a2e] dark:text-white">"{projectName}"</span>? Esto abrirá el
+          formulario de edición para que puedas modificar sus detalles.
         </p>
 
         {/* Buttons */}
-        <div className="flex gap-3 w-full">
+        <div className="flex flex-col-reverse sm:flex-row gap-3 w-full">
           <button
             onClick={onClose}
-            className="flex-1 px-6 py-2.5 text-[14px] font-bold text-[#1a1a2e] bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
+            className="flex-1 px-6 py-2.5 text-[14px] font-bold text-[#1a1a2e] dark:text-white bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors"
           >
             Cancelar
           </button>
@@ -55,7 +54,7 @@ const ConfirmEditModal: React.FC<ConfirmEditModalProps> = ({
         </div>
       </div>
     </Modal>
-  );
-};
+  )
+}
 
-export default ConfirmEditModal;
+export default ConfirmEditModal
