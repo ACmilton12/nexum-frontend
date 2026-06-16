@@ -46,9 +46,8 @@ function Privacy() {
   const [copied, setCopied] = useState(false);
   const [portfolioId, setPortfolioId] = useState<number | null>(null);
 
-  const DEPLOY_URL = 'https://nexum-frontend-wheat.vercel.app';
   const profileUrl = portfolioId
-    ? `${DEPLOY_URL}/portfolio/${portfolioId}`
+    ? `${window.location.origin}/portfolio/${portfolioId}`
     : t('profile.privacy.loading_link', 'Cargando enlace...');
 
   const handleCopy = () => {
