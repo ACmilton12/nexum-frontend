@@ -145,8 +145,11 @@ function SkillSuggestionsModal({
     setActionId(id)
     try {
       await apiFetch(`/admin/skill-suggestions/${id}/${action}`, { method: 'PATCH' })
-      setSuggestions((prev) => prev.filter((s) => s.id !== id))
-      onCountChange(suggestions.length - 1)
+      setSuggestions((prev) => {
+        const next = prev.filter((s) => s.id !== id)
+        onCountChange(next.length)
+        return next
+      })
       setToast({
         msg: action === 'approve'
           ? t('admin.dashboard.skills_modal.toast_approved', 'Sugerencia aprobada.')
@@ -370,8 +373,11 @@ function CategorySuggestionsModal({
     setActionId(id)
     try {
       await apiFetch(`/admin/category-suggestions/${id}/${action}`, { method: 'PATCH' })
-      setSuggestions((prev) => prev.filter((s) => s.id !== id))
-      onCountChange(suggestions.length - 1)
+      setSuggestions((prev) => {
+        const next = prev.filter((s) => s.id !== id)
+        onCountChange(next.length)
+        return next
+      })
       setToast({
         msg: action === 'approve'
           ? t('admin.dashboard.categories_modal.toast_approved', 'Sugerencia aprobada.')

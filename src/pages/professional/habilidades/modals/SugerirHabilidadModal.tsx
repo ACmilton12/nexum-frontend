@@ -125,10 +125,10 @@ export default function SugerirHabilidadModal({
         justificacion.trim() || undefined
       )
       onToast(
-        t('skills.suggest_modal.success', {
+        String(t('skills.suggest_modal.success', {
           name: nombre.trim(),
           defaultValue: `Sugerencia "${nombre.trim()}" enviada correctamente.`
-        }),
+        })),
         'success'
       )
       onCancel()
